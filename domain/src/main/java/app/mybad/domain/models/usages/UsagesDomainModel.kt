@@ -1,7 +1,7 @@
 package app.mybad.domain.models.usages
 
 data class UsagesDomainModel(
-    val medId: String = "medid",
-    val userId: String = "userid",
+    val medId: String = "medId",
+    val userId: String = "userId",
     val usages: List<UsageDomainModel> = emptyList()
 )

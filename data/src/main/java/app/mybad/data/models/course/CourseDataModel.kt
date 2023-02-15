@@ -1,6 +1,6 @@
-package app.mybad.domain.models.course
+package app.mybad.data.models.course
 
-data class CourseDomainModel(
+data class CourseDataModel(
     val id: String = "courseId",
     val userId: String = "userId",
     val medId: Long = -1L,

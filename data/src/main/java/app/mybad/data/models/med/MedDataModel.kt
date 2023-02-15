@@ -1,10 +1,10 @@
-package app.mybad.domain.models.med
+package app.mybad.data.models.med
 
-data class MedDomainModel(
+data class MedDataModel(
     val id: String = "medId",
     val userId: String = "userId",
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,
-    val details: MedDetailsDomainModel = MedDetailsDomainModel()
+    val details: MedDetailsDataModel = MedDetailsDataModel()
 )
