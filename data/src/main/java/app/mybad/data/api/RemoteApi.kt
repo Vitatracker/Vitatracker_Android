@@ -9,10 +9,10 @@ interface RemoteApi {
 
     //Auth
     fun checkLogin(login: String) : Boolean
-    fun createUser(login: String, passwordHash: String) : String        //API key for user
+    fun createUser(login: String, passwordHash: String) : String        //API key for user POST
     fun authUser(login: String, passwordHash: String) : String          //API key for user
     fun restorePassword(login: String) : Boolean
-    fun setNewPassword(token: String, passwordHash: String) : Boolean   // token will be sent via email (as link) when user trying to restore his password
+    fun setNewPassword(token: String, passwordHash: String) : Boolean   //token will be sent via email (as link) when user trying to restore his password
 
     //Onboarding
     fun setUserModel(model: UserDataModel) : Boolean
@@ -22,7 +22,9 @@ interface RemoteApi {
         course: CourseDataModel,
         med: MedDataModel,
         usagesDataModel: UsagesDataModel
-    ) : Boolean
+    ) : Boolean                                                         //POST
+
+    fun hasChanges() : Boolean
 
     fun getUserModel() : UserDataModel
     fun getUserCourses() : List<CourseDataModel>
