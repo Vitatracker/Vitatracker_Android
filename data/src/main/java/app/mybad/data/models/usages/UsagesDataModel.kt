@@ -1,9 +1,7 @@
 package app.mybad.data.models.usages
 
-import app.mybad.data.models.usages.UsageDataModel
-
 data class UsagesDataModel(
-    val medId: String = "medid",
-    val userId: String = "userid",
+    val medId: String = "medId",
+    val userId: String = "userId",
     val usages: List<UsageDataModel> = emptyList()
 )

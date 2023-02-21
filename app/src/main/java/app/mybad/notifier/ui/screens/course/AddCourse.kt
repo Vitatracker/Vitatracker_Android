@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
+import app.mybad.domain.models.usages.UsageDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
@@ -31,6 +32,7 @@ fun AddCourse(
     var duration by remember { mutableStateOf(2) }
     var newCourse by remember { mutableStateOf(CourseDomainModel(medId = medId, userId = userId)) }
     var newUsages by remember { mutableStateOf(UsagesDomainModel(medId = medId, userId = userId)) }
+    var newUsagesList by remember { mutableStateOf(emptyList<Int>()) }
 
     Column(
         modifier = modifier
@@ -52,12 +54,14 @@ fun AddCourse(
                 label = stringResource(R.string.add_course_notifications_quantity)
             ) { timesPerDay = it }
             Spacer(Modifier.height(16.dp))
-            NotificationsSelector(timesPerDay) { }
+            NotificationsSelector(timesPerDay) {
+                newUsagesList = it
+            }
             Spacer(Modifier.height(16.dp))
             DateSelector(
                 label = stringResource(R.string.add_course_start_time)
             ) {
-                newCourse = newCourse.copy(startTime = it)
+                newCourse = newCourse.copy(startDate = it)
             }
             Spacer(Modifier.height(16.dp))
             IterationsSelector(
@@ -74,7 +78,16 @@ fun AddCourse(
         }
         NavigationRow(
             onBack = onBack::invoke,
-            onNext = { onNext(Pair(newCourse, newUsages)) }
+            onNext = {
+                newUsages = generateUsages(
+                    medId = medId,
+                    userId = userId,
+                    startDate = newCourse.startDate,
+                    duration = duration,
+                    usagesByDay = newUsagesList
+                )
+                onNext(Pair(newCourse, newUsages))
+            }
         )
     }
 }
@@ -119,10 +132,16 @@ private fun generateUsages(
     duration: Int,
 ) : UsagesDomainModel {
 
-    repeat(duration) {
+    val usagesList = mutableListOf<UsageDomainModel>()
+    repeat(duration) { position ->
         usagesByDay.forEach {
-
+            val time = (startDate+position*86400+it)
+            usagesList.add(UsageDomainModel(timeToUse = time))
         }
     }
-    return UsagesDomainModel()
+    return UsagesDomainModel(
+        medId = medId,
+        userId = userId,
+        usages = usagesList
+    )
 }

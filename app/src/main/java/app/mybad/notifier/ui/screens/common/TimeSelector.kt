@@ -30,10 +30,10 @@ fun TimeSelector(
     val minutesPagerState = rememberPagerState(initialPage = minutes)
 
     LaunchedEffect(hoursPagerState.currentPage) {
-        onSelect(hours * 3600 + minutes * 60 * 5)
+        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60 * 5)
     }
     LaunchedEffect(minutesPagerState.currentPage) {
-        onSelect(hours * 3600 + minutes * 60 * 5)
+        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60 * 5)
     }
 
     Column(
