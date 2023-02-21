@@ -5,7 +5,7 @@ data class CourseDomainModel(
     val userId: String = "userid",
     val comment: String = "",
     val medId: Long = -1L,
-    val startTime: Long = -1L,
+    val startDate: Long = -1L,
     val endTime: Long = -1L,
     val interval: Long = -1L,
     val showUsageTime: Boolean = true,
