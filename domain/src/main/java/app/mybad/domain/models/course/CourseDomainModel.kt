@@ -3,6 +3,7 @@ package app.mybad.domain.models.course
 data class CourseDomainModel(
     val id: String = "courseid",
     val userId: String = "userid",
+    val comment: String = "",
     val medId: Long = -1L,
     val startTime: Long = -1L,
     val endTime: Long = -1L,

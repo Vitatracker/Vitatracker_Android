@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">MyBAD</string>
+    <string name="app_name" translatable="false">MyBAD</string>
+    <string name="add_med_h">Add a new medicament</string>
+    <string name="add_med_name">Name of medicament</string>
+    <string name="add_med_dose">Dose</string>
+    <string name="add_med_unit">Measurement unit</string>
+    <string name="navigation_back">Back</string>
+    <string name="navigation_next">Next</string>
+    <string name="add_course_h">Choose time</string>
+    <string name="add_course_notifications_quantity">Quantity of notifications per day</string>
+    <string name="add_course_notifications_time">Time of notifications</string>
+    <string name="add_course_date_from">From </string>
+    <string name="add_course_start_time">Start time</string>
+    <string name="add_course_duration">Course duration, days</string>
+    <string name="add_course_comment">Comment</string>
+    <string name="add_next_course_date">Date of next course beginning</string>
+    <string name="add_next_course_remind_before">Remind in, days</string>
+    <string name="navigation_finish">Finish</string>
+    <string name="add_next_course_time">Time of notification</string>
 </resources>
