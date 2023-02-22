@@ -46,6 +46,8 @@ fun NewCourseNav(
                     navController.navigate(NavItem.NextCourse.route)
                     newCourse = it.first
                     newUsages = it.second
+                    Log.w("NCN_", "$newCourse")
+                    Log.w("NCN_", "$newUsages")
                 },
                 onBack = { navController.popBackStack() },
             )
