@@ -59,6 +59,7 @@ fun NewCourseNav(
         }
         composable(NavItem.NextCourse.route) {
             NextCourse(
+                previousEndDate = newCourse.endTime,
                 onNext = { onFinish(Triple(newMed, newCourse, newUsages)) },
                 onBack = { navController.popBackStack() },
             )

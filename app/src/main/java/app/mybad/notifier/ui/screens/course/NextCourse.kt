@@ -16,6 +16,7 @@ import app.mybad.notifier.ui.theme.Typography
 @Preview
 fun NextCourse(
     modifier: Modifier = Modifier,
+    previousEndDate: Long = 1677366000L,
     onBack: () -> Unit = {},
     onNext: () -> Unit = {}
 ) {
@@ -36,7 +37,8 @@ fun NextCourse(
             Spacer(Modifier.height(16.dp))
             DateSelector(
                 label = stringResource(R.string.add_next_course_date),
-                checkActualDate = true
+                checkActualDate = true,
+                previousEndDate = previousEndDate
             ) {}
             Spacer(Modifier.height(16.dp))
             IterationsSelector(label = stringResource(R.string.add_next_course_remind_before)) {}
