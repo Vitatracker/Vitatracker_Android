@@ -69,6 +69,7 @@ fun AddCourse(
                 limit = Int.MAX_VALUE,
                 readOnly = false
             ) {
+                newCourse = newCourse.copy(endTime = newCourse.startDate + it*86400)
                 duration = it
             }
             Spacer(Modifier.height(16.dp))
