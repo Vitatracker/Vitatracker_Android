@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 
 @Composable
-fun StartScreenApp(modifier: Modifier = Modifier) {
+fun StartScreenApp() {
     Box(
-        modifier = modifier,
+        modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        StartScreenBackgroundImage(modifier.fillMaxSize())
+        StartScreenBackgroundImage()
         Column(
-            modifier = modifier,
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -36,20 +36,20 @@ fun StartScreenApp(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun StartScreenBackgroundImage(modifier: Modifier = Modifier) {
+fun StartScreenBackgroundImage() {
     Image(
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen),
         contentDescription = null,
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         alignment = Alignment.TopCenter,
         contentScale = ContentScale.FillWidth
     )
 }
 
 @Composable
-fun StartScreenImage(modifier: Modifier = Modifier) {
+fun StartScreenImage() {
     Image(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(36.dp),
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
@@ -59,15 +59,15 @@ fun StartScreenImage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun StartScreenText(modifier: Modifier = Modifier) {
+fun StartScreenText() {
     Column(
-        modifier = modifier,
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextWelcome(modifier)
-        TextRecommendation(modifier)
-        ButtonStartAuthorization(modifier)
+        TextWelcome(Modifier)
+        TextRecommendation(Modifier)
+        ButtonStartAuthorization(Modifier)
     }
 }
 
@@ -108,7 +108,7 @@ fun TextRecommendation(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Justify, modifier = modifier
         )
         Text(
-            text = stringResource(id = R.string.start_screen_recomendation_1),
+            text = stringResource(id = R.string.start_screen_recomendation_2),
             fontSize = 16.sp,
             textAlign = TextAlign.Justify,
             modifier = modifier

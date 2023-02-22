@@ -11,6 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,15 +19,15 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 
 @Composable
-fun MainAuthorizationScreen(modifier: Modifier = Modifier) {
+fun MainAuthorizationScreen() {
 
     Box(
-        modifier = modifier,
+        modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        AuthorizationScreenBackgroundImage(modifier.fillMaxSize())
+        AuthorizationScreenBackgroundImage()
         Column(
-            modifier = modifier,
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -40,20 +41,20 @@ fun MainAuthorizationScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthorizationScreenBackgroundImage(modifier: Modifier = Modifier) {
+fun AuthorizationScreenBackgroundImage() {
     Image(
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_authorization_screen),
         contentDescription = null,
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         alignment = Alignment.TopCenter,
         contentScale = ContentScale.FillWidth
     )
 }
 
 @Composable
-fun AuthorizationScreenImage(modifier: Modifier = Modifier) {
+fun AuthorizationScreenImage() {
     Image(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(30.dp),
         imageVector = ImageVector.vectorResource(id = R.drawable.ic_man_doctor),
@@ -63,9 +64,9 @@ fun AuthorizationScreenImage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthorizationScreenButtonEntry(modifier: Modifier = Modifier) {
+fun AuthorizationScreenButtonEntry() {
     Column(
-        modifier = modifier,
+        modifier = Modifier,
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -75,9 +76,9 @@ fun AuthorizationScreenButtonEntry(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthorizationScreenButtonLogin(modifier: Modifier = Modifier) {
+fun AuthorizationScreenButtonLogin() {
     Button(
-        modifier = modifier
+        modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth(),
         onClick = { /*TODO*/ },
@@ -86,7 +87,7 @@ fun AuthorizationScreenButtonLogin(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = stringResource(id = R.string.authorization_screen_login),
-            modifier = modifier,
+            modifier = Modifier,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -94,9 +95,9 @@ fun AuthorizationScreenButtonLogin(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthorizationScreenButtonRegistration(modifier: Modifier = Modifier) {
+fun AuthorizationScreenButtonRegistration() {
     ElevatedButton(
-        modifier = modifier
+        modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth(),
         onClick = { /*TODO*/ },
@@ -105,7 +106,7 @@ fun AuthorizationScreenButtonRegistration(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = stringResource(id = R.string.authorization_screen_registration),
-            modifier = modifier,
+            modifier = Modifier,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -113,34 +114,34 @@ fun AuthorizationScreenButtonRegistration(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AuthorizationScreenTextHelp(modifier: Modifier = Modifier) {
+fun AuthorizationScreenTextHelp() {
     Row(
-        modifier = modifier,
+        modifier = Modifier,
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.authorization_screen_text_recomendation),
-            modifier = modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp),
             fontWeight = FontWeight.SemiBold
         )
     }
 }
 
 @Composable
-fun AuthorizationScreenButtonLoginWith(modifier: Modifier = Modifier) {
+fun AuthorizationScreenButtonLoginWith() {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom
     ) {
         AuthorizationScreenButtonLoginWithFacebook(
-            modifier
+            Modifier
                 .weight(0.5f)
                 .padding(start = 10.dp, top = 20.dp, end = 10.dp, bottom = 20.dp)
         )
         AuthorizationScreenButtonLoginWithGoogle(
-            modifier
+            Modifier
                 .weight(0.5f)
                 .padding(start = 10.dp, top = 20.dp, end = 10.dp, bottom = 20.dp)
         )
