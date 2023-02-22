@@ -26,11 +26,11 @@ fun NewCourseNav(
 
     NavHost(
         navController = navController,
-        startDestination = NavItem.AddMed.route,
-        modifier = modifier.fillMaxSize()
+        startDestination = NavItem.AddMed.route
     ) {
         composable(NavItem.AddMed.route) {
             AddMedScreen(
+                modifier = modifier.fillMaxSize(),
                 userId = userId,
                 onNext = {
                     navController.navigate(NavItem.AddCourse.route)
@@ -45,6 +45,7 @@ fun NewCourseNav(
         }
         composable(NavItem.AddCourse.route) {
             AddCourse(
+                modifier = modifier.fillMaxSize(),
                 userId = userId,
                 medId = newMed.id,
                 onNext = {
@@ -59,10 +60,17 @@ fun NewCourseNav(
         }
         composable(NavItem.NextCourse.route) {
             NextCourse(
+                modifier = modifier.fillMaxSize(),
                 previousEndDate = newCourse.endTime,
-                onNext = { onFinish(Triple(newMed, newCourse, newUsages)) },
+                onNext = {
+                    navController.navigate(NavItem.CourseCreated.route)
+                    onFinish(Triple(newMed, newCourse, newUsages))
+                },
                 onBack = { navController.popBackStack() },
             )
+        }
+        composable(NavItem.CourseCreated.route) {
+            CourseCreated { }
         }
     }
 }

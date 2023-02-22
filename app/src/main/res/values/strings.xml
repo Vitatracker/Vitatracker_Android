@@ -33,4 +33,5 @@
 
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
+    <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
 </resources>

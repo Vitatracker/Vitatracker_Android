@@ -30,4 +30,5 @@
     <string name="authorization_screen_login">Логин</string>
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
+    <string name="add_course_congratulations">Ура! Теперь вы не пропустите прием лекарства!</string>
 </resources>
