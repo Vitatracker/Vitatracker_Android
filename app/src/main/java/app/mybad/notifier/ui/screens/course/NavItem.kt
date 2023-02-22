@@ -8,4 +8,5 @@ sealed class NavItem(
     object AddMed : NavItem("add_med")
     object AddCourse : NavItem("add_course")
     object NextCourse : NavItem("Next_course")
+    object CourseCreated : NavItem("Created")
 }

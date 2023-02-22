@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.course
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +25,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
@@ -37,7 +38,7 @@ fun AddMedScreen(
     onNext: (MedDomainModel) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-
+    val context = LocalContext.current
     var newMed by remember { mutableStateOf(MedDomainModel(userId = userId)) }
 
     Column(
@@ -60,9 +61,16 @@ fun AddMedScreen(
             Spacer(Modifier.height(16.dp))
             UnitSelector { newMed = newMed.copy(details = newMed.details.copy(measureUnit = it)) }
         }
+        val unfilledError = stringResource(R.string.add_med_error_unfilled_fields)
         NavigationRow(
             onBack = onBack::invoke,
-            onNext = { onNext(newMed) }
+            onNext = {
+                if(newMed.details.dose == -1 || newMed.name.isNullOrBlank()) {
+                    Toast.makeText(context, unfilledError, Toast.LENGTH_SHORT).show()
+                } else {
+                    onNext(newMed)
+                }
+            }
         )
 
     }

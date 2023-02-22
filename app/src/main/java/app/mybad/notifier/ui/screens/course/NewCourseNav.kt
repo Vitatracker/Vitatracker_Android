@@ -15,7 +15,9 @@ import app.mybad.domain.models.usages.UsagesDomainModel
 fun NewCourseNav(
     modifier: Modifier = Modifier,
     userId: String = "userid",
-    navController: NavHostController
+    navController: NavHostController,
+    onDismiss: () -> Unit = {},
+    onFinish: (Triple<MedDomainModel, CourseDomainModel, UsagesDomainModel>) -> Unit = {},
 ) {
 
     var newMed by remember { mutableStateOf(MedDomainModel()) }
@@ -24,22 +26,26 @@ fun NewCourseNav(
 
     NavHost(
         navController = navController,
-        startDestination = NavItem.AddMed.route,
-        modifier = modifier.fillMaxSize()
+        startDestination = NavItem.AddMed.route
     ) {
         composable(NavItem.AddMed.route) {
             AddMedScreen(
+                modifier = modifier.fillMaxSize(),
                 userId = userId,
                 onNext = {
                     navController.navigate(NavItem.AddCourse.route)
                     newMed = it
                     Log.w("NCN_", "$newMed")
                 },
-                onBack = {  },
+                onBack = {
+                    onDismiss()
+                    navController.popBackStack()
+                },
             )
         }
         composable(NavItem.AddCourse.route) {
             AddCourse(
+                modifier = modifier.fillMaxSize(),
                 userId = userId,
                 medId = newMed.id,
                 onNext = {
@@ -54,9 +60,17 @@ fun NewCourseNav(
         }
         composable(NavItem.NextCourse.route) {
             NextCourse(
-                onNext = {  },
+                modifier = modifier.fillMaxSize(),
+                previousEndDate = newCourse.endTime,
+                onNext = {
+                    navController.navigate(NavItem.CourseCreated.route)
+                    onFinish(Triple(newMed, newCourse, newUsages))
+                },
                 onBack = { navController.popBackStack() },
             )
+        }
+        composable(NavItem.CourseCreated.route) {
+            CourseCreated { }
         }
     }
 }
