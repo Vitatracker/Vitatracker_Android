@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.common
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -27,6 +28,10 @@ fun NavigationRow(
         modifier = modifier.fillMaxWidth()
     ) {
         Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(end=8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = onBack::invoke,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -38,6 +43,10 @@ fun NavigationRow(
             )
         }
         Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = onNext::invoke
         ) {
