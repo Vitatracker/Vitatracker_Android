@@ -15,7 +15,9 @@ import app.mybad.domain.models.usages.UsagesDomainModel
 fun NewCourseNav(
     modifier: Modifier = Modifier,
     userId: String = "userid",
-    navController: NavHostController
+    navController: NavHostController,
+    onDismiss: () -> Unit = {},
+    onFinish: (Triple<MedDomainModel, CourseDomainModel, UsagesDomainModel>) -> Unit = {},
 ) {
 
     var newMed by remember { mutableStateOf(MedDomainModel()) }
@@ -35,7 +37,10 @@ fun NewCourseNav(
                     newMed = it
                     Log.w("NCN_", "$newMed")
                 },
-                onBack = {  },
+                onBack = {
+                    onDismiss()
+                    navController.popBackStack()
+                },
             )
         }
         composable(NavItem.AddCourse.route) {
@@ -54,7 +59,7 @@ fun NewCourseNav(
         }
         composable(NavItem.NextCourse.route) {
             NextCourse(
-                onNext = {  },
+                onNext = { onFinish(Triple(newMed, newCourse, newUsages)) },
                 onBack = { navController.popBackStack() },
             )
         }

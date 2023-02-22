@@ -17,6 +17,7 @@
     <string name="add_next_course_remind_before">Напомнить за, дней</string>
     <string name="navigation_finish">Завершить</string>
     <string name="add_next_course_time">Время напоминания</string>
+    <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Добро пожаловать</string>

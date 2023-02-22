@@ -27,19 +27,17 @@ fun NavigationRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth()
     ) {
-        Button(
+        ElevatedButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(end=8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = onBack::invoke,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Text(
                 text = backLabel,
-                style = Typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                style = Typography.bodyLarge
             )
         }
         Button(

@@ -17,6 +17,7 @@
     <string name="add_next_course_remind_before">Remind in, days</string>
     <string name="navigation_finish">Finish</string>
     <string name="add_next_course_time">Time of notification</string>
+    <string name="add_med_error_unfilled_fields">You should fill all fields</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Welcome</string>
