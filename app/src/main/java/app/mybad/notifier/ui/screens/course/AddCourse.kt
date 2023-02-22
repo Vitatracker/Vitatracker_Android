@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.course
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -69,6 +70,7 @@ fun AddCourse(
                 limit = Int.MAX_VALUE,
                 readOnly = false
             ) {
+                newCourse = newCourse.copy(endTime = newCourse.startDate + it*86400)
                 duration = it
             }
             Spacer(Modifier.height(16.dp))
@@ -86,6 +88,8 @@ fun AddCourse(
                     duration = duration,
                     usagesByDay = newUsagesList
                 )
+                Log.w("ACS_", "$newUsages")
+                Log.w("ACS_", "$newCourse")
                 onNext(Pair(newCourse, newUsages))
             }
         )
