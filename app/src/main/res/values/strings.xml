@@ -17,4 +17,19 @@
     <string name="add_next_course_remind_before">Remind in, days</string>
     <string name="navigation_finish">Finish</string>
     <string name="add_next_course_time">Time of notification</string>
+
+    <!--START SCREEN-->
+    <string name="start_screen_welcome">Welcome</string>
+    <string name="start_screen_to">to </string>
+    <string name="start_screen_recomendation_1">Before using this app, </string>
+    <string name="start_screen_recomendation_2">you must authorization </string>
+    <string name="start_screen_go">Go</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Login</string>
+    <string name="authorization_screen_registration">Registration</string>
+    <string name="authorization_screen_text_recomendation">Sign in with</string>
+
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="google" translatable="false">Google</string>
 </resources>
