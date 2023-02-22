@@ -32,4 +32,16 @@
 
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Sign in</string>
+    <string name="login_email">Login/Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_entered">Entered</string>
+    <string name="login_agree_policy_text">By clicking the "Login" button, you agree to the </string>
+    <string name="login_text_privacy_policy">Privacy Policy</string>
+    <string name="title_activity_login_screen">LoginScreen</string>
+
+
 </resources>

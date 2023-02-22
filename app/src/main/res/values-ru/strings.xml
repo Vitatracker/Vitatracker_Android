@@ -29,4 +29,14 @@
     <string name="authorization_screen_login">Логин</string>
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Вход</string>
+    <string name="login_email">Логин/Электронная почта</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_forgot_password">Забыли пароль?</string>
+    <string name="login_entered">Войти</string>
+    <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
+    <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+
 </resources>
