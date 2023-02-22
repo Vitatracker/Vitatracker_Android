@@ -1,5 +1,6 @@
-package app.mybad.notifier.ui.screens.authorization.login
+package app.mybad.notifier.ui.screens.authorization.registration
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,23 +21,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
+import app.mybad.notifier.ui.screens.authorization.login.*
 
 @Composable
-fun MainLoginScreen() {
+fun MainRegistrationScreen() {
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        LoginScreenBackgroundImage()
+        RegistrationScreenBackgroundImage()
         Column(
             modifier = Modifier
         ) {
-            LoginScreenTopBar()
-            LoginScreenBaseForSignIn()
-            LoginScreenForgotPassword()
-            LoginScreenButtonSignIn()
-            LoginScreenTextPolicy()
+            RegistrationScreenTopBar()
+            RegistrationScreenBaseForSignIn()
+            RegistrationScreenButtonRegistration()
+            Spacer(modifier = Modifier.height(30.dp))
             SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
@@ -44,29 +45,30 @@ fun MainLoginScreen() {
 }
 
 @Composable
-fun LoginScreenBackgroundImage() {
+fun RegistrationScreenBackgroundImage() {
 
 }
 
 @Composable
-fun LoginScreenTopBar() {
+fun RegistrationScreenTopBar() {
 
 }
 
 @Composable
-fun LoginScreenBaseForSignIn() {
+fun RegistrationScreenBaseForSignIn() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoginScreenEnteredEmail()
-        LoginScreenEnteredPassword()
+        RegistrationScreenEnteredEmail()
+        RegistrationScreenEnteredPassword(R.string.login_password)
+        RegistrationScreenEnteredPassword(R.string.login_password_confirm)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenEnteredEmail() {
+fun RegistrationScreenEnteredEmail() {
     var loginState by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -88,7 +90,7 @@ fun LoginScreenEnteredEmail() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenEnteredPassword() {
+fun RegistrationScreenEnteredPassword(textId: Int) {
     var passwordState by remember { mutableStateOf("") }
     val showPassword = remember { mutableStateOf(false) }
 
@@ -100,8 +102,8 @@ fun LoginScreenEnteredPassword() {
             .padding(8.dp),
         enabled = true,
         singleLine = true,
-        label = { Text(text = stringResource(id = R.string.login_password)) },
-        placeholder = { Text(text = stringResource(id = R.string.login_password)) },
+        label = { Text(text = stringResource(id = textId)) },
+        placeholder = { Text(text = stringResource(id = textId)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = Done
@@ -132,44 +134,16 @@ fun LoginScreenEnteredPassword() {
 }
 
 @Composable
-fun LoginScreenForgotPassword() {
-    ClickableText(
-        text = AnnotatedString(stringResource(id = R.string.login_forgot_password)),
-        modifier = Modifier
-            .padding(start = 30.dp, top = 16.dp),
-        onClick = { /*TODO*/ }
-    )
-}
-
-@Composable
-fun LoginScreenButtonSignIn() {
+fun RegistrationScreenButtonRegistration() {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 45.dp, start = 8.dp, end = 8.dp),
+            .padding(top = 30.dp, start = 8.dp, end = 8.dp),
         onClick = { /*TODO*/ },
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {
-        Text(text = stringResource(id = R.string.sign_in))
-    }
-}
-
-@Composable
-fun LoginScreenTextPolicy() {
-    Column(
-        modifier = Modifier.padding(12.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.login_agree_policy_text),
-            modifier = Modifier.padding(top = 40.dp),
-            textAlign = TextAlign.Justify
-        )
-        ClickableText(
-            text = AnnotatedString(stringResource(id = R.string.login_text_privacy_policy)),
-            onClick = { /*TODO*/ },
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        Text(text = stringResource(id = R.string.text_continue))
     }
 }
 

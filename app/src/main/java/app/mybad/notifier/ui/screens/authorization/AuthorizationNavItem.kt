@@ -5,7 +5,9 @@ import app.mybad.notifier.ui.screens.course.NavItem
 sealed class AuthorizationNavItem(
     val route: String
 ) {
-    object authorization : AuthorizationNavItem("Authorization")
-    object login : AuthorizationNavItem("login")
-    object registration : AuthorizationNavItem("registration")
+    object Authorization : AuthorizationNavItem("authorization")
+    object Login : AuthorizationNavItem("login")
+    object Registration : AuthorizationNavItem("registration")
+    object LoginWithFacebook : AuthorizationNavItem("loginWithFacebook")
+    object LoginWithGoogle : AuthorizationNavItem("loginWithGoogle")
 }

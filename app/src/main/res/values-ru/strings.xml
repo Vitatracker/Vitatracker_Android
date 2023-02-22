@@ -17,6 +17,8 @@
     <string name="add_next_course_remind_before">Напомнить за, дней</string>
     <string name="navigation_finish">Завершить</string>
     <string name="add_next_course_time">Время напоминания</string>
+    <string name="add_med_error_unfilled_fields">add_med_error_unfilled_fields</string>
+    <string name="add_course_congratulations">add_course_congratulations</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Добро пожаловать</string>
@@ -30,13 +32,23 @@
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
 
+    <string name="text_continue">Продолжить</string>
+
     <!--LOGIN-->
     <string name="sign_in">Вход</string>
     <string name="login_email">Логин/Электронная почта</string>
     <string name="login_password">Пароль</string>
+    <string name="login_password_confirm">Подверждение пароля</string>
     <string name="login_forgot_password">Забыли пароль?</string>
     <string name="login_entered">Войти</string>
     <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
     <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Не беспокойтесь. Такое случается.</string>
+    <string name="recovery_text_2">пожалуйста введите ваш E-mail,</string>
+    <string name="recovery_text_3">связанный с вашей учетной записью</string>
+
+    <!--NEW PASSWORD-->
 
 </resources>

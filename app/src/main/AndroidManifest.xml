@@ -13,11 +13,6 @@
         android:theme="@style/Theme.MyBAD"
         tools:targetApi="31">
         <activity
-            android:name=".LoginScreen"
-            android:exported="false"
-            android:label="@string/title_activity_login_screen"
-            android:theme="@style/Theme.MyBAD" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
