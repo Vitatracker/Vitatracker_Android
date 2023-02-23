@@ -26,14 +26,14 @@ fun NewCourseNav(
 
     NavHost(
         navController = navController,
-        startDestination = NavItem.AddMed.route
+        startDestination = NavItemCourse.AddMed.route
     ) {
-        composable(NavItem.AddMed.route) {
+        composable(NavItemCourse.AddMed.route) {
             AddMedScreen(
                 modifier = modifier.fillMaxSize(),
                 userId = userId,
                 onNext = {
-                    navController.navigate(NavItem.AddCourse.route)
+                    navController.navigate(NavItemCourse.AddCourse.route)
                     newMed = it
                     Log.w("NCN_", "$newMed")
                 },
@@ -43,13 +43,13 @@ fun NewCourseNav(
                 },
             )
         }
-        composable(NavItem.AddCourse.route) {
+        composable(NavItemCourse.AddCourse.route) {
             AddCourse(
                 modifier = modifier.fillMaxSize(),
                 userId = userId,
                 medId = newMed.id,
                 onNext = {
-                    navController.navigate(NavItem.NextCourse.route)
+                    navController.navigate(NavItemCourse.NextCourse.route)
                     newCourse = it.first
                     newUsages = it.second
                     Log.w("NCN_", "$newCourse")
@@ -58,18 +58,18 @@ fun NewCourseNav(
                 onBack = { navController.popBackStack() },
             )
         }
-        composable(NavItem.NextCourse.route) {
+        composable(NavItemCourse.NextCourse.route) {
             NextCourse(
                 modifier = modifier.fillMaxSize(),
                 previousEndDate = newCourse.endTime,
                 onNext = {
-                    navController.navigate(NavItem.CourseCreated.route)
+                    navController.navigate(NavItemCourse.CourseCreated.route)
                     onFinish(Triple(newMed, newCourse, newUsages))
                 },
                 onBack = { navController.popBackStack() },
             )
         }
-        composable(NavItem.CourseCreated.route) {
+        composable(NavItemCourse.CourseCreated.route) {
             CourseCreated { }
         }
     }

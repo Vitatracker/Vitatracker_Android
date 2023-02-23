@@ -32,6 +32,21 @@
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
 
+    <!--SETTINGS-->
+    <string name="settings_profile">Профиль</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_quit">Выйти</string>
+    <string name="settings_delete_account">Удалить учетную запись</string>
+    <string name="settings_change_password">Изменить пароль</string>
+    <string name="settings_cancel">Отменить</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_current_password">Текущий пароль</string>
+    <string name="settings_new_password">Новый пароль</string>
+    <string name="settings_repeat_new_password">Повторите новый пароль</string>
+    <string name="navigation_settings_main">Настройки</string>
+    <string name="navigation_settings_profile">Профиль</string>
+
     <string name="text_continue">Продолжить</string>
 
     <!--LOGIN-->
@@ -50,5 +65,4 @@
     <string name="recovery_text_3">связанный с вашей учетной записью</string>
 
     <!--NEW PASSWORD-->
-
 </resources>
