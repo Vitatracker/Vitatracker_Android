@@ -17,6 +17,7 @@
     <string name="add_next_course_remind_before">Remind in, days</string>
     <string name="navigation_finish">Finish</string>
     <string name="add_next_course_time">Time of notification</string>
+    
     <string name="add_med_error_unfilled_fields">You should fill all fields</string>
     <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
 
@@ -32,6 +33,27 @@
     <string name="authorization_screen_registration">Registration</string>
     <string name="authorization_screen_text_recomendation">Sign in with</string>
 
+    <!--LOGIN-->
+    <string name="sign_in">Sign in</string>
+    <string name="login_email">Login/Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_password_confirm">Confirm password</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_entered">Entered</string>
+    <string name="login_agree_policy_text">By clicking the Sign in button, you agree to the </string>
+    <string name="login_text_privacy_policy">Privacy Policy</string>
+
+    <!--REGISTRATION-->
+    <string name="text_continue">Continue</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Dont worry. That happens.</string>
+    <string name="recovery_text_2">Please enter your email</string>
+    <string name="recovery_text_3">associated with your account</string>
+
+    <!--NEW PASSWORD-->
+
+    <!--DIFFERENCE-->
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
 
