@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.course.NewCourseNav
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
 import app.mybad.notifier.ui.screens.settings.SettingsNav
@@ -52,7 +53,9 @@ fun MainNav(
                 isOnTopLevel = true
             }
             composable(NavItemMain.Calendar.route) {
-                Text("calendar")
+                CalendarScreen(
+                    modifier = modifier
+                )
                 isOnTopLevel = true
             }
             composable(NavItemMain.Settings.route) {
