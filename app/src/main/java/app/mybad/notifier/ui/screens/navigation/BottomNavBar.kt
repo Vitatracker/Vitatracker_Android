@@ -32,84 +32,88 @@ fun BottomNavBar(
     val backStackEntry = navController?.currentBackStackEntryAsState()
     var selected by remember { mutableStateOf(NavItemMain.Notifications.route) }
 
-    Box(
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Surface(
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 26.dp)
-                .height(80.dp)
+    if(isVisible) {
+        Box(
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 26.dp)
+                    .height(80.dp)
             ) {
-                Spacer(Modifier.width(0.dp))
-                MainNavigationItem(
-                    icon = NavItemMain.Notifications.icon,
-                    isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Notifications.route
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    selected = NavItemMain.Notifications.route
-                    navController?.popBackStack(NavItemMain.Notifications.route, false)
-                    navController?.navigate(selected)
-                }
-                MainNavigationItem(
-                    icon = NavItemMain.Courses.icon,
-                    isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Courses.route
-                ) {
-                    selected = NavItemMain.Courses.route
-                    navController?.popBackStack(NavItemMain.Notifications.route, false)
-                    navController?.navigate(selected)
-                }
-                Spacer(Modifier.width(64.dp))
-                MainNavigationItem(
-                    icon = NavItemMain.Calendar.icon,
-                    isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Calendar.route
-                ) {
-                    selected = NavItemMain.Calendar.route
-                    navController?.popBackStack(NavItemMain.Notifications.route, false)
-                    navController?.navigate(selected)
-                }
-                MainNavigationItem(
-                    icon = NavItemMain.Settings.icon,
-                    isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Settings.route
-                ) {
-                    selected = NavItemMain.Settings.route
-                    navController?.popBackStack(NavItemMain.Notifications.route, false)
-                    navController?.navigate(selected)
-                }
-                Spacer(Modifier.width(0.dp))
-            }
-        }
-        Surface(
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shape = CircleShape,
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .size(84.dp)
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape,
-                    shadowElevation = 2.dp,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clickable {
-                            selected = NavItemMain.Add.route
-                            navController?.popBackStack(NavItemMain.Notifications.route, false)
-                            navController?.navigate(selected)
-                        }
-                ) {
-                    Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)
+                    Spacer(Modifier.width(0.dp))
+                    MainNavigationItem(
+                        icon = NavItemMain.Notifications.icon,
+                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Notifications.route
+                    ) {
+                        selected = NavItemMain.Notifications.route
+                        navController?.popBackStack(NavItemMain.Notifications.route, false)
+                        navController?.navigate(selected)
+                    }
+                    MainNavigationItem(
+                        icon = NavItemMain.Courses.icon,
+                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Courses.route
+                    ) {
+                        selected = NavItemMain.Courses.route
+                        navController?.popBackStack(NavItemMain.Notifications.route, false)
+                        navController?.navigate(selected)
+                    }
+                    Spacer(Modifier.width(64.dp))
+                    MainNavigationItem(
+                        icon = NavItemMain.Calendar.icon,
+                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Calendar.route
+                    ) {
+                        selected = NavItemMain.Calendar.route
+                        navController?.popBackStack(NavItemMain.Notifications.route, false)
+                        navController?.navigate(selected)
+                    }
+                    MainNavigationItem(
+                        icon = NavItemMain.Settings.icon,
+                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Settings.route
+                    ) {
+                        selected = NavItemMain.Settings.route
+                        navController?.popBackStack(NavItemMain.Notifications.route, false)
+                        navController?.navigate(selected)
+                    }
+                    Spacer(Modifier.width(0.dp))
                 }
             }
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .size(84.dp)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape,
+                        shadowElevation = 2.dp,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clickable {
+                                selected = NavItemMain.Add.route
+                                navController?.popBackStack(NavItemMain.Notifications.route, false)
+                                navController?.navigate(selected)
+                            }
+                    ) {
+                        Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)
+                    }
+                }
+            }
         }
+    } else {
+        Spacer(Modifier.height(16.dp))
     }
 }
 
@@ -151,13 +155,15 @@ private fun MainNavigationItem(
             painter = painterResource(icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(32.dp).alpha(iconAlpha).padding(bottom = 4.dp)
+            modifier = Modifier
+                .size(32.dp)
+                .alpha(iconAlpha)
+                .padding(bottom = 4.dp)
         )
         Surface(
             shape = CircleShape,
             modifier = Modifier.size(5.dp),
             color = indicatorColor
         ) { }
-
     }
 }

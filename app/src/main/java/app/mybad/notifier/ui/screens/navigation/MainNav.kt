@@ -29,13 +29,15 @@ fun MainNav(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar = { BottomNavBar(
-            navController = navController,
-            isVisible = isOnTopLevel
-        ) }
+        bottomBar = {
+            BottomNavBar(
+                navController = navController,
+                isVisible = isOnTopLevel
+            )
+        }
     ) {
         NavHost(
-            modifier = modifier.padding(it),
+            modifier = Modifier.padding(it),
             navController = navController,
             startDestination = NavItemMain.Notifications.route
         ) {
@@ -54,22 +56,23 @@ fun MainNav(
             composable(NavItemMain.Settings.route) {
                 val settingsNavController = rememberNavController()
                 val sncDest = settingsNavController.currentBackStackEntryAsState()
+                isOnTopLevel = sncDest.value?.destination?.route == NavItemSettings.Navigation.route
                 SettingsNav(
+                    modifier = modifier,
                     navController = settingsNavController,
                     userModel = userModel
                 )
-                isOnTopLevel = sncDest.value?.destination?.route == NavItemSettings.Navigation.route
             }
             composable(NavItemMain.Add.route) {
                 val settingsNavController = rememberNavController()
-                val sncDest = settingsNavController.currentBackStackEntryAsState()
+                isOnTopLevel = false
                 NewCourseNav(
+                    modifier = modifier,
                     userId = userModel.id,
                     navController = settingsNavController,
                     onDismiss = { navController.popBackStack() },
                     onFinish = { }
                 )
-                isOnTopLevel = sncDest.value?.destination?.route == NavItemSettings.Navigation.route
             }
         }
     }

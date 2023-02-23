@@ -30,11 +30,6 @@ fun NextCourse(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = stringResource(id = R.string.add_course_h),
-                style = Typography.headlineLarge
-            )
-            Spacer(Modifier.height(16.dp))
             DateSelector(
                 label = stringResource(R.string.add_next_course_date),
                 checkActualDate = true,

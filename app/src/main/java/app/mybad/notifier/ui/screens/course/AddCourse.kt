@@ -45,11 +45,6 @@ fun AddCourse(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = stringResource(id = R.string.add_course_h),
-                style = Typography.headlineLarge
-            )
-            Spacer(Modifier.height(16.dp))
             IterationsSelector(
                 label = stringResource(R.string.add_course_notifications_quantity)
             ) { timesPerDay = it }

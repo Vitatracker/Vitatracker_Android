@@ -50,11 +50,6 @@ fun AddMedScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = stringResource(id = R.string.add_med_h),
-                style = Typography.headlineLarge
-            )
-            Spacer(Modifier.height(16.dp))
             NameInput { newMed = newMed.copy(name = it)}
             Spacer(Modifier.height(16.dp))
             DoseInput { newMed = newMed.copy(details = newMed.details.copy(dose = it.toIntOrNull() ?: 0)) }
