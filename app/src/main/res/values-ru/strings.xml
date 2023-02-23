@@ -72,4 +72,8 @@
     <string name="navigation_notifications">Уведомления</string>
     <string name="navigation_calendar">Календарь</string>
     <string name="add_course_finish">Great!</string>
+
+    <string name="my_course_h">Мои курсы</string>
+    <string name="mycourse_duration">Duration</string>
+    <string name="mycourse_interval">Interval</string>
 </resources>

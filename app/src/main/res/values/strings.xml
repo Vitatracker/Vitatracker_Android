@@ -78,4 +78,7 @@
     <string name="navigation_notifications">Notifications</string>
     <string name="navigation_calendar">Calendar</string>
     <string name="add_course_finish">Great!</string>
+    <string name="my_course_h">My courses</string>
+    <string name="mycourse_duration">Duration</string>
+    <string name="mycourse_interval">Interval</string>
 </resources>
