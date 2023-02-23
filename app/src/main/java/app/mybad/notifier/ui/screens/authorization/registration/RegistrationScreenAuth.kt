@@ -1,10 +1,9 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -13,18 +12,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.login.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainRegistrationScreen() {
+fun StartMainRegistrationScreen(navController: NavHostController) {
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        content = { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            ) {
+                MainRegistrationScreen(navController = navController)
+            }
+        })
+
+}
+
+@Composable
+fun MainRegistrationScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -34,7 +62,6 @@ fun MainRegistrationScreen() {
         Column(
             modifier = Modifier
         ) {
-            RegistrationScreenTopBar()
             RegistrationScreenBaseForSignIn()
             RegistrationScreenButtonRegistration()
             Spacer(modifier = Modifier.height(30.dp))
@@ -46,11 +73,6 @@ fun MainRegistrationScreen() {
 
 @Composable
 fun RegistrationScreenBackgroundImage() {
-
-}
-
-@Composable
-fun RegistrationScreenTopBar() {
 
 }
 
@@ -139,7 +161,7 @@ fun RegistrationScreenButtonRegistration() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 30.dp, start = 8.dp, end = 8.dp),
-        onClick = { /*TODO*/ },
+        onClick = {  },
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {

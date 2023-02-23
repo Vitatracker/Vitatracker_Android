@@ -2,10 +2,9 @@ package app.mybad.notifier.ui.screens.authorization.passwords
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,11 +13,42 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainRecoveryPasswordScreenAuth() {
+fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        content = { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            ) {
+                MainRecoveryPasswordScreenAuth(navController = navController)
+            }
+        })
+
+}
+
+@Composable
+fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -28,7 +58,6 @@ fun MainRecoveryPasswordScreenAuth() {
         Column(
             modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RecoveryPasswordScreenTopBar()
             RecoveryPasswordScreenTextUser()
             Spacer(modifier = Modifier.height(15.dp))
             RecoveryPasswordScreenTextEmail()
@@ -40,11 +69,6 @@ fun MainRecoveryPasswordScreenAuth() {
 
 @Composable
 fun RecoveryPasswordScreenBackgroundImage() {
-
-}
-
-@Composable
-fun RecoveryPasswordScreenTopBar() {
 
 }
 

@@ -78,7 +78,7 @@ fun AuthorizationScreenButtonLogin() {
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth(),
-        onClick = { /*TODO*/ },
+        onClick = {  },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -97,7 +97,7 @@ fun AuthorizationScreenButtonRegistration() {
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth(),
-        onClick = { /*TODO*/ },
+        onClick = {  },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -113,5 +113,5 @@ fun AuthorizationScreenButtonRegistration() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
-    MainAuthorizationScreen()
+//    MainAuthorizationScreen()
 }

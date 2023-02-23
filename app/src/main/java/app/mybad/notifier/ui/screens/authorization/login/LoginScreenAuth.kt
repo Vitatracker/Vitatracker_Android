@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -18,8 +19,39 @@ import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StartMainLoginScreen(navController: NavHostController) {
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                    }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        content = { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            ) {
+                MainLoginScreen()
+            }
+        })
+
+}
 
 @Composable
 fun MainLoginScreen() {
@@ -32,7 +64,6 @@ fun MainLoginScreen() {
         Column(
             modifier = Modifier
         ) {
-            LoginScreenTopBar()
             LoginScreenBaseForSignIn()
             LoginScreenForgotPassword()
             LoginScreenButtonSignIn()
@@ -46,10 +77,7 @@ fun MainLoginScreen() {
 @Composable
 fun LoginScreenBackgroundImage() {
 
-}
 
-@Composable
-fun LoginScreenTopBar() {
 
 }
 

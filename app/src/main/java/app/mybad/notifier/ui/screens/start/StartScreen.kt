@@ -15,10 +15,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartScreenApp() {
+fun StartScreenApp(navController: NavHostController) {
+    Scaffold(
+        content = { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding)
+            ) {
+                StartWelcomeScreen()
+            }
+        })
+}
+
+@Composable
+fun StartWelcomeScreen() {
     Box(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
@@ -148,5 +164,5 @@ fun ButtonStartAuthorization(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    StartScreenApp()
+//    StartScreenApp()
 }
