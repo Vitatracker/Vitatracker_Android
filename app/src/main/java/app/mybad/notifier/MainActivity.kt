@@ -1,8 +1,10 @@
 package app.mybad.notifier
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -13,15 +15,17 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             MyBADTheme {
-                MainNav(
-                    navController = navController,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+//                MainNav(
+//                    navController = navController,
+//                    modifier = Modifier.padding(horizontal = 16.dp)
+//                )
+                StartMainScreen(navController = navController)
             }
         }
     }
