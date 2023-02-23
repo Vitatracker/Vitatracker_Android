@@ -82,16 +82,16 @@ fun SettingsNav(
                 title = stringResource(NavItemSettings.ProfileEdit.stringId)
                 SettingsProfileEdit(
                     userModel = userModel,
-                    onSave = { navController.navigate(NavItemSettings.Profile.route) },
-                    onDismiss = { navController.navigate(NavItemSettings.Profile.route) },
+                    onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) },
                 )
             }
             composable(NavItemSettings.PasswordChange.route) {
                 title = stringResource(NavItemSettings.PasswordChange.stringId)
                 SettingsPasswordEdit(
                     userModel = userModel,
-                    onSave = { navController.navigate(NavItemSettings.Profile.route) },
-                    onDismiss = { navController.navigate(NavItemSettings.Profile.route) },
+                    onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) },
                 )
             }
             composable(NavItemSettings.Notifications.route) {

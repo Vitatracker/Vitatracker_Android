@@ -65,4 +65,10 @@
     <string name="recovery_text_3">связанный с вашей учетной записью</string>
 
     <!--NEW PASSWORD-->
+
+    <!--NAVIGATION MAIN-->
+    <string name="navigation_courses">Курсы</string>
+    <string name="navigation_add">Добавить</string>
+    <string name="navigation_notifications">Уведомления</string>
+    <string name="navigation_calendar">Календарь</string>
 </resources>

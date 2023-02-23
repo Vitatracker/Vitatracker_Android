@@ -69,6 +69,12 @@
     <string name="settings_current_password">Current password</string>
     <string name="settings_new_password">New password</string>
     <string name="settings_repeat_new_password">Repeat new password</string>
+
+    <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
     <string name="navigation_settings_profile">Profile</string>
+    <string name="navigation_courses">Courses</string>
+    <string name="navigation_add">Add new</string>
+    <string name="navigation_notifications">Notifications</string>
+    <string name="navigation_calendar">Calendar</string>
 </resources>
