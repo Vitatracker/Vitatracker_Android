@@ -17,7 +17,8 @@
     <string name="add_next_course_remind_before">Напомнить за, дней</string>
     <string name="navigation_finish">Завершить</string>
     <string name="add_next_course_time">Время напоминания</string>
-    <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
+    <string name="add_med_error_unfilled_fields">add_med_error_unfilled_fields</string>
+    <string name="add_course_congratulations">add_course_congratulations</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Добро пожаловать</string>
@@ -30,5 +31,38 @@
     <string name="authorization_screen_login">Логин</string>
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
-    <string name="add_course_congratulations">Ура! Теперь вы не пропустите прием лекарства!</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Профиль</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_quit">Выйти</string>
+    <string name="settings_delete_account">Удалить учетную запись</string>
+    <string name="settings_change_password">Изменить пароль</string>
+    <string name="settings_cancel">Отменить</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_current_password">Текущий пароль</string>
+    <string name="settings_new_password">Новый пароль</string>
+    <string name="settings_repeat_new_password">Повторите новый пароль</string>
+    <string name="navigation_settings_main">Настройки</string>
+    <string name="navigation_settings_profile">Профиль</string>
+
+    <string name="text_continue">Продолжить</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Вход</string>
+    <string name="login_email">Логин/Электронная почта</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_password_confirm">Подверждение пароля</string>
+    <string name="login_forgot_password">Забыли пароль?</string>
+    <string name="login_entered">Войти</string>
+    <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
+    <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Не беспокойтесь. Такое случается.</string>
+    <string name="recovery_text_2">пожалуйста введите ваш E-mail,</string>
+    <string name="recovery_text_3">связанный с вашей учетной записью</string>
+
+    <!--NEW PASSWORD-->
 </resources>

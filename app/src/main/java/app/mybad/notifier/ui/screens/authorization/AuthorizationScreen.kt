@@ -8,18 +8,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @Composable
-fun MainAuthorizationScreen() {
+fun MainAuthorizationScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier,
@@ -32,9 +33,8 @@ fun MainAuthorizationScreen() {
             verticalArrangement = Arrangement.Bottom
         ) {
             AuthorizationScreenImage()
-            AuthorizationScreenButtonEntry()
-            AuthorizationScreenTextHelp()
-            AuthorizationScreenButtonLoginWith()
+            AuthorizationScreenButtonEntry(navController = navController)
+            SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
 
@@ -64,24 +64,24 @@ fun AuthorizationScreenImage() {
 }
 
 @Composable
-fun AuthorizationScreenButtonEntry() {
+fun AuthorizationScreenButtonEntry(navController: NavHostController) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AuthorizationScreenButtonLogin()
-        AuthorizationScreenButtonRegistration()
+        AuthorizationScreenButtonLogin(navController = navController)
+        AuthorizationScreenButtonRegistration(navController = navController)
     }
 }
 
 @Composable
-fun AuthorizationScreenButtonLogin() {
+fun AuthorizationScreenButtonLogin(navController: NavHostController) {
     Button(
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth(),
-        onClick = { /*TODO*/ },
+        onClick = { navController.navigate(route = AuthorizationNavItem.Login.route) },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -95,12 +95,12 @@ fun AuthorizationScreenButtonLogin() {
 }
 
 @Composable
-fun AuthorizationScreenButtonRegistration() {
+fun AuthorizationScreenButtonRegistration(navController: NavHostController) {
     ElevatedButton(
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth(),
-        onClick = { /*TODO*/ },
+        onClick = { navController.navigate(route = AuthorizationNavItem.Registration.route) },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -113,79 +113,8 @@ fun AuthorizationScreenButtonRegistration() {
     }
 }
 
-@Composable
-fun AuthorizationScreenTextHelp() {
-    Row(
-        modifier = Modifier,
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.authorization_screen_text_recomendation),
-            modifier = Modifier.padding(top = 16.dp),
-            fontWeight = FontWeight.SemiBold
-        )
-    }
-}
-
-@Composable
-fun AuthorizationScreenButtonLoginWith() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        AuthorizationScreenButtonLoginWithFacebook(
-            Modifier
-                .weight(0.5f)
-                .padding(start = 10.dp, top = 20.dp, end = 10.dp, bottom = 20.dp)
-        )
-        AuthorizationScreenButtonLoginWithGoogle(
-            Modifier
-                .weight(0.5f)
-                .padding(start = 10.dp, top = 20.dp, end = 10.dp, bottom = 20.dp)
-        )
-    }
-}
-
-@Composable
-fun AuthorizationScreenButtonLoginWithFacebook(modifier: Modifier = Modifier) {
-    ElevatedButton(
-        modifier = modifier,
-        onClick = { /*TODO*/ },
-        contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
-        shape = MaterialTheme.shapes.small
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.icon_email),
-            contentDescription = stringResource(id = R.string.facebook),
-            modifier = Modifier.size(ButtonDefaults.IconSize)
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSize))
-        Text(text = stringResource(id = R.string.facebook))
-    }
-}
-
-@Composable
-fun AuthorizationScreenButtonLoginWithGoogle(modifier: Modifier = Modifier) {
-    ElevatedButton(
-        modifier = modifier,
-        onClick = { /*TODO*/ },
-        contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
-        shape = MaterialTheme.shapes.small
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.icon_google),
-            contentDescription = stringResource(id = R.string.google),
-            modifier = Modifier.size(ButtonDefaults.IconSize)
-        )
-        Spacer(Modifier.size(ButtonDefaults.IconSize))
-        Text(text = stringResource(id = R.string.google))
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
-    MainAuthorizationScreen()
+//    MainAuthorizationScreen()
 }

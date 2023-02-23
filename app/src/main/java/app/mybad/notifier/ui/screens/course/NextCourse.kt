@@ -50,7 +50,7 @@ fun NextCourse(
             Spacer(Modifier.height(4.dp))
             TimeSelector(initTime = 32400) {}
             Spacer(Modifier.height(16.dp))
-            CommentInput(label = stringResource(R.string.add_course_comment)) {}
+            TextInput(label = stringResource(R.string.add_course_comment)) {}
         }
         NavigationRow(
             nextLabel = stringResource(R.string.navigation_finish),

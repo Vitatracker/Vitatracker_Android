@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.course.NewCourseNav
+import app.mybad.notifier.ui.screens.settings.SettingsNav
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationScreenNavHost
 import app.mybad.notifier.ui.theme.MyBADTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,9 +20,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             MyBADTheme {
-                NewCourseNav(
-                    modifier = Modifier.padding(16.dp),
-                    navController = navController
+                SettingsNav(
+                    navController = navController,
+                    modifier = Modifier.padding(16.dp)
                 )
             }
         }

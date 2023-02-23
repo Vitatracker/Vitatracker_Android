@@ -11,16 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentInput(
+fun TextInput(
     modifier: Modifier = Modifier,
     label: String,
     onChange: (String) -> Unit
@@ -39,7 +37,7 @@ fun CommentInput(
         Spacer(Modifier.height(4.dp))
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(R.string.add_course_comment)) },
+            placeholder = { Text(label) },
             value = value,
             onValueChange = {
                 onChange(it)
