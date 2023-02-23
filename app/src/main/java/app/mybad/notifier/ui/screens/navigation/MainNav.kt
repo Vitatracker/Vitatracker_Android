@@ -57,7 +57,8 @@ fun MainNav(
                 SettingsNav(
                     modifier = modifier,
                     navController = settingsNavController,
-                    userModel = userModel
+                    userModel = userModel,
+                    onDismiss = { navController.popBackStack() }
                 )
             }
             composable(NavItemMain.Add.route) {

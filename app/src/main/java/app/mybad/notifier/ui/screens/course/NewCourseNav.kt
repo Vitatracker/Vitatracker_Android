@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.course
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -24,7 +25,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
-import app.mybad.notifier.ui.screens.settings.NavItemSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +41,7 @@ fun NewCourseNav(
     var newUsages by remember { mutableStateOf(UsagesDomainModel()) }
     var title by remember { mutableStateOf("") }
     val currentDest = navController.currentBackStackEntryAsState()
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,7 +61,10 @@ fun NewCourseNav(
                     Icon(
                         imageVector = Icons.Default.ArrowBack, contentDescription = null,
                         modifier = Modifier
-                            .clickable {
+                            .clickable(
+                                indication = null,
+                                interactionSource = MutableInteractionSource()
+                            ) {
                                 if(navController.currentDestination?.route == NavItemCourse.AddMed.route) onDismiss()
                                 navController.popBackStack()
                             }

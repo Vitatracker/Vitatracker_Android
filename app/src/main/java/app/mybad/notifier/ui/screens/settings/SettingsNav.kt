@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.notifier.ui.screens.course.NavItemCourse
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
@@ -29,6 +31,7 @@ fun SettingsNav(
     modifier: Modifier = Modifier,
     userModel: UserDomainModel = UserDomainModel(),
     navController: NavHostController,
+    onDismiss: () -> Unit = {  }
 ) {
 
     var title by remember { mutableStateOf("") }
@@ -50,7 +53,13 @@ fun SettingsNav(
                 Icon(
                     imageVector = Icons.Default.ArrowBack, contentDescription = null,
                     modifier = Modifier
-                        .clickable { navController.popBackStack() }
+                        .clickable(
+                            indication = null,
+                            interactionSource = MutableInteractionSource()
+                        ) {
+                            if(navController.currentDestination?.route == NavItemSettings.Navigation.route) onDismiss()
+                            navController.popBackStack()
+                        }
                         .clip(CircleShape)
                 )
             },
