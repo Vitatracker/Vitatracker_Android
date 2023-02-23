@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,8 +33,7 @@ fun StartMainLoginScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
-                    IconButton(onClick = {
-                    }) {
+                    IconButton(onClick = { navController.navigate(route = AuthorizationNavItem.Authorization.route) }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
                 },
@@ -47,14 +47,14 @@ fun StartMainLoginScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainLoginScreen()
+                MainLoginScreen(navController = navController)
             }
         })
 
 }
 
 @Composable
-fun MainLoginScreen() {
+fun MainLoginScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +65,7 @@ fun MainLoginScreen() {
             modifier = Modifier
         ) {
             LoginScreenBaseForSignIn()
-            LoginScreenForgotPassword()
+            LoginScreenForgotPassword(navController = navController)
             LoginScreenButtonSignIn()
             LoginScreenTextPolicy()
             SurfaceSignInWith(onClick = { /*TODO*/ })
@@ -76,7 +76,6 @@ fun MainLoginScreen() {
 
 @Composable
 fun LoginScreenBackgroundImage() {
-
 
 
 }
@@ -160,12 +159,12 @@ fun LoginScreenEnteredPassword() {
 }
 
 @Composable
-fun LoginScreenForgotPassword() {
+fun LoginScreenForgotPassword(navController: NavHostController) {
     ClickableText(
         text = AnnotatedString(stringResource(id = R.string.login_forgot_password)),
         modifier = Modifier
             .padding(start = 30.dp, top = 16.dp),
-        onClick = { /*TODO*/ }
+        onClick = { navController.navigate(route = AuthorizationNavItem.RecoveryPassword.route) }
     )
 }
 

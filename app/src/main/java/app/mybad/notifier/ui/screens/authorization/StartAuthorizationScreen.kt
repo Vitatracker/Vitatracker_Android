@@ -20,7 +20,7 @@ fun StartAuthorizationScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainAuthorizationScreen()
+                MainAuthorizationScreen(navController)
             }
         })
 

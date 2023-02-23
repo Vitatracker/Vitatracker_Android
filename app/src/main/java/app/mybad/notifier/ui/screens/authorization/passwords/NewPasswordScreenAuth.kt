@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +33,7 @@ fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
                     IconButton(onClick = {
+                        navController.navigate(route = AuthorizationNavItem.RecoveryPassword.route)
                     }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
@@ -65,7 +67,7 @@ fun MainNewPasswordScreenAuth(navController: NavHostController) {
         ) {
             NewPasswordScreenEnteredPassword(R.string.login_password)
             NewPasswordScreenEnteredPassword(R.string.login_password_confirm)
-            ReUseButtonContinue(textId = R.string.text_continue) { /*TODO*/ }
+            ReUseButtonContinue(textId = R.string.text_continue) { navController.navigate(route = AuthorizationNavItem.Authorization.route) }
         }
     }
 

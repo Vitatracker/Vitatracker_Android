@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,13 +29,13 @@ fun StartScreenApp(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                StartWelcomeScreen()
+                StartWelcomeScreen(navController = navController)
             }
         })
 }
 
 @Composable
-fun StartWelcomeScreen() {
+fun StartWelcomeScreen(navController: NavHostController) {
     Box(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
@@ -46,7 +47,7 @@ fun StartWelcomeScreen() {
             verticalArrangement = Arrangement.Center
         ) {
             StartScreenImage()
-            StartScreenText()
+            StartScreenText(navController = navController)
         }
     }
 }
@@ -75,7 +76,7 @@ fun StartScreenImage() {
 }
 
 @Composable
-fun StartScreenText() {
+fun StartScreenText(navController: NavHostController) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +84,7 @@ fun StartScreenText() {
     ) {
         TextWelcome(Modifier)
         TextRecommendation(Modifier)
-        ButtonStartAuthorization(Modifier)
+        ButtonStartAuthorization(Modifier, navController = navController)
     }
 }
 
@@ -133,7 +134,7 @@ fun TextRecommendation(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonStartAuthorization(modifier: Modifier = Modifier) {
+fun ButtonStartAuthorization(modifier: Modifier = Modifier, navController: NavHostController) {
 //    val mContext = LocalContext.current
 
     Button(
@@ -141,13 +142,7 @@ fun ButtonStartAuthorization(modifier: Modifier = Modifier) {
             .padding(top = 16.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth(),
         onClick = {
-
-//            mContext.startActivity(
-//                Intent(
-//                    mContext,
-//                    AuthorizationScreen::class.java
-//                )
-//            )
+            navController.navigate(route = AuthorizationNavItem.RecoveryPassword.route)
         },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp)

@@ -9,4 +9,6 @@ sealed class AuthorizationNavItem(
     object Registration : AuthorizationNavItem("registration")
     object LoginWithFacebook : AuthorizationNavItem("loginWithFacebook")
     object LoginWithGoogle : AuthorizationNavItem("loginWithGoogle")
+    object RecoveryPassword : AuthorizationNavItem("recoveryPassword")
+    object NewPassword : AuthorizationNavItem("newPassword")
 }

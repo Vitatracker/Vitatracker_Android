@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
 
 @Composable
 fun ReUseButtonContinue(textId: Int, onClick: () -> Unit) {

@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
+import app.mybad.notifier.ui.screens.authorization.passwords.StartMainNewPasswordScreenAuth
+import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPasswordScreenAuth
 import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistrationScreen
 import app.mybad.notifier.ui.screens.start.StartScreenApp
 
@@ -34,6 +36,12 @@ fun AuthorizationScreenNavHost() {
             }
             composable(route = AuthorizationNavItem.Registration.route) {
                 StartMainRegistrationScreen(navController = navController)
+            }
+            composable(route = AuthorizationNavItem.RecoveryPassword.route) {
+                StartMainRecoveryPasswordScreenAuth(navController = navController)
+            }
+            composable(route = AuthorizationNavItem.NewPassword.route) {
+                StartMainNewPasswordScreenAuth(navController = navController)
             }
         }
     }

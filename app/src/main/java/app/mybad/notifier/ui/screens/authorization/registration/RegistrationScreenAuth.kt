@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,8 +31,8 @@ fun StartMainRegistrationScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
-                    IconButton(onClick = {
-                    }) {
+                    IconButton(onClick = { navController.navigate(route = AuthorizationNavItem.Authorization.route) }
+                    ) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
                 },
@@ -161,7 +162,7 @@ fun RegistrationScreenButtonRegistration() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 30.dp, start = 8.dp, end = 8.dp),
-        onClick = {  },
+        onClick = { },
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {

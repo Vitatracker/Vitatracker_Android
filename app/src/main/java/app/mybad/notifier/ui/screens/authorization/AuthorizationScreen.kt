@@ -14,10 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @Composable
-fun MainAuthorizationScreen() {
+fun MainAuthorizationScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier,
@@ -30,7 +33,7 @@ fun MainAuthorizationScreen() {
             verticalArrangement = Arrangement.Bottom
         ) {
             AuthorizationScreenImage()
-            AuthorizationScreenButtonEntry()
+            AuthorizationScreenButtonEntry(navController = navController)
             SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
@@ -61,24 +64,24 @@ fun AuthorizationScreenImage() {
 }
 
 @Composable
-fun AuthorizationScreenButtonEntry() {
+fun AuthorizationScreenButtonEntry(navController: NavHostController) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AuthorizationScreenButtonLogin()
-        AuthorizationScreenButtonRegistration()
+        AuthorizationScreenButtonLogin(navController = navController)
+        AuthorizationScreenButtonRegistration(navController = navController)
     }
 }
 
 @Composable
-fun AuthorizationScreenButtonLogin() {
+fun AuthorizationScreenButtonLogin(navController: NavHostController) {
     Button(
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .fillMaxWidth(),
-        onClick = {  },
+        onClick = { navController.navigate(route = AuthorizationNavItem.Login.route) },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -92,12 +95,12 @@ fun AuthorizationScreenButtonLogin() {
 }
 
 @Composable
-fun AuthorizationScreenButtonRegistration() {
+fun AuthorizationScreenButtonRegistration(navController: NavHostController) {
     ElevatedButton(
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
             .fillMaxWidth(),
-        onClick = {  },
+        onClick = { navController.navigate(route = AuthorizationNavItem.Registration.route) },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
