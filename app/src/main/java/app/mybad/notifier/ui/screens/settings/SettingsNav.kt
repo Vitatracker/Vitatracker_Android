@@ -18,7 +18,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.domain.models.user.UserDomainModel
-import app.mybad.notifier.ui.screens.course.NavItemCourse
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
