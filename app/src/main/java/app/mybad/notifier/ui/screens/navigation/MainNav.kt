@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.course.NewCourseNav
+import app.mybad.notifier.ui.screens.mycourses.MyCourses
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +45,10 @@ fun MainNav(
                 isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
-                Text("courses")
+                MyCourses(
+                    modifier = modifier,
+                    onDismiss = { navController.popBackStack() }
+                )
                 isOnTopLevel = true
             }
             composable(NavItemMain.Calendar.route) {
