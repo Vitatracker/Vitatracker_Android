@@ -21,11 +21,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             MyBADTheme {
-//                MainNav(
-//                    navController = navController,
-//                    modifier = Modifier.padding(horizontal = 16.dp)
-//                )
-                StartMainScreen(navController = navController)
+                MainNav(
+                    navController = navController,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
             }
         }
     }

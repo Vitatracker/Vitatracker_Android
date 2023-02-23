@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.notifier.StartMainScreen
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.course.NewCourseNav
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
@@ -42,7 +43,7 @@ fun MainNav(
             startDestination = NavItemMain.Notifications.route
         ) {
             composable(NavItemMain.Notifications.route) {
-                Text("notifications")
+                StartMainScreen(navController = navController)
                 isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
