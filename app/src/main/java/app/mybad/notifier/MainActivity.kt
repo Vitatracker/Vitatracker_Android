@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             MyBADTheme {
                 MainNav(
                     navController = navController,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }

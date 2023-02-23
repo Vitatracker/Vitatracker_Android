@@ -1,11 +1,9 @@
 package app.mybad.notifier.ui.screens.navigation
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,7 +48,6 @@ fun BottomNavBar(
             ) {
                 Spacer(Modifier.width(0.dp))
                 MainNavigationItem(
-                    label = NavItemMain.Notifications.label,
                     icon = NavItemMain.Notifications.icon,
                     isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Notifications.route
                 ) {
@@ -58,7 +56,6 @@ fun BottomNavBar(
                     navController?.navigate(selected)
                 }
                 MainNavigationItem(
-                    label = NavItemMain.Courses.label,
                     icon = NavItemMain.Courses.icon,
                     isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Courses.route
                 ) {
@@ -68,7 +65,6 @@ fun BottomNavBar(
                 }
                 Spacer(Modifier.width(64.dp))
                 MainNavigationItem(
-                    label = NavItemMain.Calendar.label,
                     icon = NavItemMain.Calendar.icon,
                     isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Calendar.route
                 ) {
@@ -77,7 +73,6 @@ fun BottomNavBar(
                     navController?.navigate(selected)
                 }
                 MainNavigationItem(
-                    label = NavItemMain.Settings.label,
                     icon = NavItemMain.Settings.icon,
                     isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Settings.route
                 ) {
@@ -121,14 +116,21 @@ fun BottomNavBar(
 @Composable
 private fun MainNavigationItem(
     modifier: Modifier = Modifier,
-    @StringRes label: Int,
     @DrawableRes icon: Int,
     isSelected: Boolean = false,
     onSelect: () -> Unit,
 ) {
 
-    val color by animateColorAsState(
+    val indicatorColor by animateColorAsState(
         targetValue = if(isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        animationSpec = tween(
+            durationMillis = 300,
+            delayMillis = 40,
+            easing = LinearOutSlowInEasing
+        )
+    )
+    val iconAlpha by animateFloatAsState(
+        targetValue = if(isSelected) 1f else 0.5f,
         animationSpec = tween(
             durationMillis = 300,
             delayMillis = 40,
@@ -149,13 +151,12 @@ private fun MainNavigationItem(
             painter = painterResource(icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(32.dp).alpha(iconAlpha).padding(bottom = 4.dp)
         )
-
         Surface(
             shape = CircleShape,
             modifier = Modifier.size(5.dp),
-            color = color
+            color = indicatorColor
         ) { }
 
     }
