@@ -17,7 +17,7 @@
     <string name="add_next_course_remind_before">Remind in, days</string>
     <string name="navigation_finish">Finish</string>
     <string name="add_next_course_time">Time of notification</string>
-    <string name="add_course_finish">Great!</string>
+    
     <string name="add_med_error_unfilled_fields">You should fill all fields</string>
     <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
 
@@ -82,4 +82,7 @@
     <string name="my_course_h">My courses</string>
     <string name="mycourse_duration">Duration</string>
     <string name="mycourse_interval">Interval</string>
+
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Reminder dialy</string>
 </resources>
