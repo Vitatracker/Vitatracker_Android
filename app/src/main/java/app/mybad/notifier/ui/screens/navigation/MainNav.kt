@@ -10,11 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.course.NewCourseNav
-import app.mybad.notifier.ui.screens.settings.NavItemSettings
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,8 +53,7 @@ fun MainNav(
             }
             composable(NavItemMain.Settings.route) {
                 val settingsNavController = rememberNavController()
-                val sncDest = settingsNavController.currentBackStackEntryAsState()
-                isOnTopLevel = sncDest.value?.destination?.route == NavItemSettings.Navigation.route
+                isOnTopLevel = true
                 SettingsNav(
                     modifier = modifier,
                     navController = settingsNavController,
