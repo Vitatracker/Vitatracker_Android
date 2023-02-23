@@ -20,6 +20,9 @@
     <string name="add_course_finish">Great!</string>
     <string name="add_med_error_unfilled_fields">You should fill all fields</string>
     <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
+    <string name="add_course_months">Months</string>
+    <string name="add_course_days">Days</string>
+    <string name="add_next_course_interval">Start next course in</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Welcome</string>
@@ -82,4 +85,7 @@
     <string name="my_course_h">My courses</string>
     <string name="mycourse_duration">Duration</string>
     <string name="mycourse_interval">Interval</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">My calendar</string>
 </resources>

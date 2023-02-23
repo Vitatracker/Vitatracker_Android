@@ -123,7 +123,7 @@ fun NewCourseNav(
             }
             composable(NavItemCourse.CourseCreated.route) {
                 title = stringResource(NavItemCourse.CourseCreated.stringId)
-                CourseCreated { }
+                CourseCreated { onDismiss() }
             }
         }
     }

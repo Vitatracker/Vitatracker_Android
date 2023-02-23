@@ -17,8 +17,11 @@
     <string name="add_next_course_remind_before">Напомнить за, дней</string>
     <string name="navigation_finish">Завершить</string>
     <string name="add_next_course_time">Время напоминания</string>
-    <string name="add_med_error_unfilled_fields">add_med_error_unfilled_fields</string>
-    <string name="add_course_congratulations">add_course_congratulations</string>
+    <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
+    <string name="add_course_congratulations">Ура! Теперь вы не пропустите прием лекарств!</string>
+    <string name="add_course_months">Месяцы</string>
+    <string name="add_course_days">Дни</string>
+    <string name="add_next_course_interval">Начать следующий курс через</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Добро пожаловать</string>
@@ -76,4 +79,7 @@
     <string name="my_course_h">Мои курсы</string>
     <string name="mycourse_duration">Продолжительность</string>
     <string name="mycourse_interval">Периодичность</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">Мой календарь</string>
 </resources>

@@ -30,11 +30,11 @@ fun NextCourse(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            DateSelector(
-                label = stringResource(R.string.add_next_course_date),
-                checkActualDate = true,
-                previousEndDate = previousEndDate
-            ) {}
+            DurationSelector(
+                startDate = previousEndDate,
+                label = stringResource(R.string.add_next_course_interval),
+                onSelect = { }
+            )
             Spacer(Modifier.height(16.dp))
             IterationsSelector(label = stringResource(R.string.add_next_course_remind_before)) {}
             Spacer(Modifier.height(16.dp))

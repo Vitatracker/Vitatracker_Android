@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -17,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -76,7 +74,6 @@ fun AddMedScreen(
 private fun NameInput(
     onChange: (String) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
     var value by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -100,10 +97,7 @@ private fun NameInput(
             maxLines = 1,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Go
-            ),
-            keyboardActions = KeyboardActions(
-                onGo = { focusManager.clearFocus() }
+                imeAction = ImeAction.Next
             ),
             shape = RoundedCornerShape(10.dp),
         )
@@ -116,7 +110,6 @@ private fun DoseInput(
     onChange: (String) -> Unit
 ) {
 
-    val focusManager = LocalFocusManager.current
     var value by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -139,10 +132,7 @@ private fun DoseInput(
             maxLines = 1,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Go
-            ),
-            keyboardActions = KeyboardActions(
-                onGo = { focusManager.clearFocus() }
+                imeAction = ImeAction.Next
             ),
             shape = RoundedCornerShape(10.dp),
         )
