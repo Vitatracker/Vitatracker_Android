@@ -85,7 +85,8 @@
     <string name="my_course_h">My courses</string>
     <string name="mycourse_duration">Duration</string>
     <string name="mycourse_interval">Interval</string>
-
     <!--CALENDAR -->
     <string name="calendar_h">My calendar</string>
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Reminder dialy</string>
 </resources>

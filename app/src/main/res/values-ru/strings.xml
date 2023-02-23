@@ -79,7 +79,8 @@
     <string name="my_course_h">Мои курсы</string>
     <string name="mycourse_duration">Продолжительность</string>
     <string name="mycourse_interval">Периодичность</string>
-
     <!--CALENDAR -->
     <string name="calendar_h">Мой календарь</string>
+    <string name="main_screen_top_bar_name">Дневник напоминаний</string>
+
 </resources>
