@@ -18,6 +18,7 @@
     <string name="navigation_finish">Finish</string>
     <string name="add_next_course_time">Time of notification</string>
     <string name="add_med_error_unfilled_fields">You should fill all fields</string>
+    <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Welcome</string>
@@ -33,5 +34,19 @@
 
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
-    <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Profile</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_about">About application</string>
+    <string name="settings_quit">Quit</string>
+    <string name="settings_delete_account">Delete account</string>
+    <string name="settings_change_password">Change password</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_current_password">Current password</string>
+    <string name="settings_new_password">New password</string>
+    <string name="settings_repeat_new_password">Repeat new password</string>
+    <string name="navigation_settings_main">Settings</string>
+    <string name="navigation_settings_profile">Profile</string>
 </resources>

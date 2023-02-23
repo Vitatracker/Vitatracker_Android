@@ -73,7 +73,7 @@ fun AddCourse(
                 duration = it
             }
             Spacer(Modifier.height(16.dp))
-            CommentInput(label = stringResource(R.string.add_course_comment)) {
+            TextInput(label = stringResource(R.string.add_course_comment)) {
                 newCourse = newCourse.copy(comment = it)
             }
         }
