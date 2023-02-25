@@ -31,6 +31,7 @@ import app.mybad.domain.models.usages.UsageDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -71,7 +72,7 @@ val usagesList = listOf(
     UsagesDomainModel(medId = 3L, usages = usages2),
 )
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showBackground = true)
 fun CalendarScreen(
@@ -84,11 +85,13 @@ fun CalendarScreen(
     val now = Instant.now().epochSecond
     var date by remember { mutableStateOf(LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())) }
     var selectedDate : LocalDateTime? by remember { mutableStateOf(date) }
+    val scope = rememberCoroutineScope()
 
     Column(
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
     ) {
         Column(
             verticalArrangement = Arrangement.Top,
@@ -105,29 +108,29 @@ fun CalendarScreen(
                     )
                 }
             )
-            MonthSelector(now = now) { date = it }
+            MonthSelector(selectedDate = now) { date = it }
             Spacer(Modifier.height(16.dp))
             CalendarScreenItem(
                 now = date.toEpochSecond(ZoneOffset.UTC),
                 usages = usages,
                 onSelect = {
                     selectedDate = it
+                    scope.launch {  }
                 }
             )
         }
     }
-
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun MonthSelector(
     modifier: Modifier = Modifier,
-    now: Long,
+    selectedDate: Long,
     onSwitch: (LocalDateTime) -> Unit
 ) {
     val months = stringArrayResource(R.array.months_full)
-    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())
+    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(selectedDate), ZoneId.systemDefault())
     var newDate by remember { mutableStateOf(date) }
 
     Row(
@@ -195,6 +198,7 @@ private fun CalendarScreenItem(
 
     val days = stringArrayResource(R.array.days_short)
     val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())
+    val currentDate = LocalDateTime.now()
     val cdr : Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
     }
@@ -262,7 +266,7 @@ private fun CalendarScreenItem(
                                 modifier = Modifier.padding(bottom = 8.dp),
                                 date = cdr[w][d],
                                 usages = usgs[w][d].size,
-                                isSelected = date == cdr[w][d],
+                                isSelected = cdr[w][d]?.dayOfYear == currentDate.dayOfYear && cdr[w][d]?.year == currentDate.year,
                                 isOtherMonth = date.month.value != cdr[w][d]?.month?.value
                             ) { onSelect(it) }
                         }
