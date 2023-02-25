@@ -34,7 +34,8 @@ fun BottomNavBar(
 
     if(isVisible) {
         Box(
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.BottomCenter,
+            modifier = modifier
         ) {
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,

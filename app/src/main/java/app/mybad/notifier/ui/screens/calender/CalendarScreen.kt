@@ -1,18 +1,22 @@
 package app.mybad.notifier.ui.screens.calender
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -67,7 +71,7 @@ val usagesList = listOf(
     UsagesDomainModel(medId = 3L, usages = usages2),
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 @Preview(showBackground = true)
 fun CalendarScreen(
@@ -79,31 +83,40 @@ fun CalendarScreen(
 
     val now = Instant.now().epochSecond
     var date by remember { mutableStateOf(LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())) }
+    var selectedDate : LocalDateTime? by remember { mutableStateOf(date) }
 
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.calendar_h),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 24.dp)
-                )
-            }
-        )
-        MonthSelector(now = now) { date = it }
-        Spacer(Modifier.height(16.dp))
-        CalendarScreenItem(
-            now = date.toEpochSecond(ZoneOffset.UTC),
-            usages = usages,
-            onSelect = {}
-        )
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.calendar_h),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 24.dp)
+                    )
+                }
+            )
+            MonthSelector(now = now) { date = it }
+            Spacer(Modifier.height(16.dp))
+            CalendarScreenItem(
+                now = date.toEpochSecond(ZoneOffset.UTC),
+                usages = usages,
+                onSelect = {
+                    selectedDate = it
+                }
+            )
+        }
     }
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -177,7 +190,7 @@ private fun CalendarScreenItem(
     modifier: Modifier = Modifier,
     now: Long,
     usages: List<UsagesDomainModel>,
-    onSelect: (Long) -> Unit
+    onSelect: (LocalDateTime?) -> Unit
 ) {
 
     val days = stringArrayResource(R.array.days_short)
@@ -185,10 +198,8 @@ private fun CalendarScreenItem(
     val cdr : Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
     }
-    val usgs : Array<Array<MutableList<UsageDomainModel>>> = Array(6) {
-        Array(7) {
-            mutableListOf()
-        }
+    val usgs = Array(6) {
+        Array(7) { mutableListOf<UsageDomainModel>() }
     }
     val fwd = date.minusDays(date.dayOfMonth.toLong())
     for(w in 0..5) {
@@ -224,6 +235,20 @@ private fun CalendarScreenItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(4.dp)
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                repeat(7) {
+                    Text(
+                        text = days[it],
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(40.dp)
+                    )
+                }
+            }
             repeat(6) { w ->
                 if(cdr[w].any { it?.month == date.month }) {
                     Row(
@@ -239,10 +264,8 @@ private fun CalendarScreenItem(
                                 usages = usgs[w][d].size,
                                 isSelected = date == cdr[w][d],
                                 isOtherMonth = date.month.value != cdr[w][d]?.month?.value
-                            )
+                            ) { onSelect(it) }
                         }
-
-
                     }
                 }
             }
@@ -259,49 +282,37 @@ private fun CalendarDayItem(
     isOtherMonth: Boolean = false,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        border = BorderStroke(1.dp, if(isSelected) MaterialTheme.colorScheme.primary else Color.Transparent),
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-            .clickable(
-                indication = null,
-                interactionSource = MutableInteractionSource()
-            ) { onSelect(date) }
-            .alpha(if(isOtherMonth) 0.5f else 1f)
+            .size(40.dp)
+            .clip(CircleShape)
+            .border(
+                1.dp,
+                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                CircleShape
+            )
+            .alpha(if (isOtherMonth) 0.5f else 1f)
+            .clickable { onSelect(date) }
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(4.dp)
-                .width(33.dp)
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val indicatorColor = if(usages > 0 && isSelected) MaterialTheme.colorScheme.primary
+                else if(usages > 0) MaterialTheme.colorScheme.primaryContainer
+                else Color.Transparent
+            Box(
+                Modifier
+                    .size(5.dp)
+                    .background(
+                        color = indicatorColor,
+                        shape = CircleShape
+                    ))
             Text(
                 text = date?.dayOfMonth.toString(),
-                style = Typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
+                style = Typography.bodyLarge,
+                color = if(isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Spacer(Modifier.width(0.dp))
-                repeat(if(usages<3) usages else 3) {
-                    Box(
-                        Modifier
-                            .padding(horizontal = 3.dp)
-                            .size(5.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = CircleShape
-                            )
-                    )
-                }
-                if(usages == 0) Spacer(Modifier.height(5.dp))
-                Spacer(Modifier.width(0.dp))
-            }
-
         }
     }
 }
