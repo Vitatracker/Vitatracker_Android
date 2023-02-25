@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -86,6 +88,7 @@ fun CalendarScreen(
     var date by remember { mutableStateOf(LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())) }
     var selectedDate : LocalDateTime? by remember { mutableStateOf(date) }
     val scope = rememberCoroutineScope()
+    var dialogIsShown by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -115,9 +118,26 @@ fun CalendarScreen(
                 usages = usages,
                 onSelect = {
                     selectedDate = it
+                    dialogIsShown = true
                     scope.launch {  }
                 }
             )
+
+            if(dialogIsShown) {
+                BottomSlideInDialog(
+                    onDismissRequest = { dialogIsShown = false }
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+                        color = MaterialTheme.colorScheme.background,
+                        elevation = 5.dp,
+                        modifier = Modifier.fillMaxWidth().height(350.dp)
+                    ) {
+
+                    }
+                }
+            }
+
         }
     }
 }
