@@ -113,7 +113,7 @@ fun NewCourseNav(
                 title = stringResource(NavItemCourse.NextCourse.stringId)
                 NextCourse(
                     modifier = modifier.fillMaxSize(),
-                    previousEndDate = newCourse.endTime,
+                    previousEndDate = newCourse.endDate,
                     onNext = {
                         navController.navigate(NavItemCourse.CourseCreated.route)
                         onFinish(Triple(newMed, newCourse, newUsages))

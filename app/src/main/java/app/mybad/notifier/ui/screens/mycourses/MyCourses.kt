@@ -29,9 +29,9 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 val coursesList = listOf(
-    CourseDomainModel(id="1", medId = 1L, startDate = 0L, endTime = 11000000L),
-    CourseDomainModel(id="2", medId = 2L, startDate = 0L, endTime = 12000000L),
-    CourseDomainModel(id="3", medId = 3L, startDate = 0L, endTime = 13000000L),
+    CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
+    CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
+    CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
 )
 
 val medsList = listOf(
@@ -170,7 +170,7 @@ private fun CourseItem(
                         val end = DateTimeFormatter
                             .ofPattern("yyyy.MM.dd")
                             .withZone(ZoneOffset.UTC)
-                            .format(Instant.ofEpochSecond(course.endTime))
+                            .format(Instant.ofEpochSecond(course.endDate))
                         Text(text = start, style = Typography.labelMedium)
                         Icon(
                             painter = painterResource(R.drawable.arrow_right),
