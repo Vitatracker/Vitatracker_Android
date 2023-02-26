@@ -127,7 +127,7 @@ private fun MainNavigationItem(
 ) {
 
     val indicatorColor by animateColorAsState(
-        targetValue = if(isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        targetValue = if(isSelected) MaterialTheme.colorScheme.outlineVariant else Color.Transparent,
         animationSpec = tween(
             durationMillis = 300,
             delayMillis = 40,
@@ -155,7 +155,7 @@ private fun MainNavigationItem(
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = MaterialTheme.colorScheme.outlineVariant,
             modifier = Modifier
                 .size(32.dp)
                 .alpha(iconAlpha)

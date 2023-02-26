@@ -178,7 +178,7 @@ private fun MonthSelector(
     ) {
         Icon(
             painter = painterResource(R.drawable.prev_month),
-            tint = MaterialTheme.colorScheme.primary,
+            tint = MaterialTheme.colorScheme.outlineVariant,
             contentDescription = null,
             modifier = Modifier
                 .size(34.dp)
@@ -208,12 +208,13 @@ private fun MonthSelector(
             }
             Text(
                 text = newDate.year.toString(),
-                style = Typography.labelSmall
+                style = Typography.labelSmall,
+                modifier = modifier.alpha(0.5f)
             )
         }
         Icon(
             painter = painterResource(R.drawable.next_month),
-            tint = MaterialTheme.colorScheme.primary,
+            tint = MaterialTheme.colorScheme.outlineVariant,
             contentDescription = null,
             modifier = Modifier
                 .size(34.dp)
@@ -282,6 +283,7 @@ private fun CalendarScreenItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .alpha(0.5f)
             ) {
                 repeat(7) {
                     Text(
@@ -291,6 +293,11 @@ private fun CalendarScreenItem(
                     )
                 }
             }
+            Divider(
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
+                modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+            )
             repeat(6) { w ->
                 if(cdr[w].any { it?.month == date.month }) {
                     Row(
@@ -335,7 +342,7 @@ private fun CalendarDayItem(
                 CircleShape
             )
             .alpha(if (isOtherMonth) 0.5f else 1f)
-            .clickable { if(usages>0) onSelect(date) }
+            .clickable { if (usages > 0) onSelect(date) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -403,7 +410,9 @@ private fun DailyUsages(
             Divider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal = 4.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp, horizontal = 4.dp)
             )
             LazyColumn {
                 monsterData.sortedBy { it.first }.forEach { entry ->
@@ -462,7 +471,9 @@ private fun SingleUsageItem(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
                 Icon(
                     painter = painterResource(med.details.icon),
@@ -472,7 +483,8 @@ private fun SingleUsageItem(
                         .size(40.dp)
                 )
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .weight(1f)
                 ) {
                     Text(

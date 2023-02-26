@@ -17,15 +17,15 @@ import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = primaryBlue,
-    secondary = secondaryBlue,
-    onError = errorRed,
-    outlineVariant = primaryIndication
+    primaryContainer = primaryContainerBlue,
+    error = errorRed,
+    outlineVariant = primaryIndication,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryBlue,
-    secondary = secondaryBlue,
-    onError = errorRed,
+    primaryContainer = primaryContainerBlue,
+    error = errorRed,
     outlineVariant = primaryIndication
 
     /* Other default colors to override
