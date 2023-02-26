@@ -24,8 +24,10 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -130,8 +132,7 @@ fun DailyUsages(
     meds: List<MedDomainModel>,
     dayData: List<Pair<Long, Long>>,
     onDismiss: () -> Unit = {},
-    onNextDay: () -> Unit = {},
-    onPrevDay: () -> Unit = {},
+    onNewDate: (LocalDateTime?) -> Unit = {}
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -141,12 +142,12 @@ fun DailyUsages(
         Column(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
                 Text(
                     text = date?.format(DateTimeFormatter.ofPattern("dd MMMM")) ?: "no date",
@@ -164,14 +165,14 @@ fun DailyUsages(
                         )
                 )
             }
-            Divider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp)
+            DaySelectorSlider(
+                modifier = Modifier.padding(vertical = 8.dp),
+                date = date,
+                onSelect = onNewDate::invoke
             )
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
                 dayData.sortedBy { it.first }.forEach { entry ->
                     item { SingleUsageItem(date = entry.first, med = meds.first{ it.id == entry.second } ) }
                 }

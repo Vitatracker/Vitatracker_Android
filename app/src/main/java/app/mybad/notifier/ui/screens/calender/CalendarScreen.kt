@@ -139,7 +139,8 @@ fun CalendarScreen(
                     date = selectedDate,
                     dayData = daily,
                     meds = meds,
-                    onDismiss = { dialogIsShown = false }
+                    onDismiss = { dialogIsShown = false },
+                    onNewDate = { selectedDate = it }
                 )
             }
 
