@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.course
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
