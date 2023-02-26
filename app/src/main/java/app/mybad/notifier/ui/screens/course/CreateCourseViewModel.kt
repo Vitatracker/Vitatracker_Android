@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.course
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,7 @@ class CreateCourseViewModel @Inject constructor(
                 }
             is CreateCourseIntent.NewMed -> {
                 scope.launch { _state.emit(_state.value.copy(med = intent.med)) }
+                Log.w("CCVM_", "${intent.med}")
             }
             is CreateCourseIntent.NewCourse -> {
                 scope.launch { _state.emit(_state.value.copy(course = intent.course)) }

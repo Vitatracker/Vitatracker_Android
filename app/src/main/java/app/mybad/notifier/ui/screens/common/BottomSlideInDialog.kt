@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BottomSlideInDialog(
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     contentAlignment: Alignment = Alignment.BottomCenter,
     content: @Composable () -> Unit
@@ -45,7 +46,7 @@ fun BottomSlideInDialog(
         dialogWindowProvider.window.setGravity(Gravity.BOTTOM)
         Box(
             contentAlignment = contentAlignment,
-            modifier = Modifier.fillMaxWidth().heightIn(0.dp,1000.dp)
+            modifier = modifier.fillMaxWidth().heightIn(0.dp,1000.dp)
         ) {
             val density = LocalDensity.current
             AnimatedVisibility(

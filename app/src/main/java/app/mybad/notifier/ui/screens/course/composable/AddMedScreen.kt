@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,7 +19,6 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
@@ -32,8 +30,8 @@ import app.mybad.notifier.ui.theme.Typography
 fun AddMedScreen(
     modifier: Modifier = Modifier,
     userId: String = "",
-    init: MedDomainModel = MedDomainModel(),
-    onNext: (MedDomainModel) -> Unit = {},
+    init: MedDomainModel,
+    onNext: () -> Unit = {},
     onChange: (MedDomainModel) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
@@ -54,12 +52,12 @@ fun AddMedScreen(
                 onChange(newMed)
             }
             Spacer(Modifier.height(16.dp))
-            DoseInput(init = init.details.dose.toString()) {
+            DoseInput(init = if(init.details.dose == 0) "" else init.details.dose.toString()) {
                 newMed = newMed.copy(details = newMed.details.copy(dose = it.toIntOrNull() ?: 0))
                 onChange(newMed)
             }
             Spacer(Modifier.height(16.dp))
-            UnitSelector(init = init.details.dose) {
+            UnitSelector(init = init.details.measureUnit) {
                 newMed = newMed.copy(details = newMed.details.copy(measureUnit = it))
                 onChange(newMed)
             }
@@ -68,11 +66,9 @@ fun AddMedScreen(
         NavigationRow(
             onBack = onBack::invoke,
             onNext = {
-                if(newMed.details.dose == -1 || newMed.name.isNullOrBlank()) {
+                if(newMed.details.dose == 0 || newMed.name.isNullOrBlank()) {
                     Toast.makeText(context, unfilledError, Toast.LENGTH_SHORT).show()
-                } else {
-                    onNext(newMed)
-                }
+                } else onNext()
             }
         )
 
@@ -155,20 +151,17 @@ private fun DoseInput(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun UnitSelector(
-    init: Int = 0,
+    init: Int,
     onSelect: (Int) -> Unit
 ) {
 
     val units = stringArrayResource(R.array.units).asList()
-    val pagerState = rememberPagerState()
     var dropdownExpanded by remember { mutableStateOf(false) }
     var fieldValue by remember { mutableStateOf(units[init]) }
     val fieldInteractionSource = remember { MutableInteractionSource() }
     if(fieldInteractionSource.collectIsPressedAsState().value) {
         dropdownExpanded = !dropdownExpanded
     }
-
-    LaunchedEffect(pagerState.currentPage) { onSelect(pagerState.currentPage) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),

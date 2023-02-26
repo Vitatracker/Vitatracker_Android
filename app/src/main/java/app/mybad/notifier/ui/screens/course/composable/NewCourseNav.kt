@@ -85,8 +85,8 @@ fun NewCourseNav(
                     init = state.value.med,
                     userId = userId,
                     onChange = {
-                        vm.reduce(CreateCourseIntent.NewMed(it))
                         newMed = it
+                        vm.reduce(CreateCourseIntent.NewMed(newMed))
                     },
                     onNext = { navController.navigate(NavItemCourse.AddCourse.route) },
                     onBack = {
@@ -102,7 +102,11 @@ fun NewCourseNav(
                     modifier = modifier.fillMaxSize(),
                     userId = userId,
                     medId = newMed.id,
-                    onNext = { navController.navigate(NavItemCourse.NextCourse.route) },
+                    onNext = {
+                        navController.navigate(NavItemCourse.NextCourse.route)
+                        vm.reduce(CreateCourseIntent.NewCourse(it.first))
+                        vm.reduce(CreateCourseIntent.NewUsages(it.second))
+                    },
                     onChange = {
                         vm.reduce(CreateCourseIntent.NewCourse(it.first))
                         vm.reduce(CreateCourseIntent.NewUsages(it.second))
