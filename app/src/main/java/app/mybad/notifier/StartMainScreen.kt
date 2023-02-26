@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.course.CourseDomainModel
+import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
@@ -36,6 +37,18 @@ import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
 import java.util.Date
+
+private val coursesList = listOf(
+    CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
+    CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
+    CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
+)
+
+private val medsList = listOf(
+    MedDomainModel(id=1L, name = "Doliprane",   details = MedDetailsDomainModel(type = 1, dose = 500, measureUnit = 1, icon = R.drawable.pill)),
+    MedDomainModel(id=2L, name = "Dexedrine",   details = MedDetailsDomainModel(type = 1, dose = 30,  measureUnit = 1, icon = R.drawable.pill)),
+    MedDomainModel(id=3L, name = "Prozac",      details = MedDetailsDomainModel(type = 1, dose = 120, measureUnit = 1, icon = R.drawable.pill)),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -250,8 +263,8 @@ fun MainScreenTextCategory() {
 
 @Composable
 fun MainScreenLazyMedicines(
-    courses: List<CourseDomainModel> = app.mybad.notifier.ui.screens.mycourses.coursesList,
-    meds: List<MedDomainModel> = app.mybad.notifier.ui.screens.mycourses.medsList
+    courses: List<CourseDomainModel> = coursesList,
+    meds: List<MedDomainModel> = medsList
 ) {
     if (courses.isNotEmpty() && meds.isNotEmpty()) {
         LazyColumn(modifier = Modifier, userScrollEnabled = true) {

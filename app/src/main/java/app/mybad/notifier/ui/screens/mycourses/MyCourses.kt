@@ -23,26 +23,14 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-val coursesList = listOf(
-    CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-    CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-    CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
-)
-
-val medsList = listOf(
-    MedDomainModel(id=1L, name = "Doliprane",   details = MedDetailsDomainModel(type = 1, dose = 500, measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=2L, name = "Dexedrine",   details = MedDetailsDomainModel(type = 1, dose = 30,  measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=3L, name = "Prozac",      details = MedDetailsDomainModel(type = 1, dose = 120, measureUnit = 1, icon = R.drawable.pill)),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 fun MyCourses(
     modifier: Modifier = Modifier,
     reducer: (MyCoursesIntent) -> Unit = {},
-    courses: List<CourseDomainModel> = coursesList,
-    meds: List<MedDomainModel> = medsList,
+    courses: List<CourseDomainModel>,
+    meds: List<MedDomainModel>,
 ) {
 
     Column(

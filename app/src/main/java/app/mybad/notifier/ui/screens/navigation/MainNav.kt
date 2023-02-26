@@ -30,8 +30,8 @@ fun MainNav(
 
     val userModel = UserDomainModel()
     var isOnTopLevel by remember { mutableStateOf(true) }
-    
-    val state = myCoursesVm.state.collectAsState()
+
+    val coursesState = myCoursesVm.state.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -54,7 +54,8 @@ fun MainNav(
             composable(NavItemMain.Courses.route) {
                 MyCourses(
                     modifier = modifier,
-                    courses = state.value.courses,
+                    courses = coursesState.value.courses,
+                    meds = coursesState.value.meds,
                     reducer = myCoursesVm::reduce
                 )
                 isOnTopLevel = true
