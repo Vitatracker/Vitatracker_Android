@@ -30,7 +30,6 @@ class CreateCourseViewModel @Inject constructor(
                 }
             is CreateCourseIntent.NewMed -> {
                 scope.launch { _state.emit(_state.value.copy(med = intent.med)) }
-                Log.w("CCVM_", "${intent.med}")
             }
             is CreateCourseIntent.NewCourse -> {
                 scope.launch { _state.emit(_state.value.copy(course = intent.course)) }
