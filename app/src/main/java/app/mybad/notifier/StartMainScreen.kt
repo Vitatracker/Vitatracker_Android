@@ -40,13 +40,15 @@ import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.notifier.ui.screens.navigation.NavItemMain
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.Language
 import java.text.DateFormatSymbols
 import java.time.*
+import java.time.temporal.TemporalAccessor
+import java.util.Date
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.days
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainScreen(navController: NavHostController) {
@@ -75,7 +77,6 @@ fun StartMainScreen(navController: NavHostController) {
 
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(navController: NavHostController) {
 
@@ -87,7 +88,6 @@ fun MainScreen(navController: NavHostController) {
             modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MainScreenMonthPager()
-            MainScreenWeekPager()
         }
     }
 
@@ -105,7 +105,7 @@ fun MainScreenMonthPager() {
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
 
-    val state = rememberPagerState(LocalDate.now().month.ordinal)
+    var state = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
@@ -128,7 +128,7 @@ fun MainScreenMonthPager() {
             Text(
                 text = AnnotatedString(Month.values()[month].toString().substring(0, 3)),
                 color = if (state.currentPage == month) {
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.primary
                 } else if (state.currentPage == month + 1) {
                     Color.Black
                 } else if (state.currentPage == month - 1) {
@@ -159,24 +159,25 @@ fun MainScreenMonthPager() {
             )
         }
     }
-
+    MainScreenWeekPager(state.currentPage)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager() {
+fun MainScreenWeekPager(monthState: Int) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
 
-    val dayOfWeek = DayOfWeek.values()
-    val shortWeekDays = DateFormatSymbols.getInstance().shortWeekdays
-
+    val calendar: Calendar = Calendar.getInstance()
+    var dayOfWeek by remember { mutableStateOf(0) }
+    var shortNameOfDay by remember { mutableStateOf("") }
+    var countDay by remember { mutableStateOf(0) }
     val state = rememberPagerState(LocalDate.now().dayOfMonth)
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
-        pageCount = LocalDate.now().month.maxLength(),
+        pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
         state = state,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
@@ -185,26 +186,29 @@ fun MainScreenWeekPager() {
             .padding(top = 20.dp, start = paddingStart, end = paddingEnd),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
-            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 3) / 2
+            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
         )
     ) { days ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            color = if (state.currentPage == days) MaterialTheme.colorScheme.primary else Color.White
         ) {
             Column(
                 modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+
+                countDay = days + 1
+                calendar.time = Date(Year.now().value, monthState, days)
+                dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+                shortNameOfDay =
+                    DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
+
                 Text(
-                    text = AnnotatedString(days.toString()),
-                    color = if (state.currentPage == days) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        Color.LightGray
-                    },
+                    text = AnnotatedString(countDay.toString()),
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
@@ -220,12 +224,7 @@ fun MainScreenWeekPager() {
                 )
 
                 Text(
-                    text = AnnotatedString(days.toString()),
-                    color = if (state.currentPage == days) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        Color.LightGray
-                    },
+                    text = AnnotatedString(shortNameOfDay),
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
