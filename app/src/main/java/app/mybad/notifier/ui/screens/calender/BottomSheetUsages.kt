@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
@@ -14,9 +15,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
@@ -34,22 +36,27 @@ private fun SingleUsageItem(
     modifier: Modifier = Modifier,
     date: Long,
     med: MedDomainModel,
-    isTaken: Boolean = false
+    isTaken: Boolean = false,
+    onTake: (Long, Long) -> Unit = { date, medId -> }
 ) {
     val units = stringArrayResource(R.array.units)
+    var _isTaken by remember { mutableStateOf(isTaken) }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         modifier = modifier.fillMaxWidth()
     ) {
         val time = LocalDateTime
             .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
             .format(DateTimeFormatter.ofPattern("HH:mm"))
-        Text(text = time)
+        Text(
+            text = time,
+            modifier = Modifier.padding(top = 8.dp)
+        )
         Surface(
             color = MaterialTheme.colorScheme.primaryContainer,
             shape = RoundedCornerShape(10.dp),
-            elevation = 1.dp,
+            elevation = 3.dp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -60,13 +67,25 @@ private fun SingleUsageItem(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Icon(
-                    painter = painterResource(med.details.icon),
-                    contentDescription = null,
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
-                )
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(
+                            painter = painterResource(med.details.icon),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -85,12 +104,18 @@ private fun SingleUsageItem(
                     }
                 }
                 Icon(
-                    imageVector = if(isTaken) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+                    imageVector = if(_isTaken) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .size(40.dp)
+                        .size(30.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            val now = Instant.now().epochSecond
+                            onTake(now, med.id)
+                            _isTaken = !_isTaken
+                        }
                 )
             }
         }

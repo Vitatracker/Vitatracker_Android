@@ -113,6 +113,7 @@ private fun CourseItem(
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
+        shadowElevation = 3.dp,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
@@ -126,13 +127,25 @@ private fun CourseItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    painter = painterResource(med.details.icon),
-                    contentDescription = null,
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
-                )
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(
+                            painter = painterResource(med.details.icon),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
