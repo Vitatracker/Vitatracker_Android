@@ -13,23 +13,25 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.StartMainScreen
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
-import app.mybad.notifier.ui.screens.course.CreateCourseIntent
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsNav
-import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNav(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    createCourseVm: CreateCourseViewModel
+    createCourseVm: CreateCourseViewModel,
+    myCoursesVm: MyCoursesViewModel
 ) {
 
     val userModel = UserDomainModel()
-    var isOnTopLevel by remember { mutableStateOf(true)}
+    var isOnTopLevel by remember { mutableStateOf(true) }
+    
+    val state = myCoursesVm.state.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -52,7 +54,8 @@ fun MainNav(
             composable(NavItemMain.Courses.route) {
                 MyCourses(
                     modifier = modifier,
-                    onDismiss = { navController.popBackStack() }
+                    courses = state.value.courses,
+                    reducer = myCoursesVm::reduce
                 )
                 isOnTopLevel = true
             }

@@ -17,9 +17,9 @@ class CreateCourseViewModel @Inject constructor(
     //common mediator?
 ) : ViewModel() {
 
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val _state = MutableStateFlow(CreateCourseState())
     val state get() = _state.asStateFlow()
-    val scope = CoroutineScope(Dispatchers.IO)
 
     fun reduce(intent: CreateCourseIntent) {
         when(intent) {

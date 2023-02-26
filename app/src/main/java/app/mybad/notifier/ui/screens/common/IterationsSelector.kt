@@ -52,9 +52,9 @@ fun IterationsSelector(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .clip(CircleShape)
                     .padding(end = 16.dp)
                     .size(50.dp)
+                    .clip(CircleShape)
                     .clickable {
                         if (iterations > 1) {
                             iterations--
@@ -85,9 +85,9 @@ fun IterationsSelector(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .clip(CircleShape)
                     .padding(start = 16.dp)
                     .size(50.dp)
+                    .clip(CircleShape)
                     .clickable {
                         if (iterations < limit) {
                             iterations++

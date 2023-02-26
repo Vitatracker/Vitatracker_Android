@@ -1,18 +1,13 @@
 package app.mybad.notifier.ui.screens.mycourses
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -45,9 +40,9 @@ val medsList = listOf(
 @Preview(showBackground = true)
 fun MyCourses(
     modifier: Modifier = Modifier,
+    reducer: (MyCoursesIntent) -> Unit = {},
     courses: List<CourseDomainModel> = coursesList,
     meds: List<MedDomainModel> = medsList,
-    onDismiss: () -> Unit = {  }
 ) {
 
     Column(
@@ -64,18 +59,7 @@ fun MyCourses(
                         .fillMaxWidth()
                         .padding(end = 24.dp)
                 )
-            },
-            navigationIcon = {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack, contentDescription = null,
-                    modifier = Modifier
-                        .clickable(
-                            indication = null,
-                            interactionSource = MutableInteractionSource()
-                        ) { }
-                        .clip(CircleShape)
-                )
-            },
+            }
         )
         if(courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
             LazyColumn() {
