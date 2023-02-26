@@ -190,9 +190,14 @@ fun MainScreenWeekPager() {
     ) { days ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(5.dp)
+            shape = RoundedCornerShape(5.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
-            Box(modifier = Modifier) {
+            Column(
+                modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = AnnotatedString(days.toString()),
                     color = if (state.currentPage == days) {
