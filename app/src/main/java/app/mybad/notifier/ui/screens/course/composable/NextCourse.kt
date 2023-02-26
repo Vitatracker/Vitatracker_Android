@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
@@ -18,7 +19,8 @@ fun NextCourse(
     modifier: Modifier = Modifier,
     previousEndDate: Long = 1677366000L,
     onBack: () -> Unit = {},
-    onNext: () -> Unit = {}
+    onNext: () -> Unit = {},
+    onChange: () -> Unit = {}
 ) {
 
     Column(

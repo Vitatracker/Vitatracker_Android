@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.course
+package app.mybad.notifier.ui.screens.course.composable
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,15 +29,16 @@ import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.theme.Typography
 
 @Composable
-@Preview
 fun AddMedScreen(
     modifier: Modifier = Modifier,
     userId: String = "",
+    init: MedDomainModel = MedDomainModel(),
     onNext: (MedDomainModel) -> Unit = {},
+    onChange: (MedDomainModel) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    var newMed by remember { mutableStateOf(MedDomainModel(userId = userId)) }
+    var newMed by remember { mutableStateOf(init.copy(userId = userId)) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -48,11 +49,20 @@ fun AddMedScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            NameInput { newMed = newMed.copy(name = it)}
+            NameInput(init = init.name ?: "") {
+                newMed = newMed.copy(name = it)
+                onChange(newMed)
+            }
             Spacer(Modifier.height(16.dp))
-            DoseInput { newMed = newMed.copy(details = newMed.details.copy(dose = it.toIntOrNull() ?: 0)) }
+            DoseInput(init = init.details.dose.toString()) {
+                newMed = newMed.copy(details = newMed.details.copy(dose = it.toIntOrNull() ?: 0))
+                onChange(newMed)
+            }
             Spacer(Modifier.height(16.dp))
-            UnitSelector { newMed = newMed.copy(details = newMed.details.copy(measureUnit = it)) }
+            UnitSelector(init = init.details.dose) {
+                newMed = newMed.copy(details = newMed.details.copy(measureUnit = it))
+                onChange(newMed)
+            }
         }
         val unfilledError = stringResource(R.string.add_med_error_unfilled_fields)
         NavigationRow(
@@ -72,9 +82,10 @@ fun AddMedScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NameInput(
+    init: String = "",
     onChange: (String) -> Unit
 ) {
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(init) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,10 +118,12 @@ private fun NameInput(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DoseInput(
+    init: String = "",
     onChange: (String) -> Unit
 ) {
 
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(init) }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -142,13 +155,14 @@ private fun DoseInput(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun UnitSelector(
+    init: Int = 0,
     onSelect: (Int) -> Unit
 ) {
 
     val units = stringArrayResource(R.array.units).asList()
     val pagerState = rememberPagerState()
     var dropdownExpanded by remember { mutableStateOf(false) }
-    var fieldValue by remember { mutableStateOf(units[0]) }
+    var fieldValue by remember { mutableStateOf(units[init]) }
     val fieldInteractionSource = remember { MutableInteractionSource() }
     if(fieldInteractionSource.collectIsPressedAsState().value) {
         dropdownExpanded = !dropdownExpanded

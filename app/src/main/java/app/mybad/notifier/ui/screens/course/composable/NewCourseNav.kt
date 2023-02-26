@@ -1,6 +1,5 @@
-package app.mybad.notifier.ui.screens.course
+package app.mybad.notifier.ui.screens.course.composable
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -25,15 +24,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
+import app.mybad.notifier.ui.screens.course.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewCourseNav(
     modifier: Modifier = Modifier,
+    vm: CreateCourseViewModel,
     userId: String = "userid",
     navController: NavHostController,
     onDismiss: () -> Unit = {},
-    onFinish: (Triple<MedDomainModel, CourseDomainModel, UsagesDomainModel>) -> Unit = {},
 ) {
 
     var newMed by remember { mutableStateOf(MedDomainModel()) }
@@ -41,6 +41,7 @@ fun NewCourseNav(
     var newUsages by remember { mutableStateOf(UsagesDomainModel()) }
     var title by remember { mutableStateOf("") }
     val currentDest = navController.currentBackStackEntryAsState()
+    val state = vm.state.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -65,7 +66,7 @@ fun NewCourseNav(
                                 indication = null,
                                 interactionSource = MutableInteractionSource()
                             ) {
-                                if(navController.currentDestination?.route == NavItemCourse.AddMed.route) onDismiss()
+                                if (navController.currentDestination?.route == NavItemCourse.AddMed.route) onDismiss()
                                 navController.popBackStack()
                             }
                             .clip(CircleShape)
@@ -81,14 +82,16 @@ fun NewCourseNav(
                 title = stringResource(NavItemCourse.AddMed.stringId)
                 AddMedScreen(
                     modifier = modifier.fillMaxSize(),
+                    init = state.value.med,
                     userId = userId,
-                    onNext = {
-                        navController.navigate(NavItemCourse.AddCourse.route)
+                    onChange = {
+                        vm.reduce(CreateCourseIntent.NewMed(it))
                         newMed = it
-                        Log.w("NCN_", "$newMed")
                     },
+                    onNext = { navController.navigate(NavItemCourse.AddCourse.route) },
                     onBack = {
                         onDismiss()
+                        vm.reduce(CreateCourseIntent.Drop)
                         navController.popBackStack()
                     },
                 )
@@ -99,12 +102,12 @@ fun NewCourseNav(
                     modifier = modifier.fillMaxSize(),
                     userId = userId,
                     medId = newMed.id,
-                    onNext = {
-                        navController.navigate(NavItemCourse.NextCourse.route)
+                    onNext = { navController.navigate(NavItemCourse.NextCourse.route) },
+                    onChange = {
+                        vm.reduce(CreateCourseIntent.NewCourse(it.first))
+                        vm.reduce(CreateCourseIntent.NewUsages(it.second))
                         newCourse = it.first
                         newUsages = it.second
-                        Log.w("NCN_", "$newCourse")
-                        Log.w("NCN_", "$newUsages")
                     },
                     onBack = { navController.popBackStack() },
                 )
@@ -115,8 +118,9 @@ fun NewCourseNav(
                     modifier = modifier.fillMaxSize(),
                     previousEndDate = newCourse.endDate,
                     onNext = {
+                        vm.reduce(CreateCourseIntent.NewCourse(newCourse))
+                        vm.reduce(CreateCourseIntent.Finish)
                         navController.navigate(NavItemCourse.CourseCreated.route)
-                        onFinish(Triple(newMed, newCourse, newUsages))
                     },
                     onBack = { navController.popBackStack() },
                 )

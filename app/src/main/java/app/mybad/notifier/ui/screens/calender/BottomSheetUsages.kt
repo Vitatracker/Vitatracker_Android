@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-
 
 @Composable
 private fun SingleUsageItem(
@@ -53,7 +51,8 @@ private fun SingleUsageItem(
             .format(DateTimeFormatter.ofPattern("HH:mm"))
         Text(
             text = time,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
         )
         Surface(
             color = MaterialTheme.colorScheme.primaryContainer,
@@ -177,6 +176,7 @@ fun DailyUsages(
                     item { SingleUsageItem(date = entry.first, med = meds.first{ it.id == entry.second } ) }
                 }
             }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }

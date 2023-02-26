@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.course
+package app.mybad.notifier.ui.screens.course.composable
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,12 +19,12 @@ import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
 
 @Composable
-@Preview
 fun AddCourse(
     modifier: Modifier = Modifier,
     medId: Long = 0L,
     userId: String = "",
     onNext: (Pair<CourseDomainModel, UsagesDomainModel>) -> Unit = {},
+    onChange: (Pair<CourseDomainModel, UsagesDomainModel>) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
 
