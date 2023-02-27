@@ -30,14 +30,13 @@ import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileEdit
 fun SettingsNav(
     modifier: Modifier = Modifier,
     vm: SettingsViewModel,
-    userModel: UserDomainModel = UserDomainModel(),
     navController: NavHostController,
     onDismiss: () -> Unit = {  }
 ) {
 
     var title by remember { mutableStateOf("") }
     val state = vm.state.collectAsState()
-
+    val userModel = state.value.user
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,

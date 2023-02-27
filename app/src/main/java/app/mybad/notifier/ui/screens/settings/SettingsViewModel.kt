@@ -2,20 +2,25 @@ package app.mybad.notifier.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.repos.UserDataRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel(
+class SettingsViewModel @Inject constructor(
+    private val userDataRepo: UserDataRepo,
     //settings repo
     //courses repo
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SettingsState())
+    private val _state = MutableStateFlow(SettingsState(
+        user = userDataRepo.getUserData()
+    ))
     val state get() = _state.asStateFlow()
 
     fun reduce(intent: SettingsIntent) {

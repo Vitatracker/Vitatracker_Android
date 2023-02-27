@@ -82,7 +82,6 @@ fun MainNav(
                     modifier = modifier,
                     vm = settingsVm,
                     navController = settingsNavController,
-                    userModel = userModel,
                     onDismiss = { navController.popBackStack() }
                 )
             }

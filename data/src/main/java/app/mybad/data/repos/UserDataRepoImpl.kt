@@ -5,17 +5,17 @@ import app.mybad.domain.repos.UserDataRepo
 import javax.inject.Singleton
 
 @Singleton
-class UserDataRepoImpl : UserDataRepo {
+class UserDataRepoImpl (
+
+) : UserDataRepo {
 
     override fun getUserData(): UserDomainModel {
-        TODO("Not yet implemented")
+        return UserDomainModel(id = "userid")
     }
 
     override fun updateUserData(user: UserDomainModel) {
-        TODO("Not yet implemented")
     }
 
     override fun deleteUser(userId: String) {
-        TODO("Not yet implemented")
     }
 }
