@@ -2,12 +2,9 @@ package app.mybad.data.repos
 
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.repos.UserDataRepo
-import javax.inject.Singleton
+import javax.inject.Inject
 
-@Singleton
-class UserDataRepoImpl (
-
-) : UserDataRepo {
+class UserDataRepoImpl @Inject constructor() : UserDataRepo {
 
     override fun getUserData(): UserDomainModel {
         return UserDomainModel(id = "userid")

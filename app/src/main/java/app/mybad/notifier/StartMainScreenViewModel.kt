@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
+import javax.inject.Inject
 
 @HiltViewModel
-class StartMainScreenViewModel : ViewModel() {
+class StartMainScreenViewModel @Inject constructor() : ViewModel() {
 
     private val coursesList = listOf(
         CourseDomainModel(id = 1L, medId = 1L, startDate = 0L, endDate = 11000000L),

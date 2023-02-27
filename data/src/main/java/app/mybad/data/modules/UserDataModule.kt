@@ -2,16 +2,19 @@ package app.mybad.data.modules
 
 import app.mybad.data.repos.UserDataRepoImpl
 import app.mybad.domain.repos.UserDataRepo
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
-abstract class UserDataModule {
+@InstallIn(SingletonComponent::class)
+class UserDataModule {
 
-    @Binds
-    abstract fun bindSettingsUseCase(settingsUseCaseImpl: UserDataRepoImpl): UserDataRepo
-
+    @Provides
+    @Singleton
+    fun providesUserDataRepo(impl: UserDataRepoImpl): UserDataRepo {
+        return UserDataRepoImpl()
+    }
 }
