@@ -78,8 +78,9 @@ private fun SingleUsageItem(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
+                        val icon = if(med.details.icon == 0) R.drawable.pill else R.drawable.settings
                         Icon(
-                            painter = painterResource(med.details.icon),
+                            painter = painterResource(icon),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
