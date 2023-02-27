@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
@@ -26,7 +27,6 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -133,10 +133,11 @@ fun DailyUsages(
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {}
 ) {
+
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         color = MaterialTheme.colorScheme.background,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth().fillMaxHeight(0.8f)
     ) {
         Column(
             verticalArrangement = Arrangement.Top,
