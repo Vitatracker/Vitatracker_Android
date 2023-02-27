@@ -2,7 +2,9 @@ package app.mybad.data.repos
 
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.repos.CoursesRepo
+import javax.inject.Singleton
 
+@Singleton
 class CoursesRepoImpl : CoursesRepo {
 
     override fun getAll(): List<CourseDomainModel> {

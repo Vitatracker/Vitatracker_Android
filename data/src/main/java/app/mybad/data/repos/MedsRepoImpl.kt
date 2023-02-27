@@ -2,7 +2,9 @@ package app.mybad.data.repos
 
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.repos.MedsRepo
+import javax.inject.Singleton
 
+@Singleton
 class MedsRepoImpl : MedsRepo {
 
     override fun getAll(): List<MedDomainModel> {
