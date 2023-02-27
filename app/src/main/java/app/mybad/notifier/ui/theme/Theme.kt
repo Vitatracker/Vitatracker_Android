@@ -20,13 +20,15 @@ private val DarkColorScheme = darkColorScheme(
     primaryContainer = primaryContainerBlue,
     error = errorRed,
     outlineVariant = primaryIndication,
+    surfaceVariant = secondaryContainerBlue,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryBlue,
     primaryContainer = primaryContainerBlue,
     error = errorRed,
-    outlineVariant = primaryIndication
+    outlineVariant = primaryIndication,
+    surfaceVariant = secondaryContainerBlue,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

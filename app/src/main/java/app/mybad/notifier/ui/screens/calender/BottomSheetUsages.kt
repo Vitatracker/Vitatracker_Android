@@ -112,9 +112,9 @@ private fun SingleUsageItem(
                         .size(30.dp)
                         .clip(CircleShape)
                         .clickable {
-                            val now = Instant.now().epochSecond
-                            onTake(now, med.id)
                             _isTaken = !_isTaken
+                            val now = if(_isTaken) Instant.now().epochSecond else -1L
+                            onTake(now, med.id)
                         }
                 )
             }
@@ -129,7 +129,8 @@ fun DailyUsages(
     meds: List<MedDomainModel>,
     dayData: List<Pair<Long, Long>>,
     onDismiss: () -> Unit = {},
-    onNewDate: (LocalDateTime?) -> Unit = {}
+    onNewDate: (LocalDateTime?) -> Unit = {},
+    onUsed: (Long, Long, Long) -> Unit = { medId, usageTime, factTime -> }
 ) {
 
     Surface(
@@ -172,7 +173,12 @@ fun DailyUsages(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 dayData.sortedBy { it.first }.forEach { entry ->
-                    item { SingleUsageItem(date = entry.first, med = meds.first{ it.id == entry.second } ) }
+                    item { SingleUsageItem(
+                        date = entry.first, med = meds.first{ it.id == entry.second },
+                        onTake = { datetime, medId ->
+                            onUsed(medId, entry.first, datetime)
+                        }
+                    ) }
                 }
             }
             Spacer(Modifier.height(16.dp))

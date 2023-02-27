@@ -22,10 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageDomainModel
 import app.mybad.domain.models.usages.UsagesDomainModel
@@ -38,58 +36,14 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-val coursesList = listOf(
-    CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-    CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-    CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
-)
-
-val medsList = listOf(
-    MedDomainModel(id=1L, name = "Doliprane",   details = MedDetailsDomainModel(type = 1, dose = 500, measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=2L, name = "Dexedrine",   details = MedDetailsDomainModel(type = 1, dose = 30,  measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=3L, name = "Prozac",      details = MedDetailsDomainModel(type = 1, dose = 120, measureUnit = 1, icon = R.drawable.pill)),
-)
-
-val usages = listOf(
-    UsageDomainModel(1677182682L),
-    UsageDomainModel(1677182683L),
-    UsageDomainModel(1677254684L),
-    UsageDomainModel(1677269085L),
-    UsageDomainModel(1677355486L),
-    UsageDomainModel(1677341087L),
-    UsageDomainModel(1677427488L),
-)
-val usages1 = listOf(
-    UsageDomainModel(1677182662L),
-    UsageDomainModel(1677182663L),
-    UsageDomainModel(1677254664L),
-    UsageDomainModel(1677269065L),
-    UsageDomainModel(1677355466L),
-    UsageDomainModel(1677341067L),
-    UsageDomainModel(1677427468L),
-)
-val usages2 = listOf(
-    UsageDomainModel(1677182681L),
-    UsageDomainModel(1677182682L),
-    UsageDomainModel(1677254683L),
-    UsageDomainModel(1677269084L),
-    UsageDomainModel(1677355485L),
-)
-
-val usagesList = listOf(
-    UsagesDomainModel(medId = 1L, usages = usages),
-    UsagesDomainModel(medId = 2L, usages = usages1),
-    UsagesDomainModel(medId = 3L, usages = usages2),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
 fun CalendarScreen(
     modifier: Modifier = Modifier,
-    courses: List<CourseDomainModel> = coursesList,
-    usages: List<UsagesDomainModel> = usagesList,
-    meds: List<MedDomainModel> = medsList,
+    courses: List<CourseDomainModel>,
+    usages: List<UsagesDomainModel>,
+    meds: List<MedDomainModel>,
+    reducer: (CalendarIntent) -> Unit
 ) {
 
     val now = Instant.now().epochSecond
@@ -140,7 +94,10 @@ fun CalendarScreen(
                     dayData = daily,
                     meds = meds,
                     onDismiss = { dialogIsShown = false },
-                    onNewDate = { selectedDate = it }
+                    onNewDate = { selectedDate = it },
+                    onUsed = { medId, usageTime, factTime ->
+                        reducer(CalendarIntent.SetUsage(medId, usageTime, factTime))
+                    }
                 )
             }
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.navigation.MainNav
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     private val createCourseVm : CreateCourseViewModel by viewModels()
     private val myCoursesVm: MyCoursesViewModel by viewModels()
     private val settingsVm: SettingsViewModel by viewModels()
+    private val calendarVm : CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.padding(horizontal = 16.dp),
                     createCourseVm = createCourseVm,
                     myCoursesVm = myCoursesVm,
-                    settingsVm = settingsVm
+                    settingsVm = settingsVm,
+                    calendarVm = calendarVm
                 )
             }
         }
