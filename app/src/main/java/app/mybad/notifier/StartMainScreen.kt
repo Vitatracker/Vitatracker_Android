@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -27,32 +26,67 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
 import java.util.Date
 
 private val coursesList = listOf(
-    CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-    CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-    CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
+    CourseDomainModel(id = 1L, medId = 1L, startDate = 0L, endDate = 11000000L),
+    CourseDomainModel(id = 2L, medId = 2L, startDate = 0L, endDate = 12000000L),
+    CourseDomainModel(id = 3L, medId = 3L, startDate = 0L, endDate = 13000000L),
 )
 
 private val medsList = listOf(
-    MedDomainModel(id=1L, name = "Doliprane",   details = MedDetailsDomainModel(type = 1, dose = 500, measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=2L, name = "Dexedrine",   details = MedDetailsDomainModel(type = 1, dose = 30,  measureUnit = 1, icon = R.drawable.pill)),
-    MedDomainModel(id=3L, name = "Prozac",      details = MedDetailsDomainModel(type = 1, dose = 120, measureUnit = 1, icon = R.drawable.pill)),
+    MedDomainModel(
+        id = 1L,
+        name = "Doliprane",
+        details = MedDetailsDomainModel(
+            type = 1,
+            dose = 500,
+            measureUnit = 1,
+            icon = R.drawable.pill
+        )
+    ),
+    MedDomainModel(
+        id = 2L,
+        name = "Dexedrine",
+        details = MedDetailsDomainModel(
+            type = 1,
+            dose = 30,
+            measureUnit = 1,
+            icon = R.drawable.pill
+        )
+    ),
+    MedDomainModel(
+        id = 3L,
+        name = "Prozac",
+        details = MedDetailsDomainModel(
+            type = 1,
+            dose = 120,
+            measureUnit = 1,
+            icon = R.drawable.pill
+        )
+    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainScreen(navController: NavHostController) {
+fun StartMainScreen(
+    mainScreenViewModel: StartMainScreenViewModel = viewModel(),
+    navController: NavHostController
+) {
+
+    val uiState by mainScreenViewModel.uiState.collectAsState()
+    val dataNow = LocalDate.now()
 
     Scaffold(
         topBar = {
@@ -65,24 +99,29 @@ fun StartMainScreen(navController: NavHostController) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             )
-        },
-        content = { contentPadding ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding)
-            ) {
-                MainScreen(navController = navController)
-            }
-        })
+        }
+    ) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+        ) {
+            MainScreen(
+                navController = navController,
+                setData = { mainScreenViewModel.setUiState() },
+                onChangeDate = { mainScreenViewModel.onChangeDate() })
+        }
+    }
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
-
-    val date by remember { mutableStateOf(LocalDate.now()) }
+fun MainScreen(
+    navController: NavHostController,
+    setData: () -> Unit,
+    onChangeDate: () -> Unit
+) {
 
     Box(
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter
@@ -91,7 +130,7 @@ fun MainScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager()
+            MainScreenMonthPager(setData = setData, onChangeDate = onChangeDate)
             MainScreenTextCategory()
             MainScreenLazyMedicines()
         }
@@ -106,12 +145,15 @@ fun MainScreenBackgroundImage() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenMonthPager() {
+fun MainScreenMonthPager(
+    setData: () -> Unit,
+    onChangeDate: () -> Unit
+) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
 
-    var state = rememberPagerState(LocalDate.now().month.ordinal)
+    val state = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
@@ -124,7 +166,7 @@ fun MainScreenMonthPager() {
             .padding(top = 14.dp, start = paddingStart, end = paddingEnd),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
-            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 3) / 2
+            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
         )
     ) { month ->
         Surface(
@@ -165,12 +207,16 @@ fun MainScreenMonthPager() {
             )
         }
     }
-    MainScreenWeekPager(state.currentPage)
+    MainScreenWeekPager(
+        monthState = state.currentPage,
+        setData = setData,
+        onChangeDate = onChangeDate
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(monthState: Int) {
+fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -> Unit) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -212,6 +258,8 @@ fun MainScreenWeekPager(monthState: Int) {
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
                     DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
+
+//                setData(cal)
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
@@ -274,7 +322,6 @@ fun MainScreenLazyMedicines(
                         course = course,
                         med = meds.filter { it.id == course.medId }[0]
                     )
-//                    Spacer(Modifier.height(8.dp))
                 }
             }
         }
@@ -323,7 +370,9 @@ fun MainScreenFormCourseHeader(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
         shadowElevation = 4.dp,
-        modifier = Modifier.fillMaxWidth().padding(end = 10.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 10.dp)
     ) {
         Column(modifier = Modifier) {
             Row(modifier = Modifier) {
