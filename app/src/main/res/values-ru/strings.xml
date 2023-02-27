@@ -49,6 +49,14 @@
     <string name="settings_repeat_new_password">Повторите новый пароль</string>
     <string name="navigation_settings_main">Настройки</string>
     <string name="navigation_settings_profile">Профиль</string>
+    <string name="settings_enable_notifications">Уведомления</string>
+    <string name="settings_enable_notifications_description">Включает и выключает все уведомления от приложения. Не влияет на индивидуальные настройки курсов.</string>
+    <string name="settings_enable_float_notifications">Плавающие уведомления</string>
+    <string name="settings_enable_float_notifications_description">Уведомления будут всплывать в верхней части экрана поверх всех открытых приложений и оставаться там, пока вы не отреагируете.</string>
+    <string name="settings_enable_medication_control">Контроль приёма</string>
+    <string name="settings_enable_medication_control_description">Включает контроль приема медикаметов в конце дня - вы будете должны повторно отметить все приёмы выших медикаментов.</string>
+    <string name="settings_enable_next_course_start">Начала следующих курсов</string>
+    <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
 
     <string name="text_continue">Продолжить</string>
 

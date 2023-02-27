@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +36,7 @@ private fun SingleUsageItem(
     date: Long,
     med: MedDomainModel,
     isTaken: Boolean = false,
-    onTake: (Long, Long) -> Unit = { date, medId -> }
+    onTake: (Long, Long) -> Unit = { datetime, medId -> }
 ) {
     val units = stringArrayResource(R.array.units)
     var _isTaken by remember { mutableStateOf(isTaken) }
@@ -122,7 +121,6 @@ private fun SingleUsageItem(
         }
     }
 }
-
 
 @Composable
 fun DailyUsages(
