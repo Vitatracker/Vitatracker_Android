@@ -21,6 +21,7 @@ class SettingsViewModel(
     fun reduce(intent: SettingsIntent) {
         when(intent) {
             is SettingsIntent.DeleteAccount -> {}
+            is SettingsIntent.Exit -> {}
             is SettingsIntent.SetNotifications -> {
                 viewModelScope.launch {
                     val newUser = _state.value.user.copy(settings = _state.value.user.settings.copy(notifications = intent.notifications))

@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.settings.notifications
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,8 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(isEnabled = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp)
+        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_float_notifications),
             description = stringResource(R.string.settings_enable_float_notifications_description),
@@ -43,7 +45,8 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(isFloat = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp)
+        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_medication_control),
             description = stringResource(R.string.settings_enable_medication_control_description),
@@ -52,7 +55,8 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(medicationControl = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp)
+        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_next_course_start),
             description = stringResource(R.string.settings_enable_next_course_start_description),

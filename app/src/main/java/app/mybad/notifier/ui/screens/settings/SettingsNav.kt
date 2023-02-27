@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
+import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
@@ -73,11 +74,10 @@ fun SettingsNav(
                 title = stringResource(NavItemSettings.Navigation.stringId)
                 SettingsNavScreen(
                     userModel = userModel,
+                    reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
                     onNotifications = { navController.navigate(NavItemSettings.Notifications.route) },
-                    onDelete = {},
-                    onQuit = {}
                 )
             }
             composable(NavItemSettings.Profile.route) {

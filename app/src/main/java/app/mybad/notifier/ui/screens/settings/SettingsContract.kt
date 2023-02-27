@@ -6,6 +6,7 @@ import app.mybad.domain.models.user.UserDomainModel
 
 sealed interface SettingsIntent {
     object DeleteAccount: SettingsIntent
+    object Exit : SettingsIntent
     data class ChangePassword(val password: String) : SettingsIntent
     data class SetNotifications(val notifications: NotificationsUserDomainModel) : SettingsIntent
 }
