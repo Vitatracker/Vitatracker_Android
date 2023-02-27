@@ -1,4 +1,4 @@
-package app.mybad.data.modules
+package app.mybad.notifier.di
 
 import app.mybad.data.repos.CoursesRepoImpl
 import app.mybad.data.repos.MedsRepoImpl
