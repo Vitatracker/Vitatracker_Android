@@ -28,12 +28,14 @@ import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileEdit
 @Composable
 fun SettingsNav(
     modifier: Modifier = Modifier,
+    vm: SettingsViewModel,
     userModel: UserDomainModel = UserDomainModel(),
     navController: NavHostController,
     onDismiss: () -> Unit = {  }
 ) {
 
     var title by remember { mutableStateOf("") }
+    val state = vm.state.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -56,7 +58,7 @@ fun SettingsNav(
                             indication = null,
                             interactionSource = MutableInteractionSource()
                         ) {
-                            if(navController.currentDestination?.route == NavItemSettings.Navigation.route) onDismiss()
+                            if (navController.currentDestination?.route == NavItemSettings.Navigation.route) onDismiss()
                             navController.popBackStack()
                         }
                         .clip(CircleShape)
@@ -104,7 +106,11 @@ fun SettingsNav(
             }
             composable(NavItemSettings.Notifications.route) {
                 title = stringResource(NavItemSettings.Notifications.stringId)
-                SettingsNotifications()
+                SettingsNotifications(
+                    init = state.value.user.settings.notifications
+                ) {
+                    vm.reduce(SettingsIntent.SetNotifications(it))
+                }
             }
             composable(NavItemSettings.About.route) {
                 title = stringResource(NavItemSettings.About.stringId)

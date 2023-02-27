@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
 
@@ -27,10 +28,11 @@ fun NotificationSettingItem(
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.weight(1f)
         ) {
             Text(text = label, style = Typography.bodyLarge)
-            Text(text = description, style = Typography.labelMedium)
+            Text(text = description, style = Typography.labelMedium.copy(), modifier = Modifier.alpha(0.6f))
         }
         Switch(
             checked = checked,

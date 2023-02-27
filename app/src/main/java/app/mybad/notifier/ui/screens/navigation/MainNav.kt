@@ -18,6 +18,7 @@ import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsNav
+import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +26,8 @@ fun MainNav(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     createCourseVm: CreateCourseViewModel,
-    myCoursesVm: MyCoursesViewModel
+    myCoursesVm: MyCoursesViewModel,
+    settingsVm: SettingsViewModel,
 ) {
 
     val userModel = UserDomainModel()
@@ -71,6 +73,7 @@ fun MainNav(
                 isOnTopLevel = true
                 SettingsNav(
                     modifier = modifier,
+                    vm = settingsVm,
                     navController = settingsNavController,
                     userModel = userModel,
                     onDismiss = { navController.popBackStack() }

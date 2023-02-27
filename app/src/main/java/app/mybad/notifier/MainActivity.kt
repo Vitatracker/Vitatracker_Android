@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.navigation.MainNav
+import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 import app.mybad.notifier.ui.theme.MyBADTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     private val createCourseVm : CreateCourseViewModel by viewModels()
     private val myCoursesVm: MyCoursesViewModel by viewModels()
+    private val settingsVm: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,8 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     createCourseVm = createCourseVm,
-                    myCoursesVm = myCoursesVm
+                    myCoursesVm = myCoursesVm,
+                    settingsVm = settingsVm
                 )
             }
         }
