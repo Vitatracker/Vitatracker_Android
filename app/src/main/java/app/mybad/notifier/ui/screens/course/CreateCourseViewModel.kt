@@ -1,6 +1,9 @@
 package app.mybad.notifier.ui.screens.course
 
 import androidx.lifecycle.ViewModel
+import app.mybad.domain.repos.CoursesRepo
+import app.mybad.domain.repos.MedsRepo
+import app.mybad.domain.repos.UsagesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
-    //courses repo
-    //meds repo
-    //usages repo
-    //common mediator?
+    private val coursesRepo: CoursesRepo,
+    private val medsRepo: MedsRepo,
+    private val usagesRepo: UsagesRepo,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -25,8 +27,8 @@ class CreateCourseViewModel @Inject constructor(
         when(intent) {
             is CreateCourseIntent.Drop -> { scope.launch { _state.emit(CreateCourseState()) } }
             is CreateCourseIntent.Finish -> {
-            //TODO: write state fields to repo
-                }
+
+            }
             is CreateCourseIntent.NewMed -> {
                 scope.launch { _state.emit(_state.value.copy(med = intent.med)) }
             }

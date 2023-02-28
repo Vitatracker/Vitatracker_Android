@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
 
     private val createCourseVm : CreateCourseViewModel by viewModels()
     private val myCoursesVm: MyCoursesViewModel by viewModels()
-    private val settingsVm by viewModels<SettingsViewModel>()
+    private val settingsVm : SettingsViewModel by viewModels()
     private val calendarVm : CalendarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

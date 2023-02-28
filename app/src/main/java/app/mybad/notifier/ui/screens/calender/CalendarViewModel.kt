@@ -2,22 +2,16 @@ package app.mybad.notifier.ui.screens.calender
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageDomainModel
-import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
-import app.mybad.notifier.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-
-
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
@@ -26,12 +20,17 @@ class CalendarViewModel @Inject constructor(
     private val meds: MedsRepo
 ) : ViewModel() {
 
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val _state = MutableStateFlow(CalendarState(
-        courses = courses.getAll(),
         meds = meds.getAll(),
         usages = usages.getAll(),
     ))
     val state get() = _state.asStateFlow()
+    init {
+        scope.launch {
+            _state.emit(_state.value.copy(courses = courses.getAll()))
+        }
+    }
 
     fun reducer(intent: CalendarIntent) {
         when(intent) {

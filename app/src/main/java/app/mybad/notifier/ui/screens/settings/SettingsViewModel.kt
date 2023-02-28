@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UserDataRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -16,11 +18,16 @@ class SettingsViewModel @Inject constructor(
     private val coursesRepo: CoursesRepo
 ) : ViewModel() {
 
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val _state = MutableStateFlow(SettingsState(
         user = userDataRepo.getUserData(),
-        courses = coursesRepo.getAll(),
     ))
     val state get() = _state.asStateFlow()
+    init {
+        scope.launch {
+            _state.emit(_state.value.copy(courses = coursesRepo.getAll()))
+        }
+    }
 
     fun reduce(intent: SettingsIntent) {
         when(intent) {

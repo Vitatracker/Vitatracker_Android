@@ -21,6 +21,10 @@ class MedsRepoImpl @Inject constructor() : MedsRepo {
         return MedDomainModel()
     }
 
+    override fun add(med: MedDomainModel) {
+
+    }
+
     override fun updateSingle(medId: Long, item: MedDomainModel) {
     }
 

@@ -1,28 +1,35 @@
 package app.mybad.data.repos
 
+import app.mybad.data.mapToData
+import app.mybad.data.mapToDomain
+import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.repos.CoursesRepo
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CoursesRepoImpl @Inject constructor() : CoursesRepo {
+class CoursesRepoImpl @Inject constructor(
+    private val db: MedDAO
+) : CoursesRepo {
 
-    override fun getAll(): List<CourseDomainModel> {
-        return listOf(
-            CourseDomainModel(id=1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-            CourseDomainModel(id=2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-            CourseDomainModel(id=3L, medId = 3L, startDate = 0L, endDate = 13000000L),
-        )
+    override suspend fun getAll(): List<CourseDomainModel> {
+        return db.getAllCourses().mapToDomain()
     }
 
-    override fun getSingle(courseId: Long): CourseDomainModel {
-        return CourseDomainModel()
+    override suspend fun getSingle(courseId: Long): CourseDomainModel {
+        return db.getCourseById(courseId).mapToDomain()
     }
 
-    override fun updateSingle(courseId: Long, item: CourseDomainModel) {
+    override suspend fun updateSingle(courseId: Long, item: CourseDomainModel) {
+        db.addCourse(item.copy(id = courseId).mapToData())
     }
 
-    override fun deleteSingle(courseId: Long) {
+    override suspend fun add(item: CourseDomainModel) {
+        db.addCourse(item.mapToData())
+    }
+
+    override suspend fun deleteSingle(courseId: Long) {
+        db.deleteCourse(courseId)
     }
 }
