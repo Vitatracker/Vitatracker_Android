@@ -1,5 +1,6 @@
 package app.mybad.notifier
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDetailsDomainModel
@@ -56,12 +57,9 @@ class StartMainScreenViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(LocalDate.now())
     var uiState = _uiState.asStateFlow()
 
-    fun onChangeDate() {
-
-    }
-
-    fun setUiState(date: LocalDate = LocalDate.now()) {
+   fun setUiState(date: LocalDate = LocalDate.now()) {
         _uiState.value = date
+       Log.d("MainScreen", "date: $date")
     }
 
 }

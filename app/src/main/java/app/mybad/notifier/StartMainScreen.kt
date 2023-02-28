@@ -2,6 +2,7 @@ package app.mybad.notifier
 
 import android.content.res.Resources
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
@@ -108,8 +110,8 @@ fun StartMainScreen(
         ) {
             MainScreen(
                 navController = navController,
-                setData = { mainScreenViewModel.setUiState() },
-                onChangeDate = { mainScreenViewModel.onChangeDate() })
+                setData = { mainScreenViewModel.setUiState() }
+            )
         }
     }
 
@@ -119,8 +121,7 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    setData: () -> Unit,
-    onChangeDate: () -> Unit
+    setData: (LocalDate) -> Unit
 ) {
 
     Box(
@@ -130,7 +131,7 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(setData = setData, onChangeDate = onChangeDate)
+            MainScreenMonthPager(setData = { setData(LocalDate.now()) })
             MainScreenTextCategory()
             MainScreenLazyMedicines()
         }
@@ -146,8 +147,7 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    setData: () -> Unit,
-    onChangeDate: () -> Unit
+    setData: (LocalDate) -> Unit
 ) {
 
     val paddingStart = 10.dp
@@ -209,14 +209,13 @@ fun MainScreenMonthPager(
     }
     MainScreenWeekPager(
         monthState = state.currentPage,
-        setData = setData,
-        onChangeDate = onChangeDate
+        setData = { setData(LocalDate.now()) }
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -> Unit) {
+fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -227,6 +226,11 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
     var countDay by remember { mutableStateOf(0) }
     val state = rememberPagerState(LocalDate.now().dayOfMonth)
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(state.currentPage) {
+        delay(50)
+        setData(LocalDate.of(LocalDate.now().year, monthState+1, state.currentPage))
+    }
 
     HorizontalPager(
         pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
@@ -239,7 +243,7 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
             horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
-        )
+        ),
     ) { days ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -256,10 +260,7 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
                 countDay = days + 1
                 calendar.time = Date(Year.now().value, monthState, days)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-                shortNameOfDay =
-                    DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
-
-//                setData(cal)
+                shortNameOfDay = DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
