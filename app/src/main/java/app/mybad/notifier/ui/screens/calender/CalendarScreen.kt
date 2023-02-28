@@ -25,8 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageDomainModel
-import app.mybad.domain.models.usages.UsagesDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.theme.Typography
@@ -41,7 +40,7 @@ import java.time.ZoneOffset
 fun CalendarScreen(
     modifier: Modifier = Modifier,
     courses: List<CourseDomainModel>,
-    usages: List<UsagesDomainModel>,
+    usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>,
     reducer: (CalendarIntent) -> Unit
 ) {
@@ -183,7 +182,7 @@ private fun MonthSelector(
 private fun CalendarScreenItem(
     modifier: Modifier = Modifier,
     now: Long,
-    usages: List<UsagesDomainModel>,
+    usages: List<UsageCommonDomainModel>,
     onSelect: (LocalDateTime?) -> Unit
 ) {
 
@@ -194,27 +193,27 @@ private fun CalendarScreenItem(
         Array(7) { null }
     }
     val usgs = Array(6) {
-        Array(7) { mutableListOf<UsageDomainModel>() }
+        Array(7) { mutableListOf<UsageCommonDomainModel>() }
     }
     val fwd = date.minusDays(date.dayOfMonth.toLong())
     for(w in 0..5) {
         for(d in 0..6) {
             if(w == 0 && d < fwd.dayOfWeek.value) {
                 val time = fwd.minusDays(fwd.dayOfWeek.value - d.toLong() - 1)
-                usages.forEach { it.usages.forEach { usage ->
-                    val day = usage.timeToUse - (usage.timeToUse % 86400)
+                usages.forEach {  usage ->
+                    val day = usage.useTime - (usage.useTime % 86400)
                     if(day == time.toEpochSecond(ZoneOffset.UTC)- time.toEpochSecond(ZoneOffset.UTC)%86400)
                         usgs[w][d].add(usage)
-                } }
+                }
                 cdr[w][d] = time
             }
             else {
                 val time = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
-                usages.forEach { it.usages.forEach { usage ->
-                    val day = usage.timeToUse - (usage.timeToUse % 86400)
+                usages.forEach {usage ->
+                    val day = usage.useTime - (usage.useTime % 86400)
                     if(day == time.toEpochSecond(ZoneOffset.UTC)- time.toEpochSecond(ZoneOffset.UTC)%86400)
                         usgs[w][d].add(usage)
-                } }
+                }
                 cdr[w][d] = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
             }
         }
@@ -321,17 +320,9 @@ private fun CalendarDayItem(
 
 private fun collectUsages(
     date: LocalDateTime?,
-    usages: List<UsagesDomainModel>,
-) : List<Triple<Long, Long, Long>> {  //time, medId, factTime
-
-    val res = mutableListOf<Triple<Long, Long, Long>>()
-    usages.forEach { singleUsages ->
-        singleUsages.usages.forEach {
-            val itsTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(it.timeToUse), ZoneId.systemDefault())
-            if(itsTime.year == date?.year && itsTime.dayOfYear == date.dayOfYear) {
-                res.add(Triple(it.timeToUse, singleUsages.medId, it.usedTime))
-            }
-        }
-    }
-    return res
+    usages: List<UsageCommonDomainModel>,
+) :  List<UsageCommonDomainModel> {
+    val fromTime = date?.withHour(0)?.withMinute(0)?.withSecond(0)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    val toTime = date?.withHour(23)?.withMinute(59)?.withSecond(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    return usages.filter {it.useTime in fromTime..toTime }
 }

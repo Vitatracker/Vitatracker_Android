@@ -2,8 +2,6 @@ package app.mybad.data.api
 
 import app.mybad.data.models.course.CourseDataModel
 import app.mybad.data.models.med.MedDataModel
-import app.mybad.data.models.usages.UsageDataModel
-import app.mybad.data.models.usages.UsagesDataModel
 import app.mybad.data.models.user.UserDataModel
 
 interface RemoteApi {
@@ -21,13 +19,11 @@ interface RemoteApi {
     //Main Screen
     fun addCourse(course: CourseDataModel)                              //POST
     fun addMed(med: MedDataModel)
-    fun addUsages(usages: UsageDataModel)
 
     fun hasChanges() : Boolean
 
     fun getUserModel() : UserDataModel
     fun getUserCourses() : List<CourseDataModel>
     fun getUserMeds() : List<MedDataModel>
-    fun getUserUsages() : List<UsagesDataModel>
 
 }

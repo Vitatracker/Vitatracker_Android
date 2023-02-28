@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
@@ -126,7 +127,7 @@ fun DailyUsages(
     modifier: Modifier = Modifier,
     date: LocalDateTime?,
     meds: List<MedDomainModel>,
-    dayData: List<Triple<Long, Long, Long>>,        //usageTime, medId, factTime
+    dayData: List<UsageCommonDomainModel>,
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {},
     onUsed: (Long, Long, Long) -> Unit = { medId, usageTime, factTime -> }
@@ -171,13 +172,15 @@ fun DailyUsages(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                dayData.sortedBy { it.first }.forEach { entry ->
+                dayData.sortedBy {
+                    it.useTime
+                }.forEach { entry ->
                     item { SingleUsageItem(
-                        date = entry.first,
-                        med = meds.first { it.id == entry.second },
-                        isTaken = entry.third > 10L,
+                        date = entry.useTime,
+                        med = meds.first { it.id == entry.medId },
+                        isTaken = entry.factUseTime > 10L,
                         onTake = { datetime, medId ->
-                            onUsed(medId, entry.first, datetime)
+                            onUsed(medId, entry.useTime, datetime)
                         }
                     ) }
                 }

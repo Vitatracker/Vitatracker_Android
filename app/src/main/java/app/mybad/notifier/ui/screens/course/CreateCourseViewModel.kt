@@ -30,7 +30,7 @@ class CreateCourseViewModel @Inject constructor(
                 scope.launch {
                     coursesRepo.add(_state.value.course)
                     medsRepo.add(_state.value.med)
-                    usagesRepo.add(_state.value.usages)
+                    usagesRepo.addUsages(_state.value.usages)
                 }
             }
             is CreateCourseIntent.NewMed -> {

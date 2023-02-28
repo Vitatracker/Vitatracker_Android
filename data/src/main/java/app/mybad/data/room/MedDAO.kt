@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import app.mybad.data.models.course.CourseDataModel
 import app.mybad.data.models.med.MedDataModel
-import app.mybad.data.models.usages.UsagesDataModel
+import app.mybad.data.models.usages.UsageCommonDataModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -34,14 +34,17 @@ interface MedDAO {
     @Query("delete from courses where id=(:courseId)")
     fun deleteCourse(courseId: Long)
 
-    @Query("select * from usages where medId=(:medId) limit 1")
-    fun getUsagesByMedId(medId: Long) : UsagesDataModel
-    @Query("select * from usages")
-    fun getAllUsages() : List<UsagesDataModel>
-    @Query("select * from usages")
-    fun getAllUsagesFlow() : Flow<List<UsagesDataModel>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addUsages(usages: UsagesDataModel)
-    @Query("delete from usages where medId=(:medId)")
-    fun deleteUsagesByMedId(medId: Long)
+    fun addUsages(usages: List<UsageCommonDataModel>)
+    @Query("select * from usages_common where medId=(:medId)")
+    fun getUsagesById(medId: Long) : List<UsageCommonDataModel>
+    @Query("select * from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
+    fun getUsagesByInterval(medId: Long, startTime: Long, endTime: Long) : List<UsageCommonDataModel>
+    @Query("delete from usages_common where medId=(:medId)")
+    fun deleteUsagesById(medId: Long)
+    @Query("delete from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
+    fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
+    @Query("select * from usages_common")
+    fun getAllCommonUsagesFlow() : Flow<List<UsageCommonDataModel>>
+
 }

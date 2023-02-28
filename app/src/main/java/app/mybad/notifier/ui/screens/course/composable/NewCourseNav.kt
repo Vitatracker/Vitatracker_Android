@@ -23,7 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsagesDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.ui.screens.course.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +38,7 @@ fun NewCourseNav(
 
     var newMed by remember { mutableStateOf(MedDomainModel()) }
     var newCourse by remember { mutableStateOf(CourseDomainModel()) }
-    var newUsages by remember { mutableStateOf(UsagesDomainModel()) }
+    var newCommonUsages by remember { mutableStateOf(listOf<UsageCommonDomainModel>()) }
     var title by remember { mutableStateOf("") }
     val currentDest = navController.currentBackStackEntryAsState()
     val state = vm.state.collectAsState()
@@ -104,16 +104,10 @@ fun NewCourseNav(
                     medId = newMed.id,
                     onNext = {
                         newCourse = it.first
-                        newUsages = it.second
+                        newCommonUsages = it.second
                         navController.navigate(NavItemCourse.NextCourse.route)
                         vm.reduce(CreateCourseIntent.NewCourse(it.first))
                         vm.reduce(CreateCourseIntent.NewUsages(it.second))
-                    },
-                    onChange = {
-                        vm.reduce(CreateCourseIntent.NewCourse(it.first))
-                        vm.reduce(CreateCourseIntent.NewUsages(it.second))
-                        newCourse = it.first
-                        newUsages = it.second
                     },
                     onBack = { navController.popBackStack() },
                 )

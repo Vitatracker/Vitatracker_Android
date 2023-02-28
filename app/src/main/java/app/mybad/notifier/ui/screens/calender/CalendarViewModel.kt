@@ -30,7 +30,7 @@ class CalendarViewModel @Inject constructor(
             meds.getAllFlow().collect { _state.emit(_state.value.copy(meds = it)) }
         }
         scope.launch {
-            usages.getAllFlow().collect { _state.emit(_state.value.copy(usages = it)) }
+            usages.getCommonAllFlow().collect { _state.emit(_state.value.copy(usages = it)) }
         }
     }
 
