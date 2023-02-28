@@ -315,14 +315,14 @@ private fun CalendarDayItem(
 private fun collectUsages(
     date: LocalDateTime?,
     usages: List<UsagesDomainModel>,
-) : List<Pair<Long, Long>> {  //time to medId
+) : List<Triple<Long, Long, Long>> {  //time, medId, factTime
 
-    val res = mutableListOf<Pair<Long, Long>>()
+    val res = mutableListOf<Triple<Long, Long, Long>>()
     usages.forEach { singleUsages ->
         singleUsages.usages.forEach {
             val itsTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(it.timeToUse), ZoneId.systemDefault())
             if(itsTime.year == date?.year && itsTime.dayOfYear == date.dayOfYear) {
-                res.add(Pair(it.timeToUse, singleUsages.medId))
+                res.add(Triple(it.timeToUse, singleUsages.medId, it.usedTime))
             }
         }
     }

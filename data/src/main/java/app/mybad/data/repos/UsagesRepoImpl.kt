@@ -2,6 +2,7 @@ package app.mybad.data.repos
 
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
+import app.mybad.data.models.usages.UsageDataModel
 import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.domain.repos.UsagesRepo
@@ -15,27 +16,37 @@ class UsagesRepoImpl @Inject constructor(
     private val db: MedDAO
 ) : UsagesRepo {
 
-    override fun getAll(): List<UsagesDomainModel> {
+    override suspend fun getAll(): List<UsagesDomainModel> {
         return db.getAllUsages().mapToDomain()
     }
 
-    override fun getAllFlow(): Flow<List<UsagesDomainModel>> {
+    override suspend fun getAllFlow(): Flow<List<UsagesDomainModel>> {
         return db.getAllUsagesFlow().map { it.mapToDomain() }
     }
 
-    override fun add(item: UsagesDomainModel) {
+    override suspend fun add(item: UsagesDomainModel) {
         db.addUsages(item.mapToData())
     }
 
-    override fun getSingle(medId: Long): UsagesDomainModel {
+    override suspend fun getSingle(medId: Long): UsagesDomainModel {
         return db.getUsagesByMedId(medId).mapToDomain()
     }
 
-    override fun updateSingle(medId: Long, item: UsagesDomainModel) {
+    override suspend fun updateSingle(medId: Long, item: UsagesDomainModel) {
         db.addUsages(item.copy(medId = medId).mapToData())
     }
 
-    override fun deleteSingle(medId: Long) {
+    override suspend fun deleteSingle(medId: Long) {
         db.deleteUsagesByMedId(medId)
+    }
+
+    override suspend fun setUsageTime(medId: Long, usageTime: Long, factTime: Long) {
+        var usages = db.getUsagesByMedId(medId)
+        val list = usages.usages as MutableList
+        val pos = list.indexOfLast { it.timeToUse == usageTime }
+        list.removeAt(pos)
+        list.add(pos, UsageDataModel(timeToUse = usageTime, usedTime = factTime))
+        usages = usages.copy(usages = list)
+        db.addUsages(usages)
     }
 }

@@ -128,7 +128,7 @@ fun DailyUsages(
     modifier: Modifier = Modifier,
     date: LocalDateTime?,
     meds: List<MedDomainModel>,
-    dayData: List<Pair<Long, Long>>,
+    dayData: List<Triple<Long, Long, Long>>,        //usageTime, medId, factTime
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {},
     onUsed: (Long, Long, Long) -> Unit = { medId, usageTime, factTime -> }
@@ -176,6 +176,7 @@ fun DailyUsages(
                 dayData.sortedBy { it.first }.forEach { entry ->
                     item { SingleUsageItem(
                         date = entry.first, med = meds.first{ it.id == entry.second },
+                        isTaken = entry.third > 1,
                         onTake = { datetime, medId ->
                             onUsed(medId, entry.first, datetime)
                         }

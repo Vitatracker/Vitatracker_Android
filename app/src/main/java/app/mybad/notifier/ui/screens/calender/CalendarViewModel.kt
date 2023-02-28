@@ -25,28 +25,26 @@ class CalendarViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
     init {
         scope.launch {
-            courses.getAllFlow().collect {
-                _state.emit(_state.value.copy(courses = it))
-                Log.w("CVM_", "courses: $it")
-            }
+            courses.getAllFlow().collect { _state.emit(_state.value.copy(courses = it)) }
         }
         scope.launch {
-            meds.getAllFlow().collect {
-                _state.emit(_state.value.copy(meds = it))
-                Log.w("CVM_", "meds: $it")
-            }
+            meds.getAllFlow().collect { _state.emit(_state.value.copy(meds = it)) }
         }
         scope.launch {
-            usages.getAllFlow().collect {
-                _state.emit(_state.value.copy(usages = it))
-                Log.w("CVM_", "usages: $it")
-            }
+            usages.getAllFlow().collect { _state.emit(_state.value.copy(usages = it)) }
         }
     }
 
     fun reducer(intent: CalendarIntent) {
         when(intent) {
             is CalendarIntent.SetUsage -> {
+                scope.launch {
+                    usages.setUsageTime(
+                        medId = intent.medId,
+                        usageTime = intent.usageTime,
+                        factTime = intent.factUsageTime
+                    )
+                }
                 Log.w("CVM_", "usage set: ${intent.usageTime} at ${intent.factUsageTime} with med ${intent.medId}")
             }
         }
