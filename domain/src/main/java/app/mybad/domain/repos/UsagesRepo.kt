@@ -10,6 +10,7 @@ interface UsagesRepo {
     suspend fun getUsagesByInterval(medId: Long, startTime: Long, endTime: Long) : List<UsageCommonDomainModel>
     suspend fun getUsagesByMedId(medId: Long) : List<UsageCommonDomainModel>
     suspend fun addUsages(usages: List<UsageCommonDomainModel>)
+    suspend fun updateSingle(usage: UsageCommonDomainModel)
     suspend fun deleteUsagesByMedId(medId: Long)
     suspend fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
 }

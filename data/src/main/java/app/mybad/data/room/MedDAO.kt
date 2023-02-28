@@ -36,6 +36,9 @@ interface MedDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUsages(usages: List<UsageCommonDataModel>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun updateSingleUsage(usage: UsageCommonDataModel)
     @Query("select * from usages_common where medId=(:medId)")
     fun getUsagesById(medId: Long) : List<UsageCommonDataModel>
     @Query("select * from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")

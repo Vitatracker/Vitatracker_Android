@@ -37,7 +37,7 @@ private fun SingleUsageItem(
     date: Long,
     med: MedDomainModel,
     isTaken: Boolean = false,
-    onTake: (Long, Long) -> Unit = { datetime, medId -> }
+    onTake: (Long) -> Unit
 ) {
     val units = stringArrayResource(R.array.units)
 
@@ -114,7 +114,7 @@ private fun SingleUsageItem(
                         .clip(CircleShape)
                         .clickable {
                             val now = if(!isTaken) Instant.now().epochSecond else -1L
-                            onTake(now, med.id)
+                            onTake(now)
                         }
                 )
             }
@@ -130,7 +130,7 @@ fun DailyUsages(
     dayData: List<UsageCommonDomainModel>,
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {},
-    onUsed: (Long, Long, Long) -> Unit = { medId, usageTime, factTime -> }
+    onUsed: (UsageCommonDomainModel) -> Unit
 ) {
 
     Surface(
@@ -179,8 +179,8 @@ fun DailyUsages(
                         date = entry.useTime,
                         med = meds.first { it.id == entry.medId },
                         isTaken = entry.factUseTime > 10L,
-                        onTake = { datetime, medId ->
-                            onUsed(medId, entry.useTime, datetime)
+                        onTake = { datetime ->
+                            onUsed(entry.copy(factUseTime = datetime))
                         }
                     ) }
                 }

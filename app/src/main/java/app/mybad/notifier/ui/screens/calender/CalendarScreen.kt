@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
@@ -39,7 +38,6 @@ import java.time.ZoneOffset
 @Composable
 fun CalendarScreen(
     modifier: Modifier = Modifier,
-    courses: List<CourseDomainModel>,
     usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>,
     reducer: (CalendarIntent) -> Unit
@@ -101,9 +99,7 @@ fun CalendarScreen(
                             usages = usages
                         )
                     },
-                    onUsed = { medId, usageTime, factTime ->
-                        reducer(CalendarIntent.SetUsage(medId, usageTime, factTime))
-                    }
+                    onUsed = { reducer(CalendarIntent.SetUsage(it)) }
                 )
             }
 

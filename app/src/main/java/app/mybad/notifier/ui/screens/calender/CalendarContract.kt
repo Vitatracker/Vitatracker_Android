@@ -11,5 +11,5 @@ data class CalendarState(
 )
 
 sealed interface CalendarIntent {
-    data class SetUsage(val medId: Long, val usageTime: Long, val factUsageTime: Long) : CalendarIntent
+    data class SetUsage(val usage: UsageCommonDomainModel) : CalendarIntent
 }

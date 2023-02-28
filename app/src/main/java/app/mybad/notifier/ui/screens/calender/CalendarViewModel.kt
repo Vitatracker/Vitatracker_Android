@@ -38,11 +38,7 @@ class CalendarViewModel @Inject constructor(
         when(intent) {
             is CalendarIntent.SetUsage -> {
                 scope.launch {
-                    usages.setUsageTime(
-                        medId = intent.medId,
-                        usageTime = intent.usageTime,
-                        factTime = intent.factUsageTime
-                    )
+                    usages.updateSingle(intent.usage)
                 }
             }
         }

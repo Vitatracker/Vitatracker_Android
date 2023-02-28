@@ -48,6 +48,10 @@ class UsagesRepoImpl @Inject constructor(
         db.addUsages(usages.mapToData())
     }
 
+    override suspend fun updateSingle(usage: UsageCommonDomainModel) {
+        db.updateSingleUsage(usage.mapToData())
+    }
+
     override suspend fun deleteUsagesByMedId(medId: Long) {
         db.deleteUsagesById(medId)
     }

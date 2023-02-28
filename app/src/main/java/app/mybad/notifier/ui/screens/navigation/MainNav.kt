@@ -68,7 +68,6 @@ fun MainNav(
             composable(NavItemMain.Calendar.route) {
                 CalendarScreen(
                     modifier = modifier,
-                    courses = calendarState.value.courses,
                     meds = calendarState.value.meds,
                     usages = calendarState.value.usages,
                     reducer = { intent -> calendarVm.reducer(intent) }
