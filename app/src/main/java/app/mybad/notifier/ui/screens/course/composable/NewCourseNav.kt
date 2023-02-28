@@ -103,6 +103,8 @@ fun NewCourseNav(
                     userId = userId,
                     medId = newMed.id,
                     onNext = {
+                        newCourse = it.first
+                        newUsages = it.second
                         navController.navigate(NavItemCourse.NextCourse.route)
                         vm.reduce(CreateCourseIntent.NewCourse(it.first))
                         vm.reduce(CreateCourseIntent.NewUsages(it.second))
@@ -131,7 +133,10 @@ fun NewCourseNav(
             }
             composable(NavItemCourse.CourseCreated.route) {
                 title = stringResource(NavItemCourse.CourseCreated.stringId)
-                CourseCreated { onDismiss() }
+                CourseCreated {
+                    onDismiss()
+                    vm.reduce(CreateCourseIntent.Drop)
+                }
             }
         }
     }

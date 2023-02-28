@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.calender
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
@@ -45,7 +44,6 @@ class CalendarViewModel @Inject constructor(
                         factTime = intent.factUsageTime
                     )
                 }
-                Log.w("CVM_", "usage set: ${intent.usageTime} at ${intent.factUsageTime} with med ${intent.medId}")
             }
         }
     }

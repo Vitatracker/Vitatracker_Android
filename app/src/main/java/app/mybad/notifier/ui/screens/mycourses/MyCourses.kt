@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.mycourses
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -12,10 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
@@ -25,7 +24,6 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//@Preview(showBackground = true)
 fun MyCourses(
     modifier: Modifier = Modifier,
     reducer: (MyCoursesIntent) -> Unit = {},
@@ -50,8 +48,8 @@ fun MyCourses(
             }
         )
         if(courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
-            LazyColumn() {
-                courses.forEach {course ->
+            LazyColumn {
+                courses.forEach { course ->
                     item {
                         CourseItem(course = course, med = meds.filter { it.id == course.medId }[0])
                         Spacer(Modifier.height(16.dp))
@@ -66,6 +64,8 @@ private fun validate(
     meds: List<MedDomainModel>,
     courses: List<CourseDomainModel>
 ) : Boolean {
+    Log.w("MC_meds", "$meds")
+    Log.w("MC_courses", "$courses")
     var isValid = true
     val mm = meds.mapIndexed { index, medDomainModel -> index to medDomainModel.id }.toMap()
     courses.forEach {
@@ -111,7 +111,7 @@ private fun CourseItem(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            painter = painterResource(med.details.icon),
+                            painter = painterResource(if(med.details.icon == 1) R.drawable.pill else R.drawable.settings),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onPrimary

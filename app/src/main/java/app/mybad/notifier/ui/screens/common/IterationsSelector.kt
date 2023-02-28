@@ -69,7 +69,10 @@ fun IterationsSelector(
                 readOnly = readOnly,
                 value = iterations.toString(),
                 textStyle = Typography.bodyLarge.copy(textAlign = TextAlign.Center),
-                onValueChange = { if(!readOnly) iterations = it.toIntOrNull() ?: 0},
+                onValueChange = {
+                    iterations = it.toInt()
+                    onSelect(it.toInt())
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Go

@@ -16,7 +16,6 @@ import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -31,16 +30,16 @@ fun AddCourse(
 ) {
 
     val now = LocalDateTime.now()
-    val startDate = now.withHour(0).withMinute(0).withSecond(0).toEpochSecond(
-        ZoneOffset.UTC)
+    val startDate = now.withHour(0).withMinute(0).withSecond(0)
+        .toEpochSecond(ZoneOffset.UTC)
     var timesPerDay by remember { mutableStateOf(2) }
     var duration by remember { mutableStateOf(2) }
     var newCourse by remember { mutableStateOf(CourseDomainModel(
+        id = now.toEpochSecond(ZoneOffset.UTC),
         medId = medId,
         userId = userId,
         startDate = startDate,
         creationDate = now.toEpochSecond(ZoneOffset.UTC),
-        id = Instant.now().epochSecond
     )) }
     var newUsages by remember { mutableStateOf(UsagesDomainModel(
         medId = medId,
@@ -79,7 +78,7 @@ fun AddCourse(
                 limit = Int.MAX_VALUE,
                 readOnly = false
             ) {
-                newCourse = newCourse.copy(endDate = newCourse.startDate + it*86400)
+                newCourse = newCourse.copy(endDate = newCourse.startDate + it*86400L)
                 duration = it
             }
             Spacer(Modifier.height(16.dp))

@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.calender
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -104,7 +103,6 @@ private fun SingleUsageItem(
                         Text(text = "2 pcs", style = Typography.labelMedium)
                     }
                 }
-                Log.w("BSU_", "${med.name} $isTaken")
                 Icon(
                     imageVector = if(isTaken) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
                     contentDescription = null,
