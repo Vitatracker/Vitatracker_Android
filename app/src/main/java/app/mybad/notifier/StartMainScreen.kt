@@ -34,7 +34,6 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
@@ -86,7 +85,7 @@ fun StartMainScreen(
     navController: NavHostController
 ) {
 
-    val uiState by mainScreenViewModel.uiState.collectAsState()
+//    val uiState by mainScreenViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -108,9 +107,7 @@ fun StartMainScreen(
         ) {
             MainScreen(
                 navController = navController,
-                uiState = uiState,
-                changeMonth = { mainScreenViewModel.changeMonth(LocalDate.now().monthValue) },
-                changeDay = { mainScreenViewModel.changeDay(LocalDate.now().dayOfMonth) }
+                changeData = { mainScreenViewModel.changeData() }
             )
         }
     }
@@ -121,9 +118,7 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    uiState: LocalDate,
-    changeMonth: (Int) -> Unit,
-    changeDay: (Int) -> Unit
+    changeData: (LocalDate) -> Unit
 ) {
 
     Box(
@@ -133,8 +128,7 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(uiState = uiState, changeMonth = changeMonth)
-            MainScreenWeekPager(uiState = uiState, changeDay = changeDay)
+            MainScreenMonthPager(changeData = changeData)
             MainScreenTextCategory()
             MainScreenLazyMedicines()
         }
@@ -150,8 +144,7 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    uiState: LocalDate,
-    changeMonth: (Int) -> Unit
+    changeData: (LocalDate) -> Unit
 ) {
 
     val paddingStart = 10.dp
@@ -159,11 +152,6 @@ fun MainScreenMonthPager(
 
     val state = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(state.currentPage) {
-        delay(50)
-        changeMonth(state.currentPage)
-    }
 
     HorizontalPager(
         pageCount = Month.values().size,
@@ -216,14 +204,15 @@ fun MainScreenMonthPager(
             )
         }
     }
+    MainScreenWeekPager(
+        monthState = state.currentPage,
+        setData = { changeData(LocalDate.now()) }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(
-    uiState: LocalDate,
-    changeDay: (Int) -> Unit
-) {
+fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -237,11 +226,11 @@ fun MainScreenWeekPager(
 
     LaunchedEffect(state.currentPage) {
         delay(50)
-        changeDay(state.currentPage)
+        setData(LocalDate.of(LocalDate.now().year, monthState + 1, state.currentPage))
     }
 
     HorizontalPager(
-        pageCount = YearMonth.of(LocalDate.now().year, uiState.monthValue + 1).lengthOfMonth(),
+        pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
         state = state,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
@@ -266,7 +255,7 @@ fun MainScreenWeekPager(
             ) {
 
                 countDay = days + 1
-                calendar.time = Date(Year.now().value, uiState.monthValue, days)
+                calendar.time = Date(Year.now().value, monthState, days)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
                     DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
@@ -306,7 +295,6 @@ fun MainScreenWeekPager(
 
         }
     }
-
 }
 
 @Composable
