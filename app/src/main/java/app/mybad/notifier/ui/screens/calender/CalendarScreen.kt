@@ -51,6 +51,10 @@ fun CalendarScreen(
     var selectedDate : LocalDateTime? by remember { mutableStateOf(date) }
     val scope = rememberCoroutineScope()
     var dialogIsShown by remember { mutableStateOf(false) }
+    var daily = collectUsages(
+        date = selectedDate,
+        usages = usages
+    )
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -85,16 +89,19 @@ fun CalendarScreen(
                 }
             )
             if(dialogIsShown) BottomSlideInDialog(onDismissRequest = { dialogIsShown = false }) {
-                val daily = collectUsages(
-                    date = selectedDate,
-                    usages = usages
-                )
+
                 DailyUsages(
                     date = selectedDate,
                     dayData = daily,
                     meds = meds,
                     onDismiss = { dialogIsShown = false },
-                    onNewDate = { selectedDate = it },
+                    onNewDate = {
+                        selectedDate = it
+                        daily = collectUsages(
+                            date = selectedDate,
+                            usages = usages
+                        )
+                    },
                     onUsed = { medId, usageTime, factTime ->
                         reducer(CalendarIntent.SetUsage(medId, usageTime, factTime))
                     }

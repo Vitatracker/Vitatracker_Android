@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.calender
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -39,7 +40,6 @@ private fun SingleUsageItem(
     onTake: (Long, Long) -> Unit = { datetime, medId -> }
 ) {
     val units = stringArrayResource(R.array.units)
-    var _isTaken by remember { mutableStateOf(isTaken) }
 
     Row(
         verticalAlignment = Alignment.Top,
@@ -104,8 +104,9 @@ private fun SingleUsageItem(
                         Text(text = "2 pcs", style = Typography.labelMedium)
                     }
                 }
+                Log.w("BSU_", "${med.name} $isTaken")
                 Icon(
-                    imageVector = if(_isTaken) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+                    imageVector = if(isTaken) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
@@ -113,8 +114,7 @@ private fun SingleUsageItem(
                         .size(30.dp)
                         .clip(CircleShape)
                         .clickable {
-                            _isTaken = !_isTaken
-                            val now = if(_isTaken) Instant.now().epochSecond else -1L
+                            val now = if(!isTaken) Instant.now().epochSecond else -1L
                             onTake(now, med.id)
                         }
                 )
@@ -175,8 +175,9 @@ fun DailyUsages(
             ) {
                 dayData.sortedBy { it.first }.forEach { entry ->
                     item { SingleUsageItem(
-                        date = entry.first, med = meds.first{ it.id == entry.second },
-                        isTaken = entry.third > 1,
+                        date = entry.first,
+                        med = meds.first { it.id == entry.second },
+                        isTaken = entry.third > 10L,
                         onTake = { datetime, medId ->
                             onUsed(medId, entry.first, datetime)
                         }
