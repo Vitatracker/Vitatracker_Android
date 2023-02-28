@@ -7,7 +7,6 @@ import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import javax.inject.Inject
@@ -57,9 +56,20 @@ class StartMainScreenViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(LocalDate.now())
     var uiState = _uiState.asStateFlow()
 
-   fun setUiState(date: LocalDate = LocalDate.now()) {
-        _uiState.value = date
-       Log.d("MainScreen", "date: $date")
+    fun changeMonth(month: Int) {
+        setSelectedDay(year = _uiState.value.year, month = month, _uiState.value.dayOfMonth)
+    }
+
+    fun changeDay(day: Int) {
+        setSelectedDay(year = _uiState.value.year, month = _uiState.value.month.value, day)
+    }
+
+    private fun setSelectedDay(
+        year: Int = LocalDate.now().year,
+        month: Int = LocalDate.now().month.value,
+        day: Int = LocalDate.now().dayOfMonth
+    ) {
+        _uiState.value = LocalDate.of(year, month, day)
     }
 
 }

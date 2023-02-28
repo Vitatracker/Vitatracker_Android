@@ -2,7 +2,6 @@ package app.mybad.notifier
 
 import android.content.res.Resources
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -35,7 +34,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
@@ -88,7 +87,6 @@ fun StartMainScreen(
 ) {
 
     val uiState by mainScreenViewModel.uiState.collectAsState()
-    val dataNow = LocalDate.now()
 
     Scaffold(
         topBar = {
@@ -110,7 +108,9 @@ fun StartMainScreen(
         ) {
             MainScreen(
                 navController = navController,
-                setData = { mainScreenViewModel.setUiState() }
+                uiState = uiState,
+                changeMonth = { mainScreenViewModel.changeMonth(LocalDate.now().monthValue) },
+                changeDay = { mainScreenViewModel.changeDay(LocalDate.now().dayOfMonth) }
             )
         }
     }
@@ -121,7 +121,9 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    setData: (LocalDate) -> Unit
+    uiState: LocalDate,
+    changeMonth: (Int) -> Unit,
+    changeDay: (Int) -> Unit
 ) {
 
     Box(
@@ -131,7 +133,8 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(setData = { setData(LocalDate.now()) })
+            MainScreenMonthPager(uiState = uiState, changeMonth = changeMonth)
+            MainScreenWeekPager(uiState = uiState, changeDay = changeDay)
             MainScreenTextCategory()
             MainScreenLazyMedicines()
         }
@@ -147,7 +150,8 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    setData: (LocalDate) -> Unit
+    uiState: LocalDate,
+    changeMonth: (Int) -> Unit
 ) {
 
     val paddingStart = 10.dp
@@ -155,6 +159,11 @@ fun MainScreenMonthPager(
 
     val state = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(state.currentPage) {
+        delay(50)
+        changeMonth(state.currentPage)
+    }
 
     HorizontalPager(
         pageCount = Month.values().size,
@@ -207,15 +216,14 @@ fun MainScreenMonthPager(
             )
         }
     }
-    MainScreenWeekPager(
-        monthState = state.currentPage,
-        setData = { setData(LocalDate.now()) }
-    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
+fun MainScreenWeekPager(
+    uiState: LocalDate,
+    changeDay: (Int) -> Unit
+) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -229,11 +237,11 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
 
     LaunchedEffect(state.currentPage) {
         delay(50)
-        setData(LocalDate.of(LocalDate.now().year, monthState+1, state.currentPage))
+        changeDay(state.currentPage)
     }
 
     HorizontalPager(
-        pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
+        pageCount = YearMonth.of(LocalDate.now().year, uiState.monthValue + 1).lengthOfMonth(),
         state = state,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
@@ -258,9 +266,10 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
             ) {
 
                 countDay = days + 1
-                calendar.time = Date(Year.now().value, monthState, days)
+                calendar.time = Date(Year.now().value, uiState.monthValue, days)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-                shortNameOfDay = DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
+                shortNameOfDay =
+                    DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
