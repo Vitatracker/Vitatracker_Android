@@ -17,6 +17,9 @@ import app.mybad.domain.models.usages.UsagesDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Composable
 fun AddCourse(
@@ -28,10 +31,22 @@ fun AddCourse(
     onBack: () -> Unit = {},
 ) {
 
+    val now = LocalDateTime.now()
+    val startDate = now.withHour(0).withMinute(0).withSecond(0).toEpochSecond(
+        ZoneOffset.UTC)
     var timesPerDay by remember { mutableStateOf(2) }
     var duration by remember { mutableStateOf(2) }
-    var newCourse by remember { mutableStateOf(CourseDomainModel(medId = medId, userId = userId)) }
-    var newUsages by remember { mutableStateOf(UsagesDomainModel(medId = medId, userId = userId)) }
+    var newCourse by remember { mutableStateOf(CourseDomainModel(
+        medId = medId,
+        userId = userId,
+        startDate = startDate,
+        creationDate = now.toEpochSecond(ZoneOffset.UTC)
+    )) }
+    var newUsages by remember { mutableStateOf(UsagesDomainModel(
+        medId = medId,
+        userId = userId,
+        creationDate = now.toEpochSecond(ZoneOffset.UTC)
+    )) }
     var newUsagesList by remember { mutableStateOf(emptyList<Int>()) }
 
     Column(

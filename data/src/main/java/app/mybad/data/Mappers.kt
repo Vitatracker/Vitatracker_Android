@@ -14,6 +14,7 @@ import app.mybad.domain.models.usages.UsagesDomainModel
 fun CourseDataModel.mapToDomain() : CourseDomainModel {
     return CourseDomainModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, showUsageTime, isFinished, isInfinite)
 }
+@JvmName("listCdmToDomain")
 fun List<CourseDataModel>.mapToDomain() : List<CourseDomainModel> {
     return mutableListOf<CourseDomainModel>().apply {
         this@mapToDomain.forEach {
@@ -28,6 +29,8 @@ fun CourseDomainModel.mapToData() : CourseDataModel {
 fun UsagesDataModel.mapToDomain() : UsagesDomainModel {
     return UsagesDomainModel(medId, creationDate, userId, needControl, usages.mapToDomain())
 }
+
+@JvmName("listUsdmToDomain")
 fun List<UsagesDataModel>.mapToDomain() : List<UsagesDomainModel> {
     return mutableListOf<UsagesDomainModel>().apply {
         this@mapToDomain.forEach {
@@ -38,6 +41,7 @@ fun List<UsagesDataModel>.mapToDomain() : List<UsagesDomainModel> {
 fun UsageDataModel.mapToDomain() : UsageDomainModel {
     return UsageDomainModel(timeToUse, usedTime)
 }
+@JvmName("listUdmToDomain")
 fun List<UsageDataModel>.mapToDomain() : List<UsageDomainModel> {
     return mutableListOf<UsageDomainModel>().apply {
         this@mapToDomain.forEach {
@@ -69,6 +73,7 @@ fun MedDataModel.mapToDomain() : MedDomainModel {
     return MedDomainModel(id, creationDate, updateDate, userId, name, description, comment, details.mapToDomain())
 }
 
+@JvmName("listMdmToDomain")
 fun List<MedDataModel>.mapToDomain() : List<MedDomainModel> {
     return mutableListOf<MedDomainModel>().apply {
         this@mapToDomain.forEach {

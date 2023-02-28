@@ -27,7 +27,11 @@ class CreateCourseViewModel @Inject constructor(
         when(intent) {
             is CreateCourseIntent.Drop -> { scope.launch { _state.emit(CreateCourseState()) } }
             is CreateCourseIntent.Finish -> {
-
+                scope.launch {
+                    coursesRepo.add(_state.value.course)
+                    medsRepo.add(_state.value.med)
+                    usagesRepo.add(_state.value.usages)
+                }
             }
             is CreateCourseIntent.NewMed -> {
                 scope.launch { _state.emit(_state.value.copy(med = intent.med)) }

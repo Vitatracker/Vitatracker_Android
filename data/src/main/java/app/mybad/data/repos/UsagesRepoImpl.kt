@@ -18,6 +18,10 @@ class UsagesRepoImpl @Inject constructor(
         return db.getAllUsages().mapToDomain()
     }
 
+    override fun add(item: UsagesDomainModel) {
+        db.addUsages(item.mapToData())
+    }
+
     override fun getSingle(medId: Long): UsagesDomainModel {
         return db.getUsagesByMedId(medId).mapToDomain()
     }

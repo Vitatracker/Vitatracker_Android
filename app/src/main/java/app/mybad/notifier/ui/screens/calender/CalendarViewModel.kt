@@ -21,14 +21,16 @@ class CalendarViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private val _state = MutableStateFlow(CalendarState(
-        meds = meds.getAll(),
-        usages = usages.getAll(),
-    ))
+    private val _state = MutableStateFlow(CalendarState())
     val state get() = _state.asStateFlow()
     init {
         scope.launch {
-            _state.emit(_state.value.copy(courses = courses.getAll()))
+            _state.emit(_state.value.copy(
+                courses = courses.getAll(),
+                meds = meds.getAll(),
+                usages = usages.getAll()
+            ))
+            Log.w("CS_", "${_state.value}")
         }
     }
 
