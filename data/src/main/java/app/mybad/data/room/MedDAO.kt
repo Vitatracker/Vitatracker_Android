@@ -7,6 +7,7 @@ import androidx.room.Query
 import app.mybad.data.models.course.CourseDataModel
 import app.mybad.data.models.med.MedDataModel
 import app.mybad.data.models.usages.UsagesDataModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MedDAO {
@@ -15,6 +16,8 @@ interface MedDAO {
     fun getMedById(medId: Long) : MedDataModel
     @Query("select * from meds")
     fun getAllMeds() : List<MedDataModel>
+    @Query("select * from meds")
+    fun getAllMedsFlow() : Flow<List<MedDataModel>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMed(med: MedDataModel)
     @Query("delete from meds where id=(:medId)")
@@ -24,6 +27,8 @@ interface MedDAO {
     fun getCourseById(courseId: Long) : CourseDataModel
     @Query("select * from courses")
     fun getAllCourses() : List<CourseDataModel>
+    @Query("select * from courses")
+    fun getAllCoursesFlow() : Flow<List<CourseDataModel>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCourse(course: CourseDataModel)
     @Query("delete from courses where id=(:courseId)")
@@ -33,6 +38,8 @@ interface MedDAO {
     fun getUsagesByMedId(medId: Long) : UsagesDataModel
     @Query("select * from usages")
     fun getAllUsages() : List<UsagesDataModel>
+    @Query("select * from usages")
+    fun getAllUsagesFlow() : Flow<List<UsagesDataModel>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUsages(usages: UsagesDataModel)
     @Query("delete from usages where medId=(:medId)")

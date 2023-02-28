@@ -25,6 +25,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.theme.Typography
+import java.time.Instant
 
 @Composable
 fun AddMedScreen(
@@ -36,7 +37,7 @@ fun AddMedScreen(
     onBack: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    var newMed by remember { mutableStateOf(init.copy(userId = userId)) }
+    var newMed by remember { mutableStateOf(init.copy(userId = userId, id = Instant.now().epochSecond)) }
 
     Column(
         modifier = modifier.fillMaxSize(),

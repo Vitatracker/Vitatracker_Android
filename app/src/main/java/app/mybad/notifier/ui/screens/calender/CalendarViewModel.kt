@@ -25,12 +25,22 @@ class CalendarViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
     init {
         scope.launch {
-            _state.emit(_state.value.copy(
-                courses = courses.getAll(),
-                meds = meds.getAll(),
-                usages = usages.getAll()
-            ))
-            Log.w("CS_", "${_state.value}")
+            courses.getAllFlow().collect {
+                _state.emit(_state.value.copy(courses = it))
+                Log.w("CVM_", "courses: $it")
+            }
+        }
+        scope.launch {
+            meds.getAllFlow().collect {
+                _state.emit(_state.value.copy(meds = it))
+                Log.w("CVM_", "meds: $it")
+            }
+        }
+        scope.launch {
+            usages.getAllFlow().collect {
+                _state.emit(_state.value.copy(usages = it))
+                Log.w("CVM_", "usages: $it")
+            }
         }
     }
 

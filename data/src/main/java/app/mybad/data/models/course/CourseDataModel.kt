@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "courses")
 data class CourseDataModel(
-    @PrimaryKey(autoGenerate = true) val id: Long = -1L,
+    @PrimaryKey var id: Long = 0L,
     val creationDate: Long = 0L,
     val updateDate: Long = 0L,
     val userId: String = "userid",

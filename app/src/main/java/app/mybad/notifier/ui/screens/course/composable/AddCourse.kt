@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.usages.UsageDomainModel
@@ -40,7 +39,8 @@ fun AddCourse(
         medId = medId,
         userId = userId,
         startDate = startDate,
-        creationDate = now.toEpochSecond(ZoneOffset.UTC)
+        creationDate = now.toEpochSecond(ZoneOffset.UTC),
+        id = Instant.now().epochSecond
     )) }
     var newUsages by remember { mutableStateOf(UsagesDomainModel(
         medId = medId,
