@@ -30,10 +30,10 @@ fun TimeSelector(
     val minutesPagerState = rememberPagerState(initialPage = minutes)
 
     LaunchedEffect(hoursPagerState.currentPage) {
-        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60 * 5)
+        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60)
     }
     LaunchedEffect(minutesPagerState.currentPage) {
-        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60 * 5)
+        onSelect(hoursPagerState.currentPage * 3600 + minutesPagerState.currentPage * 60)
     }
 
     Column(
@@ -74,11 +74,11 @@ fun TimeSelector(
                         .width(1.dp)
                 )
                 VerticalPager(
-                    pageCount = 12,
+                    pageCount = 60,
                     state = minutesPagerState,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    var text = (it*5).toString()
+                    var text = it.toString()
                     if(text.length == 1) text = "0$text"
                     Text(
                         text = text,

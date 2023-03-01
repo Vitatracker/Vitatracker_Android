@@ -49,5 +49,7 @@ interface MedDAO {
     fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
     @Query("select * from usages_common")
     fun getAllCommonUsagesFlow() : Flow<List<UsageCommonDataModel>>
+    @Query("select * from usages_common")
+    fun getAllCommonUsages() :List<UsageCommonDataModel>
 
 }

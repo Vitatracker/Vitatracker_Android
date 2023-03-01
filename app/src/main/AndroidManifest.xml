@@ -37,7 +37,12 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <receiver android:name="app.mybad.notifications.AlarmReceiver"/>
+        <receiver android:name="app.mybad.notifications.AlarmReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
         <service android:name="app.mybad.notifications.AlarmService"/>
     </application>
 

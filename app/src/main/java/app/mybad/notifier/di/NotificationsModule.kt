@@ -2,6 +2,8 @@ package app.mybad.notifier.di
 
 import android.app.AlarmManager
 import android.content.Context
+import app.mybad.domain.repos.MedsRepo
+import app.mybad.domain.repos.UsagesRepo
 import app.mybad.notifications.NotificationsScheduler
 import dagger.Module
 import dagger.Provides
@@ -21,7 +23,14 @@ class NotificationsModule {
 
     @Provides
     @Singleton
-    fun providesNotificationScheduler(@ApplicationContext context: Context) =
-        NotificationsScheduler(context)
+    fun providesNotificationScheduler(
+        @ApplicationContext context: Context,
+        usagesRepo: UsagesRepo,
+        medsRepo: MedsRepo
+    ) = NotificationsScheduler(
+            context = context,
+            usagesRepo = usagesRepo,
+            medsRepo = medsRepo
+        )
 
 }

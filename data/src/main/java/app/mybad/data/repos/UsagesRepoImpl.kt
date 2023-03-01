@@ -19,6 +19,10 @@ class UsagesRepoImpl @Inject constructor(
         return db.getAllCommonUsagesFlow().map { it.mapToDomain() }
     }
 
+    override suspend fun getCommonAll(): List<UsageCommonDomainModel> {
+        return db.getAllCommonUsages().mapToDomain()
+    }
+
     override suspend fun deleteSingle(medId: Long) {
         db.deleteUsagesById(medId)
     }
