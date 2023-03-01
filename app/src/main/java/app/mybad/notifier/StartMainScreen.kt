@@ -2,6 +2,7 @@ package app.mybad.notifier
 
 import android.content.res.Resources
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -40,6 +41,7 @@ import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
 import java.util.Date
+import java.util.Locale
 
 private val coursesList = listOf(
     CourseDomainModel(id = 1L, medId = 1L, startDate = 0L, endDate = 11000000L),
@@ -231,13 +233,13 @@ fun MainScreenWeekPager(
     var dayOfWeek by remember { mutableStateOf(0) }
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val stateDay = rememberPagerState(uiState.value.dayOfMonth)
+    val stateDay = rememberPagerState(uiState.value.dayOfMonth-1)
     val scope = rememberCoroutineScope()
-    var date by remember { mutableStateOf(LocalDate.now()) }
+    val date by remember { mutableStateOf(LocalDate.now()) }
 
-    LaunchedEffect(date) {
-        uiState.value = date
+    LaunchedEffect(stateDay.currentPage) {
         delay(50)
+        uiState.value = date.withDayOfMonth(stateDay.currentPage+1)
         changeData(uiState)
     }
 
@@ -253,7 +255,7 @@ fun MainScreenWeekPager(
         contentPadding = PaddingValues(
             horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
         )
-    ) { //days ->
+    ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
@@ -266,13 +268,11 @@ fun MainScreenWeekPager(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                countDay = it + 1
-                calendar.time = Date(Year.now().value, monthState, countDay)
+                countDay = it+1
+                calendar.time = Date(Year.now().value, monthState, it)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
-                    DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
-
-                date = LocalDate.of(LocalDate.now().year, monthState + 1, stateDay.currentPage)
+                    DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
