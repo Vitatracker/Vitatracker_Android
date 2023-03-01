@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,6 +35,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
@@ -85,7 +87,8 @@ fun StartMainScreen(
     navController: NavHostController
 ) {
 
-//    val uiState by mainScreenViewModel.uiState.collectAsState()
+    val uiState by mainScreenViewModel.uiState.collectAsState()
+    val dateNow = remember { mutableStateOf(uiState) }
 
     Scaffold(
         topBar = {
@@ -107,7 +110,8 @@ fun StartMainScreen(
         ) {
             MainScreen(
                 navController = navController,
-                changeData = { mainScreenViewModel.changeData() }
+                uiState = dateNow,
+                changeData = { mainScreenViewModel.changeData(dateNow.value) }
             )
         }
     }
@@ -118,7 +122,8 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    changeData: (LocalDate) -> Unit
+    uiState: MutableState<LocalDate>,
+    changeData: (MutableState<LocalDate>) -> Unit
 ) {
 
     Box(
@@ -128,7 +133,7 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(changeData = changeData)
+            MainScreenMonthPager(uiState = uiState, changeData = changeData)
             MainScreenTextCategory()
             MainScreenLazyMedicines()
         }
@@ -144,18 +149,18 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    changeData: (LocalDate) -> Unit
+    uiState: MutableState<LocalDate>,
+    changeData: (MutableState<LocalDate>) -> Unit = {}
 ) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
-
-    val state = rememberPagerState(LocalDate.now().month.ordinal)
+    val stateMonth = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
         pageCount = Month.values().size,
-        state = state,
+        state = stateMonth,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
         modifier = Modifier
@@ -172,15 +177,15 @@ fun MainScreenMonthPager(
         ) {
             Text(
                 text = AnnotatedString(Month.values()[month].toString().substring(0, 3)),
-                color = if (state.currentPage == month) {
+                color = if (stateMonth.currentPage == month) {
                     MaterialTheme.colorScheme.primary
-                } else if (state.currentPage == month + 1) {
+                } else if (stateMonth.currentPage == month + 1) {
                     Color.Black
-                } else if (state.currentPage == month - 1) {
+                } else if (stateMonth.currentPage == month - 1) {
                     Color.Black
-                } else if (state.currentPage == month + 2) {
+                } else if (stateMonth.currentPage == month + 2) {
                     Color.Gray
-                } else if (state.currentPage == month - 2) {
+                } else if (stateMonth.currentPage == month - 2) {
                     Color.Gray
                 } else {
                     Color.LightGray
@@ -188,13 +193,13 @@ fun MainScreenMonthPager(
                 modifier = Modifier
                     .padding(1.dp)
                     .clickable {
-                        scope.launch { state.animateScrollToPage(month) }
+                        scope.launch { stateMonth.animateScrollToPage(month) }
                     },
-                fontWeight = if (state.currentPage == month) {
+                fontWeight = if (stateMonth.currentPage == month) {
                     FontWeight.Bold
-                } else if (state.currentPage == month + 1) {
+                } else if (stateMonth.currentPage == month + 1) {
                     FontWeight.Normal
-                } else if (state.currentPage == month - 1) {
+                } else if (stateMonth.currentPage == month - 1) {
                     FontWeight.Normal
                 } else {
                     FontWeight.Normal
@@ -205,14 +210,19 @@ fun MainScreenMonthPager(
         }
     }
     MainScreenWeekPager(
-        monthState = state.currentPage,
-        setData = { changeData(LocalDate.now()) }
+        monthState = stateMonth.currentPage,
+        uiState = uiState,
+        changeData = { changeData(uiState) }
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
+fun MainScreenWeekPager(
+    monthState: Int,
+    uiState: MutableState<LocalDate>,
+    changeData: (MutableState<LocalDate>) -> Unit = {}
+) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -221,17 +231,19 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
     var dayOfWeek by remember { mutableStateOf(0) }
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val state = rememberPagerState(LocalDate.now().dayOfMonth)
+    val stateDay = rememberPagerState(uiState.value.dayOfMonth)
     val scope = rememberCoroutineScope()
+    var date by remember { mutableStateOf(LocalDate.now()) }
 
-    LaunchedEffect(state.currentPage) {
+    LaunchedEffect(date) {
+        uiState.value = date
         delay(50)
-        setData(LocalDate.of(LocalDate.now().year, monthState + 1, state.currentPage))
+        changeData(uiState)
     }
 
     HorizontalPager(
         pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
-        state = state,
+        state = stateDay,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
         modifier = Modifier
@@ -240,13 +252,13 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
             horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
-        ),
-    ) { days ->
+        )
+    ) { //days ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            color = if (state.currentPage == days) MaterialTheme.colorScheme.primary else Color.White
+            color = if (stateDay.currentPage == it) MaterialTheme.colorScheme.primary else Color.White
         ) {
             Column(
                 modifier = Modifier,
@@ -254,20 +266,22 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
                 verticalArrangement = Arrangement.Center
             ) {
 
-                countDay = days + 1
-                calendar.time = Date(Year.now().value, monthState, days)
+                countDay = it + 1
+                calendar.time = Date(Year.now().value, monthState, countDay)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
                     DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
+
+                date = LocalDate.of(LocalDate.now().year, monthState + 1, stateDay.currentPage)
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
-                            scope.launch { state.animateScrollToPage(days) }
+                            scope.launch { stateDay.animateScrollToPage(it) }
                         },
-                    fontWeight = if (state.currentPage == days) {
+                    fontWeight = if (stateDay.currentPage == it) {
                         FontWeight.Bold
                     } else {
                         FontWeight.Normal
@@ -281,9 +295,9 @@ fun MainScreenWeekPager(monthState: Int, setData: (LocalDate) -> Unit) {
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
-                            scope.launch { state.animateScrollToPage(days) }
+                            scope.launch { stateDay.animateScrollToPage(it) }
                         },
-                    fontWeight = if (state.currentPage == days) {
+                    fontWeight = if (stateDay.currentPage == it) {
                         FontWeight.Bold
                     } else {
                         FontWeight.Normal

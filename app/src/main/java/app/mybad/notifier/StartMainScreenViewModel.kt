@@ -56,7 +56,7 @@ class StartMainScreenViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(LocalDate.now())
     var uiState = _uiState.asStateFlow()
 
-   fun changeData(date: LocalDate = LocalDate.now()) {
+   fun changeData(date: LocalDate) {
         _uiState.value = date
        Log.d("MainScreen", "date: $date")
     }
