@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -8,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdk 24
+        minSdk 26
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -29,8 +30,13 @@ android {
         jvmTarget = '1.8'
     }
 }
-
+kapt {
+    correctErrorTypes = true
+}
 dependencies {
-
+    implementation project(path: ":domain")
     implementation 'androidx.core:core-ktx:1.9.0'
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.45")
+    kapt("com.google.dagger:hilt-android-compiler:2.45")
 }

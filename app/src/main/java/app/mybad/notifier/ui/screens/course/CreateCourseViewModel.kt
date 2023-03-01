@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
+import app.mybad.notifications.NotificationsScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ class CreateCourseViewModel @Inject constructor(
     private val coursesRepo: CoursesRepo,
     private val medsRepo: MedsRepo,
     private val usagesRepo: UsagesRepo,
+    private val notificationsScheduler: NotificationsScheduler
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -31,6 +33,7 @@ class CreateCourseViewModel @Inject constructor(
                     coursesRepo.add(_state.value.course)
                     medsRepo.add(_state.value.med)
                     usagesRepo.addUsages(_state.value.usages)
+                    notificationsScheduler.setAlarm(_state.value.usages)
                 }
             }
             is CreateCourseIntent.NewMed -> {
@@ -40,8 +43,11 @@ class CreateCourseViewModel @Inject constructor(
                 scope.launch { _state.emit(_state.value.copy(course = intent.course)) }
             }
             is CreateCourseIntent.NewUsages -> {
-                scope.launch { _state.emit(_state.value.copy(usages = intent.usages)) }
+                scope.launch {
+                    _state.emit(_state.value.copy(usages = intent.usages))
+                }
             }
         }
     }
 }
+

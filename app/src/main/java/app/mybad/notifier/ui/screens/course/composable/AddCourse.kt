@@ -16,6 +16,7 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 
 @Composable
@@ -29,7 +30,7 @@ fun AddCourse(
 
     val now = LocalDateTime.now()
     val startDate = now.withHour(0).withMinute(0).withSecond(0)
-        .toEpochSecond(ZoneOffset.UTC)
+        .atZone(ZoneId.systemDefault()).toEpochSecond()
     var timesPerDay by remember { mutableStateOf(2) }
     var duration by remember { mutableStateOf(2) }
     var newCourse by remember { mutableStateOf(CourseDomainModel(
@@ -37,7 +38,7 @@ fun AddCourse(
         medId = medId,
         userId = userId,
         startDate = startDate,
-        creationDate = now.toEpochSecond(ZoneOffset.UTC),
+        creationDate = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
     )) }
     var newCommonUsages by remember {
         mutableStateOf(listOf<UsageCommonDomainModel>())
@@ -86,7 +87,7 @@ fun AddCourse(
             onBack = onBack::invoke,
             onNext = {
                 newCommonUsages = generateCommonUsages(
-                    now = now.toEpochSecond(ZoneOffset.UTC),
+                    now = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
                     medId = medId,
                     userId = userId,
                     startDate = newCourse.startDate,
