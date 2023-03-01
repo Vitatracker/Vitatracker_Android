@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,11 +37,11 @@ class StartMainScreenViewModel @Inject constructor(
         scope.launch {
             usages.getCommonAllFlow().collect { _uiState.emit(_uiState.value.copy(usages = it)) }
         }
+        scope.launch { _uiState.emit(_uiState.value.copy(date = LocalDateTime.now())) }
     }
 
-    fun changeData(date: LocalDate) {
-        _uiState.value.date = date
-        Log.d("MainScreen", "date: $date")
+    fun changeData(date: LocalDateTime) {
+        scope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
     }
 
 }

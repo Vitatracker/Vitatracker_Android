@@ -6,6 +6,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
@@ -48,6 +50,9 @@ fun StartMainScreen(
 
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
+    val courses = remember { mutableStateOf(uiState.courses) }
+    val meds = remember { mutableStateOf(uiState.meds) }
+    val usages = remember { mutableStateOf(uiState.usages) }
 
     Scaffold(
         topBar = {
@@ -70,7 +75,10 @@ fun StartMainScreen(
             MainScreen(
                 navController = navController,
                 uiState = dateNow,
-                changeData = { vm.changeData(dateNow.value) }
+                changeData = { vm.changeData(dateNow.value) },
+                courses = courses.value,
+                meds = meds.value,
+                usages = usages.value
             )
         }
     }
@@ -81,8 +89,11 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    uiState: MutableState<LocalDate>,
-    changeData: (MutableState<LocalDate>) -> Unit
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit,
+    courses: List<CourseDomainModel>,
+    meds: List<MedDomainModel>,
+    usages: List<UsageCommonDomainModel>,
 ) {
 
     Box(
@@ -94,7 +105,7 @@ fun MainScreen(
         ) {
             MainScreenMonthPager(uiState = uiState, changeData = changeData)
             MainScreenTextCategory()
-            MainScreenLazyMedicines()
+            MainScreenLazyMedicines(courses = courses, meds = meds, usages = usages)
         }
     }
 
@@ -108,8 +119,8 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    uiState: MutableState<LocalDate>,
-    changeData: (MutableState<LocalDate>) -> Unit = {}
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
 
     val paddingStart = 10.dp
@@ -179,8 +190,8 @@ fun MainScreenMonthPager(
 @Composable
 fun MainScreenWeekPager(
     monthState: Int,
-    uiState: MutableState<LocalDate>,
-    changeData: (MutableState<LocalDate>) -> Unit = {}
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
 
     val paddingStart = 10.dp
@@ -192,7 +203,7 @@ fun MainScreenWeekPager(
     var countDay by remember { mutableStateOf(0) }
     val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1)
     val scope = rememberCoroutineScope()
-    val date by remember { mutableStateOf(LocalDate.now()) }
+    val date by remember { mutableStateOf(LocalDateTime.now()) }
 
     LaunchedEffect(stateDay.currentPage) {
         delay(50)
@@ -279,8 +290,12 @@ fun MainScreenTextCategory() {
 }
 
 @Composable
-fun MainScreenLazyMedicines() {
-//    if (courses.isNotEmpty() && meds.isNotEmpty()) {
+fun MainScreenLazyMedicines(
+    courses: List<CourseDomainModel>,
+    meds: List<MedDomainModel>,
+    usages: List<UsageCommonDomainModel>
+) {
+//    if (courses && meds.isNotEmpty()) {
 //        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
 //            courses.forEach { course ->
 //                item {
@@ -413,4 +428,15 @@ fun MainScreenButtonAccept() {
             modifier = Modifier.padding(start = 8.dp)
         )
     }
+}
+
+private fun collectUsages(
+    date: LocalDateTime?,
+    usages: List<UsageCommonDomainModel>,
+): List<UsageCommonDomainModel> {
+    val fromTime =
+        date?.withHour(0)?.withMinute(0)?.withSecond(0)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    val toTime =
+        date?.withHour(23)?.withMinute(59)?.withSecond(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    return usages.filter { it.useTime in fromTime..toTime }
 }
