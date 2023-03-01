@@ -11,11 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.mybad.domain.models.user.UserDomainModel
-import app.mybad.notifier.StartMainScreen
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
+import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
+import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsNav
@@ -29,7 +30,8 @@ fun MainNav(
     createCourseVm: CreateCourseViewModel,
     myCoursesVm: MyCoursesViewModel,
     settingsVm: SettingsViewModel,
-    calendarVm: CalendarViewModel
+    calendarVm: CalendarViewModel,
+    mainScreenVm: StartMainScreenViewModel
 ) {
 
     val userModel = UserDomainModel()
@@ -53,7 +55,10 @@ fun MainNav(
             startDestination = NavItemMain.Notifications.route
         ) {
             composable(NavItemMain.Notifications.route) {
-                StartMainScreen(navController = navController)
+                StartMainScreen(
+                    navController = navController,
+                    vm = mainScreenVm
+                )
                 isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {

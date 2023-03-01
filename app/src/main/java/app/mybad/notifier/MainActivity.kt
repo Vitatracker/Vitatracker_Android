@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.navigation.MainNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private val myCoursesVm: MyCoursesViewModel by viewModels()
     private val settingsVm : SettingsViewModel by viewModels()
     private val calendarVm : CalendarViewModel by viewModels()
+    private val mainScreenVm : StartMainScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,8 @@ class MainActivity : ComponentActivity() {
                     createCourseVm = createCourseVm,
                     myCoursesVm = myCoursesVm,
                     settingsVm = settingsVm,
-                    calendarVm = calendarVm
+                    calendarVm = calendarVm,
+                    mainScreenVm = mainScreenVm
                 )
             }
         }

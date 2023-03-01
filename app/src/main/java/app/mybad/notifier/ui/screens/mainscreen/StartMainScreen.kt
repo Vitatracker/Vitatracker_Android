@@ -1,16 +1,13 @@
-package app.mybad.notifier
+package app.mybad.notifier.ui.screens.mainscreen
 
 import android.content.res.Resources
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,69 +25,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
 import java.util.Date
 import java.util.Locale
 
-private val coursesList = listOf(
-    CourseDomainModel(id = 1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-    CourseDomainModel(id = 2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-    CourseDomainModel(id = 3L, medId = 3L, startDate = 0L, endDate = 13000000L),
-)
-
-private val medsList = listOf(
-    MedDomainModel(
-        id = 1L,
-        name = "Doliprane",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 500,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-    MedDomainModel(
-        id = 2L,
-        name = "Dexedrine",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 30,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-    MedDomainModel(
-        id = 3L,
-        name = "Prozac",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 120,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainScreen(
-    mainScreenViewModel: StartMainScreenViewModel = viewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    vm: StartMainScreenViewModel
 ) {
 
-    val uiState by mainScreenViewModel.uiState.collectAsState()
-    val dateNow = remember { mutableStateOf(uiState) }
+    val uiState by vm.uiState.collectAsState()
+    val dateNow = remember { mutableStateOf(uiState.date) }
 
     Scaffold(
         topBar = {
@@ -113,7 +70,7 @@ fun StartMainScreen(
             MainScreen(
                 navController = navController,
                 uiState = dateNow,
-                changeData = { mainScreenViewModel.changeData(dateNow.value) }
+                changeData = { vm.changeData(dateNow.value) }
             )
         }
     }
@@ -233,13 +190,13 @@ fun MainScreenWeekPager(
     var dayOfWeek by remember { mutableStateOf(0) }
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val stateDay = rememberPagerState(uiState.value.dayOfMonth-1)
+    val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1)
     val scope = rememberCoroutineScope()
     val date by remember { mutableStateOf(LocalDate.now()) }
 
     LaunchedEffect(stateDay.currentPage) {
         delay(50)
-        uiState.value = date.withDayOfMonth(stateDay.currentPage+1)
+        uiState.value = date.withDayOfMonth(stateDay.currentPage + 1)
         changeData(uiState)
     }
 
@@ -268,7 +225,7 @@ fun MainScreenWeekPager(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                countDay = it+1
+                countDay = it + 1
                 calendar.time = Date(Year.now().value, monthState, it)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
@@ -322,22 +279,19 @@ fun MainScreenTextCategory() {
 }
 
 @Composable
-fun MainScreenLazyMedicines(
-    courses: List<CourseDomainModel> = coursesList,
-    meds: List<MedDomainModel> = medsList
-) {
-    if (courses.isNotEmpty() && meds.isNotEmpty()) {
-        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
-            courses.forEach { course ->
-                item {
-                    MainScreenCourseItem(
-                        course = course,
-                        med = meds.filter { it.id == course.medId }[0]
-                    )
-                }
-            }
-        }
-    }
+fun MainScreenLazyMedicines() {
+//    if (courses.isNotEmpty() && meds.isNotEmpty()) {
+//        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+//            courses.forEach { course ->
+//                item {
+//                    MainScreenCourseItem(
+//                        course = course,
+//                        med = meds.filter { it.id == course.medId }[0]
+//                    )
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -386,49 +340,57 @@ fun MainScreenFormCourseHeader(
             .fillMaxWidth()
             .padding(end = 10.dp)
     ) {
-        Column(modifier = Modifier) {
-            Row(modifier = Modifier) {
-                Icon(
-                    painter = painterResource(med.details.icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(13.dp)
-                        .size(30.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-
-                Column(modifier = Modifier) {
-                    Text(
-                        text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
-                        style = Typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Row(
+        Row(modifier = Modifier) {
+            Text(
+                text = "10:00",
+                modifier = Modifier.padding(20.dp),
+                textAlign = TextAlign.Justify,
+                fontSize = 20.sp
+            )
+            Column(modifier = Modifier) {
+                Row(modifier = Modifier) {
+                    Icon(
+                        painter = painterResource(med.details.icon),
+                        contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "2 pcs", style = Typography.labelMedium)
+                            .padding(13.dp)
+                            .size(30.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                    Column(modifier = Modifier) {
                         Text(
-                            text = "2 per day",
-                            style = Typography.labelMedium,
-                            modifier = Modifier.padding(end = 8.dp)
+                            text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
+                            style = Typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
                         )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "2 pcs", style = Typography.labelMedium)
+                            Text(
+                                text = "2 per day",
+                                style = Typography.labelMedium,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
                     }
                 }
-            }
 
-            Text(text = "${med.comment}", modifier = Modifier.padding(8.dp))
+                Text(text = "${med.comment}", modifier = Modifier.padding(8.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MainScreenButtonDetails()
-                MainScreenButtonAccept()
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MainScreenButtonDetails()
+                    MainScreenButtonAccept()
+                }
             }
         }
     }
