@@ -1,4 +1,4 @@
-package app.mybad.notifier
+package app.mybad.notifier.ui.screens.mainscreen
 
 import android.content.res.Resources
 import android.icu.util.Calendar
@@ -26,67 +26,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.theme.Typography
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.*
 import java.util.Date
-
-private val coursesList = listOf(
-    CourseDomainModel(id = 1L, medId = 1L, startDate = 0L, endDate = 11000000L),
-    CourseDomainModel(id = 2L, medId = 2L, startDate = 0L, endDate = 12000000L),
-    CourseDomainModel(id = 3L, medId = 3L, startDate = 0L, endDate = 13000000L),
-)
-
-private val medsList = listOf(
-    MedDomainModel(
-        id = 1L,
-        name = "Doliprane",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 500,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-    MedDomainModel(
-        id = 2L,
-        name = "Dexedrine",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 30,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-    MedDomainModel(
-        id = 3L,
-        name = "Prozac",
-        details = MedDetailsDomainModel(
-            type = 1,
-            dose = 120,
-            measureUnit = 1,
-            icon = R.drawable.pill
-        )
-    ),
-)
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainScreen(
-    mainScreenViewModel: StartMainScreenViewModel = viewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    vm: StartMainScreenViewModel
 ) {
 
-    val uiState by mainScreenViewModel.uiState.collectAsState()
-    val dataNow = LocalDate.now()
+    val uiState by vm.uiState.collectAsState()
+    val dateNow = remember { mutableStateOf(uiState.date) }
+    val usages = remember { mutableStateOf(uiState.usages) }
 
     Scaffold(
         topBar = {
@@ -108,8 +72,10 @@ fun StartMainScreen(
         ) {
             MainScreen(
                 navController = navController,
-                setData = { mainScreenViewModel.setUiState() },
-                onChangeDate = { mainScreenViewModel.onChangeDate() })
+                uiState = dateNow,
+                changeData = { vm.changeData(dateNow.value) },
+                usages = usages.value
+            )
         }
     }
 
@@ -119,8 +85,9 @@ fun StartMainScreen(
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    setData: () -> Unit,
-    onChangeDate: () -> Unit
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit,
+    usages: List<UsageCommonDomainModel>,
 ) {
 
     Box(
@@ -130,9 +97,9 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(setData = setData, onChangeDate = onChangeDate)
+            MainScreenMonthPager(uiState = uiState, changeData = changeData)
             MainScreenTextCategory()
-            MainScreenLazyMedicines()
+            MainScreenLazyMedicines(usages = usages)
         }
     }
 
@@ -146,19 +113,18 @@ fun MainScreenBackgroundImage() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreenMonthPager(
-    setData: () -> Unit,
-    onChangeDate: () -> Unit
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
-
-    val state = rememberPagerState(LocalDate.now().month.ordinal)
+    val stateMonth = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
         pageCount = Month.values().size,
-        state = state,
+        state = stateMonth,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
         modifier = Modifier
@@ -175,15 +141,15 @@ fun MainScreenMonthPager(
         ) {
             Text(
                 text = AnnotatedString(Month.values()[month].toString().substring(0, 3)),
-                color = if (state.currentPage == month) {
+                color = if (stateMonth.currentPage == month) {
                     MaterialTheme.colorScheme.primary
-                } else if (state.currentPage == month + 1) {
+                } else if (stateMonth.currentPage == month + 1) {
                     Color.Black
-                } else if (state.currentPage == month - 1) {
+                } else if (stateMonth.currentPage == month - 1) {
                     Color.Black
-                } else if (state.currentPage == month + 2) {
+                } else if (stateMonth.currentPage == month + 2) {
                     Color.Gray
-                } else if (state.currentPage == month - 2) {
+                } else if (stateMonth.currentPage == month - 2) {
                     Color.Gray
                 } else {
                     Color.LightGray
@@ -191,13 +157,13 @@ fun MainScreenMonthPager(
                 modifier = Modifier
                     .padding(1.dp)
                     .clickable {
-                        scope.launch { state.animateScrollToPage(month) }
+                        scope.launch { stateMonth.animateScrollToPage(month) }
                     },
-                fontWeight = if (state.currentPage == month) {
+                fontWeight = if (stateMonth.currentPage == month) {
                     FontWeight.Bold
-                } else if (state.currentPage == month + 1) {
+                } else if (stateMonth.currentPage == month + 1) {
                     FontWeight.Normal
-                } else if (state.currentPage == month - 1) {
+                } else if (stateMonth.currentPage == month - 1) {
                     FontWeight.Normal
                 } else {
                     FontWeight.Normal
@@ -208,15 +174,19 @@ fun MainScreenMonthPager(
         }
     }
     MainScreenWeekPager(
-        monthState = state.currentPage,
-        setData = setData,
-        onChangeDate = onChangeDate
+        monthState = stateMonth.currentPage,
+        uiState = uiState,
+        changeData = { changeData(uiState) }
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -> Unit) {
+fun MainScreenWeekPager(
+    monthState: Int,
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit = {}
+) {
 
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
@@ -225,12 +195,19 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
     var dayOfWeek by remember { mutableStateOf(0) }
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val state = rememberPagerState(LocalDate.now().dayOfMonth)
+    val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1)
     val scope = rememberCoroutineScope()
+    val date by remember { mutableStateOf(LocalDateTime.now()) }
+
+    LaunchedEffect(stateDay.currentPage) {
+        delay(50)
+        uiState.value = date.withDayOfMonth(stateDay.currentPage + 1)
+        changeData(uiState)
+    }
 
     HorizontalPager(
         pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
-        state = state,
+        state = stateDay,
         pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(40.dp),
         modifier = Modifier
@@ -240,12 +217,12 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
         contentPadding = PaddingValues(
             horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
         )
-    ) { days ->
+    ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            color = if (state.currentPage == days) MaterialTheme.colorScheme.primary else Color.White
+            color = if (stateDay.currentPage == it) MaterialTheme.colorScheme.primary else Color.White
         ) {
             Column(
                 modifier = Modifier,
@@ -253,22 +230,20 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
                 verticalArrangement = Arrangement.Center
             ) {
 
-                countDay = days + 1
-                calendar.time = Date(Year.now().value, monthState, days)
+                countDay = it + 1
+                calendar.time = Date(Year.now().value, monthState, it)
                 dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                 shortNameOfDay =
-                    DateFormatSymbols.getInstance(java.util.Locale.getDefault()).shortWeekdays[dayOfWeek]
-
-//                setData(cal)
+                    DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
-                            scope.launch { state.animateScrollToPage(days) }
+                            scope.launch { stateDay.animateScrollToPage(it) }
                         },
-                    fontWeight = if (state.currentPage == days) {
+                    fontWeight = if (stateDay.currentPage == it) {
                         FontWeight.Bold
                     } else {
                         FontWeight.Normal
@@ -282,9 +257,9 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
                     modifier = Modifier
                         .padding(1.dp)
                         .clickable {
-                            scope.launch { state.animateScrollToPage(days) }
+                            scope.launch { stateDay.animateScrollToPage(it) }
                         },
-                    fontWeight = if (state.currentPage == days) {
+                    fontWeight = if (stateDay.currentPage == it) {
                         FontWeight.Bold
                     } else {
                         FontWeight.Normal
@@ -296,7 +271,6 @@ fun MainScreenWeekPager(monthState: Int, setData: () -> Unit, onChangeDate: () -
 
         }
     }
-
 }
 
 @Composable
@@ -311,21 +285,20 @@ fun MainScreenTextCategory() {
 
 @Composable
 fun MainScreenLazyMedicines(
-    courses: List<CourseDomainModel> = coursesList,
-    meds: List<MedDomainModel> = medsList
+    usages: List<UsageCommonDomainModel>
 ) {
-    if (courses.isNotEmpty() && meds.isNotEmpty()) {
-        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
-            courses.forEach { course ->
-                item {
-                    MainScreenCourseItem(
-                        course = course,
-                        med = meds.filter { it.id == course.medId }[0]
-                    )
-                }
-            }
-        }
-    }
+//    if (courses && meds.isNotEmpty()) {
+//        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+//            courses.forEach { course ->
+//                item {
+//                    MainScreenCourseItem(
+//                        course = course,
+//                        med = meds.filter { it.id == course.medId }[0]
+//                    )
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -374,49 +347,57 @@ fun MainScreenFormCourseHeader(
             .fillMaxWidth()
             .padding(end = 10.dp)
     ) {
-        Column(modifier = Modifier) {
-            Row(modifier = Modifier) {
-                Icon(
-                    painter = painterResource(med.details.icon),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(13.dp)
-                        .size(30.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-
-                Column(modifier = Modifier) {
-                    Text(
-                        text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
-                        style = Typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Row(
+        Row(modifier = Modifier) {
+            Text(
+                text = "10:00",
+                modifier = Modifier.padding(20.dp),
+                textAlign = TextAlign.Justify,
+                fontSize = 20.sp
+            )
+            Column(modifier = Modifier) {
+                Row(modifier = Modifier) {
+                    Icon(
+                        painter = painterResource(med.details.icon),
+                        contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "2 pcs", style = Typography.labelMedium)
+                            .padding(13.dp)
+                            .size(30.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                    Column(modifier = Modifier) {
                         Text(
-                            text = "2 per day",
-                            style = Typography.labelMedium,
-                            modifier = Modifier.padding(end = 8.dp)
+                            text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
+                            style = Typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
                         )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "2 pcs", style = Typography.labelMedium)
+                            Text(
+                                text = "2 per day",
+                                style = Typography.labelMedium,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
                     }
                 }
-            }
 
-            Text(text = "${med.comment}", modifier = Modifier.padding(8.dp))
+                Text(text = "${med.comment}", modifier = Modifier.padding(8.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                MainScreenButtonDetails()
-                MainScreenButtonAccept()
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MainScreenButtonDetails()
+                    MainScreenButtonAccept()
+                }
             }
         }
     }
@@ -439,4 +420,15 @@ fun MainScreenButtonAccept() {
             modifier = Modifier.padding(start = 8.dp)
         )
     }
+}
+
+private fun collectUsages(
+    date: LocalDateTime?,
+    usages: List<UsageCommonDomainModel>,
+): List<UsageCommonDomainModel> {
+    val fromTime =
+        date?.withHour(0)?.withMinute(0)?.withSecond(0)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    val toTime =
+        date?.withHour(23)?.withMinute(59)?.withSecond(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    return usages.filter { it.useTime in fromTime..toTime }
 }

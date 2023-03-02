@@ -6,7 +6,9 @@ import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.UsagesRepo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,7 +22,7 @@ class UsagesRepoImpl @Inject constructor(
     }
 
     override suspend fun getCommonAll(): List<UsageCommonDomainModel> {
-        return db.getAllCommonUsages().mapToDomain()
+        return db.getAllCommonUsagesFlow().last().mapToDomain()
     }
 
     override suspend fun deleteSingle(medId: Long) {
@@ -36,12 +38,12 @@ class UsagesRepoImpl @Inject constructor(
         db.addUsages(usages)
     }
 
-    override suspend fun getUsagesByInterval(
+    override suspend fun getUsagesByIntervalByMed(
         medId: Long,
         startTime: Long,
         endTime: Long
     ): List<UsageCommonDomainModel> {
-        return db.getUsagesByInterval(medId, startTime, endTime).mapToDomain()
+        return db.getUsagesByIntervalByMed(medId, startTime, endTime).mapToDomain()
     }
 
     override suspend fun getUsagesByMedId(medId: Long): List<UsageCommonDomainModel> {
@@ -62,5 +64,12 @@ class UsagesRepoImpl @Inject constructor(
 
     override suspend fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long) {
         db.deleteUsagesByInterval(medId, startTime, endTime)
+    }
+
+    override suspend fun getUsagesByInterval(
+        startTime: Long,
+        endTime: Long
+    ): List<UsageCommonDomainModel> {
+        return db.getUsagesByInterval(startTime = startTime, endTime = endTime).mapToDomain()
     }
 }
