@@ -12,7 +12,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RescheduleAlarmService : LifecycleService() {
 
-    @Inject lateinit var notificationsScheduler: NotificationsScheduler
+    @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
 
     companion object {
         const val CHANNEL_ID = "my_service"
@@ -39,7 +39,7 @@ class RescheduleAlarmService : LifecycleService() {
             .setCategory(Notification.CATEGORY_CALL)
             .build()
         startForeground(101, notification)
-        notificationsScheduler.rescheduleAll {
+        notificationsSchedulerImpl.rescheduleAll {
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }

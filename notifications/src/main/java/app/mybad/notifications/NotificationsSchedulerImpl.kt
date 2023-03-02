@@ -9,21 +9,22 @@ import android.icu.util.Calendar
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.scheduler.NotificationsScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NotificationsScheduler @Inject constructor(
+class NotificationsSchedulerImpl @Inject constructor(
     private val context: Context,
     private val medsRepo: MedsRepo,
     private val usagesRepo: UsagesRepo
-) {
+) : NotificationsScheduler {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val calendar = Calendar.getInstance()
     private val scope = CoroutineScope(Dispatchers.IO)
     @SuppressLint("UnspecifiedImmutableFlag")
-    fun setAlarm(usages: List<UsageCommonDomainModel>) {
+    override fun add(usages: List<UsageCommonDomainModel>) {
         usages.forEach {
             val i = Intent(context, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
@@ -33,6 +34,26 @@ class NotificationsScheduler @Inject constructor(
             val pi = PendingIntent.getBroadcast(context, 0, i, 0)
             calendar.timeInMillis = it.useTime*1000
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+        }
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    override fun cancel(usages: List<UsageCommonDomainModel>) {
+        usages.forEach {
+            val i = Intent(context, AlarmReceiver::class.java)
+            val med = medsRepo.getSingle(it.medId)
+            i.putExtra("medName", med.name ?: "no name")
+            i.putExtra("dose", med.details.dose)
+            i.putExtra("unit", med.details.measureUnit)
+            val pi = PendingIntent.getBroadcast(context, 0, i, 0)
+            alarmManager.cancel(pi)
+        }
+    }
+
+    override fun cancelByMedId(medId: Long) {
+        scope.launch {
+            val usages = usagesRepo.getUsagesByMedId(medId)
+            cancel(usages)
         }
     }
 
@@ -47,7 +68,7 @@ class NotificationsScheduler @Inject constructor(
                     i.putExtra("medName", med.name ?: "no name")
                     i.putExtra("dose", med.details.dose)
                     i.putExtra("unit", med.details.measureUnit)
-                    val pi = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), i, 0)
+                    val pi = PendingIntent.getBroadcast(context, 0, i, 0)
                     calendar.timeInMillis = it.useTime*1000
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
                 }

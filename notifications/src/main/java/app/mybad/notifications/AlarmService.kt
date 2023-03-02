@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class AlarmService : Service() {
 
-    @Inject lateinit var notificationsScheduler: NotificationsScheduler
+    @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
 
     companion object {
         const val CHANNEL_ID = "my_service"
