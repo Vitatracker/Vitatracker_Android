@@ -29,12 +29,6 @@ class StartMainScreenViewModel @Inject constructor(
 
     init {
         scope.launch {
-            courses.getAllFlow().collect { _uiState.emit(_uiState.value.copy(courses = it)) }
-        }
-        scope.launch {
-            meds.getAllFlow().collect { _uiState.emit(_uiState.value.copy(meds = it)) }
-        }
-        scope.launch {
             usages.getCommonAllFlow().collect { _uiState.emit(_uiState.value.copy(usages = it)) }
         }
         scope.launch { _uiState.emit(_uiState.value.copy(date = LocalDateTime.now())) }

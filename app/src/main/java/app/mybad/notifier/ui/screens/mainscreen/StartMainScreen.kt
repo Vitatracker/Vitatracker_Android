@@ -50,8 +50,6 @@ fun StartMainScreen(
 
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
-    val courses = remember { mutableStateOf(uiState.courses) }
-    val meds = remember { mutableStateOf(uiState.meds) }
     val usages = remember { mutableStateOf(uiState.usages) }
 
     Scaffold(
@@ -76,8 +74,6 @@ fun StartMainScreen(
                 navController = navController,
                 uiState = dateNow,
                 changeData = { vm.changeData(dateNow.value) },
-                courses = courses.value,
-                meds = meds.value,
                 usages = usages.value
             )
         }
@@ -91,8 +87,6 @@ fun MainScreen(
     navController: NavHostController,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
-    courses: List<CourseDomainModel>,
-    meds: List<MedDomainModel>,
     usages: List<UsageCommonDomainModel>,
 ) {
 
@@ -105,7 +99,7 @@ fun MainScreen(
         ) {
             MainScreenMonthPager(uiState = uiState, changeData = changeData)
             MainScreenTextCategory()
-            MainScreenLazyMedicines(courses = courses, meds = meds, usages = usages)
+            MainScreenLazyMedicines(usages = usages)
         }
     }
 
@@ -291,8 +285,6 @@ fun MainScreenTextCategory() {
 
 @Composable
 fun MainScreenLazyMedicines(
-    courses: List<CourseDomainModel>,
-    meds: List<MedDomainModel>,
     usages: List<UsageCommonDomainModel>
 ) {
 //    if (courses && meds.isNotEmpty()) {
