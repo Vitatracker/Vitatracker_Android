@@ -36,8 +36,10 @@ import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.sql.Time
 import java.text.DateFormatSymbols
 import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -51,6 +53,7 @@ fun StartMainScreen(
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val usages = remember { mutableStateOf(uiState.usages) }
+    val meds = remember { mutableStateOf(uiState.meds) }
 
     Scaffold(
         topBar = {
@@ -74,7 +77,8 @@ fun StartMainScreen(
                 navController = navController,
                 uiState = dateNow,
                 changeData = { vm.changeData(dateNow.value) },
-                usages = usages.value
+                usages = usages.value,
+                meds = meds.value
             )
         }
     }
@@ -88,6 +92,7 @@ fun MainScreen(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
     usages: List<UsageCommonDomainModel>,
+    meds: List<MedDomainModel>
 ) {
 
     Box(
@@ -99,7 +104,7 @@ fun MainScreen(
         ) {
             MainScreenMonthPager(uiState = uiState, changeData = changeData)
             MainScreenTextCategory()
-            MainScreenLazyMedicines(usages = usages)
+            MainScreenLazyMedicines(meds = meds, usages = usages)
         }
     }
 
@@ -285,37 +290,38 @@ fun MainScreenTextCategory() {
 
 @Composable
 fun MainScreenLazyMedicines(
+    meds: List<MedDomainModel>,
     usages: List<UsageCommonDomainModel>
 ) {
-//    if (courses && meds.isNotEmpty()) {
-//        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
-//            courses.forEach { course ->
-//                item {
-//                    MainScreenCourseItem(
-//                        course = course,
-//                        med = meds.filter { it.id == course.medId }[0]
-//                    )
-//                }
-//            }
-//        }
-//    }
-}
-
-@Composable
-fun MainScreenCourseItem(
-    course: CourseDomainModel,
-    med: MedDomainModel
-) {
-    Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
-        MainScreenTimeCourse()
-        MainScreenFormCourse(course = course, med = med)
+    if (meds.isNotEmpty() && usages.isNotEmpty()) {
+        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+            usages.forEach { usage ->
+                item {
+                    MainScreenCourseItem(
+                        usage = usage,
+                        med = meds.filter { it.id == usage.medId }[0]
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun MainScreenTimeCourse() {
+fun MainScreenCourseItem(
+    usage: UsageCommonDomainModel,
+    med: MedDomainModel
+) {
+    Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
+        MainScreenTimeCourse(usageTime = usage.useTime)
+        MainScreenFormCourse(usage = usage, med = med)
+    }
+}
+
+@Composable
+fun MainScreenTimeCourse(usageTime: Long) {
     Text(
-        text = "10:00",
+        text = getTime(usageTime),
         modifier = Modifier.padding(20.dp),
         textAlign = TextAlign.Justify,
         fontSize = 20.sp
@@ -324,17 +330,17 @@ fun MainScreenTimeCourse() {
 
 @Composable
 fun MainScreenFormCourse(
-    course: CourseDomainModel,
+    usage: UsageCommonDomainModel,
     med: MedDomainModel
 ) {
     Column(modifier = Modifier.padding(10.dp)) {
-        MainScreenFormCourseHeader(course = course, med = med)
+        MainScreenFormCourseHeader(usage = usage, med = med)
     }
 }
 
 @Composable
 fun MainScreenFormCourseHeader(
-    course: CourseDomainModel,
+    usage: UsageCommonDomainModel,
     med: MedDomainModel
 ) {
     val units = stringArrayResource(R.array.units)
@@ -348,12 +354,6 @@ fun MainScreenFormCourseHeader(
             .padding(end = 10.dp)
     ) {
         Row(modifier = Modifier) {
-            Text(
-                text = "10:00",
-                modifier = Modifier.padding(20.dp),
-                textAlign = TextAlign.Justify,
-                fontSize = 20.sp
-            )
             Column(modifier = Modifier) {
                 Row(modifier = Modifier) {
                     Icon(
@@ -422,13 +422,8 @@ fun MainScreenButtonAccept() {
     }
 }
 
-private fun collectUsages(
-    date: LocalDateTime?,
-    usages: List<UsageCommonDomainModel>,
-): List<UsageCommonDomainModel> {
-    val fromTime =
-        date?.withHour(0)?.withMinute(0)?.withSecond(0)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
-    val toTime =
-        date?.withHour(23)?.withMinute(59)?.withSecond(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
-    return usages.filter { it.useTime in fromTime..toTime }
+private fun getTime(date: Long): String {
+    return LocalDateTime
+        .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
+        .format(DateTimeFormatter.ofPattern("HH:mm"))
 }

@@ -7,6 +7,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class MainScreenContract(
+    val meds: List<MedDomainModel> = emptyList(),
     val usages: List<UsageCommonDomainModel> = emptyList(),
-    var date: LocalDateTime = LocalDateTime.now()
+    val date: LocalDateTime = LocalDateTime.now()
 )

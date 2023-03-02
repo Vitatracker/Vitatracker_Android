@@ -12,13 +12,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.sql.Time
+import java.text.SimpleDateFormat
+import java.time.*
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class StartMainScreenViewModel @Inject constructor(
-    private val courses: CoursesRepo,
     private val usages: UsagesRepo,
     private val meds: MedsRepo
 ) : ViewModel() {
@@ -29,13 +30,49 @@ class StartMainScreenViewModel @Inject constructor(
 
     init {
         scope.launch {
-            usages.getCommonAllFlow().collect { _uiState.emit(_uiState.value.copy(usages = it)) }
+            _uiState.emit(_uiState.value.copy(date = LocalDateTime.now()))
+            updateUsages()
+            updateMeds()
         }
-        scope.launch { _uiState.emit(_uiState.value.copy(date = LocalDateTime.now())) }
     }
 
     fun changeData(date: LocalDateTime) {
         scope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
+        updateUsages()
+        updateMeds()
     }
 
+    private fun updateUsages() {
+        scope.launch {
+            _uiState.emit(
+                _uiState.value.copy(
+                    usages = usages.getUsagesByInterval(
+                        convertDateToLong(
+                            _uiState.value.date.withHour(0).withMinute(0).withSecond(0)
+                        ),
+                        convertDateToLong(
+                            _uiState.value.date.withHour(23).withMinute(59).withSecond(59)
+                        )
+                    )
+                )
+            )
+        }
+    }
+
+    private fun updateMeds() {
+        val listMeds: List<Long> = _uiState.value.usages.map { it.medId }
+
+        scope.launch {
+            _uiState.emit(
+                _uiState.value.copy(
+                    meds = meds.getFromList(listId = listMeds.distinct())
+                )
+            )
+        }
+    }
+
+    private fun convertDateToLong(date: LocalDateTime): Long {
+        val zdt: ZonedDateTime = ZonedDateTime.of(date, ZoneId.systemDefault())
+        return zdt.toInstant().toEpochMilli() / 1000
+    }
 }

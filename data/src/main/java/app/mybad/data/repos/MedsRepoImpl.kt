@@ -38,4 +38,8 @@ class MedsRepoImpl @Inject constructor(
     override fun deleteSingle(medId: Long) {
         db.deleteMed(medId)
     }
+
+    override fun getFromList(listId: List<Long>): List<MedDomainModel> {
+        return db.getMedByList(listId = listId).mapToDomain()
+    }
 }
