@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -20,7 +21,7 @@ fun DecoratedTextInput(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
-    onEdit: (String) -> Unit,
+    onEdit: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var value by remember { mutableStateOf("") }

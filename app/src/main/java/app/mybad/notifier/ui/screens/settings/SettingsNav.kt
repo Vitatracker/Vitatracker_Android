@@ -84,7 +84,8 @@ fun SettingsNav(
                 SettingsProfile(
                     userModel = userModel,
                     onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
-                    onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) }
+                    onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }
             composable(NavItemSettings.ProfileEdit.route) {
@@ -92,7 +93,7 @@ fun SettingsNav(
                 SettingsProfileEdit(
                     userModel = userModel,
                     onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
-                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }
             composable(NavItemSettings.PasswordChange.route) {

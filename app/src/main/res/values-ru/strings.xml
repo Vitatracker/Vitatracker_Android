@@ -57,6 +57,9 @@
     <string name="settings_enable_medication_control_description">Включает контроль приема медикаметов в конце дня - вы будете должны повторно отметить все приёмы выших медикаментов.</string>
     <string name="settings_enable_next_course_start">Начала следующих курсов</string>
     <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
+    <string name="settings_user_name">Имя</string>
+    <string name="settings_user_Password">Пароль</string>
+    <string name="settings_user_email">Электронная почта</string>
 
     <string name="text_continue">Продолжить</string>
 

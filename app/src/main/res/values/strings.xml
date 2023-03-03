@@ -80,6 +80,8 @@
     <string name="settings_enable_medication_control_description">This setting switches on and off medication control - you will be should mark usages pf all your medicaments in the end of the day</string>
     <string name="settings_enable_next_course_start">Next course start</string>
     <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
+    <string name="settings_user_name">Name</string>
+    <string name="settings_user_Password">Password</string>
 
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
@@ -102,5 +104,6 @@
     <string name="main_screen_text_category">Medicines</string>
     <string name="main_screen_button_detail">Detail</string>
     <string name="main_screen_button_accept">Accept</string>
+    <string name="settings_user_email">Email</string>
 
 </resources>
