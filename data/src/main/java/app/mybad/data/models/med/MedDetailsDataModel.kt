@@ -6,5 +6,5 @@ data class MedDetailsDataModel(
     val dose: Int = -1,
     val measureUnit: Int = -1,
     val photo: String? = null,
-    val beforeFood: Int = 0,
+    val beforeFood: Int = 5,
 )

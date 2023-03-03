@@ -4,10 +4,14 @@
     <string name="add_med_name">Name of medicament</string>
     <string name="add_med_dose">Dose</string>
     <string name="add_med_unit">Measurement unit</string>
+    <string name="add_med_food_relation">Relation to food</string>
+    <string name="add_med_dosa_and_usage">Dosage and usage</string>
+    <string name="add_med_settings">Settings</string>
+
     <string name="navigation_back">Back</string>
     <string name="navigation_next">Next</string>
     <string name="add_course_h">Choose time</string>
-    <string name="add_course_notifications_quantity">Quantity of notifications per day</string>
+    <string name="add_course_notifications_quantity">Notifications per day</string>
     <string name="add_course_notifications_time">Time of notifications</string>
     <string name="add_course_date_from">From </string>
     <string name="add_course_start_time">Start time</string>
@@ -98,9 +102,13 @@
     <string name="calendar_h">My calendar</string>
 
     <!--MAIN SCREEN-->
-    <string name="main_screen_top_bar_name">Reminder dialy</string>
+    <string name="main_screen_top_bar_name">Reminder daily</string>
     <string name="main_screen_text_category">Medicines</string>
     <string name="main_screen_button_detail">Detail</string>
     <string name="main_screen_button_accept">Accept</string>
+    <string name="add_med_remind_time">Remind time</string>
+    <string name="add_course_end_time">End time</string>
+    <string name="medication_regime">Schedule of medications</string>
+    <string name="add_course_reminder">Add reminder for  next course</string>
 
 </resources>

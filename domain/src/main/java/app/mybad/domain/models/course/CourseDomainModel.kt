@@ -10,6 +10,7 @@ data class CourseDomainModel(
     val startDate: Long = -1L,
     val endDate: Long = -1L,
     val interval: Long = -1L,
+    val regime: Int = 0,
     val showUsageTime: Boolean = true,
     val isFinished: Boolean = false,
     val isInfinite: Boolean = false,

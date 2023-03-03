@@ -44,4 +44,24 @@
         <item>Сб</item>
         <item>Вс</item>
     </string-array>
+    <string-array name="food_relations">
+        <item>За 2 часа до еды</item>
+        <item>За 1 час до еды</item>
+        <item>За 45 минут до еды</item>
+        <item>За 30 минут до еды</item>
+        <item>За 15 минут до еды</item>
+        <item>Неважно</item>
+        <item>Во время еды</item>
+        <item>Через 15 минут после еды</item>
+        <item>Через 30 минут после еды</item>
+        <item>Через 45 минут после еды</item>
+        <item>Через 1 час после еды</item>
+        <item>Через 2 часа после еды</item>
+    </string-array>
+    <string-array name="regime">
+        <item>Каждый день</item>
+        <item>Через день</item>
+        <item>Каждые 2 дня</item>
+        <item>Каждые 3 дня</item>
+    </string-array>
 </resources>

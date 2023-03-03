@@ -10,7 +10,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 
 fun CourseDataModel.mapToDomain() : CourseDomainModel {
-    return CourseDomainModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, showUsageTime, isFinished, isInfinite)
+    return CourseDomainModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, regime, showUsageTime, isFinished, isInfinite)
 }
 @JvmName("listCdmToDomain")
 fun List<CourseDataModel>.mapToDomain() : List<CourseDomainModel> {
@@ -21,7 +21,7 @@ fun List<CourseDataModel>.mapToDomain() : List<CourseDomainModel> {
     }
 }
 fun CourseDomainModel.mapToData() : CourseDataModel {
-    return CourseDataModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, showUsageTime, isFinished, isInfinite)
+    return CourseDataModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, regime, showUsageTime, isFinished, isInfinite)
 }
 
 fun MedDetailsDataModel.mapToDomain() : MedDetailsDomainModel {

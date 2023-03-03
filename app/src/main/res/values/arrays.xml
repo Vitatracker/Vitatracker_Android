@@ -44,4 +44,24 @@
         <item>Sat</item>
         <item>Sun</item>
     </string-array>
+    <string-array name="food_relations">
+        <item>2 hour before meals</item>
+        <item>1 hour before meals</item>
+        <item>45 minutes before meals</item>
+        <item>30 minutes before meals</item>
+        <item>15 minutes before meals</item>
+        <item>Not related</item>
+        <item>During meals</item>
+        <item>15 minutes after meals</item>
+        <item>30 minutes after meals</item>
+        <item>45 minutes after meals</item>
+        <item>1 hour after meals</item>
+        <item>2 hour after meals</item>
+    </string-array>
+    <string-array name="regime">
+        <item>Every day</item>
+        <item>Every other day</item>
+        <item>Every 2 days</item>
+        <item>Every 3 days</item>
+    </string-array>
 </resources>

@@ -4,6 +4,10 @@
     <string name="add_med_name">Название препарата</string>
     <string name="add_med_dose">Доза</string>
     <string name="add_med_unit">Единица измерения</string>
+    <string name="add_med_food_relation">Связь с едой</string>
+    <string name="add_med_dosa_and_usage">Дозировка и приём</string>
+    <string name="add_med_settings">Настройки</string>
+
     <string name="navigation_back">Назад</string>
     <string name="navigation_next">Вперед</string>
     <string name="add_course_h">Выбрать время</string>
@@ -94,5 +98,9 @@
     <string name="main_screen_text_category">Лекарства</string>
     <string name="main_screen_button_detail">Подробнее</string>
     <string name="main_screen_button_accept">Принять</string>
+    <string name="add_med_remind_time">Время напоминания</string>
+    <string name="add_course_end_time">Время завершения</string>
+    <string name="medication_regime">График приема</string>
+    <string name="add_course_reminder">Напомнить о новом курсе</string>
 
 </resources>
