@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
@@ -84,7 +83,8 @@ fun SettingsNav(
                 SettingsProfile(
                     userModel = userModel,
                     onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
-                    onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) }
+                    onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }
             composable(NavItemSettings.ProfileEdit.route) {
@@ -92,7 +92,7 @@ fun SettingsNav(
                 SettingsProfileEdit(
                     userModel = userModel,
                     onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
-                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) },
+                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }
             composable(NavItemSettings.PasswordChange.route) {

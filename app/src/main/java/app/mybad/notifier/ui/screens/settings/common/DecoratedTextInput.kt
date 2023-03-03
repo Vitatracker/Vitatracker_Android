@@ -20,7 +20,7 @@ fun DecoratedTextInput(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
-    onEdit: (String) -> Unit,
+    onEdit: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var value by remember { mutableStateOf("") }

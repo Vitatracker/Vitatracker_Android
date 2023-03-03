@@ -11,4 +11,5 @@ interface MedsRepo {
     fun add(med: MedDomainModel)
     fun updateSingle(medId: Long, item: MedDomainModel)
     fun deleteSingle(medId: Long)
+    fun getFromList(listMedsId: List<Long>) : List<MedDomainModel>
 }
