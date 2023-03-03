@@ -51,6 +51,6 @@ interface MedDAO {
     fun getAllCommonUsagesFlow() : Flow<List<UsageCommonDataModel>>
     @Query("SELECT * FROM usages_common WHERE useTime BETWEEN (:startTime) AND (:endTime)")
     fun getUsagesByInterval(startTime: Long, endTime: Long) : List<UsageCommonDataModel>
-    @Query("SELECT * FROM meds WHERE id in (:listId) ")
+    @Query("SELECT * FROM meds WHERE id IN (:listId) ")
     fun getMedByList(listId: List<Long>) : List<MedDataModel>
 }

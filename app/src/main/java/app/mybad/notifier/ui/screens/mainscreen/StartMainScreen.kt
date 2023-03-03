@@ -2,14 +2,17 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.content.res.Resources
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -52,8 +56,6 @@ fun StartMainScreen(
 
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
-    val usages = remember { mutableStateOf(uiState.usages) }
-    val meds = remember { mutableStateOf(uiState.meds) }
 
     Scaffold(
         topBar = {
@@ -77,8 +79,8 @@ fun StartMainScreen(
                 navController = navController,
                 uiState = dateNow,
                 changeData = { vm.changeData(dateNow.value) },
-                usages = usages.value,
-                meds = meds.value
+                usages = uiState.usages,
+                meds = uiState.meds
             )
         }
     }
@@ -87,7 +89,7 @@ fun StartMainScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreen(
+private fun MainScreen(
     navController: NavHostController,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
@@ -102,22 +104,25 @@ fun MainScreen(
         Column(
             modifier = Modifier
         ) {
-            MainScreenMonthPager(uiState = uiState, changeData = changeData)
+            MainScreenMonthPager(
+                uiState = uiState,
+                changeData = changeData
+            )
             MainScreenTextCategory()
-            MainScreenLazyMedicines(meds = meds, usages = usages)
+            MainScreenLazyMedicines(usages = usages, meds = meds)
         }
     }
 
 }
 
 @Composable
-fun MainScreenBackgroundImage() {
+private fun MainScreenBackgroundImage() {
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenMonthPager(
+private fun MainScreenMonthPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
@@ -187,7 +192,7 @@ fun MainScreenMonthPager(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainScreenWeekPager(
+private fun MainScreenWeekPager(
     monthState: Int,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
@@ -204,9 +209,9 @@ fun MainScreenWeekPager(
     val scope = rememberCoroutineScope()
     val date by remember { mutableStateOf(LocalDateTime.now()) }
 
-    LaunchedEffect(stateDay.currentPage) {
+    LaunchedEffect(stateDay.currentPage, monthState) {
         delay(50)
-        uiState.value = date.withDayOfMonth(stateDay.currentPage + 1)
+        uiState.value = date.withMonth(monthState + 1).withDayOfMonth(stateDay.currentPage + 1)
         changeData(uiState)
     }
 
@@ -226,7 +231,7 @@ fun MainScreenWeekPager(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
             color = if (stateDay.currentPage == it) MaterialTheme.colorScheme.primary else Color.White
         ) {
             Column(
@@ -244,7 +249,7 @@ fun MainScreenWeekPager(
                 Text(
                     text = AnnotatedString(countDay.toString()),
                     modifier = Modifier
-                        .padding(1.dp)
+//                        .padding(1.dp)
                         .clickable {
                             scope.launch { stateDay.animateScrollToPage(it) }
                         },
@@ -260,7 +265,7 @@ fun MainScreenWeekPager(
                 Text(
                     text = AnnotatedString(shortNameOfDay),
                     modifier = Modifier
-                        .padding(1.dp)
+//                        .padding(1.dp)
                         .clickable {
                             scope.launch { stateDay.animateScrollToPage(it) }
                         },
@@ -279,27 +284,27 @@ fun MainScreenWeekPager(
 }
 
 @Composable
-fun MainScreenTextCategory() {
+private fun MainScreenTextCategory() {
     Text(
         text = stringResource(id = R.string.main_screen_text_category),
         modifier = Modifier.padding(top = 25.dp, start = 20.dp),
         fontWeight = FontWeight.SemiBold,
-        textAlign = TextAlign.Justify, fontSize = 20.sp
+        textAlign = TextAlign.Justify, fontSize = 25.sp
     )
 }
 
 @Composable
-fun MainScreenLazyMedicines(
-    meds: List<MedDomainModel>,
-    usages: List<UsageCommonDomainModel>
+private fun MainScreenLazyMedicines(
+    usages: List<UsageCommonDomainModel>,
+    meds: List<MedDomainModel>
 ) {
     if (meds.isNotEmpty() && usages.isNotEmpty()) {
-        LazyColumn(modifier = Modifier, userScrollEnabled = true) {
+        LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
             usages.forEach { usage ->
                 item {
                     MainScreenCourseItem(
                         usage = usage,
-                        med = meds.filter { it.id == usage.medId }[0]
+                        med = meds.first()
                     )
                 }
             }
@@ -308,122 +313,154 @@ fun MainScreenLazyMedicines(
 }
 
 @Composable
-fun MainScreenCourseItem(
+private fun MainScreenCourseItem(
     usage: UsageCommonDomainModel,
     med: MedDomainModel
 ) {
-    Row(modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
-        MainScreenTimeCourse(usageTime = usage.useTime)
-        MainScreenFormCourse(usage = usage, med = med)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp),
+//        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
+        border = SetBorderColor(usageTime = usage.useTime)
+    ) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            MainScreenTimeCourse(usageTime = usage.useTime)
+            MainScreenFormCourseHeader(med = med, usageTime = usage.useTime)
+        }
+    }
+
+}
+
+@Composable
+private fun MainScreenTimeCourse(usageTime: Long) {
+    Surface(
+        modifier = Modifier.padding(start = 10.dp),
+        shape = RoundedCornerShape(5.dp),
+//        border = BorderStroke(0.dp, color = MaterialTheme.colorScheme.primaryContainer)
+        border = SetBorderColor(usageTime = usageTime)
+    ) {
+        Text(
+            modifier = Modifier
+                .background(SetColor(usageTime = usageTime))//MaterialTheme.colorScheme.primaryContainer)
+                .padding(8.dp),
+            text = getTime(usageTime),
+            textAlign = TextAlign.Justify,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
 @Composable
-fun MainScreenTimeCourse(usageTime: Long) {
-    Text(
-        text = getTime(usageTime),
-        modifier = Modifier.padding(20.dp),
-        textAlign = TextAlign.Justify,
-        fontSize = 20.sp
-    )
-}
-
-@Composable
-fun MainScreenFormCourse(
-    usage: UsageCommonDomainModel,
-    med: MedDomainModel
-) {
-    Column(modifier = Modifier.padding(10.dp)) {
-        MainScreenFormCourseHeader(usage = usage, med = med)
-    }
-}
-
-@Composable
-fun MainScreenFormCourseHeader(
-    usage: UsageCommonDomainModel,
-    med: MedDomainModel
+private fun MainScreenFormCourseHeader(
+    med: MedDomainModel,
+    usageTime: Long
 ) {
     val units = stringArrayResource(R.array.units)
 
     Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        shadowElevation = 4.dp,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 10.dp)
+            .padding(10.dp)
     ) {
-        Row(modifier = Modifier) {
-            Column(modifier = Modifier) {
-                Row(modifier = Modifier) {
-                    Icon(
-                        painter = painterResource(med.details.icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(13.dp)
-                            .size(30.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-
-                    Column(modifier = Modifier) {
-                        Text(
-                            text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
-                            style = Typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "2 pcs", style = Typography.labelMedium)
-                            Text(
-                                text = "2 per day",
-                                style = Typography.labelMedium,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                        }
-                    }
-                }
-
-                Text(text = "${med.comment}", modifier = Modifier.padding(8.dp))
-
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.padding(start = 8.dp)) {
+                Text(
+                    text = "${med.name}",
+                    style = Typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
                 Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 ) {
-                    MainScreenButtonDetails()
-                    MainScreenButtonAccept()
+                    Text(
+                        text = "${med.details.dose} таблетки",
+                        style = Typography.labelMedium
+                    )
+                    Text(
+                        text = "|",
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                        style = Typography.labelMedium,
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = if (med.details.beforeFood == 0) "после еды" else "до еды",
+                        style = Typography.labelMedium,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
                 }
             }
+            MainScreenButtonAccept(usageTime = usageTime)
         }
     }
 }
 
 @Composable
-fun MainScreenButtonDetails() {
-    OutlinedButton(modifier = Modifier, onClick = { /*TODO*/ }) {
-        Text(text = stringResource(id = R.string.main_screen_button_detail))
-        Icon(imageVector = Icons.Default.ArrowRight, contentDescription = null)
-    }
+private fun MainScreenButtonAccept(usageTime: Long) {
+//        var isFalse: Boolean = false
+//        RadioButton(
+//            onClick = { isFalse = !isFalse },
+//            selected = false,
+//            modifier = Modifier.size(50.dp)
+//        )
+    Icon(
+        imageVector = Icons.Default.RadioButtonUnchecked,
+        contentDescription = null,
+        tint = SetColor(usageTime = usageTime),
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .size(35.dp)
+            .clip(CircleShape)
+            .clickable {
+
+            }
+    )
 }
 
 @Composable
-fun MainScreenButtonAccept() {
-    Button(modifier = Modifier, onClick = { /*TODO*/ }) {
-        Icon(imageVector = Icons.Default.RadioButtonUnchecked, contentDescription = null)
-        Text(
-            text = stringResource(id = R.string.main_screen_button_accept),
-            modifier = Modifier.padding(start = 8.dp)
+private fun SetBorderColor(usageTime: Long): BorderStroke {
+    val nowTime = convertDateToLong(LocalDateTime.now())
+    when {
+        getTime(nowTime) < getTime(usageTime) -> return BorderStroke(0.dp, color = Color.Gray)
+        getTime(nowTime) > getTime(usageTime) -> return BorderStroke(
+            0.dp,
+            color = MaterialTheme.colorScheme.error
+        )
+        getTime(nowTime) == getTime(usageTime) -> return BorderStroke(
+            0.dp,
+            color = MaterialTheme.colorScheme.primaryContainer
         )
     }
+    return BorderStroke(0.dp, color = MaterialTheme.colorScheme.primaryContainer)
+}
+
+@Composable
+private fun SetColor(usageTime: Long): Color {
+    val nowTime = convertDateToLong(LocalDateTime.now())
+    when {
+        getTime(nowTime) < getTime(usageTime) -> return Color.Gray
+        getTime(nowTime) > getTime(usageTime) -> return MaterialTheme.colorScheme.error
+        getTime(nowTime) == getTime(usageTime) -> return MaterialTheme.colorScheme.primaryContainer
+    }
+    return MaterialTheme.colorScheme.primaryContainer
 }
 
 private fun getTime(date: Long): String {
     return LocalDateTime
         .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
         .format(DateTimeFormatter.ofPattern("HH:mm"))
+}
+
+private fun convertDateToLong(date: LocalDateTime): Long {
+    val zdt: ZonedDateTime = ZonedDateTime.of(date, ZoneId.systemDefault())
+    return zdt.toInstant().toEpochMilli() / 1000
 }

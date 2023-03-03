@@ -32,14 +32,13 @@ class StartMainScreenViewModel @Inject constructor(
         scope.launch {
             _uiState.emit(_uiState.value.copy(date = LocalDateTime.now()))
             updateUsages()
-            updateMeds()
         }
     }
 
     fun changeData(date: LocalDateTime) {
         scope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
+        Log.d("MainScreen", "changeData: $date")
         updateUsages()
-        updateMeds()
     }
 
     private fun updateUsages() {
@@ -56,18 +55,21 @@ class StartMainScreenViewModel @Inject constructor(
                     )
                 )
             )
+            Log.d("MainScreen", "usages: ${_uiState.value.usages.size}")
+            updateMeds()
         }
     }
 
     private fun updateMeds() {
-        val listMeds: List<Long> = _uiState.value.usages.map { it.medId }
+        val listMeds: List<Long> = _uiState.value.usages.map { it.medId }.toSet().toList()
 
         scope.launch {
             _uiState.emit(
                 _uiState.value.copy(
-                    meds = meds.getFromList(listId = listMeds.distinct())
+                    meds = meds.getFromList(listMedsId = listMeds)
                 )
             )
+            Log.d("MainScreen", "meds: ${_uiState.value.meds.size}")
         }
     }
 
