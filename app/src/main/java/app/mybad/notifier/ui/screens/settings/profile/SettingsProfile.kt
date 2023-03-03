@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -55,14 +56,16 @@ fun SettingsProfile(
         Spacer(Modifier.height(32.dp))
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_name),
-            enabled = true
+            enabled = true,
+            icon = Icons.Default.AccountCircle
         ) {
             editUserName.value = it
         }
         Spacer(Modifier.height(24.dp))
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_email),
-            enabled = true
+            enabled = true,
+            icon = Icons.Default.Email
         ) {
             editEmail.value = it
         }
@@ -90,6 +93,7 @@ fun SettingsProfileEditText(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
+    icon: ImageVector,
     onEdit: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -99,11 +103,6 @@ fun SettingsProfileEditText(
         modifier = modifier.fillMaxWidth(),
         enabled = enabled,
         placeholder = {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(text = label, modifier = Modifier)
         },
         value = value,
@@ -120,6 +119,14 @@ fun SettingsProfileEditText(
             onNext = { focusManager.clearFocus() }
         ),
         shape = RoundedCornerShape(10.dp),
+        leadingIcon = {
+            Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
     )
 }
 
