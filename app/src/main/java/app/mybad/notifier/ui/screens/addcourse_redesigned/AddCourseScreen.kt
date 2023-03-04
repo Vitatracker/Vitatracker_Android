@@ -40,8 +40,6 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.addcourse_redesigned.IntentTypes.*
 import app.mybad.notifier.ui.screens.addcourse_redesigned.common.*
 import app.mybad.notifier.ui.screens.common.NavigationRow
-import app.mybad.notifier.ui.screens.course.CreateCourseIntent
-import app.mybad.notifier.ui.screens.course.CreateCourseState
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.launch
 import java.time.Instant
