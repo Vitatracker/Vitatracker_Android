@@ -15,5 +15,6 @@ sealed interface CreateCourseIntent {
 data class CreateCourseState(
     val med: MedDomainModel = MedDomainModel(),
     val course: CourseDomainModel = CourseDomainModel(),
-    val usages: List<UsageCommonDomainModel> = emptyList()
+    val usages: List<UsageCommonDomainModel> = emptyList(),
+    val userId: String = "userid"
 )

@@ -113,4 +113,5 @@
     <string name="add_course_end_time">End time</string>
     <string name="medication_regime">Schedule of medications</string>
     <string name="add_course_reminder">Add reminder for  next course</string>
+    <string name="add_next_course_remind_time">Time of remind</string>
 </resources>

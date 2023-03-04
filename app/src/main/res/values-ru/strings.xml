@@ -105,5 +105,6 @@
     <string name="add_course_end_time">Время завершения</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
+    <string name="add_next_course_remind_time">Time of remind</string>
 
 </resources>

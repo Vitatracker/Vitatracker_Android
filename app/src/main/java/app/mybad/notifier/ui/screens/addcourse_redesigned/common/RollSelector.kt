@@ -29,7 +29,7 @@ import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SelectorBottomSheet(
+fun RollSelector(
     modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit = {},
     list: List<String>,

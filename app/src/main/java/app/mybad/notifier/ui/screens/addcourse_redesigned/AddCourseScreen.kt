@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.addcourse_redesigned
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
@@ -23,23 +24,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.addcourse_redesigned.IntentTypes.*
-import app.mybad.notifier.ui.screens.addcourse_redesigned.SelectionType.END_DATE
-import app.mybad.notifier.ui.screens.addcourse_redesigned.SelectionType.START_DATE
 import app.mybad.notifier.ui.screens.addcourse_redesigned.common.*
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.course.CreateCourseIntent
@@ -48,8 +46,10 @@ import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 private enum class IntentTypes {
     MEASURE_UNITS,
@@ -58,8 +58,10 @@ private enum class IntentTypes {
     NOTIFICATION_TIME,
     SET_REMINDER,
     SET_REGIME,
+    SET_INTERVAL,
+    SET_REMIND_TIME
 }
-private enum class SelectionType {
+internal enum class SelectionType {
     START_DATE,
     END_DATE,
 }
@@ -89,13 +91,16 @@ fun AddCourseScreen(
     val pagerState = rememberPagerState(0)
 
     var newMed by remember { mutableStateOf(MedDomainModel(
-        id = startTime
+        id = startTime,
+        creationDate = startTime
     )) }
     var newCourse by remember { mutableStateOf(CourseDomainModel(
         id = startTime,
+        creationDate = startTime,
         startDate = startTime,
         endDate = startLocalTime.plusMonths(1).atZone(ZoneId.systemDefault()).toEpochSecond()
     )) }
+    var newUsages by remember { mutableStateOf(emptyList<UsageCommonDomainModel>()) }
     var newUsagesPattern by remember { mutableStateOf(listOf(startTime)) }
 
     BottomSheetScaffold(
@@ -114,9 +119,22 @@ fun AddCourseScreen(
                    )
                }
                SET_REMINDER -> {
+                   var remindTime = startLocalTime
+                   var remindOffset = 0
                    ReminderTimeSelector(
-                       startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.endDate), ZoneId.systemDefault())
-                   ) { }
+                       oldCourseEndTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.endDate), ZoneId.systemDefault()),
+                       newCourseStartTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.endDate + newCourse.interval), ZoneId.systemDefault()),
+                       remindTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.endDate + newCourse.interval), ZoneId.systemDefault()),
+                       interval = newCourse.interval,
+                       onSetInterval = { newCourse = newCourse.copy(interval = it) },
+                       onSetRemindTime = { remindTime = it },
+                       onSetRemindOffset = { remindOffset = it },
+                       onSetComment = { newCourse = newCourse.copy(comment = it)},
+                       onSave = {
+                           scope.launch { scaffoldState.bottomSheetState.collapse() }
+                           newCourse = newCourse.copy(remindDate = remindTime.minusDays(remindOffset.toLong()).atZone(ZoneId.systemDefault()).toEpochSecond())
+                       }
+                   )
                }
                else -> {}
            }
@@ -178,12 +196,12 @@ fun AddCourseScreen(
                             regime = newCourse.regime,
                             onSetStart = { time ->
                                 newCourse = newCourse.copy(
-                                    startDate = time.atZone(ZoneId.systemDefault()).toEpochSecond()
+                                    startDate = time.atZone(ZoneId.systemDefault()).withHour(0).withMinute(0).toEpochSecond()
                                 )
                             },
                             onSetEnd = { time ->
                                 newCourse = newCourse.copy(
-                                    endDate = time.atZone(ZoneId.systemDefault()).toEpochSecond()
+                                    endDate = time.atZone(ZoneId.systemDefault()).withHour(23).withMinute(59).toEpochSecond()
                                 )
                             },
                             onSetRegime = {
@@ -209,14 +227,44 @@ fun AddCourseScreen(
                     else scope.launch { pagerState.animateScrollToPage(pagerState.initialPage) }
                 },
                 onNext = {
-                    if(pagerState.currentPage == 1) onFinish()
+                    if(pagerState.currentPage == 1) {
+                        newUsages = mutableListOf<UsageCommonDomainModel>().apply {
+                            val s = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.startDate), ZoneId.systemDefault())
+                            val e = LocalDateTime.ofInstant(Instant.ofEpochSecond(newCourse.endDate), ZoneId.systemDefault())
+                            repeat(ChronoUnit.DAYS.between(s,e).toInt()) { iteration ->
+                                newUsagesPattern.forEach {
+                                    add(UsageCommonDomainModel(
+                                        medId = newMed.id,
+                                        userId = state.userId,
+                                        creationTime = startTime,
+                                        useTime = it + 86400*iteration*(1+newCourse.regime)
+                                    ))
+                                }
+                            }
+                        }.toList()
+                        newCourse = newCourse.copy(
+                            startDate = newUsages.first().useTime,
+                            endDate = newUsages.last().useTime,
+                        )
+                        Log.w("ACS_", "$newMed")
+                        Log.w("ACS_", "$newCourse")
+                        Log.w("ACS_", "$newUsages")
+                        onFinish()
+                        reducer(CreateCourseIntent.NewMed(newMed))
+                        reducer(CreateCourseIntent.NewCourse(newCourse))
+                        reducer(CreateCourseIntent.NewUsages(newUsages))
+                        reducer(CreateCourseIntent.Finish)
+                    }
                     else if(newMed.name.isNullOrBlank() || newMed.details.dose == 0) {
                         Toast.makeText(context, toast, Toast.LENGTH_SHORT).show()
-                    } else scope.launch { pagerState.animateScrollToPage(1) }
+                    } else {
+                        scope.launch { pagerState.animateScrollToPage(1) }
+                    }
                 },
             )
         }
     }
+
     if(dialogIsShown) {
         Dialog(
             onDismissRequest = { dialogIsShown = false },
@@ -227,7 +275,7 @@ fun AddCourseScreen(
                 elevation = 5.dp,
             ) {
                 when(sheetIntent) {
-                    MEASURE_UNITS -> { SelectorBottomSheet(
+                    MEASURE_UNITS -> { RollSelector(
                         modifier = Modifier,
                         list = stringArrayResource(id = R.array.units).asList(),
                         startOffset = newMed.details.measureUnit,
@@ -236,7 +284,7 @@ fun AddCourseScreen(
                             dialogIsShown = false
                         }
                     )}
-                    QUANTITY_OF_USAGES -> { SelectorBottomSheet(
+                    QUANTITY_OF_USAGES -> { RollSelector(
                         modifier = Modifier,
                         list = (1..10).map { it.toString() }.toList(),
                         startOffset = newUsagesPattern.lastIndex,
@@ -257,7 +305,7 @@ fun AddCourseScreen(
                             dialogIsShown = false
                         }
                     )}
-                    RELATION_TO_MEALS -> { SelectorBottomSheet(
+                    RELATION_TO_MEALS -> { RollSelector(
                         modifier = Modifier,
                         startOffset = newMed.details.beforeFood,
                         list = stringArrayResource(id = R.array.food_relations).asList(),
@@ -266,7 +314,7 @@ fun AddCourseScreen(
                             dialogIsShown = false
                         }
                     )}
-                    SET_REGIME -> { SelectorBottomSheet(
+                    SET_REGIME -> { RollSelector(
                         modifier = Modifier,
                         startOffset = newCourse.regime,
                         list = stringArrayResource(id = R.array.regime).asList(),
@@ -351,147 +399,6 @@ private fun TopNavigation(
         )
         TabsIndicator(position = position, quantity = 2)
     }
-}
-
-@Composable
-private fun MedCreationScreen(
-    modifier: Modifier = Modifier,
-    med: MedDomainModel,
-    usagesPattern: List<Long>,
-    onSelectUnits: () -> Unit,
-    onSelectQuantity: () -> Unit,
-    onSelectFoodRelation: () -> Unit,
-    onSelectNotificationsTime: () -> Unit,
-    onSetName: (String) -> Unit,
-    onSetDose: (Int) -> Unit,
-) {
-    Column {
-        Text(
-            text = stringResource(R.string.add_med_dosa_and_usage),
-            style = Typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column {
-                //name
-                BasicKeyboardInput(
-                    modifier = Modifier.padding(16.dp),
-                    label = stringResource(R.string.add_med_name),
-                    init = med.name ?: "",
-                    onChange = onSetName::invoke
-                )
-                Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                //dose
-                BasicKeyboardInput(
-                    modifier = Modifier.padding(16.dp),
-                    label = stringResource(R.string.add_med_dose).lowercase(),
-                    init = if(med.details.dose == 0) "" else med.details.dose.toString(),
-                    keyboardType = KeyboardType.Number,
-                    alignRight = true,
-                    hideOnGo = true,
-                    onChange = { onSetDose(it.toIntOrNull() ?: 0) },
-                    prefix = { Text(
-                        text = "${stringResource(R.string.add_med_dose)}: ",
-                        style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                    ) }
-                )
-                Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                //units
-                ModalInteractionSelector(
-                    modifier = Modifier.padding(16.dp),
-                    selected = med.details.measureUnit,
-                    label = stringResource(R.string.add_med_unit),
-                    items = stringArrayResource(R.array.units).toList(),
-                    onClick = onSelectUnits::invoke,   //open modal here
-                )
-                Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                //iterations
-                val range = (1..10).map { it.toString() }
-                ModalInteractionSelector(
-                    modifier = Modifier.padding(16.dp),
-                    selected = usagesPattern.lastIndex,
-                    label = stringResource(R.string.add_course_notifications_quantity),
-                    items = range,
-                    onClick = onSelectQuantity::invoke,   //open modal here
-                )
-                Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                ModalInteractionSelector(
-                    modifier = Modifier.padding(16.dp),
-                    selected = med.details.beforeFood,
-                    label = stringResource(R.string.add_med_food_relation),
-                    items = stringArrayResource(R.array.food_relations).asList(),
-                    onClick = onSelectFoodRelation::invoke,   //open modal here
-                )
-            }
-        }
-        Text(
-            text = stringResource(R.string.add_med_settings),
-            style = Typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-            color = MaterialTheme.colorScheme.background,
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable(
-                    indication = null,
-                    interactionSource = MutableInteractionSource(),
-                    onClick = onSelectNotificationsTime::invoke
-                )
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.add_med_remind_time),
-                    style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    val list = mutableListOf<String>().apply {
-                        usagesPattern.forEach {
-                            val time = LocalDateTime.ofInstant(Instant.ofEpochSecond(it), ZoneId.systemDefault())
-                                .format(DateTimeFormatter.ofPattern("HH:mm"))
-                            add(time)
-                        }
-                    }.joinToString(", ")
-                    Text(
-                        text = list,
-                        style = Typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    )
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .padding(start = 4.dp)
-                            .weight(0.1f)
-                    )
-                }
-            }
-        }
-    }
-
 }
 
 @Composable
@@ -595,69 +502,88 @@ private fun NotificationItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CourseCreationScreen(
+private fun ReminderTimeSelector(
     modifier: Modifier = Modifier,
-    startTime: LocalDateTime,
-    endTime: LocalDateTime,
-    regime: Int,
-    onSetStart: (LocalDateTime) -> Unit,
-    onSetEnd: (LocalDateTime) -> Unit,
-    onSetRegime: () -> Unit,
+    oldCourseEndTime: LocalDateTime,
+    newCourseStartTime: LocalDateTime,
+    remindTime: LocalDateTime,
+    interval: Long,
+    onSetInterval: (Long) -> Unit,
+    onSetRemindTime: (LocalDateTime) -> Unit,
+    onSetRemindOffset: (Int) -> Unit,
     onSetComment: (String) -> Unit,
-    onSetReminder: () -> Unit
+    onSave: () -> Unit
 ) {
-    val pickerState = rememberDatePickerState()
-    var datePickerShown by remember { mutableStateOf(false) }
-    var datePickerType by remember { mutableStateOf(START_DATE) }
+    var dialogIsShown by remember { mutableStateOf(false) }
+    var dialogType by remember { mutableStateOf(SET_REMINDER) }
+    var remindOffset by remember { mutableStateOf(0) }
+    var updateNewCourseStartTime by remember { mutableStateOf(newCourseStartTime) }
 
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Top,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         Text(
-            text = stringResource(R.string.mycourse_duration),
+            text = stringResource(R.string.add_med_settings),
             style = Typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
         Surface(
-            modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable(
+                    indication = null,
+                    interactionSource = MutableInteractionSource(),
+                ) { dialogIsShown = true }
         ) {
-            Column {
-                ModalDateSelector(
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier.fillMaxWidth()
+            ) {
+                val diff = Period.between(oldCourseEndTime.toLocalDate(), updateNewCourseStartTime.toLocalDate())
+                ModalStringIndicator(
                     modifier = Modifier.padding(16.dp),
-                    selected = startTime,
-                    label = stringResource(R.string.add_course_start_time),
+                    selected = "${diff.months} months ${diff.days} days",
+                    label = stringResource(R.string.add_next_course_interval),
                     onClick = {
-                        datePickerShown = true
-                        datePickerType = START_DATE
+                        dialogType = SET_INTERVAL
+                        dialogIsShown = true
                     }
                 )
                 Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                ModalDateSelector(
+                ModalStringIndicator(
                     modifier = Modifier.padding(16.dp),
-                    selected = endTime,
-                    label = stringResource(R.string.add_course_start_time),
+                    selected = "$remindOffset days",
+                    label = stringResource(R.string.add_next_course_remind_before),
                     onClick = {
-                        datePickerShown = true
-                        datePickerType = END_DATE
+                        dialogType = SET_REMINDER
+                        dialogIsShown = true
                     }
                 )
                 Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-                ModalInteractionSelector(
+                ModalStringIndicator(
                     modifier = Modifier.padding(16.dp),
-                    selected = regime,
-                    label = stringResource(R.string.medication_regime),
-                    items = stringArrayResource(R.array.regime).toList(),
-                    onClick = onSetRegime::invoke
+                    selected = remindTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    label = stringResource(R.string.add_next_course_remind_time),
+                    onClick = {
+                        dialogType = SET_REMIND_TIME
+                        dialogIsShown = true
+                    }
                 )
             }
+
         }
         Text(
             text = stringResource(R.string.add_course_comment),
             style = Typography.bodyLarge,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp)
         )
         Surface(
             shape = RoundedCornerShape(10.dp),
@@ -675,179 +601,97 @@ private fun CourseCreationScreen(
             )
         }
         Button(
-            onClick = onSetReminder::invoke,
+            onClick = onSave::invoke,
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.clock),
-                tint = MaterialTheme.colorScheme.primary,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(20.dp)
-            )
-            Text(
-                text = stringResource(R.string.add_course_reminder),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
+            modifier = Modifier.fillMaxWidth(),
+            content = { Text(text = stringResource(R.string.settings_save)) }
+        )
     }
-    if(datePickerShown) {
-        DatePickerDialog(
-            onDismissRequest = { datePickerShown = false },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        datePickerShown = false
-                        when(datePickerType) {
-                            START_DATE -> {
-                                onSetStart(
-                                    LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(pickerState.selectedDateMillis ?: 0L
-                                        ), ZoneId.systemDefault())
-                                )
+    if(dialogIsShown) {
+        Dialog(onDismissRequest = { dialogIsShown = false }) {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.background,
+                elevation = 5.dp
+            ) {
+                when(dialogType) {
+                    SET_INTERVAL -> {
+                        DateDelaySelector(
+                            initValue = Period.ofDays((interval/86400).toInt()),
+                            onSelect = {
+                                val i1 = (oldCourseEndTime).atZone(ZoneId.systemDefault()).toEpochSecond()
+                                val i2 = (oldCourseEndTime + it).atZone(ZoneId.systemDefault()).toEpochSecond()
+                                onSetInterval(i2-i1)
+                                dialogIsShown = false
+                                updateNewCourseStartTime = newCourseStartTime + it
                             }
-                            END_DATE -> {
-                                onSetEnd(
-                                    LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(pickerState.selectedDateMillis ?: 0L
-                                        ), ZoneId.systemDefault())
-                                )
+                        )
+                    }
+                    SET_REMINDER -> {
+                        val range = (0..10).toList().map { it.toString() }
+                        RollSelector(
+                            list = range,
+                            startOffset = remindOffset,
+                            onSelect = {
+                                remindOffset = it
+                                onSetRemindOffset(it)
+                                dialogIsShown = false
                             }
-                        }
-                    },
-                    content = { Text(text = stringResource(R.string.settings_save))}
-                )
-            },
-            dismissButton = {
-                Button(
-                    onClick = { datePickerShown = false },
-                    content = { Text(text = stringResource(R.string.settings_cancel))}
-                )
+                        )
+                    }
+                    SET_REMIND_TIME -> {
+                        TimeSelector(
+                            initTime = remindTime,
+                            onSelect = {
+                                val rt = oldCourseEndTime.plusSeconds(interval).withHour(it.hour).withMinute(it.minute)
+                                onSetRemindTime(rt)
+                                dialogIsShown = false
+                            }
+                        )
+                    }
+                    else -> {}
+                }
             }
-        ) {
-            DatePicker(
-                title = { Text(
-                    text = stringResource(R.string.add_course_start_time),
-                    style = Typography.headlineLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                ) },
-                state = pickerState,
-                showModeToggle = true,
-                dateValidator = { when(datePickerType) {
-                    START_DATE -> it/1000 > LocalDateTime.now().withHour(0).atZone(ZoneId.systemDefault()).toEpochSecond()
-                    END_DATE -> it/1000 > startTime.atZone(ZoneId.systemDefault()).toEpochSecond()
-                } }
-            )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ReminderTimeSelector(
+private fun ModalStringIndicator(
     modifier: Modifier = Modifier,
-    startTime: LocalDateTime,
-    onSetReminder: (LocalDateTime) -> Unit
+    selected: String,
+    label: String,
+    style: TextStyle = Typography.bodyMedium,
+    onClick: () -> Unit
 ) {
-    var dialogIsShown by remember { mutableStateOf(false) }
-    val pickerState = rememberDatePickerState(
-        initialSelectedDateMillis = startTime.atZone(ZoneId.systemDefault()).toEpochSecond()*1000
-    )
-
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                indication = null,
+                interactionSource = MutableInteractionSource(),
+                onClick = onClick::invoke
+            )
     ) {
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-            color = MaterialTheme.colorScheme.background,
-            modifier = modifier
-                .fillMaxWidth()
-                .clickable(
-                    indication = null,
-                    interactionSource = MutableInteractionSource(),
-                ) { dialogIsShown = true }
+        Text(
+            text = label,
+            style = style.copy(fontWeight = FontWeight.Bold)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Text(
+                text = selected,
+                style = style
+            )
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.add_med_remind_time),
-                    style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    val date = startTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                    Text(
-                        text = date,
-                        style = Typography.bodyMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    )
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .padding(start = 4.dp)
-                            .weight(0.1f)
-                    )
-                }
-            }
-        }
-    }
-
-    if(dialogIsShown) {
-        DatePickerDialog(
-            onDismissRequest = { dialogIsShown = false },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        dialogIsShown = false
-                        onSetReminder(
-                            LocalDateTime.ofInstant(
-                                Instant.ofEpochMilli(pickerState.selectedDateMillis ?: 0L),
-                                ZoneId.systemDefault()
-                            )
-                        )
-                    },
-                    content = { Text(text = stringResource(R.string.settings_save))}
-                )
-            },
-            dismissButton = {
-                Button(
-                    onClick = { dialogIsShown = false },
-                    content = { Text(text = stringResource(R.string.settings_cancel))}
-                )
-            }
-        ) {
-            DatePicker(
-                state = pickerState,
-                showModeToggle = true,
-                dateValidator = {
-                    it/1000 > LocalDateTime.now().withHour(0).atZone(ZoneId.systemDefault()).toEpochSecond()
-                }
+                    .size(16.dp)
+                    .padding(start = 4.dp)
             )
         }
     }
