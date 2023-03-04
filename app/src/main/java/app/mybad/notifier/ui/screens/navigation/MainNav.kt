@@ -10,10 +10,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.mybad.notifier.ui.screens.addcourse_redesigned.AddCourseScreen
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
-import app.mybad.notifier.ui.screens.addcourse_redesigned.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCourses
@@ -86,13 +86,13 @@ fun MainNav(
                 )
             }
             composable(NavItemMain.Add.route) {
-                val ccvmState = createCourseVm.state.collectAsState()
+                val nc = rememberNavController()
                 isOnTopLevel = false
-                AddCourseScreen(
-                    state = ccvmState.value,
-                    reducer = createCourseVm::reduce,
-                    onDismiss = { navController.popBackStack() },
-                    onFinish = { navController.popBackStack() }
+                NewCourseNav(
+                    modifier = modifier,
+                    vm = createCourseVm,
+                    navController = nc,
+                    onDismiss = { navController.popBackStack() }
                 )
             }
         }

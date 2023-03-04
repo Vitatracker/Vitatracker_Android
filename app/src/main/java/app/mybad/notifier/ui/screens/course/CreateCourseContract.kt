@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.addcourse_redesigned
+package app.mybad.notifier.ui.screens.course
 
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel

@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.addcourse_redesigned
+package app.mybad.notifier.ui.screens.course
 
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
