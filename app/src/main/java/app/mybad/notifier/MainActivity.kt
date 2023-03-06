@@ -1,5 +1,6 @@
 package app.mybad.notifier
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
@@ -25,7 +27,6 @@ class MainActivity : ComponentActivity() {
     private val settingsVm : SettingsViewModel by viewModels()
     private val calendarVm : CalendarViewModel by viewModels()
     private val mainScreenVm : StartMainScreenViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

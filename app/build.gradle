@@ -88,9 +88,13 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
-    //Data store
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
-    implementation 'androidx.datastore:datastore-preferences-rxjava2:1.0.0'
-    implementation 'androidx.datastore:datastore-preferences-rxjava3:1.0.0'
+    // Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:$data_store"
+    implementation "androidx.datastore:datastore-preferences-core:$data_store"
+
+    // Proto DataStore
+    implementation "androidx.datastore:datastore:$data_store"
+    implementation "androidx.datastore:datastore-core:$data_store"
+    implementation "com.google.protobuf:protobuf-javalite:3.10.0"
 
 }
