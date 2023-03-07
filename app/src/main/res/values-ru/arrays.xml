@@ -64,4 +64,12 @@
         <item>Каждые 2 дня</item>
         <item>Каждые 3 дня</item>
     </string-array>
+    <string-array name="types">
+        <item>Капсула</item>
+        <item>Таблетка</item>
+        <item>Спрей</item>
+        <item>Укол</item>
+        <item>Ингаляция</item>
+        <item>Сироп</item>
+    </string-array>
 </resources>

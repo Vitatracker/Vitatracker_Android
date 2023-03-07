@@ -22,7 +22,7 @@ class CreateCourseUseCase @Inject constructor(
         usages: List<UsageCommonDomainModel>
     ) {
         medsRepo.add(med)
-        coursesRepo.add(course)
+        coursesRepo.add(course.copy(medId = med.id))
         usagesRepo.addUsages(usages)
         notificationsScheduler.add(usages)
     }

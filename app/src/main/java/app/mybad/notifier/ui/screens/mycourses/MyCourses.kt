@@ -1,6 +1,9 @@
 package app.mybad.notifier.ui.screens.mycourses
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -9,49 +12,42 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
-import java.time.Instant
-import java.time.ZoneOffset
+import java.time.*
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCourses(
     modifier: Modifier = Modifier,
-    reducer: (MyCoursesIntent) -> Unit = {},
     courses: List<CourseDomainModel>,
     meds: List<MedDomainModel>,
+    onSelect: (Long) -> Unit
 ) {
 
+    val height = LocalConfiguration.current.screenHeightDp
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.my_course_h),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 24.dp)
-                )
-            }
-        )
         if(courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
-            LazyColumn {
+            LazyColumn(Modifier.heightIn(max = height.dp)) {
                 courses.forEach { course ->
                     item {
-                        CourseItem(course = course, med = meds.filter { it.id == course.medId }[0])
+                        CourseItem(
+                            course = course,
+                            med = meds.first { it.id == course.medId },
+                            onSelect = onSelect::invoke
+                        )
                         Spacer(Modifier.height(16.dp))
                     }
                 }
@@ -79,14 +75,18 @@ private fun CourseItem(
     modifier: Modifier = Modifier,
     course: CourseDomainModel,
     med: MedDomainModel,
-    onSelect: () -> Unit = {}
+    onSelect: (Long) -> Unit = {}
 ) {
     val units = stringArrayResource(R.array.units)
+    val relations = stringArrayResource(R.array.food_relations)
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
-        shadowElevation = 3.dp,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         modifier = modifier.fillMaxWidth()
+            .clickable(indication = null, interactionSource = MutableInteractionSource()) {
+                onSelect(course.id)
+            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -118,62 +118,70 @@ private fun CourseItem(
                         )
                     }
                 }
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "${med.name}, ${med.dose} ${units[med.measureUnit]}",
+                        text = "${med.name}".replaceFirstChar { it.uppercase() },
                         style = Typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "2 pcs", style = Typography.labelMedium)
-                        Text(text = "2 per day", style = Typography.labelMedium)        //пофиксить эту хуйню!
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(text = "${med.dose} ${units[med.measureUnit]}", style = Typography.labelMedium)
+                        Divider(
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                            modifier = Modifier.height(16.dp).padding(horizontal = 8.dp).width(1.dp)
+                        )
+                        Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                     }
                 }
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             ) {
-                Column(Modifier.weight(0.7f)) {
-                    Text(
-                        text = stringResource(R.string.mycourse_duration),
-                        style = Typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val start = DateTimeFormatter
+                        .ofPattern("yyyy.MM.dd")
+                        .withZone(ZoneOffset.UTC)
+                        .format(Instant.ofEpochSecond(course.startDate))
+                    val end = DateTimeFormatter
+                        .ofPattern("yyyy.MM.dd")
+                        .withZone(ZoneOffset.UTC)
+                        .format(Instant.ofEpochSecond(course.endDate))
+                    Text(text = start, style = Typography.bodyLarge)
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_right),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp, top = 2.dp)
+                            .height(10.dp)
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val start = DateTimeFormatter
-                            .ofPattern("yyyy.MM.dd")
-                            .withZone(ZoneOffset.UTC)
-                            .format(Instant.ofEpochSecond(course.startDate))
-                        val end = DateTimeFormatter
-                            .ofPattern("yyyy.MM.dd")
-                            .withZone(ZoneOffset.UTC)
-                            .format(Instant.ofEpochSecond(course.endDate))
-                        Text(text = start, style = Typography.labelMedium)
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_right),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(start = 4.dp, end = 4.dp, top = 2.dp)
-                                .height(10.dp)
-                        )
-                        Text(text = end, style = Typography.labelMedium)
-                    }
+                    Text(text = end, style = Typography.bodyLarge)
                 }
-                Column(Modifier.weight(0.3f)) {
-                    Text(
-                        text = stringResource(R.string.mycourse_interval),
-                        style = Typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.calendar),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(24.dp)
                     )
-                    Text(text = "2 months", style = Typography.labelMedium)
+                    val startLDT = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.startDate), ZoneId.systemDefault())
+                    val endLDT = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.endDate), ZoneId.systemDefault())
+                    val period = Period.between(startLDT.toLocalDate(), endLDT.toLocalDate())
+                    val text = if(period.months == 0) {
+                        "${period.days} d."
+                    } else {
+                        "${period.months} m."
+                    }
+                    Text(text = text, style = Typography.bodyLarge)
                 }
             }
         }

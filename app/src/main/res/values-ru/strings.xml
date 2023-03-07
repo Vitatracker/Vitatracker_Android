@@ -102,9 +102,11 @@
     <string name="main_screen_button_detail">Подробнее</string>
     <string name="main_screen_button_accept">Принять</string>
     <string name="add_med_remind_time">Время напоминания</string>
-    <string name="add_course_end_time">Время завершения</string>
+    <string name="add_course_end_time">Конец приема</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
     <string name="add_next_course_remind_time">Time of remind</string>
+    <string name="mycourse_dosage_and_usage">Dosage and usage</string>
+    <string name="mycourse_per_day">Takes per day</string>
 
 </resources>

@@ -3,18 +3,21 @@ package app.mybad.notifier.ui.screens.mycourses
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
+import app.mybad.domain.repos.UsagesRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyCoursesViewModel @Inject constructor(
     private val coursesRepo: CoursesRepo,
-    private val medsRepo: MedsRepo
+    private val medsRepo: MedsRepo,
+    private val usagesRepo: UsagesRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -23,10 +26,13 @@ class MyCoursesViewModel @Inject constructor(
 
     init {
         scope.launch {
-            coursesRepo.getAllFlow().collect { _state.emit(_state.value.copy(courses = it)) }
+            coursesRepo.getAllFlow().collect { courses -> _state.update { it.copy(courses = courses) } }
         }
         scope.launch {
-            medsRepo.getAllFlow().collect { _state.emit(_state.value.copy(meds = it)) }
+            medsRepo.getAllFlow().collect { meds -> _state.update { it.copy(meds = meds) } }
+        }
+        scope.launch {
+            usagesRepo.getCommonAllFlow().collect { usages -> _state.update { it.copy(usages = usages) } }
         }
     }
 

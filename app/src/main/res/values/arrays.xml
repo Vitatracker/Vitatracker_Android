@@ -64,4 +64,12 @@
         <item>Every 2 days</item>
         <item>Every 3 days</item>
     </string-array>
+    <string-array name="types">
+        <item>Pill</item>
+        <item>Tablet</item>
+        <item>Spray</item>
+        <item>Injection</item>
+        <item>Inhalation</item>
+        <item>Syrup</item>
+    </string-array>
 </resources>

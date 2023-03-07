@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
@@ -16,7 +17,8 @@ import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
-import app.mybad.notifier.ui.screens.mycourses.MyCourses
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesMainScreen
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
@@ -58,13 +60,16 @@ fun MainNav(
                 isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
-                MyCourses(
+                val myCoursesNavController = rememberNavController()
+                val path = myCoursesNavController.currentBackStackEntryAsState()
+                MyCoursesMainScreen(
                     modifier = modifier,
+                    navHostController = myCoursesNavController,
                     courses = coursesState.value.courses,
                     meds = coursesState.value.meds,
-                    reducer = myCoursesVm::reduce
+                    usages = coursesState.value.usages
                 )
-                isOnTopLevel = true
+                isOnTopLevel = path.value?.destination?.route != MyCoursesNavItem.Course.route
             }
             composable(NavItemMain.Calendar.route) {
                 CalendarScreen(
