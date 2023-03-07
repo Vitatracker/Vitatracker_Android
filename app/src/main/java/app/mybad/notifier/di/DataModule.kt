@@ -1,7 +1,5 @@
 package app.mybad.notifier.di
 
-import android.content.Context
-import app.mybad.data.datastore.DataStorePref
 import app.mybad.data.repos.*
 import app.mybad.data.room.MedDAO
 import app.mybad.domain.repos.CoursesRepo
@@ -19,14 +17,13 @@ import javax.inject.Singleton
 class DataModule {
     @Provides
     @Singleton
-    fun providesUserDataRepo(impl: UserDataRepoImpl): UserDataRepo {
+    fun providesUserDataRepo(): UserDataRepo {
         return UserDataRepoImpl()
     }
 
     @Provides
     @Singleton
     fun providesCoursesRepo(
-        impl: CoursesRepoImpl,
         db: MedDAO
     ) : CoursesRepo {
         return CoursesRepoImpl(db)
@@ -35,7 +32,6 @@ class DataModule {
     @Provides
     @Singleton
     fun providesMedsRepo(
-        impl: MedsRepoImpl,
         db: MedDAO
     ) : MedsRepo {
         return MedsRepoImpl(db)
@@ -44,7 +40,6 @@ class DataModule {
     @Provides
     @Singleton
     fun providesUsagesRepo(
-        impl: UsagesRepoImpl,
         db: MedDAO
     ) : UsagesRepo {
         return UsagesRepoImpl(db)

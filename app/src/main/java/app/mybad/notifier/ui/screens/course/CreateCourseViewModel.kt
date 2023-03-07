@@ -1,10 +1,7 @@
 package app.mybad.notifier.ui.screens.course
 
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
-import app.mybad.domain.scheduler.NotificationsScheduler
+import app.mybad.domain.usecases.CreateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,10 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
-    private val coursesRepo: CoursesRepo,
-    private val medsRepo: MedsRepo,
-    private val usagesRepo: UsagesRepo,
-    private val notificationsScheduler: NotificationsScheduler
+    private val createCourseUseCase: CreateCourseUseCase
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -30,10 +24,11 @@ class CreateCourseViewModel @Inject constructor(
             is CreateCourseIntent.Drop -> { scope.launch { _state.emit(CreateCourseState()) } }
             is CreateCourseIntent.Finish -> {
                 scope.launch {
-                    coursesRepo.add(_state.value.course)
-                    medsRepo.add(_state.value.med)
-                    usagesRepo.addUsages(_state.value.usages)
-                    notificationsScheduler.add(_state.value.usages)
+                    createCourseUseCase.execute(
+                        med = _state.value.med,
+                        course = _state.value.course,
+                        usages = _state.value.usages
+                    )
                 }
             }
             is CreateCourseIntent.NewMed -> {
