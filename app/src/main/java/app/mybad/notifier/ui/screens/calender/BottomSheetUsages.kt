@@ -78,7 +78,7 @@ private fun SingleUsageItem(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val icon = if(med.details.icon == 0) R.drawable.pill else R.drawable.settings
+                        val icon = if(med.icon == 0) R.drawable.pill else R.drawable.settings
                         Icon(
                             painter = painterResource(icon),
                             contentDescription = null,
@@ -93,7 +93,7 @@ private fun SingleUsageItem(
                         .weight(1f)
                 ) {
                     Text(
-                        text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
+                        text = "${med.name}, ${med.dose} ${units[med.measureUnit]}",
                         style = Typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary
                     )

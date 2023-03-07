@@ -12,5 +12,10 @@ data class MedDataModel(
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,
-    val details: MedDetailsDataModel = MedDetailsDataModel()
+    val type: Int = 0,
+    val icon: Int = 0,
+    val dose: Int = 0,
+    val measureUnit: Int = 0,
+    val photo: String? = null,
+    val beforeFood: Int = 5,
 )

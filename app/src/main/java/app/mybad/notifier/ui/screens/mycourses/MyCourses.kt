@@ -111,7 +111,7 @@ private fun CourseItem(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            painter = painterResource(if(med.details.icon == 1) R.drawable.pill else R.drawable.settings),
+                            painter = painterResource(if(med.icon == 1) R.drawable.pill else R.drawable.settings),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onPrimary
@@ -122,7 +122,7 @@ private fun CourseItem(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "${med.name}, ${med.details.dose} ${units[med.details.measureUnit]}",
+                        text = "${med.name}, ${med.dose} ${units[med.measureUnit]}",
                         style = Typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary
                     )

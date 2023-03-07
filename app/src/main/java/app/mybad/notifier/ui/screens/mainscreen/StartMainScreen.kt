@@ -382,7 +382,7 @@ private fun MainScreenFormCourseHeader(
                     modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 ) {
                     Text(
-                        text = "${med.details.dose} таблетки",
+                        text = "${med.dose} таблетки",
                         style = Typography.labelMedium
                     )
                     Text(
@@ -393,7 +393,7 @@ private fun MainScreenFormCourseHeader(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = if (med.details.beforeFood == 0) "после еды" else "до еды",
+                        text = if (med.beforeFood == 0) "после еды" else "до еды",
                         style = Typography.labelMedium,
                         modifier = Modifier.padding(end = 8.dp)
                     )

@@ -53,13 +53,13 @@ fun AddMedScreen(
                 onChange(newMed)
             }
             Spacer(Modifier.height(16.dp))
-            DoseInput(init = if(init.details.dose == 0) "" else init.details.dose.toString()) {
-                newMed = newMed.copy(details = newMed.details.copy(dose = it.toIntOrNull() ?: 0))
+            DoseInput(init = if(init.dose == 0) "" else init.dose.toString()) {
+                newMed = newMed.copy(dose = it.toIntOrNull() ?: 0)
                 onChange(newMed)
             }
             Spacer(Modifier.height(16.dp))
-            UnitSelector(init = init.details.measureUnit) {
-                newMed = newMed.copy(details = newMed.details.copy(measureUnit = it))
+            UnitSelector(init = init.measureUnit) {
+                newMed = newMed.copy(measureUnit = it)
                 onChange(newMed)
             }
         }
@@ -67,7 +67,7 @@ fun AddMedScreen(
         NavigationRow(
             onBack = onBack::invoke,
             onNext = {
-                if(newMed.details.dose == 0 || newMed.name.isNullOrBlank()) {
+                if(newMed.dose == 0 || newMed.name.isNullOrBlank()) {
                     Toast.makeText(context, unfilledError, Toast.LENGTH_SHORT).show()
                 } else onNext()
             }

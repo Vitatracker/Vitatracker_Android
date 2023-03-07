@@ -29,8 +29,8 @@ class NotificationsSchedulerImpl @Inject constructor(
             val i = Intent(context, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
             i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.details.dose)
-            i.putExtra("unit", med.details.measureUnit)
+            i.putExtra("dose", med.dose)
+            i.putExtra("unit", med.measureUnit)
             val pi = PendingIntent.getBroadcast(context, 0, i, 0)
             calendar.timeInMillis = it.useTime*1000
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
@@ -43,8 +43,8 @@ class NotificationsSchedulerImpl @Inject constructor(
             val i = Intent(context, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
             i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.details.dose)
-            i.putExtra("unit", med.details.measureUnit)
+            i.putExtra("dose", med.dose)
+            i.putExtra("unit", med.measureUnit)
             val pi = PendingIntent.getBroadcast(context, 0, i, 0)
             alarmManager.cancel(pi)
         }
@@ -66,8 +66,8 @@ class NotificationsSchedulerImpl @Inject constructor(
                     val i = Intent(context, AlarmReceiver::class.java)
                     val med = medsRepo.getSingle(it.medId)
                     i.putExtra("medName", med.name ?: "no name")
-                    i.putExtra("dose", med.details.dose)
-                    i.putExtra("unit", med.details.measureUnit)
+                    i.putExtra("dose", med.dose)
+                    i.putExtra("unit", med.measureUnit)
                     val pi = PendingIntent.getBroadcast(context, 0, i, 0)
                     calendar.timeInMillis = it.useTime*1000
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)

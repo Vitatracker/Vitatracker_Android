@@ -2,10 +2,8 @@ package app.mybad.data
 
 import app.mybad.data.models.course.CourseDataModel
 import app.mybad.data.models.med.MedDataModel
-import app.mybad.data.models.med.MedDetailsDataModel
 import app.mybad.data.models.usages.UsageCommonDataModel
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDetailsDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 
@@ -23,12 +21,8 @@ fun List<CourseDataModel>.mapToDomain() : List<CourseDomainModel> {
 fun CourseDomainModel.mapToData() : CourseDataModel {
     return CourseDataModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, remindDate, regime, showUsageTime, isFinished, isInfinite)
 }
-
-fun MedDetailsDataModel.mapToDomain() : MedDetailsDomainModel {
-    return MedDetailsDomainModel(type, icon, dose, measureUnit, photo, beforeFood)
-}
 fun MedDataModel.mapToDomain() : MedDomainModel {
-    return MedDomainModel(id, creationDate, updateDate, userId, name, description, comment, details.mapToDomain())
+    return MedDomainModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, dose, measureUnit, photo, beforeFood )
 }
 
 @JvmName("listMdmToDomain")
@@ -39,15 +33,13 @@ fun List<MedDataModel>.mapToDomain() : List<MedDomainModel> {
         }
     }
 }
-fun MedDetailsDomainModel.mapToData() : MedDetailsDataModel {
-    return MedDetailsDataModel(type, icon, dose, measureUnit, photo, beforeFood)
-}
+
 fun MedDomainModel.mapToData() : MedDataModel {
-    return MedDataModel(id, creationDate, updateDate, userId, name, description, comment, details.mapToData())
+    return MedDataModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, dose, measureUnit, photo, beforeFood)
 }
 
 fun UsageCommonDataModel.mapToDomain() : UsageCommonDomainModel {
-    return UsageCommonDomainModel(id, medId, userId, creationTime, editTime, useTime, factUseTime)
+    return UsageCommonDomainModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity)
 }
 
 fun List<UsageCommonDataModel>.mapToDomain() : List<UsageCommonDomainModel> {
@@ -59,7 +51,7 @@ fun List<UsageCommonDataModel>.mapToDomain() : List<UsageCommonDomainModel> {
 }
 
 fun UsageCommonDomainModel.mapToData() : UsageCommonDataModel {
-    return UsageCommonDataModel(id, medId, userId, creationTime, editTime, useTime, factUseTime)
+    return UsageCommonDataModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity)
 }
 @JvmName("ucdm_toData")
 fun List<UsageCommonDomainModel>.mapToData() : List<UsageCommonDataModel> {

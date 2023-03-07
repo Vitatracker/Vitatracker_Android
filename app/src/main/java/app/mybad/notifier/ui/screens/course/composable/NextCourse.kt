@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.course
+package app.mybad.notifier.ui.screens.course.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.*
 import app.mybad.notifier.ui.theme.Typography
