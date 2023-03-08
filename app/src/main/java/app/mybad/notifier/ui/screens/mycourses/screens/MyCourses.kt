@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.mycourses
+package app.mybad.notifier.ui.screens.mycourses.screens
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -22,9 +22,7 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 import java.time.*
 import java.time.format.DateTimeFormatter
-import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCourses(
     modifier: Modifier = Modifier,
