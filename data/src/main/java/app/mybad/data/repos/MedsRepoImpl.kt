@@ -15,31 +15,31 @@ class MedsRepoImpl @Inject constructor(
     private val db: MedDAO
 ) : MedsRepo {
 
-    override fun getAll(): List<MedDomainModel> {
+    override suspend fun getAll(): List<MedDomainModel> {
         return db.getAllMeds().mapToDomain()
     }
 
-    override fun getAllFlow(): Flow<List<MedDomainModel>> {
+    override suspend fun getAllFlow(): Flow<List<MedDomainModel>> {
         return db.getAllMedsFlow().map { it.mapToDomain() }
     }
 
-    override fun getSingle(medId: Long): MedDomainModel {
+    override suspend fun getSingle(medId: Long): MedDomainModel {
         return db.getMedById(medId).mapToDomain()
     }
 
-    override fun add(med: MedDomainModel) {
+    override suspend fun add(med: MedDomainModel) {
         db.addMed(med.mapToData())
     }
 
-    override fun updateSingle(medId: Long, item: MedDomainModel) {
+    override suspend fun updateSingle(medId: Long, item: MedDomainModel) {
         db.addMed(item.copy(id = medId).mapToData())
     }
 
-    override fun deleteSingle(medId: Long) {
+    override suspend fun deleteSingle(medId: Long) {
         db.deleteMed(medId)
     }
 
-    override fun getFromList(listMedsId: List<Long>): List<MedDomainModel> {
+    override suspend fun getFromList(listMedsId: List<Long>): List<MedDomainModel> {
         return db.getMedByList(listId = listMedsId).mapToDomain()
     }
 }

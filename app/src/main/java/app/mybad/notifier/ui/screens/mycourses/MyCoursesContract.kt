@@ -5,7 +5,8 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 
 sealed interface MyCoursesIntent {
-
+    data class Delete(val courseId: Long) : MyCoursesIntent
+    data class Update(val courseId: Long, val updatedCourse: CourseDomainModel) : MyCoursesIntent
 }
 
 data class MyCoursesState(

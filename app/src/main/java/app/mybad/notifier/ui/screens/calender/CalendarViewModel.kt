@@ -1,9 +1,8 @@
 package app.mybad.notifier.ui.screens.calender
 
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.usecases.courses.LoadCoursesUseCase
+import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val courses: CoursesRepo,
-    private val usages: UsagesRepo,
-    private val meds: MedsRepo
+    private val loadCourses: LoadCoursesUseCase,
+    private val updateUsage: UpdateUsageUseCase
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -24,13 +22,13 @@ class CalendarViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
     init {
         scope.launch {
-            courses.getAllFlow().collect { _state.emit(_state.value.copy(courses = it)) }
+            loadCourses.getCoursesFlow().collect { _state.emit(_state.value.copy(courses = it)) }
         }
         scope.launch {
-            meds.getAllFlow().collect { _state.emit(_state.value.copy(meds = it)) }
+            loadCourses.getMedsFlow().collect { _state.emit(_state.value.copy(meds = it)) }
         }
         scope.launch {
-            usages.getCommonAllFlow().collect { _state.emit(_state.value.copy(usages = it)) }
+            loadCourses.getUsagesFlow().collect { _state.emit(_state.value.copy(usages = it)) }
         }
     }
 
@@ -38,7 +36,7 @@ class CalendarViewModel @Inject constructor(
         when(intent) {
             is CalendarIntent.SetUsage -> {
                 scope.launch {
-                    usages.updateSingle(intent.usage)
+                    updateUsage.execute(intent.usage)
                 }
             }
         }

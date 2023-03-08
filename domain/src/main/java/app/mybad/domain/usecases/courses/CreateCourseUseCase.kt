@@ -1,4 +1,4 @@
-package app.mybad.domain.usecases
+package app.mybad.domain.usecases.courses
 
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel

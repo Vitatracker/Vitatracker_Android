@@ -26,27 +26,31 @@ class NotificationsSchedulerImpl @Inject constructor(
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun add(usages: List<UsageCommonDomainModel>) {
         usages.forEach {
-            val i = Intent(context, AlarmReceiver::class.java)
-            val med = medsRepo.getSingle(it.medId)
-            i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.dose)
-            i.putExtra("unit", med.measureUnit)
-            val pi = PendingIntent.getBroadcast(context, 0, i, 0)
-            calendar.timeInMillis = it.useTime*1000
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+            scope.launch {
+                val i = Intent(context, AlarmReceiver::class.java)
+                val med = medsRepo.getSingle(it.medId)
+                i.putExtra("medName", med.name ?: "no name")
+                i.putExtra("dose", med.dose)
+                i.putExtra("unit", med.measureUnit)
+                val pi = PendingIntent.getBroadcast(context, 0, i, 0)
+                calendar.timeInMillis = it.useTime*1000
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+            }
         }
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun cancel(usages: List<UsageCommonDomainModel>) {
         usages.forEach {
-            val i = Intent(context, AlarmReceiver::class.java)
-            val med = medsRepo.getSingle(it.medId)
-            i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.dose)
-            i.putExtra("unit", med.measureUnit)
-            val pi = PendingIntent.getBroadcast(context, 0, i, 0)
-            alarmManager.cancel(pi)
+            scope.launch {
+                val i = Intent(context, AlarmReceiver::class.java)
+                val med = medsRepo.getSingle(it.medId)
+                i.putExtra("medName", med.name ?: "no name")
+                i.putExtra("dose", med.dose)
+                i.putExtra("unit", med.measureUnit)
+                val pi = PendingIntent.getBroadcast(context, 0, i, 0)
+                alarmManager.cancel(pi)
+            }
         }
     }
 

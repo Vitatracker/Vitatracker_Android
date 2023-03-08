@@ -108,5 +108,6 @@
     <string name="add_next_course_remind_time">Time of remind</string>
     <string name="mycourse_dosage_and_usage">Dosage and usage</string>
     <string name="mycourse_per_day">Takes per day</string>
+    <string name="mycourse_delete">Delete</string>
 
 </resources>

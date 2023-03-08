@@ -1,9 +1,9 @@
 package app.mybad.notifier.ui.screens.mycourses
 
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.usecases.courses.DeleteCourseUseCase
+import app.mybad.domain.usecases.courses.LoadCoursesUseCase
+import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyCoursesViewModel @Inject constructor(
-    private val coursesRepo: CoursesRepo,
-    private val medsRepo: MedsRepo,
-    private val usagesRepo: UsagesRepo
+    private val loadCourses: LoadCoursesUseCase,
+    private val deleteCourse: DeleteCourseUseCase,
+    private val updateCourse: UpdateCourseUseCase
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -26,18 +26,25 @@ class MyCoursesViewModel @Inject constructor(
 
     init {
         scope.launch {
-            coursesRepo.getAllFlow().collect { courses -> _state.update { it.copy(courses = courses) } }
+            loadCourses.getCoursesFlow().collect { courses -> _state.update { it.copy(courses = courses) } }
         }
         scope.launch {
-            medsRepo.getAllFlow().collect { meds -> _state.update { it.copy(meds = meds) } }
+            loadCourses.getMedsFlow().collect { meds -> _state.update { it.copy(meds = meds) } }
         }
         scope.launch {
-            usagesRepo.getCommonAllFlow().collect { usages -> _state.update { it.copy(usages = usages) } }
+            loadCourses.getUsagesFlow().collect { usages -> _state.update { it.copy(usages = usages) } }
         }
     }
 
     fun reduce(intent: MyCoursesIntent) {
-        intent
+        when(intent) {
+            is MyCoursesIntent.Delete -> {
+                scope.launch { deleteCourse.execute(intent.courseId) }
+            }
+            is MyCoursesIntent.Update -> {
+                scope.launch { updateCourse.execute(intent.courseId, intent.updatedCourse) }
+            }
+        }
     }
 
 }

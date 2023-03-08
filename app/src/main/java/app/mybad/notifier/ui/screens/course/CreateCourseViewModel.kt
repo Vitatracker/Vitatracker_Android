@@ -1,7 +1,7 @@
 package app.mybad.notifier.ui.screens.course
 
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.usecases.CreateCourseUseCase
+import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

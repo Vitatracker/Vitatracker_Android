@@ -17,7 +17,7 @@ import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
-import app.mybad.notifier.ui.screens.mycourses.MyCoursesMainScreen
+import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsNav
@@ -35,7 +35,6 @@ fun MainNav(
     mainScreenVm: StartMainScreenViewModel
 ) {
     var isOnTopLevel by remember { mutableStateOf(true) }
-    val coursesState = myCoursesVm.state.collectAsState()
     val calendarState = calendarVm.state.collectAsState()
 
     Scaffold(
@@ -65,9 +64,7 @@ fun MainNav(
                 MyCoursesMainScreen(
                     modifier = modifier,
                     navHostController = myCoursesNavController,
-                    courses = coursesState.value.courses,
-                    meds = coursesState.value.meds,
-                    usages = coursesState.value.usages
+                    vm = myCoursesVm
                 )
                 isOnTopLevel = path.value?.destination?.route != MyCoursesNavItem.Course.route
             }

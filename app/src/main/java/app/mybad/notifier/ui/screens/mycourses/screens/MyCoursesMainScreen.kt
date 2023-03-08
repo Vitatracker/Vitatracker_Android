@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.mycourses
+package app.mybad.notifier.ui.screens.mycourses.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,21 +15,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.mycourses.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCoursesMainScreen(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
-    courses: List<CourseDomainModel>,
-    meds: List<MedDomainModel>,
-    usages: List<UsageCommonDomainModel>
+    vm: MyCoursesViewModel,
 ) {
 
     var selectedCourse by remember { mutableStateOf<CourseDomainModel?>(null) }
+    val state = vm.state.collectAsState()
 
     LazyColumn {
         item {
@@ -37,7 +36,7 @@ fun MyCoursesMainScreen(
                 title = {
                     Text(
                         text = if(selectedCourse == null) stringResource(R.string.my_course_h)
-                        else meds.firstOrNull { it.id == selectedCourse?.medId }?.name ?: "no data",
+                        else state.value.meds.firstOrNull { it.id == selectedCourse?.medId }?.name ?: "no data",
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -54,27 +53,28 @@ fun MyCoursesMainScreen(
             ) {
                 composable(MyCoursesNavItem.Main.route) {
                     MyCourses(
-                        courses = courses,
-                        meds = meds,
+                        courses = state.value.courses,
+                        meds = state.value.meds,
                         onSelect = {
-                            selectedCourse = courses.first { c -> c.id == it }
+                            selectedCourse = state.value.courses.first { c -> c.id == it }
                             navHostController.navigate(MyCoursesNavItem.Course.route)
                         }
                     )
                 }
                 composable(MyCoursesNavItem.Course.route) {
                     if(selectedCourse != null) {
-                        CourseEditScreen(
+                        CourseInfoScreen(
                             course = selectedCourse!!,
-                            med = meds.first { it.id == selectedCourse!!.medId },
-                            usagePattern = generatePattern(selectedCourse!!.medId, usages),
+                            med = state.value.meds.first { it.id == selectedCourse!!.medId },
+                            usagePattern = generatePattern(selectedCourse!!.medId, state.value.usages),
                             onSave = {
                                 navHostController.popBackStack()
                                 selectedCourse = null
                             },
-                            onDecline = {
+                            onDelete = {
                                 navHostController.popBackStack()
                                 selectedCourse = null
+                                vm.reduce(MyCoursesIntent.Delete(it))
                             }
                         )
                     }

@@ -1,7 +1,6 @@
 package app.mybad.domain.repos
 
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface CoursesRepo {

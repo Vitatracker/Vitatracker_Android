@@ -33,13 +33,13 @@ private val usagesPattern = listOf<Pair<Long, Int>>(
 
 @Composable
 @Preview(showBackground = true)
-fun CourseEditScreen(
+fun CourseInfoScreen(
     modifier: Modifier = Modifier,
     course: CourseDomainModel = CourseDomainModel(),
     usagePattern: List<Pair<Long, Int>> = usagesPattern,
     med: MedDomainModel = MedDomainModel(),
     onSave: () -> Unit = {},
-    onDecline: () -> Unit = {}
+    onDelete: (Long) -> Unit = {},
 ) {
 
     val regime = stringArrayResource(R.array.regime)
@@ -170,7 +170,7 @@ fun CourseEditScreen(
         )
         SaveDecline(
             onSave = onSave::invoke,
-            onDecline = onDecline::invoke
+            onDelete = { onDelete(course.id) }
         )
     }
 }
@@ -179,7 +179,7 @@ fun CourseEditScreen(
 private fun SaveDecline(
     modifier: Modifier = Modifier,
     onSave: () -> Unit,
-    onDecline: () -> Unit
+    onDelete: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -187,7 +187,7 @@ private fun SaveDecline(
         modifier = modifier.fillMaxWidth()
     ) {
         Button(
-            onClick = onDecline::invoke,
+            onClick = onDelete::invoke,
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background),
             border = BorderStroke(2.dp, MaterialTheme.colorScheme.error),
@@ -197,7 +197,7 @@ private fun SaveDecline(
                 .fillMaxWidth()
         ) {
             Text(
-                text = stringResource(R.string.settings_cancel),
+                text = stringResource(R.string.mycourse_delete),
                 style = Typography.bodyLarge,
                 color = MaterialTheme.colorScheme.error
             )
