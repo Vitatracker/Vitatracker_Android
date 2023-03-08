@@ -5,11 +5,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStoreFile
-import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import app.mybad.data.datastore.PersonalSerializer
+import app.mybad.data.models.user.PersonalDataModel
+import app.mybad.domain.models.user.PersonalDomainModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +23,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
+private const val USER_PROTO_NAME = "user_model.proto"
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -35,6 +38,17 @@ object DataStoreModule {
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { appContext.preferencesDataStoreFile(USER_PREFERENCES_NAME) }
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideProtoDataStore(@ApplicationContext appContext: Context): DataStore<PersonalDataModel> {
+        return DataStoreFactory.create(
+            serializer = PersonalSerializer,
+            produceFile = { appContext.dataStoreFile(USER_PROTO_NAME) },
+            corruptionHandler = null,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }
 
