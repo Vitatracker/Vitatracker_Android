@@ -137,6 +137,10 @@ private fun SingleUsageItem(
                                 .padding(start = 8.dp)
                                 .size(40.dp)
                                 .clip(CircleShape)
+                                .clickable {
+                                    val n = if (!isTaken) Instant.now().epochSecond else -1L
+                                    onTake(n)
+                                }
                         )
                     }
                 }
