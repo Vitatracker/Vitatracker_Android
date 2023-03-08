@@ -53,7 +53,7 @@ class NotificationsSchedulerImpl @Inject constructor(
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    suspend fun rescheduleAll(onComplete: () -> Unit = {}) {
+    suspend fun rescheduleAll(onComplete: () -> Unit) {
         val now = System.currentTimeMillis()/1000
         usagesRepo.getCommonAll().forEach {
             if(it.useTime >= now) {
