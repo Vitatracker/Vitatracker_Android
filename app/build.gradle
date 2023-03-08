@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
     id("com.google.dagger.hilt.android")
+    id "com.google.protobuf" version "0.8.12"
 }
 
 android {
@@ -95,6 +96,6 @@ dependencies {
     // Proto DataStore
     implementation "androidx.datastore:datastore:$data_store"
     implementation "androidx.datastore:datastore-core:$data_store"
-    implementation "com.google.protobuf:protobuf-javalite:3.10.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.11.0"
 
 }

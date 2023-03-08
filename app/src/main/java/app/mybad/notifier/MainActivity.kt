@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
     private val settingsVm : SettingsViewModel by viewModels()
     private val calendarVm : CalendarViewModel by viewModels()
     private val mainScreenVm : StartMainScreenViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
