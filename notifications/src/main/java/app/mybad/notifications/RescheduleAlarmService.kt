@@ -7,12 +7,16 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LifecycleService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RescheduleAlarmService : LifecycleService() {
 
     @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     companion object {
         const val CHANNEL_ID = "my_service"
@@ -39,9 +43,11 @@ class RescheduleAlarmService : LifecycleService() {
             .setCategory(Notification.CATEGORY_CALL)
             .build()
         startForeground(101, notification)
-        notificationsSchedulerImpl.rescheduleAll {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-            stopSelf()
+        scope.launch {
+            notificationsSchedulerImpl.rescheduleAll {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopSelf()
+            }
         }
         return START_STICKY
     }
