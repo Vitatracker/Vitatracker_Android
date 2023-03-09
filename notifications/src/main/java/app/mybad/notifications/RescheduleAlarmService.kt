@@ -44,10 +44,10 @@ class RescheduleAlarmService : LifecycleService() {
             .build()
         startForeground(101, notification)
         scope.launch {
-            notificationsSchedulerImpl.rescheduleAll {
-                stopForeground(STOP_FOREGROUND_REMOVE)
-                stopSelf()
-            }
+            notificationsSchedulerImpl.rescheduleAll()
+        }.invokeOnCompletion {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
         }
         return START_STICKY
     }
