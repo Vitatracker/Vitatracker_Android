@@ -117,4 +117,5 @@
     <string name="mycourse_dosage_and_usage">Dosage and usage</string>
     <string name="mycourse_per_day">Takes per day</string>
     <string name="mycourse_delete">Delete</string>
+    <string name="add_med_form">Pharmaceutical form</string>
 </resources>

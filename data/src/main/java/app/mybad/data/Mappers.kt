@@ -22,7 +22,7 @@ fun CourseDomainModel.mapToData() : CourseDataModel {
     return CourseDataModel(id, creationDate, updateDate, userId, comment, medId, startDate, endDate, interval, remindDate, regime, showUsageTime, isFinished, isInfinite)
 }
 fun MedDataModel.mapToDomain() : MedDomainModel {
-    return MedDomainModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, dose, measureUnit, photo, beforeFood )
+    return MedDomainModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, color, dose, measureUnit, photo, beforeFood )
 }
 
 @JvmName("listMdmToDomain")
@@ -35,7 +35,7 @@ fun List<MedDataModel>.mapToDomain() : List<MedDomainModel> {
 }
 
 fun MedDomainModel.mapToData() : MedDataModel {
-    return MedDataModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, dose, measureUnit, photo, beforeFood)
+    return MedDataModel(id, creationDate, updateDate, userId, name, description, comment, type, icon, color, dose, measureUnit, photo, beforeFood)
 }
 
 fun UsageCommonDataModel.mapToDomain() : UsageCommonDomainModel {
