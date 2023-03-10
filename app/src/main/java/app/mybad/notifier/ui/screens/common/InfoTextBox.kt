@@ -39,7 +39,7 @@ fun StylishTextBox(
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(if(outlined) 1.dp else 0.dp, MaterialTheme.colorScheme.primaryContainer),
+        border = BorderStroke(1.dp, if(outlined) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
         modifier = modifier.fillMaxWidth()
     ) {
         Row(

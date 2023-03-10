@@ -86,12 +86,12 @@ fun NewCourseNav(
                     userId = userId,
                     onChange = {
                         newMed = it
-                        vm.reduce(CreateCourseIntent.NewMed(newMed))
+                        vm.reduce(NewCourseIntent.UpdateMed(newMed))
                     },
                     onNext = { navController.navigate(NavItemCourse.AddCourse.route) },
                     onBack = {
                         onDismiss()
-                        vm.reduce(CreateCourseIntent.Drop)
+                        vm.reduce(NewCourseIntent.Drop)
                         navController.popBackStack()
                     },
                 )
@@ -106,8 +106,8 @@ fun NewCourseNav(
                         newCourse = it.first
                         newCommonUsages = it.second
                         navController.navigate(NavItemCourse.NextCourse.route)
-                        vm.reduce(CreateCourseIntent.NewCourse(it.first))
-                        vm.reduce(CreateCourseIntent.NewUsages(it.second))
+                        vm.reduce(NewCourseIntent.UpdateCourse(it.first))
+                        vm.reduce(NewCourseIntent.UpdateUsages(it.second))
                     },
                     onBack = { navController.popBackStack() },
                 )
@@ -118,8 +118,8 @@ fun NewCourseNav(
                     modifier = modifier.fillMaxSize(),
                     previousEndDate = newCourse.endDate,
                     onNext = {
-                        vm.reduce(CreateCourseIntent.NewCourse(newCourse))
-                        vm.reduce(CreateCourseIntent.Finish)
+                        vm.reduce(NewCourseIntent.UpdateCourse(newCourse))
+                        vm.reduce(NewCourseIntent.Finish)
                         navController.navigate(NavItemCourse.CourseCreated.route)
                     },
                     onBack = { navController.popBackStack() },
@@ -129,7 +129,7 @@ fun NewCourseNav(
                 title = stringResource(NavItemCourse.CourseCreated.stringId)
                 CourseCreated {
                     onDismiss()
-                    vm.reduce(CreateCourseIntent.Drop)
+                    vm.reduce(NewCourseIntent.Drop)
                 }
             }
         }

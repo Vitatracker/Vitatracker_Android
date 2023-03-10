@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.calender
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,6 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
@@ -33,11 +37,13 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
 
+@SuppressLint("Recycle")
 @Composable
 private fun SingleUsageItem(
     modifier: Modifier = Modifier,
     date: Long,
     med: MedDomainModel,
+    quantity: Int,
     isTaken: Boolean = false,
     onTake: (Long) -> Unit
 ) {
@@ -46,7 +52,8 @@ private fun SingleUsageItem(
     val now = Instant.now().epochSecond
     val outlineColor = if(now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     val alpha = if((now-date).absoluteValue > 3600) 0.6f else 1f
-
+    val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
+    val colors = integerArrayResource(R.array.colors)
     Row(
         verticalAlignment = Alignment.Top,
         modifier = modifier.fillMaxWidth().alpha(alpha)
@@ -71,7 +78,7 @@ private fun SingleUsageItem(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = Color(colors[med.color]),
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -80,12 +87,11 @@ private fun SingleUsageItem(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        val icon = if(med.icon == 0) R.drawable.pill else R.drawable.settings
                         Icon(
-                            painter = painterResource(icon),
+                            painter = painterResource(r.getResourceId(med.icon, 0)),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.outline
                         )
                     }
                 }
@@ -98,7 +104,7 @@ private fun SingleUsageItem(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                             modifier = Modifier.height(16.dp).padding(horizontal = 8.dp).width(1.dp)
                         )
-                        Text(text = "${med.dose} ${types[med.type]}", style = Typography.labelMedium)
+                        Text(text = "$quantity ${types[med.type]}", style = Typography.labelMedium)
                     }
                 }
                 when(now-date) {
@@ -214,6 +220,7 @@ fun DailyUsages(
                             SingleUsageItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 date = entry.useTime,
+                                quantity = entry.quantity,
                                 med = meds.first { it.id == entry.medId },
                                 isTaken = entry.factUseTime > 10L,
                                 onTake = { datetime ->
