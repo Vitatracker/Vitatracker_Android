@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.course.CourseDomainModel
@@ -31,13 +30,12 @@ import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-@Preview
 fun AddCourseMainScreen(
     modifier: Modifier = Modifier,
-    course: CourseDomainModel = CourseDomainModel(),
-    reducer: (NewCourseIntent) -> Unit = {},
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
+    course: CourseDomainModel,
+    reducer: (NewCourseIntent) -> Unit,
+    onNext: () -> Unit,
+    onBack: () -> Unit,
 ) {
 
     val startLabel = stringResource(R.string.add_course_start_time)
@@ -81,7 +79,8 @@ fun AddCourseMainScreen(
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                    onClick = { scope.launch { sState.bottomSheetState.expand() }}
+                    onClick = { scope.launch { sState.bottomSheetState.expand() }},
+                    contentPadding = PaddingValues(16.dp)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.clock),

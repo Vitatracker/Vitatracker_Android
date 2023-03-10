@@ -7,9 +7,14 @@
     <string name="add_med_food_relation">Связь с едой</string>
     <string name="add_med_dosa_and_usage">Дозировка и приём</string>
     <string name="add_med_settings">Настройки</string>
+    <string name="add_med_form">Форма выпуска</string>
+    <string name="add_notifications_time">Добавить напоминание</string>
+    <string name="add_med_details">Описание препарата</string>
+    <string name="add_med_icon_color">Иконка и цвет</string>
 
     <string name="navigation_back">Назад</string>
     <string name="navigation_next">Вперед</string>
+
     <string name="add_course_h">Выбрать время</string>
     <string name="add_course_notifications_quantity">Сколько раз в день</string>
     <string name="add_course_notifications_time">Время уведомлений</string>
@@ -26,6 +31,13 @@
     <string name="add_course_months">Месяцы</string>
     <string name="add_course_days">Дни</string>
     <string name="add_next_course_interval">Начать следующий курс через</string>
+    <string name="add_course_finish">Отлично!</string>
+    <string name="add_course_repeatable">Повторяющийся курс</string>
+    <string name="add_med_remind_time">Время напоминания</string>
+    <string name="add_course_end_time">Конец приема</string>
+    <string name="medication_regime">График приема</string>
+    <string name="add_course_reminder">Напомнить о новом курсе</string>
+    <string name="add_next_course_remind_time">Время напоминания</string>
 
     <!--START SCREEN-->
     <string name="start_screen_welcome">Добро пожаловать</string>
@@ -89,11 +101,13 @@
     <string name="navigation_add">Добавить</string>
     <string name="navigation_notifications">Уведомления</string>
     <string name="navigation_calendar">Календарь</string>
-    <string name="add_course_finish">Отлично!</string>
 
     <string name="my_course_h">Мои курсы</string>
     <string name="mycourse_duration">Продолжительность</string>
     <string name="mycourse_interval">Периодичность</string>
+    <string name="mycourse_dosage_and_usage">Дозировка и приём</string>
+    <string name="mycourse_per_day">Приёмов в день</string>
+    <string name="mycourse_delete">Удалить</string>
 
     <!--CALENDAR -->
     <string name="calendar_h">Мой календарь</string>
@@ -101,18 +115,6 @@
     <string name="main_screen_text_category">Лекарства</string>
     <string name="main_screen_button_detail">Подробнее</string>
     <string name="main_screen_button_accept">Принять</string>
-    <string name="add_med_remind_time">Время напоминания</string>
-    <string name="add_course_end_time">Конец приема</string>
-    <string name="medication_regime">График приема</string>
-    <string name="add_course_reminder">Напомнить о новом курсе</string>
-    <string name="add_next_course_remind_time">Time of remind</string>
-    <string name="mycourse_dosage_and_usage">Dosage and usage</string>
-    <string name="mycourse_per_day">Takes per day</string>
-    <string name="mycourse_delete">Delete</string>
-    <string name="add_med_form">Pharmaceutical form</string>
-    <string name="add_course_repeatable">Repeatable course</string>
-    <string name="add_notifications_time">Add notification</string>
-    <string name="add_med_details">Medicine details</string>
-    <string name="add_med_icon_color">Icon and color</string>
+
 
 </resources>

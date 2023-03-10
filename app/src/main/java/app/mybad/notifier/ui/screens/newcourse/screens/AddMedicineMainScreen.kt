@@ -51,7 +51,6 @@ fun AddMedicineMainScreen(
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
-            Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.add_med_icon_color),
                 style = Typography.bodyLarge,
@@ -65,7 +64,6 @@ fun AddMedicineMainScreen(
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
-            Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.add_med_details),
                 style = Typography.bodyLarge,
