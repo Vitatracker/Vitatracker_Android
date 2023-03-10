@@ -47,7 +47,8 @@ fun IconSelector(
                     Icon(
                         painter = painterResource(r.getResourceId(index,0)),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.outline
                     )
                 }
             }
