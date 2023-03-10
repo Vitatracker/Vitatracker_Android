@@ -38,6 +38,7 @@ private fun SingleUsageItem(
     modifier: Modifier = Modifier,
     date: Long,
     med: MedDomainModel,
+    quantity: Int,
     isTaken: Boolean = false,
     onTake: (Long) -> Unit
 ) {
@@ -98,7 +99,7 @@ private fun SingleUsageItem(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                             modifier = Modifier.height(16.dp).padding(horizontal = 8.dp).width(1.dp)
                         )
-                        Text(text = "${med.dose} ${types[med.type]}", style = Typography.labelMedium)
+                        Text(text = "$quantity ${types[med.type]}", style = Typography.labelMedium)
                     }
                 }
                 when(now-date) {
@@ -214,6 +215,7 @@ fun DailyUsages(
                             SingleUsageItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 date = entry.useTime,
+                                quantity = entry.quantity,
                                 med = meds.first { it.id == entry.medId },
                                 isTaken = entry.factUseTime > 10L,
                                 onTake = { datetime ->

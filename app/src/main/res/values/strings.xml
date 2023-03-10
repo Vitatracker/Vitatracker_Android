@@ -118,4 +118,6 @@
     <string name="mycourse_per_day">Takes per day</string>
     <string name="mycourse_delete">Delete</string>
     <string name="add_med_form">Pharmaceutical form</string>
+    <string name="add_course_repeatable">Repeatable course</string>
+    <string name="add_notifications_time">Add notification</string>
 </resources>

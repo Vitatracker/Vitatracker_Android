@@ -14,12 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.course.composable.NewCourseNav
+import app.mybad.notifier.ui.screens.course.NewCourseIntent
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
+import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
@@ -90,11 +91,21 @@ fun MainNav(
             composable(NavItemMain.Add.route) {
                 val nc = rememberNavController()
                 isOnTopLevel = false
-                NewCourseNav(
+//                NewCourseNav(
+//                    modifier = modifier,
+//                    vm = createCourseVm,
+//                    navController = nc,
+//                    onDismiss = { navController.popBackStack() }
+//                )
+                NewCourseNavScreen(
                     modifier = modifier,
+                    navHostController = nc,
                     vm = createCourseVm,
-                    navController = nc,
-                    onDismiss = { navController.popBackStack() }
+                    onCancel = {
+                        navController.popBackStack()
+                        createCourseVm.reduce(NewCourseIntent.Drop)
+                    },
+                    onFinish = { navController.popBackStack() }
                 )
             }
         }

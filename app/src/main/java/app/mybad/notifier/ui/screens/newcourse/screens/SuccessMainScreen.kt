@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.newcourse.composable
+package app.mybad.notifier.ui.screens.newcourse.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

@@ -1,10 +1,7 @@
 package app.mybad.notifier.ui.screens.newcourse.common
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -16,11 +13,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MultiBox(
-    vararg items: @Composable (modifier: Modifier, callback: () -> Unit ) -> Unit,
+    vararg items: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     outlineColor: Color = MaterialTheme.colorScheme.primary,
     itemsPadding: PaddingValues,
-    onSelect: (Int) -> Unit,
 ) {
 
     Surface(
@@ -31,9 +27,8 @@ fun MultiBox(
     ) {
         Column {
             items.forEachIndexed { index, item ->
-                item(modifier = Modifier.padding(itemsPadding), callback = { onSelect(index) })
-                if(index < items.lastIndex)
-                    Divider(thickness = 1.dp, color = outlineColor)
+                Box(Modifier.padding(itemsPadding)) { item() }
+                if(index < items.lastIndex) Divider(thickness = 1.dp, color = outlineColor)
             }
         }
     }

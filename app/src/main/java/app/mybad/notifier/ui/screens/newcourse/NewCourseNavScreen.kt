@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.newcourse.composable.*
+import app.mybad.notifier.ui.screens.newcourse.screens.*
 
 @Composable
 fun NewCourseNavScreen(
@@ -29,18 +29,18 @@ fun NewCourseNavScreen(
             AddMedicineMainScreen(
                 med = state.value.med,
                 reducer = vm::reduce,
-                onNext = { navHostController.navigate(NewCourseNavItem.AddMedicineDetails.route) },
+                onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
                 onBack = onCancel::invoke,
             )
         }
-        composable(NewCourseNavItem.AddMedicineDetails.route) {
-            AddMedicineDetailsScreen(
-                med = state.value.med,
-                reducer = vm::reduce,
-                onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
-                onBack = { navHostController.popBackStack() },
-            )
-        }
+//        composable(NewCourseNavItem.AddMedicineDetails.route) {
+//            AddMedicineDetailsScreen(
+//                med = state.value.med,
+//                reducer = vm::reduce,
+//                onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
+//                onBack = { navHostController.popBackStack() },
+//            )
+//        }
         composable(NewCourseNavItem.AddCourse.route) {
             AddCourseMainScreen(
                 course = state.value.course,
@@ -51,7 +51,7 @@ fun NewCourseNavScreen(
         }
         composable(NewCourseNavItem.AddNotifications.route) {
             AddNotificationsMainScreen(
-                usages = state.value.usages,
+                med = state.value.med,
                 reducer = vm::reduce,
                 onNext = { navHostController.navigate(NewCourseNavItem.Success.route) },
                 onBack = { navHostController.popBackStack() },
