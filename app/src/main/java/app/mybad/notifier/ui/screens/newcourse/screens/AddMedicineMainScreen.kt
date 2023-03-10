@@ -48,6 +48,16 @@ fun AddMedicineMainScreen(
             MultiBox(
                 { BasicKeyboardInput(label = name, init = med.name,
                     onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name  = it))) }) },
+                itemsPadding = PaddingValues(16.dp),
+                outlineColor = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.add_med_icon_color),
+                style = Typography.bodyLarge,
+                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+            )
+            MultiBox(
                 { IconSelector(selected = med.icon,
                     onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }) },
                 { ColorSelector(selected = med.color,
@@ -56,6 +66,11 @@ fun AddMedicineMainScreen(
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
             Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.add_med_details),
+                style = Typography.bodyLarge,
+                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+            )
             MultiBox(
                 { ParameterIndicator(name = form, value = types[med.type], onClick = { selectedInput = 1 }) },
                 { BasicKeyboardInput(label = dose, init = med.dose.toString(), hideOnGo = true,

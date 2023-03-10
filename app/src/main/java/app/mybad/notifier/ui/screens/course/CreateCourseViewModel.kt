@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.course
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
@@ -66,7 +65,6 @@ class CreateCourseViewModel @Inject constructor(
             }
             is NewCourseIntent.UpdateUsagesPattern -> {
                 scope.launch {
-                    Log.w("CCVM_ptn", intent.pattern.toString())
                     val usages = generateCommonUsages(
                         usagesByDay = intent.pattern,
                         now = Instant.now().epochSecond,
@@ -77,9 +75,6 @@ class CreateCourseViewModel @Inject constructor(
                         regime = _state.value.course.regime
                     )
                     _state.update { it.copy(usages = usages) }
-                    Log.w("CCVM_med", _state.value.med.toString())
-                    Log.w("CCVM_crs", _state.value.course.toString())
-                    Log.w("CCVM_usg", _state.value.usages.toString())
                     createCourseUseCase.execute(
                         med = _state.value.med,
                         course = _state.value.course,
