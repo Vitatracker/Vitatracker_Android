@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.course.NewCourseIntent
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddCourseMainScreen(
     modifier: Modifier = Modifier,
@@ -108,27 +109,18 @@ fun AddCourseMainScreen(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background
             ) {
-                val state = rememberDatePickerState()
                 when(selectedInput) {
-                    1, 2 ->
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            DatePicker(state = state)
-                            NavigationRow(
-                                backLabel = stringResource(R.string.settings_cancel),
-                                nextLabel = stringResource(R.string.settings_save),
-                                onBack = { selectedInput = -1 },
-                                onNext = {
-                                    if(selectedInput == 1) {
-                                        reducer(NewCourseIntent.UpdateCourse(course.copy(
-                                            startDate = (state.selectedDateMillis ?: 0L)/1000 )))
-                                    } else {
-                                        reducer(NewCourseIntent.UpdateCourse(course.copy(
-                                            endDate = (state.selectedDateMillis ?: 0L)/1000 )))
-                                    }
-                                    selectedInput = -1
-                                }
-                            )
+                    1, 2 -> CalendarSelectorScreen(
+                        startDay = startDate.toLocalDate(),
+                        endDay = endDate.toLocalDate(),
+                        onSelect = { sd, ed ->
+                            reducer(NewCourseIntent.UpdateCourse(course.copy(
+                                startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                                endDate = ed?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                            )))
+                            selectedInput = -1
                         }
+                        )
                     3 -> RollSelector(
                         list = regimeList.toList(),
                         startOffset = course.regime,

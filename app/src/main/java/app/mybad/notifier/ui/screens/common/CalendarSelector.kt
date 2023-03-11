@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
@@ -33,17 +32,17 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.absoluteValue
 
 @Composable
-@Preview(showBackground = true)
 fun CalendarSelectorScreen(
     modifier: Modifier = Modifier,
     date: LocalDate = LocalDate.now(),
-    startDay: LocalDate = date.minusDays(3L),
-    endDay: LocalDate = date.plusDays(7L),
-    onSelect: (startDate: LocalDate?, endDate: LocalDate?) -> Unit = { _, _ -> }
+    startDay: LocalDate,
+    endDay: LocalDate,
+    onSelect: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
 ) {
 
     var sDate by remember { mutableStateOf(date) }
     var selectedDiapason by remember { mutableStateOf(Pair(startDay, endDay)) }
+
     Column(modifier = modifier.padding(16.dp)) {
         MonthSelector(
             date = sDate.atStartOfDay(),
@@ -202,9 +201,10 @@ private fun CalendarDayItem(
             }
             .alpha(if (isOtherMonth) 0.5f else 1f)
             .clickable(
-                indication = null,
-                interactionSource = MutableInteractionSource()
-            ) { onSelect(date) }
+                indication = null, interactionSource = MutableInteractionSource()
+            ) {
+                onSelect(date)
+            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally

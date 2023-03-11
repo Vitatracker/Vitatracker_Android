@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -53,7 +54,10 @@ fun DaySelectorSlider(
                 .height(50.dp)
                 .width(40.dp)
                 .alpha(if(isSelected) 1f else 0.5f)
-                .clickable {
+                .clickable(
+                    indication = null,
+                    interactionSource = MutableInteractionSource()
+                ) {
                     onSelect(itsDate)
                     scope.launch { pagerState.animateScrollToPage(itsDate?.dayOfMonth ?: 0) }
                 }
