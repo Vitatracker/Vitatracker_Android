@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material3.*
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +25,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
+import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -74,10 +73,10 @@ fun CalendarScreen(
                     )
                 }
             )
-            MonthSelector(selectedDate = now) { date = it }
+            MonthSelector(date = date) { date = it }
             Spacer(Modifier.height(16.dp))
             CalendarScreenItem(
-                now = date.toEpochSecond(ZoneOffset.UTC),
+                date = date,
                 usages = usages,
                 onSelect = {
                     selectedDate = it
@@ -107,83 +106,15 @@ fun CalendarScreen(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-private fun MonthSelector(
-    modifier: Modifier = Modifier,
-    selectedDate: Long,
-    onSwitch: (LocalDateTime) -> Unit
-) {
-    val months = stringArrayResource(R.array.months_full)
-    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(selectedDate), ZoneId.systemDefault())
-    var newDate by remember { mutableStateOf(date) }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.prev_month),
-            tint = MaterialTheme.colorScheme.outlineVariant,
-            contentDescription = null,
-            modifier = Modifier
-                .size(34.dp)
-                .clickable {
-                    newDate = newDate.minusMonths(1)
-                    onSwitch(newDate)
-                }
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
-        ) {
-            AnimatedContent(
-                targetState = newDate.monthValue,
-                transitionSpec = {
-                    EnterTransition.None with ExitTransition.None
-                }
-            ) { targetCount ->
-                Text(
-                    modifier = Modifier.animateEnterExit(
-                        enter = scaleIn(),
-                        exit = scaleOut()
-                    ),
-                    text = months[targetCount-1],
-                    style = Typography.bodyLarge
-                )
-            }
-            Text(
-                text = newDate.year.toString(),
-                style = Typography.labelSmall,
-                modifier = modifier.alpha(0.5f)
-            )
-        }
-        Icon(
-            painter = painterResource(R.drawable.next_month),
-            tint = MaterialTheme.colorScheme.outlineVariant,
-            contentDescription = null,
-            modifier = Modifier
-                .size(34.dp)
-                .clickable {
-                    newDate = newDate.plusMonths(1)
-                    onSwitch(newDate)
-                }
-        )
-    }
-
-}
-
 @Composable
 private fun CalendarScreenItem(
     modifier: Modifier = Modifier,
-    now: Long,
+    date: LocalDateTime,
     usages: List<UsageCommonDomainModel>,
     onSelect: (LocalDateTime?) -> Unit
 ) {
 
     val days = stringArrayResource(R.array.days_short)
-    val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault())
     val currentDate = LocalDateTime.now()
     val cdr : Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
