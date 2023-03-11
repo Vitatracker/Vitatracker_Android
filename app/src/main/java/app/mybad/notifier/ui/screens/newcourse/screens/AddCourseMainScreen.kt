@@ -119,7 +119,8 @@ fun AddCourseMainScreen(
                                 endDate = ed?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                             )))
                             selectedInput = -1
-                        }
+                        },
+                        onDismiss = { selectedInput = -1 }
                         )
                     3 -> RollSelector(
                         list = regimeList.toList(),

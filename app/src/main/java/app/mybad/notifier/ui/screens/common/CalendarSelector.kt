@@ -37,7 +37,8 @@ fun CalendarSelectorScreen(
     date: LocalDate = LocalDate.now(),
     startDay: LocalDate,
     endDay: LocalDate,
-    onSelect: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
+    onSelect: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
+    onDismiss: () -> Unit
 ) {
 
     var sDate by remember { mutableStateOf(date) }
@@ -61,7 +62,7 @@ fun CalendarSelectorScreen(
         NavigationRow(
             backLabel = stringResource(R.string.settings_cancel),
             nextLabel = stringResource(R.string.settings_save),
-            onBack = { /** dismiss **/ },
+            onBack = onDismiss::invoke,
             onNext = { onSelect(selectedDiapason.first, selectedDiapason.second) }
         )
     }
