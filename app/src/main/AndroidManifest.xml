@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:name=".di.AppModule"
@@ -38,15 +39,18 @@
         </activity>
         <receiver
             android:name="app.mybad.notifications.AlarmReceiver"
-            android:exported="true">
+            android:exported="true"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="schedule.ADD_MED" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
         <service android:name="app.mybad.notifications.AlarmService"/>
-        <service android:name="app.mybad.notifications.RescheduleAlarmService" />
+        <service android:name="app.mybad.notifications.RescheduleAlarmService"/>
     </application>
 
 </manifest>

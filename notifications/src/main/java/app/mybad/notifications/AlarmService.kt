@@ -19,7 +19,7 @@ class AlarmService : Service() {
 
     override fun onBind(p0: Intent?) = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val units = this.resources.getStringArray(R.array.units)
+        val types = this.resources.getStringArray(R.array.types)
         val c = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH)
             .setName(CHANNEL_NAME)
             .setDescription("Alarms from notifier")
@@ -32,12 +32,11 @@ class AlarmService : Service() {
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.pill)
             .setContentTitle("Time to use drugs!")
-            .setVibrate(longArrayOf(300L,300L,100L,100L,100L,100L,100L))
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setContentText("Use your ${intent?.getStringExtra("medName")} : ${intent?.getIntExtra("dose", 0)}, ${units[intent?.getIntExtra("unit", 0) ?: 0]}!")
+            .setContentText("Use your ${intent?.getStringExtra("medName")} : ${intent?.getIntExtra("dose", 0)}, ${types[intent?.getIntExtra("type", 0) ?: 0]}!")
             .setCategory(Notification.CATEGORY_CALL)
             .build()
-        startForeground(101, notification)
+        startForeground(1, notification)
         stopForeground(STOP_FOREGROUND_DETACH)
         return START_STICKY
     }

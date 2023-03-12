@@ -26,7 +26,9 @@ import app.mybad.notifier.ui.screens.course.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -43,8 +45,10 @@ fun AddCourseMainScreen(
     val endLabel = stringResource(R.string.add_course_end_time)
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
-    val startDate = LocalDateTime.ofEpochSecond(course.startDate, 0, ZoneOffset.UTC)
-    val endDate = LocalDateTime.ofEpochSecond(course.endDate, 0, ZoneOffset.UTC)
+    val startDate = LocalDateTime.ofEpochSecond(course.startDate, 0, ZoneId.systemDefault().rules.getOffset(Instant.now()))
+        .withHour(0).withMinute(0)
+    val endDate = LocalDateTime.ofEpochSecond(course.endDate, 0, ZoneId.systemDefault().rules.getOffset(Instant.now()))
+        .withHour(23).withMinute(59)
     var selectedInput by remember { mutableStateOf(-1) }
     val sState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
@@ -116,7 +120,7 @@ fun AddCourseMainScreen(
                         onSelect = { sd, ed ->
                             reducer(NewCourseIntent.UpdateCourse(course.copy(
                                 startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
-                                endDate = ed?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                                endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                             )))
                             selectedInput = -1
                         },

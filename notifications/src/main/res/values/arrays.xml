@@ -44,4 +44,12 @@
         <item>Sat</item>
         <item>Sun</item>
     </string-array>
+    <string-array name="types">
+        <item>Pill</item>
+        <item>Tablet</item>
+        <item>Spray</item>
+        <item>Injection</item>
+        <item>Inhalation</item>
+        <item>Syrup</item>
+    </string-array>
 </resources>
