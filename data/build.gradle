@@ -37,25 +37,6 @@ kapt {
     correctErrorTypes = true
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:21.7"
-    }
-
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
-}
-
 dependencies {
 
     implementation project(path: ':domain')
@@ -88,5 +69,24 @@ dependencies {
     // Proto DataStore
     implementation "androidx.datastore:datastore:$data_store"
     implementation "androidx.datastore:datastore-core:$data_store"
-    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.21.7"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }

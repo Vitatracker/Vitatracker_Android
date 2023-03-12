@@ -36,7 +36,7 @@ class DataStorePrefImpl @Inject constructor(
                     throw exception
                 }
             }.map { preferences ->
-                preferences[PreferencesKeys.token]?:""
+                preferences[PreferencesKeys.token]?: ""
             }
     }
 
