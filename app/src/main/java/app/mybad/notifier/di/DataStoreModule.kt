@@ -47,7 +47,6 @@ object DataStoreModule {
         return DataStoreFactory.create(
             serializer = PersonalSerializer,
             produceFile = { appContext.dataStoreFile(USER_PROTO_NAME) },
-            corruptionHandler = null,
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }

@@ -2,8 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
-    id("com.google.dagger.hilt.android")
-    id "com.google.protobuf" version "0.8.12"
+    id 'com.google.dagger.hilt.android'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
@@ -53,6 +53,25 @@ kapt {
     correctErrorTypes = true
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:21.7"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation project(path: ':data')
@@ -96,6 +115,6 @@ dependencies {
     // Proto DataStore
     implementation "androidx.datastore:datastore:$data_store"
     implementation "androidx.datastore:datastore-core:$data_store"
-    implementation "com.google.protobuf:protobuf-javalite:3.11.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
 
 }

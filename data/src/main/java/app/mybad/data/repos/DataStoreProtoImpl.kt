@@ -1,5 +1,6 @@
 package app.mybad.data.repos
 
+import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -25,7 +26,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DataStoreProtoImpl @Inject constructor(
-    private val dataStore: DataStore<PersonalDataModel>
+    private val dataStore: DataStoreProto
 ) : DataStoreProto {
 
     val scope = CoroutineScope(Dispatchers.IO)
@@ -39,11 +40,11 @@ class DataStoreProtoImpl @Inject constructor(
     }
 
     override suspend fun updateUserPersonal(personal: PersonalDataModel) {
-//        scope.launch {
-//        dataStore.updateData { user ->
-//            user.copy(name = personal.name, age = personal.age, avatar = personal.avatar)
-//        }
-//        }
+        scope.launch {
+//            dataStore.updateData { user ->
+//
+//            }
+        }
     }
 
     override suspend fun getUserPersonal() {

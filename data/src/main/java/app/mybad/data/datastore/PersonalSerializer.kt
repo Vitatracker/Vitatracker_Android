@@ -7,15 +7,15 @@ import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
+@Suppress("BlockingMethodInNonBlockingContext")
 object PersonalSerializer : Serializer<PersonalDataModel> {
 
     override val defaultValue: PersonalDataModel
-        get() = TODO("Not yet implemented")
+        get() = PersonalDataModel()
 
     override suspend fun readFrom(input: InputStream): PersonalDataModel {
         try {
             return PersonalDataModel()
-//            return PersonalDataModel.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto.", exception)
         }
