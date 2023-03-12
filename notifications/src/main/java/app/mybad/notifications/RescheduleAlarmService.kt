@@ -45,9 +45,7 @@ class RescheduleAlarmService : LifecycleService() {
         startForeground(101, notification)
         scope.launch {
             notificationsSchedulerImpl.rescheduleAll()
-        }.invokeOnCompletion {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-            stopSelf()
+            stopForeground(STOP_FOREGROUND_DETACH)
         }
         return START_STICKY
     }
