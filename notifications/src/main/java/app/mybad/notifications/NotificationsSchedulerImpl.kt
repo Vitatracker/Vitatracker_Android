@@ -9,8 +9,6 @@ import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import javax.inject.Inject
 
 class NotificationsSchedulerImpl @Inject constructor(
@@ -22,16 +20,15 @@ class NotificationsSchedulerImpl @Inject constructor(
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override suspend fun add(usages: List<UsageCommonDomainModel>) {
+        val now = Instant.now()
         usages.forEach {
             val i = Intent(context, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
-            i.action = "schedule.ADD_MED"
             i.putExtra("medName", med.name ?: "no name")
             i.putExtra("dose", med.dose)
             i.putExtra("type", med.type)
-            val t = LocalDateTime.ofInstant(Instant.ofEpochSecond(it.useTime), ZoneOffset.UTC)
-            val pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, t.toEpochSecond(ZoneOffset.UTC)*1000, pi)
+            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode(), i, PendingIntent.FLAG_IMMUTABLE)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000L, pi)
         }
     }
 
@@ -43,7 +40,7 @@ class NotificationsSchedulerImpl @Inject constructor(
             i.putExtra("medName", med.name ?: "no name")
             i.putExtra("dose", med.dose)
             i.putExtra("unit", med.measureUnit)
-            val pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE)
+            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode(), i, PendingIntent.FLAG_IMMUTABLE)
             alarmManager.cancel(pi)
         }
     }
@@ -63,8 +60,8 @@ class NotificationsSchedulerImpl @Inject constructor(
                 i.putExtra("medName", med.name ?: "no name")
                 i.putExtra("dose", med.dose)
                 i.putExtra("unit", med.measureUnit)
-                val pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE)
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, it.useTime*1000, pi)
+                val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode(), i, PendingIntent.FLAG_IMMUTABLE)
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000, pi)
             }
         }
         onComplete()

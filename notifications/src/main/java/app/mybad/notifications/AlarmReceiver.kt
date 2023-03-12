@@ -13,11 +13,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 val intentService = Intent(context, RescheduleAlarmService::class.java)
                 context?.startForegroundService(intentService)
             }
-            "schedule.ADD_MED" -> {
+            else -> {
                 val i = Intent(context, AlarmService::class.java)
-                i.putExtra("medName", intent.getStringExtra("medName") ?: "no name")
-                i.putExtra("dose", intent.getIntExtra("dose", 0))
-                i.putExtra("type", intent.getIntExtra("unit", 0))
+                i.putExtra("medName", intent?.getStringExtra("medName") ?: "no name")
+                i.putExtra("dose", intent?.getIntExtra("dose", 0))
+                i.putExtra("type", intent?.getIntExtra("unit", 0))
                 context?.startService(i)
             }
         }
