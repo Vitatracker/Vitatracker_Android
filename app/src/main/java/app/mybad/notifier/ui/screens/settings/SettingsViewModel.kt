@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +21,7 @@ class SettingsViewModel @Inject constructor(
 
     private val scope = CoroutineScope(Dispatchers.IO)
     private val _state = MutableStateFlow(SettingsState(
-        user = userDataRepo.getUserData(),
+//        user = userDataRepo.getUserModel()
     ))
     val state get() = _state.asStateFlow()
     init {

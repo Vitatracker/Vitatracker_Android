@@ -3,9 +3,45 @@ syntax = "proto3";
 option java_package = "app.mybad.data";
 option java_multiple_files = true;
 
+//USER DATA
 message UserDataModel {
+  string id = 1;
+  int64 creationDate = 2;
+  int64 updateLong = 3;
+  repeated UserPersonalDataModel userPersonalDataModel = 4;
+  repeated UserSettingsDataModel userSettingsDataModel = 5;
+}
+
+//USER PERSONAL
+message UserPersonalDataModel {
   string name = 1;
-  int32 age = 2;
+  string age = 2;
   string avatar = 3;
-  string email = 4;
+}
+
+//USER SETTINGS
+message UserSettingsDataModel {
+  repeated UserNotificationsDataModel userNotificationsDataModel = 1;
+  repeated UserRulesDataModel userRulesDataModel = 2;
+}
+
+//USER NOTIFICATION
+message UserNotificationsDataModel {
+  bool isEnabled = 1;
+  bool isFloat = 2;
+  bool medicalControl = 3;
+  bool nextCourseStart = 4;
+  repeated ListOfMedId listOfMedId = 5; // repeated => list
+
+  message ListOfMedId {
+    int64 medsID = 1;
+  }
+}
+
+//USER RULES
+message UserRulesDataModel {
+  bool canEdit = 1;
+  bool canAdd = 2;
+  bool canShare = 3;
+  bool canInvite = 4;
 }
