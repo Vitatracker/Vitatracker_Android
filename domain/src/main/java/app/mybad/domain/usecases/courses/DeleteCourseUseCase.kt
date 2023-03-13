@@ -15,8 +15,9 @@ class DeleteCourseUseCase @Inject constructor(
     suspend fun execute(courseId: Long) {
         val medId = coursesRepo.getSingle(courseId).medId
         val now = Instant.now().epochSecond
-        coursesRepo.deleteSingle(courseId)
-        notificationsScheduler.cancelByMedId(medId)
-        usagesRepo.deleteUsagesByInterval(medId, now, now+157766400)
+        notificationsScheduler.cancelByMedId(medId) {
+            usagesRepo.deleteUsagesByInterval(medId, now, now+157766400)
+            coursesRepo.deleteSingle(courseId)
+        }
     }
 }

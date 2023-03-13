@@ -45,7 +45,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="schedule.ADD_MED" />
+                <action android:name="android.intent.action.NOTIFICATION" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
