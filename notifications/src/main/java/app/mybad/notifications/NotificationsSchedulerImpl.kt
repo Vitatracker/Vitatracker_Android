@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
@@ -30,8 +31,9 @@ class NotificationsSchedulerImpl
             val med = medsRepo.getSingle(it.medId)
             i.action = NotificationIntent
             i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.dose)
+            i.putExtra("dose", it.quantity)
             i.putExtra("type", med.type)
+            i.data = Uri.fromParts("scheme", "ssp", null)
             val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT)
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000L, pi)
         }
@@ -43,9 +45,10 @@ class NotificationsSchedulerImpl
             val med = medsRepo.getSingle(it.medId)
             i.action = NotificationIntent
             i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", med.dose)
-            i.putExtra("unit", med.measureUnit)
-            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT)
+            i.putExtra("dose", it.quantity)
+            i.putExtra("type", med.type)
+            i.data = Uri.fromParts("scheme", "ssp", null)
+            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_CANCEL_CURRENT)
             alarmManager.cancel(pi)
         }
     }
@@ -64,8 +67,9 @@ class NotificationsSchedulerImpl
                 val med = medsRepo.getSingle(it.medId)
                 i.action = NotificationIntent
                 i.putExtra("medName", med.name ?: "no name")
-                i.putExtra("dose", med.dose)
-                i.putExtra("unit", med.measureUnit)
+                i.putExtra("dose", it.quantity)
+                i.putExtra("type", med.type)
+                i.data = Uri.fromParts("scheme", "ssp", null)
                 val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT)
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000, pi)
             }
