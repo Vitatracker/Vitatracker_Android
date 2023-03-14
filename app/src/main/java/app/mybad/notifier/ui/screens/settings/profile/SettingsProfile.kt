@@ -1,19 +1,13 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,32 +21,31 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.user.UserDomainModel
-import app.mybad.notifier.ui.screens.settings.common.DecoratedTextInput
+import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.settings.NavItemSettings
-import okhttp3.Interceptor.Companion.invoke
 
 @Composable
 @Preview(showBackground = true)
 fun SettingsProfile(
     modifier: Modifier = Modifier,
-    userModel: UserDomainModel = UserDomainModel(),
+    userModel: PersonalDomainModel = PersonalDomainModel(),
+    savePersonal: () -> Unit ={},
+    declinePersonal: () -> Unit ={},
     onAvatarEdit: () -> Unit = {},
     onPasswordEdit: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
 
-    val editUserName = remember { mutableStateOf(userModel.personal.name) }
-    val editEmail = remember { mutableStateOf(userModel.personal.email) }
+    val editUserName = remember { mutableStateOf(userModel.name) }
+    val editEmail = remember { mutableStateOf(userModel.email) }
 
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        UserImage(url = userModel.personal.avatar, showEdit = true, onEdit = onAvatarEdit::invoke)
+        UserImage(url = userModel.avatar, showEdit = true, onEdit = onAvatarEdit::invoke)
         Spacer(Modifier.height(32.dp))
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_name),
@@ -71,16 +64,20 @@ fun SettingsProfile(
         }
         Spacer(Modifier.height(24.dp))
         when {
-            userModel.personal.name != editUserName.value -> SettingsProfileButtonSaveable(
-                onDismiss = onDismiss
+            userModel.name != editUserName.value -> SettingsProfileButtonSaveable(
+                onDismiss = onDismiss,
+                savePersonal = savePersonal,
+                declinePersonal = declinePersonal
             )
-            userModel.personal.email != editEmail.value -> SettingsProfileButtonSaveable(
-                onDismiss = onDismiss
+            userModel.email != editEmail.value -> SettingsProfileButtonSaveable(
+                onDismiss = onDismiss,
+                savePersonal = savePersonal,
+                declinePersonal = declinePersonal
             )
-            userModel.personal.email == editEmail.value -> SettingsProfileButtonChangePassword(
+            userModel.email == editEmail.value -> SettingsProfileButtonChangePassword(
                 onPasswordEdit = onPasswordEdit
             )
-            userModel.personal.name == editUserName.value -> SettingsProfileButtonChangePassword(
+            userModel.name == editUserName.value -> SettingsProfileButtonChangePassword(
                 onPasswordEdit = onPasswordEdit
             )
         }
@@ -133,7 +130,9 @@ fun SettingsProfileEditText(
 
 @Composable
 fun SettingsProfileButtonSaveable(
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    savePersonal: () -> Unit,
+    declinePersonal: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -143,7 +142,8 @@ fun SettingsProfileButtonSaveable(
 
         Button(
             onClick = {
-                onDismiss
+                onDismiss()
+                declinePersonal()
             },
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
             modifier = Modifier
@@ -165,7 +165,8 @@ fun SettingsProfileButtonSaveable(
 
         Button(
             onClick = {
-                onDismiss
+                onDismiss()
+                savePersonal()
             },
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer),
             modifier = Modifier

@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.notifier.ui.screens.settings.common.SettingsItem
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
@@ -19,7 +19,7 @@ import app.mybad.notifier.ui.screens.settings.common.SettingsQuit
 @Composable
 fun SettingsNavScreen(
     modifier: Modifier = Modifier,
-    userModel: UserDomainModel = UserDomainModel(),
+    userModel: PersonalDomainModel = PersonalDomainModel(),
     reducer: (SettingsIntent) -> Unit,
     onProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
@@ -36,7 +36,7 @@ fun SettingsNavScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UserImage(
-                url = userModel.personal.avatar,
+                url = userModel.avatar,
                 showEdit = true,
                 onEdit = onProfile::invoke
             )

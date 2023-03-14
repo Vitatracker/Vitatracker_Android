@@ -1,15 +1,12 @@
 package app.mybad.notifier.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UserDataRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,27 +17,47 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private val _state = MutableStateFlow(SettingsState(
-//        user = userDataRepo.getUserModel()
-    ))
+    private val _state = MutableStateFlow(SettingsState())
     val state get() = _state.asStateFlow()
+
     init {
         scope.launch {
             _state.emit(_state.value.copy(courses = coursesRepo.getAll()))
         }
+
+        scope.launch {
+            _state.emit(_state.value.copy(personalDomainModel = userDataRepo.getUserPersonal()))
+        }
+
+        scope.launch {
+            _state.emit(_state.value.copy(notificationsUserDomainModel = userDataRepo.getUserNotification()))
+        }
+
+        scope.launch {
+            _state.emit(_state.value.copy(rulesUserDomainModel = userDataRepo.getUserRules()))
+        }
     }
 
     fun reduce(intent: SettingsIntent) {
-        when(intent) {
+        when (intent) {
             is SettingsIntent.DeleteAccount -> {}
             is SettingsIntent.Exit -> {}
             is SettingsIntent.SetNotifications -> {
-                viewModelScope.launch {
-                    val newUser = _state.value.user.copy(settings = _state.value.user.settings.copy(notifications = intent.notifications))
-                    _state.emit(_state.value.copy(user = newUser))
+                scope.launch {
+                    userDataRepo.updateUserNotification(_state.last().notificationsUserDomainModel)
                 }
             }
-            is SettingsIntent.ChangePassword -> { }
+            is SettingsIntent.SetPersonal -> {
+                scope.launch {
+                    userDataRepo.updateUserPersonal(_state.last().personalDomainModel)
+                }
+            }
+            is SettingsIntent.SetRules -> {
+                scope.launch {
+                    userDataRepo.updateUserRules(_state.last().rulesUserDomainModel)
+                }
+            }
+            is SettingsIntent.ChangePassword -> {}
         }
     }
 }

@@ -2,9 +2,7 @@ package app.mybad.data.datastore.serialize
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import app.mybad.data.UserDataModel
 import app.mybad.data.UserPersonalDataModel
-import app.mybad.data.UserSettingsDataModel
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream

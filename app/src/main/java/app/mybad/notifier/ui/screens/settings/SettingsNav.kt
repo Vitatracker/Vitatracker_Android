@@ -35,7 +35,10 @@ fun SettingsNav(
 
     var title by remember { mutableStateOf("") }
     val state = vm.state.collectAsState()
-    val userModel = state.value.user
+    val userModel = state.value.userModel
+    val userPersonalModel = state.value.personalDomainModel
+    val userNotificationModel = state.value.notificationsUserDomainModel
+    val userRulesModel = state.value.rulesUserDomainModel
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,7 +74,7 @@ fun SettingsNav(
             composable(NavItemSettings.Navigation.route) {
                 title = stringResource(NavItemSettings.Navigation.stringId)
                 SettingsNavScreen(
-                    userModel = userModel,
+                    userModel = userPersonalModel,
                     reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
@@ -81,7 +84,9 @@ fun SettingsNav(
             composable(NavItemSettings.Profile.route) {
                 title = stringResource(NavItemSettings.Profile.stringId)
                 SettingsProfile(
-                    userModel = userModel,
+                    userModel = userPersonalModel,
+                    savePersonal = { },
+                    declinePersonal = { },
                     onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
                     onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
@@ -106,7 +111,7 @@ fun SettingsNav(
             composable(NavItemSettings.Notifications.route) {
                 title = stringResource(NavItemSettings.Notifications.stringId)
                 SettingsNotifications(
-                    init = state.value.user.settings.notifications
+                    init = state.value.userModel.settings.notifications
                 ) {
                     vm.reduce(SettingsIntent.SetNotifications(it))
                 }
