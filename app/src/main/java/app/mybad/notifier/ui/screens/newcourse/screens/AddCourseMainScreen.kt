@@ -22,7 +22,7 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.course.NewCourseIntent
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import kotlinx.coroutines.launch
@@ -118,7 +118,8 @@ fun AddCourseMainScreen(
                         startDay = startDate.toLocalDate(),
                         endDay = endDate.toLocalDate(),
                         onSelect = { sd, ed ->
-                            reducer(NewCourseIntent.UpdateCourse(course.copy(
+                            reducer(
+                                NewCourseIntent.UpdateCourse(course.copy(
                                 startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                                 endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                             )))

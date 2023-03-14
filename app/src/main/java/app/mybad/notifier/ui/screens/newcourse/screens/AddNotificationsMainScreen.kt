@@ -26,12 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.notifier.ui.screens.course.NewCourseIntent
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
 

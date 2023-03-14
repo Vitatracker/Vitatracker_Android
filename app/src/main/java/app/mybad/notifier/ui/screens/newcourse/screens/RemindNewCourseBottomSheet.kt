@@ -15,7 +15,7 @@ import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.course.NewCourseIntent
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.SwitchParameterInput
@@ -77,7 +77,8 @@ fun RemindNewCourseBottomSheet(
                 val reminder = (nextCourseStart - remindBeforePeriod).withSecond(0)
                     .withHour(remindTime.hour).withMinute(remindTime.minute)
                 onSave()
-                reducer(NewCourseIntent.UpdateCourse(course.copy(
+                reducer(
+                    NewCourseIntent.UpdateCourse(course.copy(
                     remindDate = reminder.atZone(ZoneId.systemDefault()).toEpochSecond(),
                     interval = nextCourseStart.atZone(ZoneId.systemDefault()).toEpochSecond() - course.startDate,
                 )))

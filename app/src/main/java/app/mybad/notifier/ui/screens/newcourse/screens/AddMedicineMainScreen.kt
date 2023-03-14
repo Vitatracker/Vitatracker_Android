@@ -17,7 +17,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.course.NewCourseIntent
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.*
 import app.mybad.notifier.ui.theme.Typography
 
