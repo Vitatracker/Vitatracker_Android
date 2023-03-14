@@ -16,12 +16,4 @@ interface UserDataRepo {
 
     suspend fun getUserRules(): RulesUserDomainModel
 
-    suspend fun updateUserSettings(settings: UserSettingsDomainModel)
-
-    suspend fun getUserSettings(): UserSettingsDomainModel
-
-    suspend fun updateUserModel(userModel: UserDomainModel)
-
-    suspend fun getUserModel(): Flow<UserDomainModel>
-
 }

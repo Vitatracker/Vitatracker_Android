@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import app.mybad.data.*
 import app.mybad.data.datastore.serialize.*
+import app.mybad.data.models.user.UserSettingsDataModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,11 +23,9 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
-private const val DATA_USER_FILE_NAME = "user_data.pb"
-private const val NOTIFICATION_STORE_FILE_NAME = "user_data.pb"
-private const val PERSONAL_STORE_FILE_NAME = "user_data.pb"
-private const val RULES_STORE_FILE_NAME = "user_data.pb"
-private const val SETTINGS_STORE_FILE_NAME = "user_data.pb"
+private const val NOTIFICATION_STORE_FILE_NAME = "user_notification.pb"
+private const val PERSONAL_STORE_FILE_NAME = "user_personal.pb"
+private const val RULES_STORE_FILE_NAME = "user_rules.pb"
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -41,19 +40,6 @@ object DataStoreModule {
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { appContext.preferencesDataStoreFile(USER_PREFERENCES_NAME) }
-        )
-    }
-
-    @Singleton
-    @Provides
-    fun provideProtoDataStore_userData(@ApplicationContext appContext: Context): DataStore<UserDataModel> {
-        return DataStoreFactory.create(
-            serializer = UserDataModelSerializer,
-            produceFile = { appContext.dataStoreFile(DATA_USER_FILE_NAME) },
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { UserDataModel.getDefaultInstance() }
-            ),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }
 
@@ -91,19 +77,6 @@ object DataStoreModule {
             produceFile = { appContext.dataStoreFile(RULES_STORE_FILE_NAME) },
             corruptionHandler = ReplaceFileCorruptionHandler(
                 produceNewData = { UserRulesDataModel.getDefaultInstance() }
-            ),
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-        )
-    }
-
-    @Singleton
-    @Provides
-    fun provideProtoDataStore_userSettings(@ApplicationContext appContext: Context): DataStore<UserSettingsDataModel> {
-        return DataStoreFactory.create(
-            serializer = UserSettingsDataModelSerializer,
-            produceFile = { appContext.dataStoreFile(SETTINGS_STORE_FILE_NAME) },
-            corruptionHandler = ReplaceFileCorruptionHandler(
-                produceNewData = { UserSettingsDataModel.getDefaultInstance() }
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
