@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.content.res.Resources
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -31,21 +29,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
-import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.sql.Time
 import java.text.DateFormatSymbols
 import java.time.*
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,7 +81,6 @@ fun StartMainScreen(
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainScreen(
     navController: NavHostController,

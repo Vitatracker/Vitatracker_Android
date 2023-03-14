@@ -2,20 +2,17 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
-import app.mybad.notifier.ui.screens.mainscreen.MainScreenContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.sql.Time
-import java.text.SimpleDateFormat
-import java.time.*
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel

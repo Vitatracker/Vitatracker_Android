@@ -14,7 +14,6 @@ import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPa
 import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistrationScreen
 import app.mybad.notifier.ui.screens.start.StartScreenApp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthorizationScreenNavHost() {
 
