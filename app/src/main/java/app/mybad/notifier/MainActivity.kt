@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
-import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.navigation.MainNav

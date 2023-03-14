@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.newcourse.screens.*
 
 @OptIn(ExperimentalMaterial3Api::class)

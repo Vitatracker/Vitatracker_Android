@@ -13,8 +13,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
-import app.mybad.notifier.ui.screens.course.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.course.NewCourseIntent
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen

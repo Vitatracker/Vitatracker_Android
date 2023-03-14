@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.course
+package app.mybad.notifier.ui.screens.newcourse
 
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.models.course.CourseDomainModel
