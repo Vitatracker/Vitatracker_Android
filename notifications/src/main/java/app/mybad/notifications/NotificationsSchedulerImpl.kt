@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
@@ -21,35 +23,22 @@ class NotificationsSchedulerImpl
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    companion object {
-        const val NotificationIntent = "android.intent.action.NOTIFICATION"
-    }
-
     override suspend fun add(usages: List<UsageCommonDomainModel>) {
+        Log.w("NSI_", "set")
         usages.forEach {
-            val i = Intent(context.applicationContext, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
-            i.action = NotificationIntent
-            i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", it.quantity)
-            i.putExtra("type", med.type)
-            i.data = Uri.fromParts("scheme", "ssp", null)
-            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pi = generatePi(med, it, context)
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000L, pi)
         }
     }
 
     override suspend fun cancel(usages: List<UsageCommonDomainModel>) {
+        Log.w("NSI_", "cancel")
         usages.forEach {
-            val i = Intent(context.applicationContext, AlarmReceiver::class.java)
             val med = medsRepo.getSingle(it.medId)
-            i.action = NotificationIntent
-            i.putExtra("medName", med.name ?: "no name")
-            i.putExtra("dose", it.quantity)
-            i.putExtra("type", med.type)
-            i.data = Uri.fromParts("scheme", "ssp", null)
-            val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_CANCEL_CURRENT)
+            val pi = generatePi(med, it, context)
             alarmManager.cancel(pi)
+            pi.cancel()
         }
     }
 
@@ -63,17 +52,25 @@ class NotificationsSchedulerImpl
         val now = System.currentTimeMillis()/1000
         usagesRepo.getCommonAll().forEach {
             if(it.useTime >= now) {
-                val i = Intent(context.applicationContext, AlarmReceiver::class.java)
                 val med = medsRepo.getSingle(it.medId)
-                i.action = NotificationIntent
-                i.putExtra("medName", med.name ?: "no name")
-                i.putExtra("dose", it.quantity)
-                i.putExtra("type", med.type)
-                i.data = Uri.fromParts("scheme", "ssp", null)
-                val pi = PendingIntent.getBroadcast(context, it.useTime.hashCode() + it.id.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT)
+                val pi = generatePi(med, it, context)
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000, pi)
             }
         }
         onComplete()
+    }
+
+    private fun generatePi(med: MedDomainModel, usage: UsageCommonDomainModel, context: Context) : PendingIntent {
+        val i = Intent(context.applicationContext, AlarmReceiver::class.java)
+        i.action = NotificationIntent
+        i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
+        i.putExtra("medName", med.name ?: "no name")
+        i.putExtra("dose", usage.quantity)
+        i.putExtra("type", med.type)
+        Log.w("NSI_", "R.id: ${(usage.useTime + med.id).toInt()}")
+        return PendingIntent.getBroadcast(context, (usage.useTime + med.id).toInt(), i, 0)
+    }
+    companion object {
+        const val NotificationIntent = "android.intent.action.NOTIFICATION"
     }
 }
