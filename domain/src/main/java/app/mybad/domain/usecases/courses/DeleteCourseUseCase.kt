@@ -3,7 +3,8 @@ package app.mybad.domain.usecases.courses
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
-import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 class DeleteCourseUseCase @Inject constructor(
@@ -14,7 +15,7 @@ class DeleteCourseUseCase @Inject constructor(
 
     suspend fun execute(courseId: Long) {
         val medId = coursesRepo.getSingle(courseId).medId
-        val now = Instant.now().epochSecond
+        val now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
         notificationsScheduler.cancelByMedId(medId) {
             usagesRepo.deleteUsagesByInterval(medId, now, now+157766400)
             coursesRepo.deleteSingle(courseId)

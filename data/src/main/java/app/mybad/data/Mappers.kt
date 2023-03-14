@@ -39,7 +39,7 @@ fun MedDomainModel.mapToData() : MedDataModel {
 }
 
 fun UsageCommonDataModel.mapToDomain() : UsageCommonDomainModel {
-    return UsageCommonDomainModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity)
+    return UsageCommonDomainModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity, isDeleted)
 }
 
 fun List<UsageCommonDataModel>.mapToDomain() : List<UsageCommonDomainModel> {
@@ -51,7 +51,7 @@ fun List<UsageCommonDataModel>.mapToDomain() : List<UsageCommonDomainModel> {
 }
 
 fun UsageCommonDomainModel.mapToData() : UsageCommonDataModel {
-    return UsageCommonDataModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity)
+    return UsageCommonDataModel(id, medId, userId, creationTime, editTime, useTime, factUseTime, quantity, isDeleted)
 }
 @JvmName("ucdm_toData")
 fun List<UsageCommonDomainModel>.mapToData() : List<UsageCommonDataModel> {

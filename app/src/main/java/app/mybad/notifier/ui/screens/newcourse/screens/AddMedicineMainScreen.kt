@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -7,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +41,8 @@ fun AddMedicineMainScreen(
     val dose = stringResource(R.string.add_med_dose)
     val unit = stringResource(R.string.add_med_unit)
     val rel = stringResource(R.string.add_med_food_relation)
+    val context = LocalContext.current
+    val fieldsError = stringResource(R.string.add_med_error_unfilled_fields)
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -57,7 +61,7 @@ fun AddMedicineMainScreen(
                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
             )
             MultiBox(
-                { IconSelector(selected = med.icon,
+                { IconSelector(selected = med.icon, color = med.color,
                     onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }) },
                 { ColorSelector(selected = med.color,
                     onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) }) },
@@ -85,7 +89,10 @@ fun AddMedicineMainScreen(
 
         NavigationRow(
             onBack = onBack::invoke,
-            onNext = onNext::invoke,
+            onNext = {
+                if(med.name.isNullOrBlank()) Toast.makeText(context, fieldsError, Toast.LENGTH_SHORT).show()
+                else onNext()
+            },
         )
     }
     if(selectedInput != -1) {

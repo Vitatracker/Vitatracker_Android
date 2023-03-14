@@ -13,4 +13,5 @@ data class UsageCommonDataModel(
     val useTime: Long,
     val factUseTime: Long = -1L,
     val quantity: Int = 1,
+    val isDeleted: Boolean = false
 )

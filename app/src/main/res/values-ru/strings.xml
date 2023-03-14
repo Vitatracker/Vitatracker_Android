@@ -115,6 +115,7 @@
     <string name="main_screen_text_category">Лекарства</string>
     <string name="main_screen_button_detail">Подробнее</string>
     <string name="main_screen_button_accept">Принять</string>
+    <string name="add_notifications_already_exist">Notification for this time already exist!</string>
 
 
 </resources>

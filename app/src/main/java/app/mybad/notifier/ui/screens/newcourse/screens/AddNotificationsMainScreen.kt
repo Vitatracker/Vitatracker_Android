@@ -1,10 +1,13 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import android.widget.Toast
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PageSize
@@ -13,12 +16,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,8 +50,10 @@ fun AddNotificationsMainScreen(
 ) {
 
     val forms = stringArrayResource(R.array.types)
-    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) } //time, quantity
+    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) }
     var dialogIsShown by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val notificationAlreadyExistError = stringResource(R.string.add_notifications_already_exist)
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -81,7 +88,11 @@ fun AddNotificationsMainScreen(
                             time = it.first,
                             quantity = it.second,
                             form = med.type,
-                            forms = forms
+                            forms = forms,
+                            onDelete = { time ->
+                                notificationsPattern = notificationsPattern.toMutableList()
+                                    .apply{ removeIf { it.first == time} }.toList()
+                            }
                         )
                         Spacer(Modifier.height(16.dp))
                     }
@@ -105,12 +116,15 @@ fun AddNotificationsMainScreen(
                 color = MaterialTheme.colorScheme.background
             ) {
                 TimeAndTypeSelector(
-                    initTime = LocalTime.now().withMinute(0).withSecond(0),
+                    initTime = LocalTime.now().withSecond(0).withNano(0),
                     onFinish = { dialogIsShown = false },
                     onSelect = { time, quantity ->
-                        notificationsPattern = notificationsPattern.toMutableList().apply {
-                            add(Pair(time, quantity))
-                        }.sortedBy { it.first }.toList()
+                        if(notificationsPattern.none { it.first == time })
+                            notificationsPattern = notificationsPattern.toMutableList().apply {
+                                add(Pair(time, quantity))
+                            }.sortedBy { it.first }.toList()
+                        else
+                            Toast.makeText(context, notificationAlreadyExistError, Toast.LENGTH_SHORT).show()
                     }
                 )
             }
@@ -124,7 +138,8 @@ private fun NotificationItem(
     time: LocalTime,
     quantity: Int,
     form: Int,
-    forms: Array<String>
+    forms: Array<String>,
+    onDelete: (LocalTime) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
@@ -139,7 +154,18 @@ private fun NotificationItem(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Spacer(Modifier.width(0.dp))
+            Icon(
+                imageVector = Icons.Default.RemoveCircleOutline,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(16.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = MutableInteractionSource()
+                    ) { onDelete(time) }
+            )
             Text(
                 text = time.format(DateTimeFormatter.ofPattern("HH:mm")),
                 style = Typography.bodyLarge
@@ -314,6 +340,8 @@ private fun TimeAndTypeSelector(
                 val newTime = initTime
                     .withHour(pagerStateHours.currentPage % hours.size)
                     .withMinute(pagerStateMinutes.currentPage % minutes.size)
+                    .withSecond(0)
+                    .withNano(0)
                 onSelect(newTime, (pagerState.currentPage % list.size) + 1)
             },
         )
