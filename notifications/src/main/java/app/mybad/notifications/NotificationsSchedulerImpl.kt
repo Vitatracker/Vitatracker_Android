@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.MedsRepo
@@ -24,7 +23,6 @@ class NotificationsSchedulerImpl
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override suspend fun add(usages: List<UsageCommonDomainModel>) {
-        Log.w("NSI_", "set")
         usages.forEach {
             val med = medsRepo.getSingle(it.medId)
             val pi = generatePi(med, it, context)
@@ -33,7 +31,6 @@ class NotificationsSchedulerImpl
     }
 
     override suspend fun cancel(usages: List<UsageCommonDomainModel>) {
-        Log.w("NSI_", "cancel")
         usages.forEach {
             val med = medsRepo.getSingle(it.medId)
             val pi = generatePi(med, it, context)
@@ -64,13 +61,30 @@ class NotificationsSchedulerImpl
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = NotificationIntent
         i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
-        i.putExtra("medName", med.name ?: "no name")
-        i.putExtra("dose", usage.quantity)
-        i.putExtra("type", med.type)
-        Log.w("NSI_", "R.id: ${(usage.useTime + med.id).toInt()}")
+        i.putExtra(Extras.MED_NAME.name, med.name ?: "no name")
+        i.putExtra(Extras.MED_ID.name, med.id)
+        i.putExtra(Extras.TYPE.name, med.type)
+        i.putExtra(Extras.ICON.name, med.icon)
+        i.putExtra(Extras.COLOR.name, med.color)
+        i.putExtra(Extras.DOSE.name, med.dose)
+        i.putExtra(Extras.UNIT.name, med.measureUnit)
+        i.putExtra(Extras.USAGE_TIME.name, usage.useTime)
+        i.putExtra(Extras.QUANTITY.name, usage.quantity)
         return PendingIntent.getBroadcast(context, (usage.useTime + med.id).toInt(), i, 0)
     }
     companion object {
         const val NotificationIntent = "android.intent.action.NOTIFICATION"
+        enum class Extras {
+            MED_ID,
+            MED_NAME,
+            TYPE,
+            ICON,
+            COLOR,
+            DOSE,
+            UNIT,
+            USAGE_TIME,
+            QUANTITY,
+            FACT_TIME
+        }
     }
 }

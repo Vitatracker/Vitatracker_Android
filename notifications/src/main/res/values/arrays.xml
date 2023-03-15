@@ -38,4 +38,20 @@
         <item>Inhalation</item>
         <item>Syrup</item>
     </string-array>
+    <integer-array name="colors">
+        <item>0xFFDDF7FB</item>
+        <item>0xFFDEDDFB</item>
+        <item>0xFFFBDDDD</item>
+        <item>0xFFF9FBDD</item>
+        <item>0xFFF7DDFB</item>
+        <item>0xFFDDFBE5</item>
+    </integer-array>
+    <integer-array name="icons">
+        <item>@drawable/pill</item>
+        <item>@drawable/blister</item>
+        <item>@drawable/pills_jar</item>
+        <item>@drawable/drops</item>
+        <item>@drawable/syrup</item>
+        <item>@drawable/jar</item>
+    </integer-array>
 </resources>

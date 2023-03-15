@@ -85,4 +85,10 @@
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_text_category">Лекарства</string>
 
+    <string name="notifications_channel_description">Уведомления о приемах лекарств</string>
+    <string name="notifications_time_to_use">Время приема лекарства!</string>
+    <string name="notifications_text_template">Примите %1$s!\n%2$d, %3$s</string>
+    <string name="notifications_action_take">Take</string>
+    <string name="notifications_action_delay">Delay</string>
+
 </resources>

@@ -46,11 +46,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.NOTIFICATION" />
+                <action android:name="android.intent.action.FORCE_CLOSE" />
+                <action android:name="android.intent.action.TAKE_INTENT" />
+                <action android:name="android.intent.action.DELAY_INTENT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
         <service android:name="app.mybad.notifications.AlarmService"/>
+        <service android:name="app.mybad.notifications.TakeOrDelayUsageService"/>
         <service android:name="app.mybad.notifications.RescheduleAlarmService"/>
     </application>
 

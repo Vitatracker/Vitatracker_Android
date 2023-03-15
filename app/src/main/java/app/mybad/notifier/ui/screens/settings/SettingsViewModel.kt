@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.settings
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.usecases.settings.SwitchGlobalNotificationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userDataRepo: UserDataRepo,
-    private val coursesRepo: CoursesRepo
+    private val coursesRepo: CoursesRepo,
+    private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
