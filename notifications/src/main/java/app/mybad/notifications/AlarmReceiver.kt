@@ -8,7 +8,7 @@ import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.FORCE_CLOSE
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras
-import app.mybad.notifications.NotificationsSchedulerImpl.Companion.NotificationIntent
+import app.mybad.notifications.NotificationsSchedulerImpl.Companion.NOTIFICATION_INTENT
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -19,7 +19,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 val intentService = Intent(context, RescheduleAlarmService::class.java)
                 context?.startForegroundService(intentService)
             }
-            NotificationIntent -> {
+            NOTIFICATION_INTENT -> {
                 val i = Intent(context, AlarmService::class.java)
                 i.action = intent.action
                 i.putExtra(Extras.MED_NAME.name, intent.getStringExtra(Extras.MED_NAME.name))

@@ -59,7 +59,7 @@ class NotificationsSchedulerImpl
 
     private fun generatePi(med: MedDomainModel, usage: UsageCommonDomainModel, context: Context) : PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
-        i.action = NotificationIntent
+        i.action = NOTIFICATION_INTENT
         i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
         i.putExtra(Extras.MED_NAME.name, med.name ?: "no name")
         i.putExtra(Extras.MED_ID.name, med.id)
@@ -73,7 +73,7 @@ class NotificationsSchedulerImpl
         return PendingIntent.getBroadcast(context, (usage.useTime + med.id).toInt(), i, 0)
     }
     companion object {
-        const val NotificationIntent = "android.intent.action.NOTIFICATION"
+        const val NOTIFICATION_INTENT = "android.intent.action.NOTIFICATION"
         enum class Extras {
             MED_ID,
             MED_NAME,

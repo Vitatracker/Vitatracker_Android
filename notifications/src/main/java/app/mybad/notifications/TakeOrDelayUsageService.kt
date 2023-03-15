@@ -37,8 +37,8 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                     ).first()
                     val u = uDef.copy(factUseTime = Instant.now().epochSecond)
-                    Log.w("TODUS_", "$uDef")
-                    Log.w("TODUS_", "$u")
+                    Log.w("TODUS_take", "$uDef")
+                    Log.w("TODUS_take", "$u")
                     updateUseCase.execute(u)
                 }
             }
@@ -50,6 +50,8 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                     ).first()
                     val u = uDef.copy(useTime = Instant.now().epochSecond+20)
+                    Log.w("TODUS_delay", "$uDef")
+                    Log.w("TODUS_delay", "$u")
                     notificationsScheduler.add(listOf(u))
                 }
             }
