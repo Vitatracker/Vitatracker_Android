@@ -33,7 +33,6 @@ fun SettingsProfile(
     modifier: Modifier = Modifier,
     userModel: PersonalDomainModel = PersonalDomainModel(),
     savePersonal: (SettingsIntent) -> Unit,
-    declinePersonal: (SettingsIntent) -> Unit,
     onAvatarEdit: () -> Unit = {},
     onPasswordEdit: () -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -68,24 +67,13 @@ fun SettingsProfile(
         }
         Spacer(Modifier.height(24.dp))
         when {
-            userModel.name != editUserName.value -> SettingsProfileButtonSaveable(
+            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) -> SettingsProfileButtonSaveable(
                 onDismiss = onDismiss,
                 editUserName = editUserName.value.toString(),
                 editEmail = editEmail.value.toString(),
-                savePersonal = savePersonal,
-                declinePersonal = declinePersonal
+                savePersonal = savePersonal
             )
-            userModel.email != editEmail.value -> SettingsProfileButtonSaveable(
-                onDismiss = onDismiss,
-                editUserName = editUserName.value.toString(),
-                editEmail = editEmail.value.toString(),
-                savePersonal = savePersonal,
-                declinePersonal = declinePersonal
-            )
-            userModel.email == editEmail.value -> SettingsProfileButtonChangePassword(
-                onPasswordEdit = onPasswordEdit
-            )
-            userModel.name == editUserName.value -> SettingsProfileButtonChangePassword(
+            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) -> SettingsProfileButtonChangePassword(
                 onPasswordEdit = onPasswordEdit
             )
         }
@@ -143,10 +131,10 @@ fun SettingsProfileButtonSaveable(
     editUserName: String = "",
     editEmail: String = "",
     savePersonal: (SettingsIntent) -> Unit,
-    declinePersonal: (SettingsIntent) -> Unit,
     userModel: UserDomainModel = UserDomainModel()
 ) {
-    Row(modifier = Modifier.fillMaxWidth(),
+    Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -175,7 +163,6 @@ fun SettingsProfileButtonSaveable(
 
         Button(
             onClick = {
-//                onDismiss()
                 savePersonal(
                     SettingsIntent.SetPersonal(
                         PersonalDomainModel(

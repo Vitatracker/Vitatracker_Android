@@ -34,17 +34,8 @@ class SettingsViewModel @Inject constructor(
     init {
         scope.launch {
             _state.emit(_state.value.copy(courses = coursesRepo.getAll()))
-        }
-
-        scope.launch {
             _state.emit(_state.value.copy(personalDomainModel = userSettingsUseCase.getUserPersonal()))
-        }
-
-        scope.launch {
             _state.emit(_state.value.copy(notificationsUserDomainModel = userSettingsUseCase.getUserNotification()))
-        }
-
-        scope.launch {
             _state.emit(_state.value.copy(rulesUserDomainModel = userSettingsUseCase.getUserRules()))
         }
     }
@@ -55,7 +46,8 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.Exit -> {}
             is SettingsIntent.SetNotifications -> {
                 scope.launch {
-                    userNotificationDomainModelUseCase.execute(_state.last().notificationsUserDomainModel)
+                    userNotificationDomainModelUseCase.execute(notificationsUserDomainModel = intent.notifications)
+                    _state.emit(_state.value.copy(notificationsUserDomainModel = intent.notifications))
                 }
             }
             is SettingsIntent.SetPersonal -> {
@@ -66,7 +58,8 @@ class SettingsViewModel @Inject constructor(
             }
             is SettingsIntent.SetRules -> {
                 scope.launch {
-                    userRulesDomainModelUseCase.execute(_state.last().rulesUserDomainModel)
+                    userRulesDomainModelUseCase.execute(rulesUserDomainModel = intent.rules)
+                    _state.emit(_state.value.copy(rulesUserDomainModel = intent.rules))
                 }
             }
             is SettingsIntent.ChangePassword -> {}

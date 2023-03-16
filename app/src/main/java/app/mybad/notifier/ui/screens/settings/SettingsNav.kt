@@ -87,7 +87,6 @@ fun SettingsNav(
                 SettingsProfile(
                     userModel = userPersonalModel,
                     savePersonal = { vm.reduce(SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)) },
-                    declinePersonal = {  },
                     onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
                     onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }

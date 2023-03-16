@@ -40,17 +40,7 @@ class UserDataRepoImpl @Inject constructor(
     }
 
     override suspend fun getUserNotification(): NotificationsUserDomainModel {
-//        val notification = dataStore_userNotification.data.first()
-        return dataStore_userNotification.data.last().mapToDomain()
-//        return dataStore_userNotification.data.map {
-//            NotificationsUserDomainModel(
-//                isEnabled = notification.isEnabled,
-//                isFloat = notification.isFloat,
-//                medicationControl = notification.medicalControl,
-//                nextCourseStart = notification.nextCourseStart,
-////                medsId = notification.getListOfMedId(0)
-//            )
-//        }
+        return dataStore_userNotification.data.first().mapToDomain()
     }
 
     override suspend fun updateUserPersonal(personal: PersonalDomainModel) {
@@ -66,27 +56,7 @@ class UserDataRepoImpl @Inject constructor(
         }
     }
 
-//    override suspend fun getUserPersonal(): PersonalDomainModel {
-////        val personal = dataStore_userPersonal.data.first()
-////        return dataStore_userPersonal.data.map {
-////            PersonalDomainModel(
-////                name = personal.name,
-////                age = personal.age,
-////                avatar = personal.avatar
-////            )
-////        }
-//        return dataStore_userPersonal.data.last().mapToDomain()
-//    }
-
     override suspend fun getUserPersonal(): PersonalDomainModel {
-//        val personal = dataStore_userPersonal.data.first()
-//        return dataStore_userPersonal.data.map {
-//            PersonalDomainModel(
-//                name = personal.name,
-//                age = personal.age,
-//                avatar = personal.avatar
-//            )
-//        }
         return dataStore_userPersonal.data.first().mapToDomain()
     }
 
@@ -104,16 +74,7 @@ class UserDataRepoImpl @Inject constructor(
     }
 
     override suspend fun getUserRules(): RulesUserDomainModel {
-//        val rules = dataStore_userRules.data.first()
-//        return dataStore_userRules.data.map {
-//            RulesUserDomainModel(
-//                canAdd = rules.canAdd,
-//                canEdit = rules.canEdit,
-//                canInvite = rules.canInvite,
-//                canShare = rules.canShare
-//            )
-//        }
-        return dataStore_userRules.data.last().mapToDomain()
+        return dataStore_userRules.data.first().mapToDomain()
     }
 
 }
