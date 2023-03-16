@@ -39,13 +39,18 @@ class NotificationsSchedulerImpl
         }
     }
 
+    override suspend fun cancelAll() {
+        val usages = usagesRepo.getCommonAll()
+        cancel(usages)
+    }
+
     override suspend fun cancelByMedId(medId: Long, onComplete: suspend () -> Unit) {
         val usages = usagesRepo.getUsagesByMedId(medId)
         cancel(usages)
         onComplete()
     }
 
-    suspend fun rescheduleAll(onComplete: () -> Unit = {}) {
+    override suspend fun rescheduleAll(onComplete: () -> Unit) {
         val now = System.currentTimeMillis()/1000
         usagesRepo.getCommonAll().forEach {
             if(it.useTime >= now) {
