@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
@@ -22,16 +23,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.user.PersonalDomainModel
+import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.settings.SettingsIntent
 
 @Composable
-@Preview(showBackground = true)
 fun SettingsProfile(
     modifier: Modifier = Modifier,
     userModel: PersonalDomainModel = PersonalDomainModel(),
-    savePersonal: () -> Unit ={},
-    declinePersonal: () -> Unit ={},
+    savePersonal: (SettingsIntent) -> Unit,
+    declinePersonal: (SettingsIntent) -> Unit,
     onAvatarEdit: () -> Unit = {},
     onPasswordEdit: () -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -66,11 +68,15 @@ fun SettingsProfile(
         when {
             userModel.name != editUserName.value -> SettingsProfileButtonSaveable(
                 onDismiss = onDismiss,
+                editUserName = editUserName.value.toString(),
+                editEmail = editEmail.value.toString(),
                 savePersonal = savePersonal,
                 declinePersonal = declinePersonal
             )
             userModel.email != editEmail.value -> SettingsProfileButtonSaveable(
                 onDismiss = onDismiss,
+                editUserName = editUserName.value.toString(),
+                editEmail = editEmail.value.toString(),
                 savePersonal = savePersonal,
                 declinePersonal = declinePersonal
             )
@@ -131,11 +137,13 @@ fun SettingsProfileEditText(
 @Composable
 fun SettingsProfileButtonSaveable(
     onDismiss: () -> Unit,
-    savePersonal: () -> Unit,
-    declinePersonal: () -> Unit
+    editUserName: String = "",
+    editEmail: String = "",
+    savePersonal: (SettingsIntent) -> Unit,
+    declinePersonal: (SettingsIntent) -> Unit,
+    userModel: UserDomainModel = UserDomainModel()
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
+    Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -143,7 +151,6 @@ fun SettingsProfileButtonSaveable(
         Button(
             onClick = {
                 onDismiss()
-                declinePersonal()
             },
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
             modifier = Modifier
@@ -165,8 +172,17 @@ fun SettingsProfileButtonSaveable(
 
         Button(
             onClick = {
-                onDismiss()
-                savePersonal()
+//                onDismiss()
+                savePersonal(
+                    SettingsIntent.SetPersonal(
+                        PersonalDomainModel(
+                            name = editUserName,
+                            age = userModel.personal.age,
+                            avatar = userModel.personal.avatar,
+                            email = editEmail
+                        )
+                    )
+                )
             },
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer),
             modifier = Modifier

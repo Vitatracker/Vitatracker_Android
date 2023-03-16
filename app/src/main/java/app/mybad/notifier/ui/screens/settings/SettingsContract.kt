@@ -11,9 +11,7 @@ sealed interface SettingsIntent {
     object Exit : SettingsIntent
     data class ChangePassword(val password: String) : SettingsIntent
     data class SetNotifications(val notifications: NotificationsUserDomainModel) : SettingsIntent
-
     data class SetPersonal(val personal: PersonalDomainModel) : SettingsIntent
-
     data class SetRules(val rules: RulesUserDomainModel) : SettingsIntent
 }
 

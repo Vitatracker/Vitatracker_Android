@@ -1,5 +1,6 @@
 package app.mybad.data.repos
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import app.mybad.data.UserNotificationsDataModel
 import app.mybad.data.UserPersonalDataModel
@@ -72,6 +73,7 @@ class UserDataRepoImpl @Inject constructor(
 //                avatar = personal.avatar
 //            )
 //        }
+        Log.d("TAG", "getUserPersonal: ${dataStore_userPersonal.data.last().name}")
         return dataStore_userPersonal.data.last().mapToDomain()
     }
 

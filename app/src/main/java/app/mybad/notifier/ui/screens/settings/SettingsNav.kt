@@ -39,6 +39,7 @@ fun SettingsNav(
     val userPersonalModel = state.value.personalDomainModel
     val userNotificationModel = state.value.notificationsUserDomainModel
     val userRulesModel = state.value.rulesUserDomainModel
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +75,7 @@ fun SettingsNav(
             composable(NavItemSettings.Navigation.route) {
                 title = stringResource(NavItemSettings.Navigation.stringId)
                 SettingsNavScreen(
-                    userModel = userPersonalModel,
+                    userModel = userModel,
                     reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
@@ -85,8 +86,8 @@ fun SettingsNav(
                 title = stringResource(NavItemSettings.Profile.stringId)
                 SettingsProfile(
                     userModel = userPersonalModel,
-                    savePersonal = { },
-                    declinePersonal = { },
+                    savePersonal = { vm.reduce(SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)) },
+                    declinePersonal = {  },
                     onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
                     onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
@@ -95,7 +96,7 @@ fun SettingsNav(
             composable(NavItemSettings.ProfileEdit.route) {
                 title = stringResource(NavItemSettings.ProfileEdit.stringId)
                 SettingsProfileEdit(
-                    userModel = userModel,
+                    userModel = userPersonalModel,
                     onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )

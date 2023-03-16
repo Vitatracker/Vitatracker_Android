@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DecoratedTextInput(
     modifier: Modifier = Modifier,
-    label: String,
+    label: String = "",
     enabled: Boolean,
     onEdit: (String) -> Unit
 ) {

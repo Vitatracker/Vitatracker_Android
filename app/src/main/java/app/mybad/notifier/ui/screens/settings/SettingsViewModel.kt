@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.usecases.settings.SwitchGlobalNotificationsUseCase
+import app.mybad.domain.usecases.user.LoadUserSettingsUseCase
+import app.mybad.domain.usecases.user.UpdateUserNotificationDomainModelUseCase
+import app.mybad.domain.usecases.user.UpdateUserPersonalDomainModelUseCase
+import app.mybad.domain.usecases.user.UpdateUserRulesDomainModelUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val userDataRepo: UserDataRepo,
+    private val userSettingsUseCase: LoadUserSettingsUseCase,
+    private val userRulesDomainModelUseCase: UpdateUserRulesDomainModelUseCase,
+    private val userPersonalDomainModelUseCase: UpdateUserPersonalDomainModelUseCase,
+    private val userNotificationDomainModelUseCase: UpdateUserNotificationDomainModelUseCase,
     private val coursesRepo: CoursesRepo,
     private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
 ) : ViewModel() {
@@ -28,15 +35,15 @@ class SettingsViewModel @Inject constructor(
         }
 
         scope.launch {
-            _state.emit(_state.value.copy(personalDomainModel = userDataRepo.getUserPersonal()))
+            _state.emit(_state.value.copy(personalDomainModel = userSettingsUseCase.getUserPersonal()))
         }
 
         scope.launch {
-            _state.emit(_state.value.copy(notificationsUserDomainModel = userDataRepo.getUserNotification()))
+            _state.emit(_state.value.copy(notificationsUserDomainModel = userSettingsUseCase.getUserNotification()))
         }
 
         scope.launch {
-            _state.emit(_state.value.copy(rulesUserDomainModel = userDataRepo.getUserRules()))
+            _state.emit(_state.value.copy(rulesUserDomainModel = userSettingsUseCase.getUserRules()))
         }
     }
 
@@ -46,17 +53,17 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.Exit -> {}
             is SettingsIntent.SetNotifications -> {
                 scope.launch {
-                    userDataRepo.updateUserNotification(_state.last().notificationsUserDomainModel)
+                    userNotificationDomainModelUseCase.execute(_state.last().notificationsUserDomainModel)
                 }
             }
             is SettingsIntent.SetPersonal -> {
                 scope.launch {
-                    userDataRepo.updateUserPersonal(_state.last().personalDomainModel)
+                    userPersonalDomainModelUseCase.execute(intent.personal)
                 }
             }
             is SettingsIntent.SetRules -> {
                 scope.launch {
-                    userDataRepo.updateUserRules(_state.last().rulesUserDomainModel)
+                    userRulesDomainModelUseCase.execute(_state.last().rulesUserDomainModel)
                 }
             }
             is SettingsIntent.ChangePassword -> {}
