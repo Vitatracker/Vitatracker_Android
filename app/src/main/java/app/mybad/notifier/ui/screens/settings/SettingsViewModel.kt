@@ -1,6 +1,8 @@
 package app.mybad.notifier.ui.screens.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.usecases.settings.SwitchGlobalNotificationsUseCase
@@ -59,6 +61,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetPersonal -> {
                 scope.launch {
                     userPersonalDomainModelUseCase.execute(intent.personal)
+                    _state.emit(_state.value.copy(personalDomainModel = intent.personal))
                 }
             }
             is SettingsIntent.SetRules -> {

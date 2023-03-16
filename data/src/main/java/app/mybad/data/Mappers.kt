@@ -149,7 +149,7 @@ fun List<UsageCommonDomainModel>.mapToData(): List<UsageCommonDataModel> {
 
 @JvmName("Settings_toDomain")
 fun UserPersonalDataModel.mapToDomain(): PersonalDomainModel {
-    return PersonalDomainModel(name, age, avatar)
+    return PersonalDomainModel(name, age, avatar, email)
 }
 
 fun UserNotificationsDataModel.mapToDomain(): NotificationsUserDomainModel {

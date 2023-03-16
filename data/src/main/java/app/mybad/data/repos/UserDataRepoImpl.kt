@@ -10,6 +10,7 @@ import app.mybad.domain.models.user.*
 import app.mybad.domain.repos.UserDataRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,13 +57,26 @@ class UserDataRepoImpl @Inject constructor(
         scope.launch {
             dataStore_userPersonal.updateData { userPersonal ->
                 userPersonal.toBuilder()
-                    .setAge(personal.age)
-                    .setAvatar(personal.avatar)
-                    .setName(personal.name)
+                    .setAge(if (personal.age == null) "" else personal.age)
+                    .setAvatar(if (personal.avatar == null) "" else personal.avatar)
+                    .setName(if (personal.name == null) "" else personal.name)
+                    .setEmail(if (personal.email == null) "" else personal.email)
                     .build()
             }
         }
     }
+
+//    override suspend fun getUserPersonal(): PersonalDomainModel {
+////        val personal = dataStore_userPersonal.data.first()
+////        return dataStore_userPersonal.data.map {
+////            PersonalDomainModel(
+////                name = personal.name,
+////                age = personal.age,
+////                avatar = personal.avatar
+////            )
+////        }
+//        return dataStore_userPersonal.data.last().mapToDomain()
+//    }
 
     override suspend fun getUserPersonal(): PersonalDomainModel {
 //        val personal = dataStore_userPersonal.data.first()
@@ -73,8 +87,7 @@ class UserDataRepoImpl @Inject constructor(
 //                avatar = personal.avatar
 //            )
 //        }
-        Log.d("TAG", "getUserPersonal: ${dataStore_userPersonal.data.last().name}")
-        return dataStore_userPersonal.data.last().mapToDomain()
+        return dataStore_userPersonal.data.first().mapToDomain()
     }
 
     override suspend fun updateUserRules(rules: RulesUserDomainModel) {

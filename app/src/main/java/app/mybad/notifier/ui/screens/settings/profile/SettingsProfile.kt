@@ -52,7 +52,8 @@ fun SettingsProfile(
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_name),
             enabled = true,
-            icon = Icons.Default.AccountCircle
+            icon = Icons.Default.AccountCircle,
+            valueString = editUserName.value.toString()
         ) {
             editUserName.value = it
         }
@@ -60,7 +61,8 @@ fun SettingsProfile(
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_email),
             enabled = true,
-            icon = Icons.Default.Email
+            icon = Icons.Default.Email,
+            valueString = editEmail.value.toString()
         ) {
             editEmail.value = it
         }
@@ -97,10 +99,11 @@ fun SettingsProfileEditText(
     label: String,
     enabled: Boolean,
     icon: ImageVector,
+    valueString: String,
     onEdit: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(valueString) }
 
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
