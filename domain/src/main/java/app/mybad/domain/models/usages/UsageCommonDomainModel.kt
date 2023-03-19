@@ -11,4 +11,3 @@ data class UsageCommonDomainModel(
     val quantity: Int = 1,
     val isDeleted: Boolean = false
 )
-

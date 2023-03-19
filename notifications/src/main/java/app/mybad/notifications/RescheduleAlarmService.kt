@@ -1,7 +1,9 @@
 package app.mybad.notifications
 
 import android.app.Notification
+import android.app.Service
 import android.content.Intent
+import android.os.IBinder
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RescheduleAlarmService : LifecycleService() {
+class RescheduleAlarmService : Service() {
 
     @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -23,6 +25,7 @@ class RescheduleAlarmService : LifecycleService() {
         const val CHANNEL_NAME = "Notifications from MyBAD reminder"
     }
 
+    override fun onBind(p0: Intent?) = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 

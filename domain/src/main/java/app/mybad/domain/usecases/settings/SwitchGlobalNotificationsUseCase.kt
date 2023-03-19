@@ -1,6 +1,5 @@
 package app.mybad.domain.usecases.settings
 
-import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
 import javax.inject.Inject
 

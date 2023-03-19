@@ -3,7 +3,6 @@ package app.mybad.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.FORCE_CLOSE
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
@@ -13,7 +12,6 @@ import app.mybad.notifications.NotificationsSchedulerImpl.Companion.NOTIFICATION
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.w("AR_", "${intent?.action}")
         when(intent?.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
                 val intentService = Intent(context, RescheduleAlarmService::class.java)

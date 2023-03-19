@@ -5,7 +5,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -66,8 +65,6 @@ class AlarmService : Service() {
 //        }
         val takePi = PendingIntent.getBroadcast(baseContext, 0, takeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 //        val delayPi = PendingIntent.getBroadcast(baseContext, 0, delayIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        Log.w("AS_intent_extras", "${intent?.extras}")
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.main_icon)
