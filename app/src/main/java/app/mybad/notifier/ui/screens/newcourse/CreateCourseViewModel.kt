@@ -24,27 +24,12 @@ class CreateCourseViewModel @Inject constructor(
 
     private val scope = CoroutineScope(Dispatchers.IO)
     private val now = LocalDateTime.now()
-    private val _state = MutableStateFlow(
-        NewCourseState(
-            userId = "userid",
-            med = MedDomainModel(id = now.atZone(ZoneId.systemDefault()).toEpochSecond(), userId = "userid"),
-            course = CourseDomainModel(
-                id = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                medId = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                userId = "userid",
-                startDate = now.atZone(ZoneId.systemDefault()).withHour(0).withMinute(0)
-                    .withSecond(0).toEpochSecond(),
-                endDate = now.atZone(ZoneId.systemDefault()).withHour(23).withMinute(59)
-                    .withSecond(59).plusMonths(1).toEpochSecond(),
-                creationDate = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
-            )
-        )
-    )
+    private val _state = MutableStateFlow(newState())
     val state get() = _state.asStateFlow()
 
     fun reduce(intent: NewCourseIntent) {
         when(intent) {
-            is NewCourseIntent.Drop -> { scope.launch { _state.emit(NewCourseState()) } }
+            is NewCourseIntent.Drop -> { scope.launch { _state.emit(newState()) } }
             is NewCourseIntent.Finish -> {
                 scope.launch {
                     createCourseUseCase.execute(
@@ -52,6 +37,7 @@ class CreateCourseViewModel @Inject constructor(
                         course = _state.value.course,
                         usages = _state.value.usages
                     )
+                    _state.emit(newState())
                 }
             }
             is NewCourseIntent.UpdateMed -> {
@@ -117,5 +103,19 @@ class CreateCourseViewModel @Inject constructor(
         }
     }
 
+    private fun newState(userid: String = "userid") = NewCourseState(
+        userId = userid,
+        med = MedDomainModel(id = now.atZone(ZoneId.systemDefault()).toEpochSecond(), userId = userid),
+        course = CourseDomainModel(
+            id = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
+            medId = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
+            userId = userid,
+            startDate = now.atZone(ZoneId.systemDefault()).withHour(0).withMinute(0)
+                .withSecond(0).toEpochSecond(),
+            endDate = now.atZone(ZoneId.systemDefault()).withHour(23).withMinute(59)
+                .withSecond(59).plusMonths(1).toEpochSecond(),
+            creationDate = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
+        )
+    )
 }
 
