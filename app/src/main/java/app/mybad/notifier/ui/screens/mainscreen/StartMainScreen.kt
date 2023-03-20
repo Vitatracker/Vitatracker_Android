@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -36,6 +38,7 @@ import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.nio.file.Files.find
 import java.text.DateFormatSymbols
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -297,7 +300,7 @@ private fun MainScreenLazyMedicines(
                 item {
                     MainScreenCourseItem(
                         usage = usage,
-                        med = meds.first()
+                        med = meds.filter { it.id == usage.medId }[0]
                     )
                 }
             }
@@ -323,7 +326,7 @@ private fun MainScreenCourseItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MainScreenTimeCourse(usageTime = usage.useTime)
-            MainScreenFormCourseHeader(med = med, usageTime = usage.useTime)
+            MainScreenFormCourseHeader(med = med, usages = usage)
         }
     }
 
@@ -334,12 +337,11 @@ private fun MainScreenTimeCourse(usageTime: Long) {
     Surface(
         modifier = Modifier.padding(start = 10.dp),
         shape = RoundedCornerShape(5.dp),
-//        border = BorderStroke(0.dp, color = MaterialTheme.colorScheme.primaryContainer)
         border = SetBorderColor(usageTime = usageTime)
     ) {
         Text(
             modifier = Modifier
-                .background(SetColor(usageTime = usageTime))//MaterialTheme.colorScheme.primaryContainer)
+                .background(SetColor(usageTime = usageTime))
                 .padding(8.dp),
             text = getTime(usageTime),
             textAlign = TextAlign.Justify,
@@ -352,9 +354,10 @@ private fun MainScreenTimeCourse(usageTime: Long) {
 @Composable
 private fun MainScreenFormCourseHeader(
     med: MedDomainModel,
-    usageTime: Long
+    usages: UsageCommonDomainModel
 ) {
-    val units = stringArrayResource(R.array.units)
+    val usageTime = usages.useTime
+    val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
 
     Surface(
         modifier = Modifier
@@ -366,16 +369,20 @@ private fun MainScreenFormCourseHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.padding(start = 8.dp)) {
-                Text(
-                    text = "${med.name}",
-                    style = Typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(modifier = Modifier) {
+                    Text(
+                        text = "${med.name}",
+                        style = Typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Icon(painter = painterResource(r.getResourceId(med.icon, 0)), contentDescription = null)
+                }
                 Row(
                     modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 ) {
                     Text(
-                        text = "${med.dose} таблетки",
+                        text = "${med.dose} ${med.measureUnit}",
                         style = Typography.labelMedium
                     )
                     Text(
@@ -386,7 +393,7 @@ private fun MainScreenFormCourseHeader(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = if (med.beforeFood == 0) "после еды" else "до еды",
+                        text = "${usages.useTime}",
                         style = Typography.labelMedium,
                         modifier = Modifier.padding(end = 8.dp)
                     )
@@ -423,7 +430,9 @@ private fun MainScreenButtonAccept(usageTime: Long) {
 private fun SetBorderColor(usageTime: Long): BorderStroke {
     val nowTime = convertDateToLong(LocalDateTime.now())
     when {
-        getTime(nowTime) < getTime(usageTime) -> return BorderStroke(0.dp, color = Color.Gray)
+        getTime(nowTime) < getTime(usageTime) -> return BorderStroke(
+            0.dp,
+            color = Color.Gray)
         getTime(nowTime) > getTime(usageTime) -> return BorderStroke(
             0.dp,
             color = MaterialTheme.colorScheme.error
