@@ -102,7 +102,7 @@ class CreateCourseViewModel @Inject constructor(
                 if(position % (regime+1) == 0) {
                     usagesByDay.forEach {
                         val time = (it.first.atDate(startLocalDate).plusDays(position.toLong()).atZone(ZoneOffset.systemDefault()).toEpochSecond())
-                        this.add(
+                        if(time>now) this.add(
                             UsageCommonDomainModel(
                                 medId = medId,
                                 userId = userId,
