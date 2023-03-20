@@ -31,7 +31,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCourseMainScreen(
     modifier: Modifier = Modifier,
@@ -60,8 +60,8 @@ fun AddCourseMainScreen(
             modifier = Modifier.padding(16.dp),
             course = course,
             reducer = reducer,
-            onSave = { scope.launch { sState.bottomSheetState.collapse() }},
-            onCancel = { scope.launch { sState.bottomSheetState.collapse() }},
+            onSave = { scope.launch { sState.bottomSheetState.hide() }},
+            onCancel = { scope.launch { sState.bottomSheetState.hide() }},
         ) }
     ) {
         Column(
