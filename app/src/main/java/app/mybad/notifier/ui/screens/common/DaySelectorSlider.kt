@@ -19,10 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -35,6 +36,7 @@ fun DaySelectorSlider(
     val pagerState = rememberPagerState(initialPage = date?.dayOfMonth ?: 0)
     val scope = rememberCoroutineScope()
     val padding = PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp/2 + 20 + 8).dp)
+    val dow = stringArrayResource(R.array.days_short)
 
     HorizontalPager(
         pageCount = date?.month?.length(false) ?: 0,
@@ -53,7 +55,7 @@ fun DaySelectorSlider(
             modifier = Modifier
                 .height(50.dp)
                 .width(40.dp)
-                .alpha(if(isSelected) 1f else 0.5f)
+                .alpha(if (isSelected) 1f else 0.5f)
                 .clickable(
                     indication = null,
                     interactionSource = MutableInteractionSource()
@@ -73,7 +75,7 @@ fun DaySelectorSlider(
                         color = if(isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                     )
                     Text(
-                        text = "${itsDate?.format(DateTimeFormatter.ofPattern("E"))?.uppercase()}",
+                        text = dow[(itsDate?.dayOfWeek?.value ?: 1)-1],
                         color = if(isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                     )
                 }
