@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -36,6 +37,7 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.theme.primaryIndication
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
@@ -137,7 +139,7 @@ private fun MainScreenMonthPager(
             .padding(top = 14.dp, start = paddingStart, end = paddingEnd),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
-            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
+            horizontal = ((Resources.getSystem().configuration.screenWidthDp - 60) / 2).dp
         )
     ) { month ->
         Surface(
@@ -209,12 +211,12 @@ private fun MainScreenWeekPager(
     val paddingEnd = 10.dp
 
     val calendar: Calendar = Calendar.getInstance()
-    var dayOfWeek by remember { mutableStateOf(0) }
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
     val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1)
     val scope = rememberCoroutineScope()
     val date by remember { mutableStateOf(LocalDateTime.now()) }
+    val daysShortsArray = stringArrayResource(R.array.days_short)
 
     LaunchedEffect(stateDay.currentPage, monthState) {
         delay(50)
@@ -232,7 +234,7 @@ private fun MainScreenWeekPager(
             .padding(top = 20.dp, start = paddingStart, end = paddingEnd),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
-            horizontal = (Resources.getSystem().configuration.screenWidthDp.dp - paddingStart * 2) / 2
+            horizontal = ((Resources.getSystem().configuration.screenWidthDp - 60) / 2).dp
         )
     ) {
         Surface(
@@ -248,15 +250,13 @@ private fun MainScreenWeekPager(
             ) {
 
                 countDay = it + 1
-                calendar.time = Date(Year.now().value, monthState, it)
-                dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-                shortNameOfDay =
-                    DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
+                calendar.time = Date(Year.now().value, monthState, it - 1)
+                shortNameOfDay = daysShortsArray[calendar.get(Calendar.DAY_OF_WEEK) - 1]
+                //DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
                     modifier = Modifier
-//                        .padding(1.dp)
                         .clickable {
                             scope.launch { stateDay.animateScrollToPage(it) }
                         },
@@ -272,7 +272,6 @@ private fun MainScreenWeekPager(
                 Text(
                     text = AnnotatedString(shortNameOfDay),
                     modifier = Modifier
-//                        .padding(1.dp)
                         .clickable {
                             scope.launch { stateDay.animateScrollToPage(it) }
                         },
@@ -307,7 +306,7 @@ private fun MainScreenLazyMedicines(
 ) {
     if (meds.isNotEmpty() && usages.isNotEmpty()) {
         LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
-            usages.forEach { usage ->
+            usages.sortedBy { it.useTime }.forEach { usage ->
                 item {
                     MainScreenCourseItem(
                         usage = usage,
@@ -430,19 +429,64 @@ private fun MainScreenFormCourseHeader(
 
 @Composable
 private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
-//        var isFalse: Boolean = false
-//        RadioButton(
-//            onClick = { isFalse = !isFalse },
-//            selected = false,
-//            modifier = Modifier.size(50.dp)
-//        )
-    Icon(
-        imageVector = Icons.Default.RadioButtonUnchecked,
+    val nowTime = convertDateToLong(LocalDateTime.now())
+
+    if (isDone) {
+        return Icon(
+            painter = painterResource(R.drawable.done),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .clickable {
+//                    val n = Instant.now().epochSecond
+                }
+        )
+    } else if (getTime(nowTime) < getTime(usageTime.minus(3600))) {
+        return Icon(
+            painter = painterResource(R.drawable.locked),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+        )
+    } else if (getTime(nowTime) > getTime(usageTime.plus(3600))) {
+        return Icon(
+            painter = painterResource(R.drawable.undone),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+        )
+    } else if (getTime(nowTime) <= getTime(usageTime.plus(3600))
+        || getTime(nowTime) >= getTime(usageTime.minus(3600))
+    ) {
+        return Icon(
+            painter = painterResource(R.drawable.undone),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .clickable {
+//                    val n = Instant.now().epochSecond
+                }
+        )
+    }
+    return Icon(
+        painter = painterResource(R.drawable.locked),
         contentDescription = null,
-        tint = setColor(usageTime = usageTime, isDone = isDone),
+        tint = MaterialTheme.colorScheme.outline,
         modifier = Modifier
-            .padding(end = 8.dp)
-            .size(35.dp)
+            .padding(start = 8.dp)
+            .size(40.dp)
             .clip(CircleShape)
     )
 }
@@ -450,20 +494,22 @@ private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
 @Composable
 private fun setBorderColor(usageTime: Long, isDone: Boolean): BorderStroke {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    when {
-//        isDone -> return BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        getTime(nowTime) < getTime(usageTime.minus(3600)) -> return BorderStroke(
+    if (isDone) {
+        return BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+    } else if (getTime(nowTime) < getTime(usageTime.minus(3600))) {
+        BorderStroke(
             0.dp,
             color = Color.Gray
         )
-        getTime(nowTime) > getTime(usageTime.plus(3600)) -> return BorderStroke(
+    } else if (getTime(nowTime) > getTime(usageTime.plus(3600))) {
+        BorderStroke(
             0.dp,
             color = MaterialTheme.colorScheme.error
         )
-        getTime(nowTime) <= getTime(usageTime.plus(3600))
-                || getTime(nowTime) >= getTime(
-            usageTime.minus(3600)
-        ) -> return BorderStroke(
+    } else if (getTime(nowTime) <= getTime(usageTime.plus(3600))
+        || getTime(nowTime) >= getTime(usageTime.minus(3600))
+    ) {
+        BorderStroke(
             0.dp,
             color = MaterialTheme.colorScheme.primaryContainer
         )
