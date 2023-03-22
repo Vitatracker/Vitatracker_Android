@@ -38,7 +38,6 @@ import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.nio.file.Files.find
 import java.text.DateFormatSymbols
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -147,32 +146,44 @@ private fun MainScreenMonthPager(
         ) {
             Text(
                 text = AnnotatedString(Month.values()[month].toString().substring(0, 3)),
-                color = if (stateMonth.currentPage == month) {
-                    MaterialTheme.colorScheme.primary
-                } else if (stateMonth.currentPage == month + 1) {
-                    Color.Black
-                } else if (stateMonth.currentPage == month - 1) {
-                    Color.Black
-                } else if (stateMonth.currentPage == month + 2) {
-                    Color.Gray
-                } else if (stateMonth.currentPage == month - 2) {
-                    Color.Gray
-                } else {
-                    Color.LightGray
+                color = when (stateMonth.currentPage) {
+                    month -> {
+                        MaterialTheme.colorScheme.primary
+                    }
+                    month + 1 -> {
+                        Color.Black
+                    }
+                    month - 1 -> {
+                        Color.Black
+                    }
+                    month + 2 -> {
+                        Color.Gray
+                    }
+                    month - 2 -> {
+                        Color.Gray
+                    }
+                    else -> {
+                        Color.LightGray
+                    }
                 },
                 modifier = Modifier
                     .padding(1.dp)
                     .clickable {
                         scope.launch { stateMonth.animateScrollToPage(month) }
                     },
-                fontWeight = if (stateMonth.currentPage == month) {
-                    FontWeight.Bold
-                } else if (stateMonth.currentPage == month + 1) {
-                    FontWeight.Normal
-                } else if (stateMonth.currentPage == month - 1) {
-                    FontWeight.Normal
-                } else {
-                    FontWeight.Normal
+                fontWeight = when (stateMonth.currentPage) {
+                    month -> {
+                        FontWeight.Bold
+                    }
+                    month + 1 -> {
+                        FontWeight.Normal
+                    }
+                    month - 1 -> {
+                        FontWeight.Normal
+                    }
+                    else -> {
+                        FontWeight.Normal
+                    }
                 },
                 maxLines = 1,
                 textAlign = TextAlign.Center
@@ -318,14 +329,20 @@ private fun MainScreenCourseItem(
             .fillMaxWidth()
             .padding(10.dp),
         shape = RoundedCornerShape(10.dp),
-//        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer)
-        border = SetBorderColor(usageTime = usage.useTime)
+        border = setBorderColor(
+            usageTime = usage.useTime,
+            usage.factUseTime.toInt() != -1
+        ),
+        color = setBackgroundColor(
+            usageTime = usage.useTime,
+            usage.factUseTime.toInt() != -1
+        ),
     ) {
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MainScreenTimeCourse(usageTime = usage.useTime)
+            MainScreenTimeCourse(usageTime = usage.useTime, usage.factUseTime.toInt() != -1)
             MainScreenFormCourseHeader(med = med, usages = usage)
         }
     }
@@ -333,15 +350,16 @@ private fun MainScreenCourseItem(
 }
 
 @Composable
-private fun MainScreenTimeCourse(usageTime: Long) {
+private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
     Surface(
         modifier = Modifier.padding(start = 10.dp),
         shape = RoundedCornerShape(5.dp),
-        border = SetBorderColor(usageTime = usageTime)
+        border = setBorderColor(usageTime = usageTime, isDone = isDone),
+        color = setBackgroundColor(usageTime = usageTime, isDone = isDone)
     ) {
         Text(
             modifier = Modifier
-                .background(SetColor(usageTime = usageTime))
+                .background(setBackgroundColor(usageTime = usageTime, isDone = isDone))
                 .padding(8.dp),
             text = getTime(usageTime),
             textAlign = TextAlign.Justify,
@@ -358,10 +376,13 @@ private fun MainScreenFormCourseHeader(
 ) {
     val usageTime = usages.useTime
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
+    val types = stringArrayResource(R.array.types)
+    val relations = stringArrayResource(R.array.food_relations)
 
     Surface(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(10.dp),
+        color = setBackgroundColor(usageTime = usageTime, isDone = usages.factUseTime.toInt() != -1)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -376,13 +397,16 @@ private fun MainScreenFormCourseHeader(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.width(10.dp))
-                    Icon(painter = painterResource(r.getResourceId(med.icon, 0)), contentDescription = null)
+                    Icon(
+                        painter = painterResource(r.getResourceId(med.icon, 0)),
+                        contentDescription = null
+                    )
                 }
                 Row(
                     modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 ) {
                     Text(
-                        text = "${med.dose} ${med.measureUnit}",
+                        text = "${med.dose} ${types[med.type]}",
                         style = Typography.labelMedium
                     )
                     Text(
@@ -393,19 +417,19 @@ private fun MainScreenFormCourseHeader(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = "${usages.useTime}",
+                        text = relations[med.beforeFood],
                         style = Typography.labelMedium,
                         modifier = Modifier.padding(end = 8.dp)
                     )
                 }
             }
-            MainScreenButtonAccept(usageTime = usageTime)
+            MainScreenButtonAccept(usageTime = usageTime, isDone = usages.factUseTime.toInt() != -1)
         }
     }
 }
 
 @Composable
-private fun MainScreenButtonAccept(usageTime: Long) {
+private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
 //        var isFalse: Boolean = false
 //        RadioButton(
 //            onClick = { isFalse = !isFalse },
@@ -415,29 +439,31 @@ private fun MainScreenButtonAccept(usageTime: Long) {
     Icon(
         imageVector = Icons.Default.RadioButtonUnchecked,
         contentDescription = null,
-        tint = SetColor(usageTime = usageTime),
+        tint = setColor(usageTime = usageTime, isDone = isDone),
         modifier = Modifier
             .padding(end = 8.dp)
             .size(35.dp)
             .clip(CircleShape)
-            .clickable {
-
-            }
     )
 }
 
 @Composable
-private fun SetBorderColor(usageTime: Long): BorderStroke {
+private fun setBorderColor(usageTime: Long, isDone: Boolean): BorderStroke {
     val nowTime = convertDateToLong(LocalDateTime.now())
     when {
-        getTime(nowTime) < getTime(usageTime) -> return BorderStroke(
+//        isDone -> return BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        getTime(nowTime) < getTime(usageTime.minus(3600)) -> return BorderStroke(
             0.dp,
-            color = Color.Gray)
-        getTime(nowTime) > getTime(usageTime) -> return BorderStroke(
+            color = Color.Gray
+        )
+        getTime(nowTime) > getTime(usageTime.plus(3600)) -> return BorderStroke(
             0.dp,
             color = MaterialTheme.colorScheme.error
         )
-        getTime(nowTime) == getTime(usageTime) -> return BorderStroke(
+        getTime(nowTime) <= getTime(usageTime.plus(3600))
+                || getTime(nowTime) >= getTime(
+            usageTime.minus(3600)
+        ) -> return BorderStroke(
             0.dp,
             color = MaterialTheme.colorScheme.primaryContainer
         )
@@ -446,12 +472,31 @@ private fun SetBorderColor(usageTime: Long): BorderStroke {
 }
 
 @Composable
-private fun SetColor(usageTime: Long): Color {
+private fun setColor(usageTime: Long, isDone: Boolean): Color {
     val nowTime = convertDateToLong(LocalDateTime.now())
     when {
-        getTime(nowTime) < getTime(usageTime) -> return Color.Gray
-        getTime(nowTime) > getTime(usageTime) -> return MaterialTheme.colorScheme.error
-        getTime(nowTime) == getTime(usageTime) -> return MaterialTheme.colorScheme.primaryContainer
+//        isDone -> return MaterialTheme.colorScheme.primaryContainer
+        getTime(nowTime) < getTime(usageTime.minus(3600)) -> return Color(0xFFB5BDBE)
+        getTime(nowTime) > getTime(usageTime.plus(3600)) -> return Color(0xFFFBDDDD)
+        getTime(nowTime) <= getTime(usageTime.plus(3600))
+                || getTime(nowTime) >= getTime(
+            usageTime.minus(3600)
+        ) -> return Color(0xFFDDF7FB)
+    }
+    return MaterialTheme.colorScheme.primaryContainer
+}
+
+@Composable
+private fun setBackgroundColor(usageTime: Long, isDone: Boolean): Color {
+    val nowTime = convertDateToLong(LocalDateTime.now())
+    when {
+//        isDone -> return MaterialTheme.colorScheme.primaryContainer
+        getTime(nowTime) <= getTime(usageTime.minus(3600)) -> return Color(0xFFEFEFEF)
+        getTime(nowTime) >= getTime(usageTime.plus(3600)) -> return Color(0xFFFFF1F1)
+        getTime(nowTime) <= getTime(usageTime.plus(3600))
+                || getTime(nowTime) >= getTime(
+            usageTime.minus(3600)
+        ) -> return Color(0xFFF4FFFF)
     }
     return MaterialTheme.colorScheme.primaryContainer
 }
