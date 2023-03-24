@@ -22,7 +22,6 @@ import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
-import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileEdit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +74,7 @@ fun SettingsNav(
             composable(NavItemSettings.Navigation.route) {
                 title = stringResource(NavItemSettings.Navigation.stringId)
                 SettingsNavScreen(
-                    userModel = userModel,
+                    userModel = userPersonalModel,
                     reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
@@ -87,16 +86,7 @@ fun SettingsNav(
                 SettingsProfile(
                     userModel = userPersonalModel,
                     savePersonal = { vm.reduce(SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)) },
-                    onAvatarEdit = { navController.navigate(NavItemSettings.ProfileEdit.route) },
                     onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
-                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
-                )
-            }
-            composable(NavItemSettings.ProfileEdit.route) {
-                title = stringResource(NavItemSettings.ProfileEdit.stringId)
-                SettingsProfileEdit(
-                    userModel = userPersonalModel,
-                    onSave = { navController.popBackStack(NavItemSettings.Profile.route, true) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }

@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
@@ -33,11 +35,11 @@ fun SettingsProfile(
     modifier: Modifier = Modifier,
     userModel: PersonalDomainModel = PersonalDomainModel(),
     savePersonal: (SettingsIntent) -> Unit,
-    onAvatarEdit: () -> Unit = {},
     onPasswordEdit: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
 
+    val editUserAvatar = remember { mutableStateOf(userModel.avatar) }
     val editUserName = remember { mutableStateOf(userModel.name) }
     val editEmail = remember { mutableStateOf(userModel.email) }
 
@@ -46,7 +48,9 @@ fun SettingsProfile(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        UserImage(url = userModel.avatar, showEdit = true, onEdit = onAvatarEdit::invoke)
+        UserImage(url = editUserAvatar.value, showEdit = true) {
+            editUserAvatar.value = it
+        }
         Spacer(Modifier.height(32.dp))
         SettingsProfileEditText(
             label = stringResource(id = R.string.settings_user_name),
@@ -67,13 +71,14 @@ fun SettingsProfile(
         }
         Spacer(Modifier.height(24.dp))
         when {
-            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) -> SettingsProfileButtonSaveable(
+            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSaveable(
                 onDismiss = onDismiss,
                 editUserName = editUserName.value.toString(),
                 editEmail = editEmail.value.toString(),
+                editUserAvatar = editUserAvatar.value.toString(),
                 savePersonal = savePersonal
             )
-            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) -> SettingsProfileButtonChangePassword(
+            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileButtonChangePassword(
                 onPasswordEdit = onPasswordEdit
             )
         }
@@ -130,6 +135,7 @@ fun SettingsProfileButtonSaveable(
     onDismiss: () -> Unit,
     editUserName: String = "",
     editEmail: String = "",
+    editUserAvatar: String = "",
     savePersonal: (SettingsIntent) -> Unit,
     userModel: UserDomainModel = UserDomainModel()
 ) {
@@ -168,7 +174,7 @@ fun SettingsProfileButtonSaveable(
                         PersonalDomainModel(
                             name = editUserName,
                             age = userModel.personal.age,
-                            avatar = userModel.personal.avatar,
+                            avatar = editUserAvatar,
                             email = editEmail
                         )
                     )
