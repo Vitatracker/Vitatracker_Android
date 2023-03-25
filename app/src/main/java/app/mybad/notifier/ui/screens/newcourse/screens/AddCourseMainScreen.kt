@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +31,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddCourseMainScreen(
     modifier: Modifier = Modifier,
@@ -61,8 +60,8 @@ fun AddCourseMainScreen(
             modifier = Modifier.padding(16.dp),
             course = course,
             reducer = reducer,
-            onSave = { scope.launch { sState.bottomSheetState.hide() }},
-            onCancel = { scope.launch { sState.bottomSheetState.hide() }},
+            onSave = { scope.launch { sState.bottomSheetState.collapse() }},
+            onCancel = { scope.launch { sState.bottomSheetState.collapse() }},
         ) }
     ) {
         Column(
@@ -100,8 +99,16 @@ fun AddCourseMainScreen(
                 }
             }
             NavigationRow(
-                onNext = onNext::invoke,
-                onBack = onBack::invoke
+                onNext = {
+                    scope.launch { sState.bottomSheetState.collapse() }.invokeOnCompletion {
+                        onNext()
+                    }
+                },
+                onBack = {
+                    scope.launch { sState.bottomSheetState.collapse() }.invokeOnCompletion {
+                        onBack()
+                    }
+                }
             )
         }
     }
