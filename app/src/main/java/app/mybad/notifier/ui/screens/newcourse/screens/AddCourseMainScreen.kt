@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
@@ -108,10 +109,11 @@ fun AddCourseMainScreen(
     if(selectedInput != -1) {
         Dialog(
             onDismissRequest = { selectedInput = -1 },
+            properties = DialogProperties()
         ) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background,
             ) {
                 when(selectedInput) {
                     1, 2 -> CalendarSelectorScreen(

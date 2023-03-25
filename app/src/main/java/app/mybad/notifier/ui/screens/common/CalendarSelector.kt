@@ -44,20 +44,25 @@ fun CalendarSelectorScreen(
     var sDate by remember { mutableStateOf(date) }
     var selectedDiapason by remember { mutableStateOf(Pair(startDay, endDay)) }
 
-    Column(modifier = modifier.padding(16.dp)) {
-        MonthSelector(
-            date = sDate.atStartOfDay(),
-            onSwitch = { sDate = it.toLocalDate() }
-        )
-        Spacer(Modifier.height(16.dp))
-        CalendarSelector(
-            date = sDate,
-            startDay = selectedDiapason.first,
-            endDay = selectedDiapason.second,
-            onSelect = { sd, ed ->
-                selectedDiapason = sd to ed
-            }
-        )
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            MonthSelector(
+                date = sDate.atStartOfDay(),
+                onSwitch = { sDate = it.toLocalDate() }
+            )
+            Spacer(Modifier.height(16.dp))
+            CalendarSelector(
+                date = sDate,
+                startDay = selectedDiapason.first,
+                endDay = selectedDiapason.second,
+                onSelect = { sd, ed ->
+                    selectedDiapason = sd to ed
+                }
+            )
+        }
         Spacer(Modifier.height(16.dp))
         NavigationRow(
             backLabel = stringResource(R.string.settings_cancel),
@@ -66,6 +71,7 @@ fun CalendarSelectorScreen(
             onNext = { onSelect(selectedDiapason.first, selectedDiapason.second) }
         )
     }
+
 }
 
 @Composable
@@ -94,7 +100,6 @@ fun CalendarSelector(
             }
         }
     }
-
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -130,7 +135,7 @@ fun CalendarSelector(
                     .fillMaxWidth()
             )
             repeat(6) { w ->
-                if(cdr[w].any { it?.month == date.month }) {
+                if (cdr[w].any { it?.month == date.month }) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -152,23 +157,29 @@ fun CalendarSelector(
                                 isOtherMonth = cdr[w][d]?.month != date.month
                             ) {
                                 val selectedDate = it ?: LocalDate.now()
-                                val diffStart = ChronoUnit.DAYS.between(selectedDate, startDate).absoluteValue
-                                val diffEnd = ChronoUnit.DAYS.between(selectedDate, endDate).absoluteValue
-                                if(selectedDate.isBefore(startDate)) startDate = selectedDate
-                                else if(selectedDate.isAfter(startDate) && selectedDate.isBefore(endDate)) {
-                                    if(diffStart > diffEnd) endDate = selectedDate
+                                val diffStart = ChronoUnit.DAYS.between(
+                                    selectedDate,
+                                    startDate
+                                ).absoluteValue
+                                val diffEnd =
+                                    ChronoUnit.DAYS.between(selectedDate, endDate).absoluteValue
+                                if (selectedDate.isBefore(startDate)) startDate = selectedDate
+                                else if (selectedDate.isAfter(startDate) && selectedDate.isBefore(
+                                        endDate
+                                    )
+                                ) {
+                                    if (diffStart > diffEnd) endDate = selectedDate
                                     else startDate = selectedDate
-                                }
-                                else if(selectedDate.isAfter(endDate)) endDate = selectedDate
-                                else if(selectedDate == startDate && selectedDate != endDate)
+                                } else if (selectedDate.isAfter(endDate)) endDate = selectedDate
+                                else if (selectedDate == startDate && selectedDate != endDate)
                                     startDate = startDate.plusDays(1L)
-                                else if(selectedDate == endDate&& selectedDate != startDate)
+                                else if (selectedDate == endDate && selectedDate != startDate)
                                     endDate = endDate.minusDays(1L)
                                 onSelect(startDate, endDate)
                             }
                         }
                     }
-                }
+                } else if(w>4) Spacer(Modifier.height(48.dp))
             }
         }
     }

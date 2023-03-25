@@ -75,10 +75,10 @@ fun AddMedicineMainScreen(
             )
             MultiBox(
                 { ParameterIndicator(name = form, value = types[med.type], onClick = { selectedInput = 1 }) },
-                { BasicKeyboardInput(label = dose, init = med.dose.toString(), hideOnGo = true,
+                { BasicKeyboardInput(label = dose, init = if(med.dose == 0) "" else med.dose.toString(), hideOnGo = true,
                     keyboardType = KeyboardType.Number, alignRight = true,
                     prefix = { Text(text = dose, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)) },
-                    onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(dose = it.toInt()))) }) },
+                    onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(dose = it.toIntOrNull() ?: 0))) }) },
                 { ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = { selectedInput = 2 }) },
                 { ParameterIndicator(name = rel, value = rels[med.beforeFood], onClick = { selectedInput = 3})},
                 modifier = Modifier,
@@ -90,7 +90,7 @@ fun AddMedicineMainScreen(
         NavigationRow(
             onBack = onBack::invoke,
             onNext = {
-                if(med.name.isNullOrBlank()) Toast.makeText(context, fieldsError, Toast.LENGTH_SHORT).show()
+                if(med.name.isNullOrBlank() || med.dose == 0) Toast.makeText(context, fieldsError, Toast.LENGTH_SHORT).show()
                 else onNext()
             },
         )
