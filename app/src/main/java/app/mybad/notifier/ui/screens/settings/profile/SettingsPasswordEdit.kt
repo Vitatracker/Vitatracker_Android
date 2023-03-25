@@ -28,7 +28,7 @@ fun SettingsPasswordEdit(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        UserImage(url = userModel.personal.avatar)
+        UserImage(url = userModel.personal.avatar, showEdit = false) { }
         Spacer(Modifier.height(32.dp))
         DecoratedTextInput(
             label = stringResource(R.string.settings_current_password),
