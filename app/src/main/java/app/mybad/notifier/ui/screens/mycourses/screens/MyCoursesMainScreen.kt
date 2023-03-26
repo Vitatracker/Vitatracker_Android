@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
@@ -29,13 +30,14 @@ fun MyCoursesMainScreen(
 
     var selectedCourse by remember { mutableStateOf<CourseDomainModel?>(null) }
     val state = vm.state.collectAsState()
+    val ncState = navHostController.currentBackStackEntryAsState()
 
     LazyColumn {
         item {
             TopAppBar(
                 title = {
                     Text(
-                        text = if(selectedCourse == null) stringResource(R.string.my_course_h)
+                        text = if(ncState.value?.destination?.route == MyCoursesNavItem.Main.route) stringResource(R.string.my_course_h)
                         else state.value.meds.firstOrNull { it.id == selectedCourse?.medId }?.name ?: "no data",
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -69,11 +71,9 @@ fun MyCoursesMainScreen(
                             usagePattern = generatePattern(selectedCourse!!.medId, state.value.usages),
                             onSave = {
                                 navHostController.popBackStack()
-                                selectedCourse = null
                             },
                             onDelete = {
                                 navHostController.popBackStack()
-                                selectedCourse = null
                                 vm.reduce(MyCoursesIntent.Delete(it))
                             }
                         )
