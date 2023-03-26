@@ -111,8 +111,7 @@ class NotificationsSchedulerImpl
         i.putExtra(Extras.COLOR.name, med.color)
         i.putExtra(Extras.DOSE.name, med.dose)
         i.putExtra(Extras.UNIT.name, med.measureUnit)
-        i.putExtra(Extras.COURSE_START_DATE.name, course.startDate)
-        i.putExtra(Extras.COURSE_END_DATE.name, course.endDate)
+        i.putExtra(Extras.NEW_COURSE_START_DATE.name, (course.startDate + course.interval))
         i.putExtra(Extras.COURSE_REMIND_TIME.name, course.remindDate)
         return PendingIntent.getBroadcast(context, (course.remindDate + med.id).toInt(), i, 0)
     }
@@ -130,8 +129,7 @@ class NotificationsSchedulerImpl
             USAGE_TIME,
             QUANTITY,
             COURSE_REMIND_TIME,
-            COURSE_START_DATE,
-            COURSE_END_DATE,
+            NEW_COURSE_START_DATE,
         }
     }
 }

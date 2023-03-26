@@ -70,7 +70,7 @@ class AlarmService : Service() {
                 val unit = intent.getIntExtra(Extras.UNIT.name, 0)
                 val dose = intent.getIntExtra(Extras.DOSE.name, 0)
                 val name = intent.getStringExtra(Extras.MED_NAME.name)
-                val dateLong = intent.getLongExtra(Extras.COURSE_START_DATE.name, 0L)
+                val dateLong = intent.getLongExtra(Extras.NEW_COURSE_START_DATE.name, 0L)
                 val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(dateLong), ZoneId.systemDefault())
                     .format(DateTimeFormatter.ISO_LOCAL_DATE)
 

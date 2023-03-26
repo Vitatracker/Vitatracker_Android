@@ -42,9 +42,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 i.putExtra(Extras.COLOR.name, intent.getIntExtra(Extras.COLOR.name, 0))
                 i.putExtra(Extras.DOSE.name, intent.getIntExtra(Extras.DOSE.name, 0))
                 i.putExtra(Extras.UNIT.name, intent.getIntExtra(Extras.UNIT.name, 0))
-                i.putExtra(Extras.UNIT.name, intent.getLongExtra(Extras.COURSE_START_DATE.name, 0))
-                i.putExtra(Extras.UNIT.name, intent.getLongExtra(Extras.COURSE_END_DATE.name, 0))
-                i.putExtra(Extras.UNIT.name, intent.getLongExtra(Extras.COURSE_REMIND_TIME.name, 0))
+                i.putExtra(Extras.NEW_COURSE_START_DATE.name, intent.getLongExtra(Extras.NEW_COURSE_START_DATE.name, 0L))
+                i.putExtra(Extras.COURSE_REMIND_TIME.name, intent.getLongExtra(Extras.COURSE_REMIND_TIME.name, 0L))
                 context?.startService(i)
             }
             TAKE_INTENT, DELAY_INTENT -> {

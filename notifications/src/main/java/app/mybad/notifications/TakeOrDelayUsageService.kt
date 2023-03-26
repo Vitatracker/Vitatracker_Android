@@ -2,7 +2,6 @@ package app.mybad.notifications
 
 import android.app.Service
 import android.content.Intent
-import android.util.Log
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
@@ -37,8 +36,6 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                     ).first()
                     val u = uDef.copy(factUseTime = Instant.now().epochSecond)
-                    Log.w("TODUS_take", "$uDef")
-                    Log.w("TODUS_take", "$u")
                     updateUseCase.execute(u)
                 }
             }
@@ -50,8 +47,6 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                     ).first()
                     val u = uDef.copy(useTime = Instant.now().epochSecond+20)
-                    Log.w("TODUS_delay", "$uDef")
-                    Log.w("TODUS_delay", "$u")
                     notificationsScheduler.add(listOf(u))
                 }
             }

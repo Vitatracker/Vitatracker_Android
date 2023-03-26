@@ -2,6 +2,7 @@ package app.mybad.notifier.di
 
 import android.app.AlarmManager
 import android.content.Context
+import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
@@ -27,11 +28,13 @@ class NotificationsModule {
     fun providesNotificationScheduler(
         @ApplicationContext context: Context,
         usagesRepo: UsagesRepo,
-        medsRepo: MedsRepo
+        medsRepo: MedsRepo,
+        coursesRepo: CoursesRepo
     ) = NotificationsSchedulerImpl(
             context = context,
             usagesRepo = usagesRepo,
-            medsRepo = medsRepo
+            medsRepo = medsRepo,
+            coursesRepo = coursesRepo,
         )
 
     @Provides
