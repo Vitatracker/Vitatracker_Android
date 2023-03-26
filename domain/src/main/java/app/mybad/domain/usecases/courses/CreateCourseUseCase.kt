@@ -25,6 +25,7 @@ class CreateCourseUseCase @Inject constructor(
         coursesRepo.add(course.copy(medId = med.id))
         usagesRepo.addUsages(usages)
         notificationsScheduler.add(usages)
+        notificationsScheduler.add(course)
     }
 
 }

@@ -48,6 +48,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.NOTIFICATION" />
+                <action android:name="android.intent.action.COURSE_NOTIFICATION" />
                 <action android:name="android.intent.action.FORCE_CLOSE" />
                 <action android:name="android.intent.action.TAKE_INTENT" />
                 <action android:name="android.intent.action.DELAY_INTENT" />
