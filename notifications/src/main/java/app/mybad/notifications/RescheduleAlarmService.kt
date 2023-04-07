@@ -22,7 +22,7 @@ class RescheduleAlarmService : Service() {
 
     companion object {
         const val CHANNEL_ID = "my_service"
-        const val CHANNEL_NAME = "Notifications from MyBAD reminder"
+        const val CHANNEL_NAME = "Notifications from Vitatracker reminder"
     }
 
     override fun onBind(p0: Intent?) = null

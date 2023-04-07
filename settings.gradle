@@ -13,7 +13,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "MyBAD"
+rootProject.name = "Vitatracker"
 include ':app'
 include ':data'
 include ':domain'

@@ -21,6 +21,20 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+    <string-array name="months_full_more">
+        <item>Января</item>
+        <item>Февраля</item>
+        <item>Марта</item>
+        <item>Апреля</item>
+        <item>Мая</item>
+        <item>Июня</item>
+        <item>Июля</item>
+        <item>Августа</item>
+        <item>Сентября</item>
+        <item>Октября</item>
+        <item>Ноября</item>
+        <item>Декабря</item>
+    </string-array>
     <string-array name="days_short">
         <item>Mon</item>
         <item>Tue</item>

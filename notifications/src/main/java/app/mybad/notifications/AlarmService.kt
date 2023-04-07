@@ -21,7 +21,7 @@ class AlarmService : Service() {
 
     companion object {
         const val CHANNEL_ID = "my_service"
-        const val CHANNEL_NAME = "Notifications from MyBAD reminder"
+        const val CHANNEL_NAME = "Notifications from Vitatracker reminder"
         const val TAKE_INTENT = "android.intent.action.TAKE_INTENT"
         const val DELAY_INTENT = "android.intent.action.DELAY_INTENT"
         const val FORCE_CLOSE = "android.intent.action.FORCE_CLOSE"

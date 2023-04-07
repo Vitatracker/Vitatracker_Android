@@ -30,6 +30,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -69,10 +70,18 @@ fun AddCourseMainScreen(
             modifier = modifier.fillMaxSize()
         ) {
             Column {
+                val monthStart = if(Locale.getDefault().language == "ru")
+                    stringArrayResource(R.array.months_full_more)[startDate.monthValue-1]
+                    else stringArrayResource(R.array.months_full)[startDate.monthValue-1]
+                val monthEnd = if(Locale.getDefault().language == "ru")
+                    stringArrayResource(R.array.months_full_more)[endDate.monthValue-1]
+                    else stringArrayResource(R.array.months_full)[endDate.monthValue-1]
+                val sd = "${startDate.dayOfMonth} $monthStart ${startDate.year}"
+                val ed = "${endDate.dayOfMonth} $monthEnd ${endDate.year}"
                 MultiBox(
-                    { ParameterIndicator(name = startLabel, value = startDate,
+                    { ParameterIndicator(name = startLabel, value = sd,
                         onClick = { selectedInput = 1 } ) },
-                    { ParameterIndicator(name = endLabel, value = endDate,
+                    { ParameterIndicator(name = endLabel, value = ed,
                         onClick = { selectedInput = 2 } ) },
                     { ParameterIndicator(name = regimeLabel, value = regimeList[course.regime],
                         onClick = { selectedInput = 3 } ) },
@@ -123,18 +132,31 @@ fun AddCourseMainScreen(
                 color = MaterialTheme.colorScheme.background,
             ) {
                 when(selectedInput) {
-                    1, 2 -> CalendarSelectorScreen(
+                    1 -> CalendarSelectorScreen(
                         startDay = startDate.toLocalDate(),
                         endDay = endDate.toLocalDate(),
-                        onSelect = { sd, ed ->
+                        onSelect = { sd ->
                             reducer(
                                 NewCourseIntent.UpdateCourse(course.copy(
                                 startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                            )))
+                            selectedInput = -1
+                        },
+                        onDismiss = { selectedInput = -1 },
+                        editStart = true
+                        )
+                    2 -> CalendarSelectorScreen(
+                        startDay = startDate.toLocalDate(),
+                        endDay = endDate.toLocalDate(),
+                        onSelect = { ed ->
+                            reducer(
+                                NewCourseIntent.UpdateCourse(course.copy(
                                 endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                             )))
                             selectedInput = -1
                         },
-                        onDismiss = { selectedInput = -1 }
+                        onDismiss = { selectedInput = -1 },
+                        editStart = false
                         )
                     3 -> RollSelector(
                         list = regimeList.toList(),

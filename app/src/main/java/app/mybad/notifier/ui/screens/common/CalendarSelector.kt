@@ -1,26 +1,19 @@
 package app.mybad.notifier.ui.screens.common
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import kotlin.math.absoluteValue
 
 @Composable
 fun CalendarSelectorScreen(
@@ -37,8 +28,9 @@ fun CalendarSelectorScreen(
     date: LocalDate = LocalDate.now(),
     startDay: LocalDate,
     endDay: LocalDate,
-    onSelect: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
-    onDismiss: () -> Unit
+    onSelect: (date: LocalDate?) -> Unit,
+    onDismiss: () -> Unit,
+    editStart: Boolean,
 ) {
 
     var sDate by remember { mutableStateOf(date) }
@@ -58,8 +50,10 @@ fun CalendarSelectorScreen(
                 date = sDate,
                 startDay = selectedDiapason.first,
                 endDay = selectedDiapason.second,
-                onSelect = { sd, ed ->
-                    selectedDiapason = sd to ed
+                editStart = editStart,
+                onSelect = { sd ->
+                    if(editStart) selectedDiapason = sd to endDay
+                    else startDay to sd
                 }
             )
         }
@@ -68,7 +62,10 @@ fun CalendarSelectorScreen(
             backLabel = stringResource(R.string.settings_cancel),
             nextLabel = stringResource(R.string.settings_save),
             onBack = onDismiss::invoke,
-            onNext = { onSelect(selectedDiapason.first, selectedDiapason.second) }
+            onNext = {
+                if(editStart) onSelect(selectedDiapason.first)
+                else onSelect(selectedDiapason.second)
+            }
         )
     }
 
@@ -80,7 +77,9 @@ fun CalendarSelector(
     date: LocalDate,
     startDay: LocalDate,
     endDay: LocalDate,
-    onSelect: (startDate: LocalDate, endDate: LocalDate) -> Unit = { _, _ -> }
+//    onSelect: (startDate: LocalDate, endDate: LocalDate) -> Unit = { _, _ -> }
+    editStart: Boolean,
+    onSelect: (date: LocalDate) -> Unit = { }
 ) {
 
     var startDate by remember { mutableStateOf(startDay) }
@@ -149,33 +148,42 @@ fun CalendarSelector(
                                     .fillMaxWidth()
                                     .weight(1f, false),
                                 date = cdr[w][d],
-                                position = d,
-                                isFirst = cdr[w][d] == startDate,
-                                isLast = cdr[w][d] == endDate,
+//                                position = d,
+//                                isFirst = cdr[w][d] == startDate,
+//                                isLast = cdr[w][d] == endDate,
                                 isInRange = (cdr[w][d] ?: currentDate) in startDate..endDate,
-                                isSelected = cdr[w][d] == currentDate,
+//                                isSelected = cdr[w][d] == currentDate,
                                 isOtherMonth = cdr[w][d]?.month != date.month
                             ) {
-                                val selectedDate = it ?: LocalDate.now()
-                                val diffStart = ChronoUnit.DAYS.between(
-                                    selectedDate,
-                                    startDate
-                                ).absoluteValue
-                                val diffEnd =
-                                    ChronoUnit.DAYS.between(selectedDate, endDate).absoluteValue
-                                if (selectedDate.isBefore(startDate)) startDate = selectedDate
-                                else if (selectedDate.isAfter(startDate) && selectedDate.isBefore(
-                                        endDate
-                                    )
-                                ) {
-                                    if (diffStart > diffEnd) endDate = selectedDate
-                                    else startDate = selectedDate
-                                } else if (selectedDate.isAfter(endDate)) endDate = selectedDate
-                                else if (selectedDate == startDate && selectedDate != endDate)
-                                    startDate = startDate.plusDays(1L)
-                                else if (selectedDate == endDate && selectedDate != startDate)
-                                    endDate = endDate.minusDays(1L)
-                                onSelect(startDate, endDate)
+//                                val selectedDate = it ?: LocalDate.now()
+//                                val diffStart = ChronoUnit.DAYS.between(
+//                                    selectedDate,
+//                                    startDate
+//                                ).absoluteValue
+//                                val diffEnd =
+//                                    ChronoUnit.DAYS.between(selectedDate, endDate).absoluteValue
+//                                if (selectedDate.isBefore(startDate)) startDate = selectedDate
+//                                else if (selectedDate.isAfter(startDate) && selectedDate.isBefore(
+//                                        endDate
+//                                    )
+//                                ) {
+//                                    if (diffStart > diffEnd) endDate = selectedDate
+//                                    else startDate = selectedDate
+//                                } else if (selectedDate.isAfter(endDate)) endDate = selectedDate
+//                                else if (selectedDate == startDate && selectedDate != endDate)
+//                                    startDate = startDate.plusDays(1L)
+//                                else if (selectedDate == endDate && selectedDate != startDate)
+//                                    endDate = endDate.minusDays(1L)
+//                                onSelect(startDate, endDate)
+                                if(editStart) {
+                                    startDate = it ?: LocalDate.now()
+                                    if(startDate >= endDate) startDate = endDate
+                                }
+                                else {
+                                    endDate = it ?: LocalDate.now()
+                                    if(endDate <= startDate) endDate = startDate
+                                }
+                                onSelect(it ?: LocalDate.now())
                             }
                         }
                     }
@@ -189,11 +197,11 @@ fun CalendarSelector(
 private fun CalendarDayItem(
     modifier: Modifier = Modifier,
     date: LocalDate?,
-    isSelected: Boolean = false,
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
+//    isSelected: Boolean = false,
+//    isFirst: Boolean = false,
+//    isLast: Boolean = false,
     isInRange: Boolean = false,
-    position: Int,
+//    position: Int,
     isOtherMonth: Boolean = false,
     onSelect: (LocalDate?) -> Unit = {}
 ) {
@@ -202,15 +210,9 @@ private fun CalendarDayItem(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .height(40.dp)
-            .background(
-                if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                else if (isInRange) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
-                else Color.Transparent,
-                selectShape(isFirst, isLast, isInRange, position)
-            )
-            .drawBehind {
-                drawCalendarSelection(isFirst, isLast, isInRange, position, outlineColor)
-            }
+//            .drawBehind {
+//                drawCalendarSelection(isFirst, isLast, isInRange, position, outlineColor)
+//            }
             .alpha(if (isOtherMonth) 0.5f else 1f)
             .clickable(
                 indication = null, interactionSource = MutableInteractionSource()
@@ -218,124 +220,133 @@ private fun CalendarDayItem(
                 onSelect(date)
             }
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Surface(
+            modifier = Modifier.fillMaxSize().padding(3.dp),
+            shape = CircleShape,
+            border = if(isInRange) BorderStroke(1.dp, outlineColor) else null
         ) {
-            Text(
-                text = date?.dayOfMonth.toString(),
-                style = Typography.bodyLarge,
-                color = if(isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = date?.dayOfMonth.toString(),
+                    style = Typography.bodyLarge,
+                    color = if(isInRange) MaterialTheme.colorScheme.primary else Color.Unspecified
+                )
+            }
         }
+
     }
 }
 
-private fun DrawScope.drawCalendarSelection(
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
-    isInRange: Boolean = false,
-    position: Int,
-    color: Color
-) {
-    if(isInRange) {
-        if((position == 0 && isLast) || (position == 6 && isFirst) || (isFirst && isLast)) {
-            drawArc(
-                brush = SolidColor(color),
-                startAngle = 90f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = Offset.Zero,
-                size = this.size.copy(size.height, size.height),
-                style = Stroke(width = 1f)
-            )
-            drawArc(
-                brush = SolidColor(color),
-                startAngle = 270f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = Offset.Zero.copy(x = size.width-size.height),
-                size = this.size.copy(size.height, size.height),
-                style = Stroke(width = 1f)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(x = size.height/2,y = size.height),
-                end = Offset(x = size.width-size.height/2, y = size.height)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(x = size.height/2),
-                end = Offset(x = size.width - size.height/2, y = 0f)
-            )
-        } else if(isLast || position == 6) {
-            drawArc(
-                brush = SolidColor(color),
-                startAngle = 270f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = Offset.Zero.copy(x = size.width-size.height),
-                size = this.size.copy(size.height, size.height),
-                style = Stroke(width = 1f)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(x = 0f,y = size.height),
-                end = Offset(x = size.width-size.height/2, y = size.height)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero,
-                end = Offset(x = size.width - size.height/2, y = 0f)
-            )
-        } else if(isFirst || position == 0) {
-            drawArc(
-                brush = SolidColor(color),
-                startAngle = 90f,
-                sweepAngle = 180f,
-                useCenter = false,
-                topLeft = Offset.Zero,
-                size = this.size.copy(size.height, size.height),
-                style = Stroke(width = 1f)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(x = size.height/2,y=size.height),
-                end = Offset(x = size.width, y = size.height)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(x = size.height/2),
-                end = Offset(x = size.width, y = 0f)
-            )
-        } else if(position in 1..5) {
-            val y = size.height
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero.copy(y=y),
-                end = Offset(x = size.width, y =y)
-            )
-            drawLine(
-                brush = SolidColor(color),
-                start = Offset.Zero,
-                end = Offset(x = size.width, y = 0f)
-            )
-        }
-    }
-}
-
-private fun selectShape(
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
-    isInRange: Boolean = false,
-    position: Int,
-) : Shape {
-    return if(isInRange) {
-        if((position == 0 && isLast) || (position == 6 && isFirst) || (isFirst && isLast)) {
-            RoundedCornerShape(500f)
-        } else if(isLast || position == 6) {
-            RoundedCornerShape(topEnd = 500f, bottomEnd = 500f)
-        } else if(isFirst || position == 0) {
-            RoundedCornerShape(topStart = 500f, bottomStart = 500f)
-        } else RectangleShape
-    } else CircleShape
-}
+//private fun DrawScope.drawCalendarSelection(
+//    isFirst: Boolean = false,
+//    isLast: Boolean = false,
+//    isInRange: Boolean = false,
+//    position: Int,
+//    color: Color
+//) {
+//    if(isInRange) {
+//        if((position == 0 && isLast) || (position == 6 && isFirst) || (isFirst && isLast)) {
+//            drawArc(
+//                brush = SolidColor(color),
+//                startAngle = 90f,
+//                sweepAngle = 180f,
+//                useCenter = false,
+//                topLeft = Offset.Zero,
+//                size = this.size.copy(size.height, size.height),
+//                style = Stroke(width = 1f)
+//            )
+//            drawArc(
+//                brush = SolidColor(color),
+//                startAngle = 270f,
+//                sweepAngle = 180f,
+//                useCenter = false,
+//                topLeft = Offset.Zero.copy(x = size.width-size.height),
+//                size = this.size.copy(size.height, size.height),
+//                style = Stroke(width = 1f)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(x = size.height/2,y = size.height),
+//                end = Offset(x = size.width-size.height/2, y = size.height)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(x = size.height/2),
+//                end = Offset(x = size.width - size.height/2, y = 0f)
+//            )
+//        } else if(isLast || position == 6) {
+//            drawArc(
+//                brush = SolidColor(color),
+//                startAngle = 270f,
+//                sweepAngle = 180f,
+//                useCenter = false,
+//                topLeft = Offset.Zero.copy(x = size.width-size.height),
+//                size = this.size.copy(size.height, size.height),
+//                style = Stroke(width = 1f)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(x = 0f,y = size.height),
+//                end = Offset(x = size.width-size.height/2, y = size.height)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero,
+//                end = Offset(x = size.width - size.height/2, y = 0f)
+//            )
+//        } else if(isFirst || position == 0) {
+//            drawArc(
+//                brush = SolidColor(color),
+//                startAngle = 90f,
+//                sweepAngle = 180f,
+//                useCenter = false,
+//                topLeft = Offset.Zero,
+//                size = this.size.copy(size.height, size.height),
+//                style = Stroke(width = 1f)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(x = size.height/2,y=size.height),
+//                end = Offset(x = size.width, y = size.height)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(x = size.height/2),
+//                end = Offset(x = size.width, y = 0f)
+//            )
+//        } else if(position in 1..5) {
+//            val y = size.height
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero.copy(y=y),
+//                end = Offset(x = size.width, y =y)
+//            )
+//            drawLine(
+//                brush = SolidColor(color),
+//                start = Offset.Zero,
+//                end = Offset(x = size.width, y = 0f)
+//            )
+//        }
+//    }
+//}
+//
+//private fun selectShape(
+//    isFirst: Boolean = false,
+//    isLast: Boolean = false,
+//    isInRange: Boolean = false,
+//    position: Int,
+//) : Shape {
+//    return if(isInRange) {
+//        if((position == 0 && isLast) || (position == 6 && isFirst) || (isFirst && isLast)) {
+//            RoundedCornerShape(500f)
+//        } else if(isLast || position == 6) {
+//            RoundedCornerShape(topEnd = 500f, bottomEnd = 500f)
+//        } else if(isFirst || position == 0) {
+//            RoundedCornerShape(topStart = 500f, bottomStart = 500f)
+//        } else RectangleShape
+//    } else CircleShape
+//}

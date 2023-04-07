@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">MyBAD</string>
+    <string name="app_name" translatable="false">Vitatracker</string>
     <string name="add_med_h">Add a new medicament</string>
     <string name="add_med_name">Name of medicament</string>
     <string name="add_med_dose">Dose</string>
@@ -93,7 +93,7 @@
     <string name="main_screen_top_bar_name">Reminder dialy</string>
     <string name="main_screen_text_category">Medicines</string>
 
-    <string name="notifications_channel_description">Notifications from MyBAD med reminder</string>
+    <string name="notifications_channel_description">Notifications from Vitatracker med reminder</string>
     <string name="notifications_time_to_use">It is time to use your medication!</string>
     <string name="notifications_text_template">Use your %s!\n%d, %s</string>
     <string name="notifications_action_take">Take</string>

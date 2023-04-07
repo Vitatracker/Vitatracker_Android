@@ -26,7 +26,7 @@
     <string name="add_course_days">Дни</string>
     <string name="add_next_course_interval">Начать следующий курс через</string>
     <string name="add_course_repeatable">Повторяющийся курс</string>
-    <string name="add_course_end_time">Конец приема</string>
+    <string name="add_course_end_time">Окончание приема</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
     <string name="add_next_course_remind_time">Время напоминания</string>
