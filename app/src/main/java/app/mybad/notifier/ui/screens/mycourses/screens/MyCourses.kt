@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 import java.time.*
@@ -31,6 +34,7 @@ import java.time.format.DateTimeFormatter
 fun MyCourses(
     modifier: Modifier = Modifier,
     courses: List<CourseDomainModel>,
+    usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>,
     onSelect: (Long) -> Unit
 ) {
@@ -48,7 +52,8 @@ fun MyCourses(
                         CourseItem(
                             course = course,
                             med = meds.first { it.id == course.medId },
-                            onSelect = onSelect::invoke
+                            onSelect = onSelect::invoke,
+                            usages = emptyList()
                         )
                         Spacer(Modifier.height(16.dp))
                     }
@@ -77,6 +82,7 @@ private fun validate(
 private fun CourseItem(
     modifier: Modifier = Modifier,
     course: CourseDomainModel,
+    usages: List<UsageCommonDomainModel>,
     med: MedDomainModel,
     onSelect: (Long) -> Unit = {}
 ) {
@@ -87,12 +93,8 @@ private fun CourseItem(
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         modifier = modifier
             .fillMaxWidth()
-            .clickable(indication = null, interactionSource = MutableInteractionSource()) {
-                onSelect(course.id)
-            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,25 +126,41 @@ private fun CourseItem(
                         )
                     }
                 }
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "${med.name}".replaceFirstChar { it.uppercase() },
-                        style = Typography.bodyLarge,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "${med.dose} ${units[med.measureUnit]}", style = Typography.labelMedium)
-                        Divider(
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                            modifier = Modifier
-                                .height(16.dp)
-                                .padding(horizontal = 8.dp)
-                                .width(1.dp)
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column() {
+                        Text(
+                            text = "${med.name}".replaceFirstChar { it.uppercase() },
+                            style = Typography.bodyLarge,
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Text(text = relations[med.beforeFood], style = Typography.labelMedium)
+                        Row() {
+                            Text(text = "${med.dose} ${units[med.measureUnit]}", style = Typography.labelMedium)
+                            Divider(
+                                thickness = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                modifier = Modifier
+                                    .height(16.dp)
+                                    .padding(horizontal = 8.dp)
+                                    .width(1.dp)
+                            )
+                            Text(text = relations[med.beforeFood], style = Typography.labelMedium)
+                        }
                     }
+                    Icon(
+                        imageVector = Icons.Default.EditNote,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                onSelect(course.id)
+                            }
+                    )
                 }
+
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -172,25 +190,6 @@ private fun CourseItem(
                             .height(10.dp)
                     )
                     Text(text = end, style = Typography.bodyLarge)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.calendar),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .size(24.dp)
-                    )
-                    val startLDT = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.startDate), ZoneId.systemDefault())
-                    val endLDT = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.endDate), ZoneId.systemDefault())
-                    val period = Period.between(startLDT.toLocalDate(), endLDT.toLocalDate())
-                    val text = if(period.months == 0) {
-                        "${period.days} d."
-                    } else {
-                        "${period.months} m."
-                    }
-                    Text(text = text, style = Typography.bodyLarge)
                 }
             }
         }

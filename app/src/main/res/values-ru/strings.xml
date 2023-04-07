@@ -92,7 +92,7 @@
     <string name="navigation_notifications">Уведомления</string>
     <string name="navigation_calendar">Календарь</string>
 
-    <string name="my_course_h">Мои курсы</string>
+    <string name="my_course_h">Мои лекарства</string>
     <string name="mycourse_duration">Продолжительность</string>
     <string name="mycourse_dosage_and_usage">Дозировка и приём</string>
     <string name="mycourse_per_day">Приёмов в день</string>

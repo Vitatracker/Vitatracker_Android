@@ -24,7 +24,6 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNav(
     modifier: Modifier = Modifier,
@@ -91,12 +90,6 @@ fun MainNav(
             composable(NavItemMain.Add.route) {
                 val nc = rememberNavController()
                 isOnTopLevel = false
-//                NewCourseNav(
-//                    modifier = modifier,
-//                    vm = createCourseVm,
-//                    navController = nc,
-//                    onDismiss = { navController.popBackStack() }
-//                )
                 NewCourseNavScreen(
                     modifier = modifier,
                     navHostController = nc,
