@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
@@ -69,7 +70,9 @@ fun CalendarScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 24.dp)
+                            .padding(end = 24.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             )
@@ -165,7 +168,7 @@ private fun CalendarScreenItem(
             ) {
                 repeat(7) {
                     Text(
-                        text = days[it],
+                        text = days[it].uppercase(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(40.dp)
                     )
@@ -174,7 +177,7 @@ private fun CalendarScreenItem(
             Divider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
-                modifier = Modifier.padding(top = 8.dp).fillMaxWidth()
+                modifier = Modifier.padding(top = 12.dp, bottom = 4.dp).fillMaxWidth()
             )
             repeat(6) { w ->
                 if(cdr[w].any { it?.month == date.month }) {
@@ -226,7 +229,7 @@ private fun CalendarDayItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val indicatorColor = if(usages > 0 && isSelected) MaterialTheme.colorScheme.primary
-                else if(usages > 0) MaterialTheme.colorScheme.primaryContainer
+                else if(usages > 0) Color.LightGray
                 else Color.Transparent
             Box(
                 Modifier

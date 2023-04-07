@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -22,6 +23,7 @@ import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
+import app.mybad.notifier.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +52,9 @@ fun SettingsNav(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 24.dp)
+                    .padding(end = 24.dp),
+                color = MaterialTheme.colorScheme.primary,
+                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
             ) },
             navigationIcon = {
                 Icon(

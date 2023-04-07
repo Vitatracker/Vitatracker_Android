@@ -38,7 +38,7 @@ fun MonthSelector(
             tint = MaterialTheme.colorScheme.outlineVariant,
             contentDescription = null,
             modifier = Modifier
-                .size(34.dp)
+                .size(36.dp)
                 .clickable(
                     indication = null,
                     interactionSource = MutableInteractionSource()
@@ -63,7 +63,8 @@ fun MonthSelector(
                         exit = scaleOut()
                     ),
                     text = months[targetCount-1],
-                    style = Typography.bodyLarge
+                    style = Typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
             Text(
@@ -77,7 +78,7 @@ fun MonthSelector(
             tint = MaterialTheme.colorScheme.outlineVariant,
             contentDescription = null,
             modifier = Modifier
-                .size(34.dp)
+                .size(36.dp)
                 .clickable(
                     indication = null,
                     interactionSource = MutableInteractionSource()
