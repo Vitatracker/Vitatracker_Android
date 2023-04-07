@@ -50,8 +50,10 @@
         <item>45 minutes before meals</item>
         <item>30 minutes before meals</item>
         <item>15 minutes before meals</item>
+        <item>Before meals</item>
         <item>Not related</item>
         <item>During meals</item>
+        <item>After meals</item>
         <item>15 minutes after meals</item>
         <item>30 minutes after meals</item>
         <item>45 minutes after meals</item>
