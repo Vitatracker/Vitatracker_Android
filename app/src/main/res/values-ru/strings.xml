@@ -15,7 +15,7 @@
     <string name="navigation_next">Вперед</string>
 
     <string name="add_course_h">Выбрать время</string>
-    <string name="add_course_notifications_time">Время уведомлений</string>
+    <string name="add_course_notifications_time">Добавить время</string>
     <string name="add_course_date_from">C </string>
     <string name="add_course_start_time">Начало приема</string>
     <string name="add_course_comment">Комментарий</string>
@@ -102,7 +102,8 @@
     <string name="calendar_h">Мой календарь</string>
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_text_category">Лекарства</string>
-    <string name="add_notifications_already_exist">Notification for this time already exist!</string>
+    <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
+    <string name="add_notifications_time_set">Настроить напоминание</string>
 
 
 </resources>
