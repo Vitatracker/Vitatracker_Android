@@ -42,6 +42,7 @@ android {
 //                    def date = new Date()
 //                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
 //                    outputFileName = "${variant.name}_${formattedDate}.apk"
+
                     outputFileName = "debug-apk.apk"
                 }
             }
