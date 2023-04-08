@@ -126,7 +126,7 @@ private fun CourseItem(
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column() {
@@ -148,15 +148,27 @@ private fun CourseItem(
                             Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                         }
                     }
-                    Icon(
-                        imageVector = Icons.Default.EditNote,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
-                                onSelect(course.id)
-                            }
-                    )
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(30.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.icon_pencil),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clickable {
+                                        onSelect(course.id)
+                                    }
+                            )
+                        }
+                    }
+
                 }
 
             }

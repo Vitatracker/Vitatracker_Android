@@ -36,7 +36,7 @@
     <string name="start_screen_to">в </string>
     <string name="start_screen_recomendation_1">Перед использованием приложения, </string>
     <string name="start_screen_recomendation_2">Вам нужно авторизоваться</string>
-    <string name="start_screen_go">Погнали!</string>
+    <string name="start_screen_go">Продолжить</string>
 
     <!--AUTHORIZATION-->
     <string name="authorization_screen_login">Логин</string>
