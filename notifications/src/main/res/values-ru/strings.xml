@@ -91,6 +91,6 @@
     <string name="notifications_action_take">Take</string>
     <string name="notifications_action_delay">Delay</string>
     <string name="notifications_new_course_start">New course starts!</string>
-    <string name="notifications_new_course_start_text_template">Новый курс %s начинается!\n Препарат: %s, %d %s, %s</string>
+    <string name="notifications_new_course_start_text_template">Новый курс начинается %s!\n Препарат: %s, %d %s, %s</string>
 
 </resources>
