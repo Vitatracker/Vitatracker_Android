@@ -55,8 +55,10 @@ fun MyCourses(
                         CourseItem(
                             course = course,
                             med = meds.first { it.id == course.medId },
+                            usages = usages.filter {
+                                it.medId == course.medId && it.useTime >= course.startDate && it.useTime < course.endDate + 86400
+                            },
                             onSelect = onSelect::invoke,
-                            usages = emptyList()
                         )
                         Spacer(Modifier.height(16.dp))
                     }
@@ -73,8 +75,10 @@ fun MyCourses(
                                     startDate = nCourse.startDate + nCourse.interval,
                                     endDate = nCourse.endDate + nCourse.interval,
                                     ),
-                                usages = emptyList(),
                                 med = meds.first { it.id == nCourse.medId },
+                                usages = usages.filter {
+                                    it.medId == nCourse.medId && it.useTime >= nCourse.startDate && it.useTime < nCourse.startDate + 86400
+                                }.take(10),
                                 startInDays = ((nCourse.startDate + nCourse.interval - now)/86400).toInt(),
                             )
                         }
@@ -107,10 +111,21 @@ private fun CourseItem(
     startInDays: Int = -1,
     onSelect: (Long) -> Unit = {},
 ) {
-    val units = stringArrayResource(R.array.units)
+
+    Log.w("MC_usages_in_item", "$usages")
+    val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
+    val usagesCount = if(usages.isNotEmpty()) {
+        val firstCount = usages.first().quantity
+        var correct = true
+        usages.forEach {
+            if(it.quantity != firstCount) correct = false
+        }
+        if(correct) firstCount else 0
+    } else 0
+
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
@@ -160,10 +175,9 @@ private fun CourseItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        val dose = if(med.dose == 0) "" else med.dose.toString()
                         Row {
-                            Text(text = "$dose ${units[med.measureUnit]}", style = Typography.labelMedium)
-                            if(med.dose != 0) {
+                            if(usagesCount != 0) {
+                                Text(text = "$usagesCount, ${types[med.type]}", style = Typography.labelMedium)
                                 Divider(
                                     thickness = 1.dp,
                                     color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),

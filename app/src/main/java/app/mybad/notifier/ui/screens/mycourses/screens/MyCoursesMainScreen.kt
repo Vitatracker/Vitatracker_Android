@@ -61,7 +61,7 @@ fun MyCoursesMainScreen(
                 composable(MyCoursesNavItem.Main.route) {
                     MyCourses(
                         courses = state.value.courses,
-                        usages = emptyList(),
+                        usages = state.value.usages,
                         meds = state.value.meds,
                         onSelect = {
                             selectedCourse = state.value.courses.first { c -> c.id == it }
