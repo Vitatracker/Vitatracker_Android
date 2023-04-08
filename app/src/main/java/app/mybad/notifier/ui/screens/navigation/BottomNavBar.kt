@@ -97,7 +97,7 @@ fun BottomNavBar(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Surface(
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape,
                         shadowElevation = 2.dp,
                         modifier = Modifier
