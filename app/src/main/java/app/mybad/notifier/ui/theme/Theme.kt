@@ -15,13 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = primaryBlue,
-    primaryContainer = primaryContainerBlue,
-    error = errorRed,
-    outlineVariant = primaryIndication,
-    surfaceVariant = secondaryContainerBlue,
-)
+//private val DarkColorScheme = darkColorScheme(
+//    primary = primaryBlue,
+//    primaryContainer = primaryContainerBlue,
+//    error = errorRed,
+//    outlineVariant = primaryIndication,
+//    surfaceVariant = secondaryContainerBlue,
+//)
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryBlue,
@@ -41,32 +41,32 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
-//private val DarkColorScheme = darkColorScheme(
-//    primary = primary80,
-//    onPrimary = primary20,
-//    primaryContainer = primary30,
-//    onPrimaryContainer = primary90,
-//    secondary = secondary80,
-//    onSecondary = secondary20,
-//    secondaryContainer = secondary30,
-//    onSecondaryContainer = secondary90,
-//    tertiary = tertiary80,
-//    onTertiary = tertiary20,
-//    tertiaryContainer = tertiary30,
-//    onTertiaryContainer = tertiary90,
-//    error = error80,
-//    onError = error20,
-//    errorContainer = error30,
-//    onErrorContainer = error90,
-//    outline = neutralVariant60,
-//    outlineVariant = neutralVariant60,
-//    surfaceVariant = neutralVariant30,
-//    onSurfaceVariant = neutralVariant80,
-//    background = neutral10,
-//    onBackground = neutral90,
-//    surface = neutral10,
-//    onSurface = neutral80
-//)
+private val DarkColorScheme = darkColorScheme(
+    primary = primary80,
+    onPrimary = primary20,
+    primaryContainer = primary30,
+    onPrimaryContainer = primary90,
+    secondary = secondary80,
+    onSecondary = secondary20,
+    secondaryContainer = secondary30,
+    onSecondaryContainer = secondary90,
+    tertiary = tertiary80,
+    onTertiary = tertiary20,
+    tertiaryContainer = tertiary30,
+    onTertiaryContainer = tertiary90,
+    error = error80,
+    onError = error20,
+    errorContainer = error30,
+    onErrorContainer = error90,
+    outline = neutralVariant60,
+    outlineVariant = neutralVariant60,
+    surfaceVariant = neutralVariant30,
+    onSurfaceVariant = neutralVariant80,
+    background = neutral10,
+    onBackground = neutral90,
+    surface = neutral10,
+    onSurface = neutral80
+)
 //
 //private val LightColorScheme = lightColorScheme(
 //    primary = primary40,
