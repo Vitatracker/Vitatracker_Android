@@ -104,6 +104,7 @@
     <string name="main_screen_text_category">Лекарства</string>
     <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
     <string name="add_notifications_time_set">Настроить напоминание</string>
+    <string name="mycourse_remaining">Старт через %s д.</string>
 
 
 </resources>

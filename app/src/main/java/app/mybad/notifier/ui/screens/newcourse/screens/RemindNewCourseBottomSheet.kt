@@ -6,7 +6,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,7 +17,6 @@ import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
-import app.mybad.notifier.ui.screens.newcourse.common.SwitchParameterInput
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -33,13 +31,11 @@ fun RemindNewCourseBottomSheet(
     onCancel: () -> Unit = {}
 ) {
 
-    val repeatableLabel = stringResource(R.string.add_course_repeatable)
     val interval = stringResource(R.string.add_next_course_interval)
     val remindBefore = stringResource(R.string.add_next_course_remind_before)
     val remindTimeLabel = stringResource(R.string.add_next_course_remind_time)
     val courseStartDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.startDate), ZoneId.systemDefault())
 
-    var isRepeatable by remember { mutableStateOf(false) }
     var selectedInput by remember { mutableStateOf(-1) }
     var coursesInterval by remember { mutableStateOf(Period.ofDays(3)) }
     var remindTime by remember { mutableStateOf(LocalTime.of(14, 0)) }
@@ -53,20 +49,13 @@ fun RemindNewCourseBottomSheet(
     ) {
         Column {
             MultiBox(
-                { SwitchParameterInput(label = repeatableLabel, initValue = isRepeatable, isActive = selectedInput == -1,
-                    onSwitch = { isRepeatable = it }) },
-                itemsPadding = PaddingValues(16.dp)
-            )
-            Spacer(Modifier.height(16.dp))
-            MultiBox(
                 { ParameterIndicator(name = interval, value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
-                    onClick = { if(isRepeatable) selectedInput = 1 }) },
+                    onClick = { selectedInput = 1 }) },
                 { ParameterIndicator(name = remindBefore, value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
-                    onClick = { if(isRepeatable) selectedInput = 2 }) },
+                    onClick = { selectedInput = 2 }) },
                 { ParameterIndicator(name = remindTimeLabel, value = remindTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                    onClick = { if(isRepeatable) selectedInput = 3 }) },
-                itemsPadding =  PaddingValues(16.dp),
-                modifier = Modifier.alpha(if(isRepeatable) 1f else 0.5f)
+                    onClick = { selectedInput = 3 }) },
+                itemsPadding =  PaddingValues(16.dp)
             )
         }
         NavigationRow(
@@ -87,7 +76,7 @@ fun RemindNewCourseBottomSheet(
         )
     }
 
-    if(selectedInput != -1 && isRepeatable) {
+    if(selectedInput != -1) {
         Dialog(onDismissRequest = { selectedInput = -1 }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),

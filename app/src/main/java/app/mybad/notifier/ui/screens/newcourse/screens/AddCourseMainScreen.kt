@@ -57,6 +57,7 @@ fun AddCourseMainScreen(
     BottomSheetScaffold(
         scaffoldState = sState,
         sheetPeekHeight = 0.dp,
+        sheetGesturesEnabled = false,
         sheetContent = { RemindNewCourseBottomSheet(
             modifier = Modifier.padding(16.dp),
             course = course,

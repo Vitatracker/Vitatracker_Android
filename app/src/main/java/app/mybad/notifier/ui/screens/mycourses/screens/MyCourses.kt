@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.mycourses.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
@@ -41,6 +44,10 @@ fun MyCourses(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
+        val now = Instant.now().epochSecond
+        courses.forEach {
+            Log.w("MC_courses", "$it")
+        }
         if(courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
             LazyColumn(Modifier.heightIn(max = height.dp)) {
                 courses.forEach { course ->
@@ -54,6 +61,25 @@ fun MyCourses(
                         Spacer(Modifier.height(16.dp))
                     }
                 }
+                courses.forEach { nCourse ->
+                    if(
+                        nCourse.interval > 0 &&
+                        nCourse.startDate + nCourse.interval > now &&
+                        nCourse.startDate + nCourse.interval < now + 86400*3+1
+                    ) {
+                        item {
+                            CourseItem(
+                                course = nCourse.copy(
+                                    startDate = nCourse.startDate + nCourse.interval,
+                                    endDate = nCourse.endDate + nCourse.interval,
+                                    ),
+                                usages = emptyList(),
+                                med = meds.first { it.id == nCourse.medId },
+                                startInDays = ((nCourse.startDate + nCourse.interval - now)/86400).toInt(),
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -63,8 +89,6 @@ private fun validate(
     meds: List<MedDomainModel>,
     courses: List<CourseDomainModel>
 ) : Boolean {
-    Log.w("MC_meds", "$meds")
-    Log.w("MC_courses", "$courses")
     var isValid = true
     val mm = meds.mapIndexed { index, medDomainModel -> index to medDomainModel.id }.toMap()
     courses.forEach {
@@ -80,7 +104,8 @@ private fun CourseItem(
     course: CourseDomainModel,
     usages: List<UsageCommonDomainModel>,
     med: MedDomainModel,
-    onSelect: (Long) -> Unit = {}
+    startInDays: Int = -1,
+    onSelect: (Long) -> Unit = {},
 ) {
     val units = stringArrayResource(R.array.units)
     val relations = stringArrayResource(R.array.food_relations)
@@ -127,10 +152,12 @@ private fun CourseItem(
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column() {
+                    Column(Modifier.fillMaxWidth(0.85f)) {
                         Text(
                             text = "${med.name}".replaceFirstChar { it.uppercase() },
                             style = Typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                         val dose = if(med.dose == 0) "" else med.dose.toString()
@@ -181,26 +208,47 @@ private fun CourseItem(
                     .padding(top = 16.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    val start = DateTimeFormatter
-                        .ofPattern("dd.MM.yyyy")
-                        .withZone(ZoneOffset.UTC)
-                        .format(Instant.ofEpochSecond(course.startDate))
-                    val end = DateTimeFormatter
-                        .ofPattern("dd.MM.yyyy")
-                        .withZone(ZoneOffset.UTC)
-                        .format(Instant.ofEpochSecond(course.endDate))
-                    Text(text = start, style = Typography.bodyLarge)
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_right),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp, top = 2.dp)
-                            .height(10.dp)
-                    )
-                    Text(text = end, style = Typography.bodyLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val start = DateTimeFormatter
+                            .ofPattern("dd.MM.yyyy")
+                            .withZone(ZoneOffset.UTC)
+                            .format(Instant.ofEpochSecond(course.startDate))
+                        val end = DateTimeFormatter
+                            .ofPattern("dd.MM.yyyy")
+                            .withZone(ZoneOffset.UTC)
+                            .format(Instant.ofEpochSecond(course.endDate))
+                        Text(text = start, style = Typography.bodyLarge)
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_right),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 8.dp, top = 2.dp)
+                                .height(10.dp)
+                        )
+                        Text(text = end, style = Typography.bodyLarge)
+                    }
+                    if(startInDays > 0) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Spacer(Modifier.size(16.dp))
+                            Surface(
+                                shape = RoundedCornerShape(5.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                            ) {
+                                val startsIn = String.format(stringResource(R.string.mycourse_remaining), startInDays.toString())
+                                Text(
+                                    text = startsIn,
+                                    style = Typography.bodySmall,
+                                    modifier = Modifier.padding(6.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
