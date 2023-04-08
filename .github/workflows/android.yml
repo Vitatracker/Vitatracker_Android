@@ -7,9 +7,9 @@ on:
     branches: [ "master" ]
 
 jobs:        
-  release:
+  build:
     permissions: write-all
-    name: Release APK    
+    name: Build APK    
     runs-on: ubuntu-latest
     steps:
     
@@ -25,7 +25,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: |
-          ./gradlew build
+          ./gradlew assembleDebug --stacktrace
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -34,28 +34,30 @@ jobs:
           path: app/build/outputs/apk/debug/debug_*.apk
           if-no-files-found: error
           
-      - name: Download APK from build
-        uses: actions/download-artifact@v1
-        with:
-          name: artifact  
-          
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }} 
-          allowUpdates: true
-          
-      - name: Upload Release APK
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/debug/debug_*.apk
-          asset_name: Vitatracker.apk
-          asset_content_type: application/zip
+  release:
+     name: Release APK
+     needs: build
+     runs-on: ubuntu-latest
+     steps:
+       - name: Download APK from build
+         uses: actions/download-artifact@v1
+         with:
+           name: artifact
+       - name: Create Release
+         id: create_release
+         uses: actions/create-release@v1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           tag_name: ${{ github.run_number }}
+           release_name: ${{ github.event.repository.name }} v${{ github.run_number }}
+       - name: Upload Release APK
+         id: upload_release_asset
+         uses: actions/upload-release-asset@v1.0.1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           upload_url: ${{ steps.create_release.outputs.upload_url }}
+           asset_path: apk/app-debug.apk
+           asset_name: ${{ github.event.repository.name }}.apk
+           asset_content_type: application/zip
