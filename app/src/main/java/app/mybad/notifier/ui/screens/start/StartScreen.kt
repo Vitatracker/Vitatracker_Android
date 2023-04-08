@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartScreenApp(navController: NavHostController) {
     Scaffold(
@@ -35,7 +34,7 @@ fun StartScreenApp(navController: NavHostController) {
 }
 
 @Composable
-fun StartWelcomeScreen(navController: NavHostController) {
+private fun StartWelcomeScreen(navController: NavHostController) {
     Box(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
@@ -53,9 +52,9 @@ fun StartWelcomeScreen(navController: NavHostController) {
 }
 
 @Composable
-fun StartScreenBackgroundImage() {
+private fun StartScreenBackgroundImage() {
     Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen),
+        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen_new),
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         alignment = Alignment.TopCenter,
@@ -64,7 +63,7 @@ fun StartScreenBackgroundImage() {
 }
 
 @Composable
-fun StartScreenImage() {
+private fun StartScreenImage() {
     Image(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,7 +75,7 @@ fun StartScreenImage() {
 }
 
 @Composable
-fun StartScreenText(navController: NavHostController) {
+private fun StartScreenText(navController: NavHostController) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,7 +88,7 @@ fun StartScreenText(navController: NavHostController) {
 }
 
 @Composable
-fun TextWelcome(modifier: Modifier = Modifier) {
+private fun TextWelcome(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(id = R.string.start_screen_welcome),
         modifier = modifier,
@@ -113,7 +112,7 @@ fun TextWelcome(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TextRecommendation(modifier: Modifier = Modifier) {
+private fun TextRecommendation(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,7 +133,7 @@ fun TextRecommendation(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonStartAuthorization(modifier: Modifier = Modifier, navController: NavHostController) {
+private fun ButtonStartAuthorization(modifier: Modifier = Modifier, navController: NavHostController) {
 //    val mContext = LocalContext.current
 
     Button(

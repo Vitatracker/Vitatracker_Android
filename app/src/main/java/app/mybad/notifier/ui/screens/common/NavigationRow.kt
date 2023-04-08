@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.theme.Typography
 
 @Composable

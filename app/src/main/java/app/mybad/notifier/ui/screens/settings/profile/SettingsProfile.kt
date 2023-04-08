@@ -1,12 +1,10 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
@@ -21,9 +19,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
@@ -71,7 +67,7 @@ fun SettingsProfile(
         }
         Spacer(Modifier.height(24.dp))
         when {
-            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSaveable(
+            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSavable(
                 onDismiss = onDismiss,
                 editUserName = editUserName.value.toString(),
                 editEmail = editEmail.value.toString(),
@@ -85,9 +81,8 @@ fun SettingsProfile(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsProfileEditText(
+private fun SettingsProfileEditText(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
@@ -131,7 +126,7 @@ fun SettingsProfileEditText(
 
 
 @Composable
-fun SettingsProfileButtonSaveable(
+private fun SettingsProfileButtonSavable(
     onDismiss: () -> Unit,
     editUserName: String = "",
     editEmail: String = "",
@@ -201,7 +196,7 @@ fun SettingsProfileButtonSaveable(
 }
 
 @Composable
-fun SettingsProfileButtonChangePassword(
+private fun SettingsProfileButtonChangePassword(
     onPasswordEdit: () -> Unit = {},
 ) {
     ElevatedButton(

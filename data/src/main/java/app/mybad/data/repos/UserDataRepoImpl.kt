@@ -1,6 +1,5 @@
 package app.mybad.data.repos
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import app.mybad.data.UserNotificationsDataModel
 import app.mybad.data.UserPersonalDataModel
@@ -11,7 +10,6 @@ import app.mybad.domain.repos.UserDataRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton

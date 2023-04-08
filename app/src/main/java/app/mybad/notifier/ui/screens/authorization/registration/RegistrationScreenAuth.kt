@@ -53,7 +53,7 @@ fun StartMainRegistrationScreen(navController: NavHostController) {
 }
 
 @Composable
-fun MainRegistrationScreen(navController: NavHostController) {
+private fun MainRegistrationScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -73,12 +73,12 @@ fun MainRegistrationScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RegistrationScreenBackgroundImage() {
+private fun RegistrationScreenBackgroundImage() {
 
 }
 
 @Composable
-fun RegistrationScreenBaseForSignIn() {
+private fun RegistrationScreenBaseForSignIn() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -89,9 +89,8 @@ fun RegistrationScreenBaseForSignIn() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationScreenEnteredEmail() {
+private fun RegistrationScreenEnteredEmail() {
     var loginState by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -111,9 +110,8 @@ fun RegistrationScreenEnteredEmail() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationScreenEnteredPassword(textId: Int) {
+private fun RegistrationScreenEnteredPassword(textId: Int) {
     var passwordState by remember { mutableStateOf("") }
     val showPassword = remember { mutableStateOf(false) }
 
@@ -157,7 +155,7 @@ fun RegistrationScreenEnteredPassword(textId: Int) {
 }
 
 @Composable
-fun RegistrationScreenButtonRegistration() {
+private fun RegistrationScreenButtonRegistration() {
     Button(
         modifier = Modifier
             .fillMaxWidth()

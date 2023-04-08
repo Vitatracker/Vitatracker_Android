@@ -13,7 +13,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -37,10 +35,8 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.ui.theme.primaryIndication
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.DateFormatSymbols
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -63,7 +59,6 @@ fun StartMainScreen(
                 title = { Text(text = stringResource(id = R.string.main_screen_top_bar_name)) },
                 navigationIcon = {
                     IconButton(onClick = { /*navController.navigate(route = AuthorizationNavItem.Authorization.route)*/ }) {
-//                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)

@@ -55,7 +55,7 @@ fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
 }
 
 @Composable
-fun MainNewPasswordScreenAuth(navController: NavHostController) {
+private fun MainNewPasswordScreenAuth(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -74,13 +74,12 @@ fun MainNewPasswordScreenAuth(navController: NavHostController) {
 }
 
 @Composable
-fun NewPasswordScreenBackgroundImage() {
+private fun NewPasswordScreenBackgroundImage() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewPasswordScreenEnteredPassword(textId: Int) {
+private fun NewPasswordScreenEnteredPassword(textId: Int) {
     var passwordState by remember { mutableStateOf("") }
     val showPassword = remember { mutableStateOf(false) }
 

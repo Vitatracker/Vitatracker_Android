@@ -29,7 +29,7 @@ fun MainAuthorizationScreen(navController: NavHostController) {
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        ScreenBackgroundImage()
+        ScreenBackgroundImage(R.drawable.ic_background_authorization_screen_new)
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,7 +44,7 @@ fun MainAuthorizationScreen(navController: NavHostController) {
 }
 
 @Composable
-fun AuthorizationScreenImage() {
+private fun AuthorizationScreenImage() {
     Image(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,7 +56,7 @@ fun AuthorizationScreenImage() {
 }
 
 @Composable
-fun AuthorizationScreenButtonEntry(navController: NavHostController) {
+private fun AuthorizationScreenButtonEntry(navController: NavHostController) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Bottom,
@@ -68,7 +68,7 @@ fun AuthorizationScreenButtonEntry(navController: NavHostController) {
 }
 
 @Composable
-fun AuthorizationScreenButtonLogin(navController: NavHostController) {
+private fun AuthorizationScreenButtonLogin(navController: NavHostController) {
     Button(
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
@@ -87,7 +87,7 @@ fun AuthorizationScreenButtonLogin(navController: NavHostController) {
 }
 
 @Composable
-fun AuthorizationScreenButtonRegistration(navController: NavHostController) {
+private fun AuthorizationScreenButtonRegistration(navController: NavHostController) {
     ElevatedButton(
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)

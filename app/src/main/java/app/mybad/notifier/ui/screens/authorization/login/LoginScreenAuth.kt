@@ -54,7 +54,7 @@ fun StartMainLoginScreen(navController: NavHostController) {
 }
 
 @Composable
-fun MainLoginScreen(navController: NavHostController) {
+private fun MainLoginScreen(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -75,13 +75,13 @@ fun MainLoginScreen(navController: NavHostController) {
 }
 
 @Composable
-fun LoginScreenBackgroundImage() {
+private fun LoginScreenBackgroundImage() {
 
 
 }
 
 @Composable
-fun LoginScreenBaseForSignIn() {
+private fun LoginScreenBaseForSignIn() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -91,9 +91,8 @@ fun LoginScreenBaseForSignIn() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenEnteredEmail() {
+private fun LoginScreenEnteredEmail() {
     var loginState by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -113,9 +112,8 @@ fun LoginScreenEnteredEmail() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenEnteredPassword() {
+private fun LoginScreenEnteredPassword() {
     var passwordState by remember { mutableStateOf("") }
     val showPassword = remember { mutableStateOf(false) }
 
@@ -159,7 +157,7 @@ fun LoginScreenEnteredPassword() {
 }
 
 @Composable
-fun LoginScreenForgotPassword(navController: NavHostController) {
+private fun LoginScreenForgotPassword(navController: NavHostController) {
     ClickableText(
         text = AnnotatedString(stringResource(id = R.string.login_forgot_password)),
         modifier = Modifier
@@ -169,7 +167,7 @@ fun LoginScreenForgotPassword(navController: NavHostController) {
 }
 
 @Composable
-fun LoginScreenButtonSignIn() {
+private fun LoginScreenButtonSignIn() {
     Button(
         modifier = Modifier
             .fillMaxWidth()
@@ -183,7 +181,7 @@ fun LoginScreenButtonSignIn() {
 }
 
 @Composable
-fun LoginScreenTextPolicy() {
+private fun LoginScreenTextPolicy() {
     Column(
         modifier = Modifier.padding(12.dp)
     ) {

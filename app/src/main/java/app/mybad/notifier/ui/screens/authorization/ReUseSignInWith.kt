@@ -26,7 +26,7 @@ fun SurfaceSignInWith(
 }
 
 @Composable
-fun LoginScreenTextHelp() {
+private fun LoginScreenTextHelp() {
     Row(
         modifier = Modifier,
         horizontalArrangement = Arrangement.Center
@@ -40,7 +40,7 @@ fun LoginScreenTextHelp() {
 }
 
 @Composable
-fun LoginScreenButtonLoginWith(onClick: () -> Unit) {
+private fun LoginScreenButtonLoginWith(onClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
@@ -61,7 +61,7 @@ fun LoginScreenButtonLoginWith(onClick: () -> Unit) {
 }
 
 @Composable
-fun LoginScreenButtonLoginWithFacebook(modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun LoginScreenButtonLoginWithFacebook(modifier: Modifier = Modifier, onClick: () -> Unit) {
     ElevatedButton(
         modifier = modifier,
         onClick = { onClick() },
@@ -79,7 +79,7 @@ fun LoginScreenButtonLoginWithFacebook(modifier: Modifier = Modifier, onClick: (
 }
 
 @Composable
-fun LoginScreenButtonLoginWithGoogle(modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun LoginScreenButtonLoginWithGoogle(modifier: Modifier = Modifier, onClick: () -> Unit) {
     ElevatedButton(
         modifier = modifier,
         onClick = { onClick() },

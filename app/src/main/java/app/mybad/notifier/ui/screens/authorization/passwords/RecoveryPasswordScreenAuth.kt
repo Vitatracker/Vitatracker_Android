@@ -50,7 +50,7 @@ fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
 }
 
 @Composable
-fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
+private fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -70,12 +70,12 @@ fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
 }
 
 @Composable
-fun RecoveryPasswordScreenBackgroundImage() {
+private fun RecoveryPasswordScreenBackgroundImage() {
 
 }
 
 @Composable
-fun RecoveryPasswordScreenTextUser() {
+private fun RecoveryPasswordScreenTextUser() {
     Column(
         modifier = Modifier.padding(top = 24.dp, start = 10.dp, end = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -86,9 +86,8 @@ fun RecoveryPasswordScreenTextUser() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecoveryPasswordScreenTextEmail() {
+private fun RecoveryPasswordScreenTextEmail() {
     var loginState by remember { mutableStateOf("") }
 
     OutlinedTextField(

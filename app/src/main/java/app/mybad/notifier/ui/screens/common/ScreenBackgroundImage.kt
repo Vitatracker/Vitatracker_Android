@@ -8,12 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
-import app.mybad.notifier.R
 
 @Composable
-fun ScreenBackgroundImage() {
+fun ScreenBackgroundImage(idImage: Int) {
     Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_authorization_screen),
+        imageVector = ImageVector.vectorResource(id = idImage),
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         alignment = Alignment.TopCenter,
