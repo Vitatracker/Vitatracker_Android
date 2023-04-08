@@ -30,20 +30,24 @@ fun SuccessMainScreen(
     ) {
         ScreenBackgroundImage()
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            StartScreenImage()
+            StartScreenImage(Modifier.padding(top = 110.dp))
             StartScreenBottom { onGo() }
         }
     }
 }
 
 @Composable
-private fun StartScreenImage() {
+private fun StartScreenImage(
+    modifier: Modifier = Modifier
+) {
     Image(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(36.dp),
         imageVector = ImageVector.vectorResource(id = R.drawable.done_man),
