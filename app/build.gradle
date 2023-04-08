@@ -24,7 +24,23 @@ android {
     }
 
     buildTypes {
+        debug {
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def date = new Date()
+                    def formattedDate = date.format('yyyy-MM-dd')
+                    outputFileName = "${variant.name}_${formattedDate}.apk"
+                }
+            }
+        }
         release {
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def date = new Date()
+                    def formattedDate = date.format('yyyy-MM-dd')
+                    outputFileName = "${variant.name}_${formattedDate}.apk"
+                }
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
