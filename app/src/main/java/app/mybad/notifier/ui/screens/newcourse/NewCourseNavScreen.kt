@@ -56,6 +56,7 @@ fun NewCourseNavScreen(
             composable(NewCourseNavItem.AddMedicineMain.route) {
                 title = stringResource(R.string.add_med_h)
                 AddMedicineMainScreen(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
@@ -65,6 +66,7 @@ fun NewCourseNavScreen(
             composable(NewCourseNavItem.AddCourse.route) {
                 title = stringResource(R.string.add_course_h)
                 AddCourseMainScreen(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     course = state.value.course,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.AddNotifications.route) },
@@ -74,6 +76,7 @@ fun NewCourseNavScreen(
             composable(NewCourseNavItem.AddNotifications.route) {
                 title = stringResource(R.string.add_course_notifications_time)
                 AddNotificationsMainScreen(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.Success.route) },

@@ -50,7 +50,7 @@ private fun StartScreenImage(
         modifier = modifier
             .fillMaxWidth()
             .padding(36.dp),
-        imageVector = ImageVector.vectorResource(id = R.drawable.done_man),
+        imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
         contentDescription = null,
         contentScale = ContentScale.FillWidth
     )

@@ -48,6 +48,7 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     vm: StartMainScreenViewModel
 ) {
@@ -56,6 +57,7 @@ fun StartMainScreen(
     val dateNow = remember { mutableStateOf(uiState.date) }
 
     Scaffold(
+       modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.main_screen_top_bar_name)) },
