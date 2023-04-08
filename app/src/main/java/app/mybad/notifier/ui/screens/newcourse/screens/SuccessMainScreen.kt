@@ -6,10 +6,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,7 +49,7 @@ private fun StartScreenImage(
         modifier = modifier
             .fillMaxWidth()
             .padding(36.dp),
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
+        painter = painterResource(R.drawable.done_png),
         contentDescription = null,
         contentScale = ContentScale.FillWidth
     )
@@ -77,7 +76,8 @@ private fun StartScreenBottom(
             onClick = onGo::invoke,
             shape = MaterialTheme.shapes.small,
             contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
                 text = stringResource(id = R.string.start_screen_go),
