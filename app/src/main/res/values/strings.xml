@@ -10,7 +10,8 @@
     <string name="add_course_repeatable">Repeatable course</string>
     <string name="add_notifications_time">Add notification</string>
     <string name="add_med_details">Medicine details</string>
-    <string name="add_med_icon_color">Icon and color</string>
+    <string name="add_med_icon_color">Select icon color</string>
+    <string name="add_med_icon">Select icon</string>
 
     <string name="navigation_back">Back</string>
     <string name="navigation_next">Next</string>

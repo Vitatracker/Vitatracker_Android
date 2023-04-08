@@ -51,16 +51,26 @@ fun NewCourseNavScreen(
         NavHost(
             modifier = modifier,
             navController = navHostController,
-            startDestination = NewCourseNavItem.AddMedicineMain.route
+            startDestination = NewCourseNavItem.AddMedicineFirst.route
         ) {
-            composable(NewCourseNavItem.AddMedicineMain.route) {
+            composable(NewCourseNavItem.AddMedicineFirst.route) {
                 title = stringResource(R.string.add_med_h)
-                AddMedicineMainScreen(
+                AddMedicineFirstScreen(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    med = state.value.med,
+                    reducer = vm::reduce,
+                    onNext = { navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route) },
+                    onBack = onCancel::invoke,
+                )
+            }
+            composable(NewCourseNavItem.AddMedicineSecond.route) {
+                title = state.value.med.name ?: "why med hasn't name?"
+                AddMedicineSecondScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
-                    onBack = onCancel::invoke,
+                    onBack =  { navHostController.popBackStack() },
                 )
             }
             composable(NewCourseNavItem.AddCourse.route) {

@@ -9,7 +9,8 @@
     <string name="add_med_form">Форма выпуска</string>
     <string name="add_notifications_time">Добавить напоминание</string>
     <string name="add_med_details">Описание препарата</string>
-    <string name="add_med_icon_color">Иконка и цвет</string>
+    <string name="add_med_icon_color">Выберите цвет иконки</string>
+    <string name="add_med_icon">Выберите иконку</string>
 
     <string name="navigation_back">Назад</string>
     <string name="navigation_next">Вперед</string>

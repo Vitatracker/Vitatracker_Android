@@ -28,7 +28,7 @@ android {
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     def date = new Date()
-                    def formattedDate = date.format('yyyy-MM-dd')
+                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
                     outputFileName = "${variant.name}_${formattedDate}.apk"
                 }
             }
@@ -37,7 +37,7 @@ android {
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     def date = new Date()
-                    def formattedDate = date.format('yyyy-MM-dd')
+                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
                     outputFileName = "${variant.name}_${formattedDate}.apk"
                 }
             }
