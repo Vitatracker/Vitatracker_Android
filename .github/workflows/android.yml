@@ -61,5 +61,5 @@ jobs:
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
            asset_path: artifact/debug-apk.apk
-           asset_name:  ${{ github.event.repository.name }} v${{ github.run_number }} 
+           asset_name:  ${{ github.event.repository.name }} v${{ github.run_number }}.apk
            asset_content_type: application/zip
