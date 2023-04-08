@@ -72,7 +72,8 @@ class AlarmService : Service() {
                 val name = intent.getStringExtra(Extras.MED_NAME.name)
                 val dateLong = intent.getLongExtra(Extras.NEW_COURSE_START_DATE.name, 0L)
                 val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(dateLong), ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+//                    .format(DateTimeFormatter.ISO_LOCAL_DATE)
 
                 val contentText = String.format(baseContext.getString(R.string.notifications_new_course_start_text_template), date, name, dose, units[unit], types[type])
                 val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
