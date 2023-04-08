@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -90,7 +88,7 @@ private fun CourseItem(
     val colors = integerArrayResource(R.array.colors)
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
         modifier = modifier
             .fillMaxWidth()
     ) {
@@ -135,16 +133,19 @@ private fun CourseItem(
                             style = Typography.bodyLarge,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Row() {
-                            Text(text = "${med.dose} ${units[med.measureUnit]}", style = Typography.labelMedium)
-                            Divider(
-                                thickness = 1.dp,
-                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                modifier = Modifier
-                                    .height(16.dp)
-                                    .padding(horizontal = 8.dp)
-                                    .width(1.dp)
-                            )
+                        val dose = if(med.dose == 0) "" else med.dose.toString()
+                        Row {
+                            Text(text = "$dose ${units[med.measureUnit]}", style = Typography.labelMedium)
+                            if(med.dose != 0) {
+                                Divider(
+                                    thickness = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                    modifier = Modifier
+                                        .height(16.dp)
+                                        .padding(horizontal = 8.dp)
+                                        .width(1.dp)
+                                )
+                            }
                             Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                         }
                     }
@@ -183,11 +184,11 @@ private fun CourseItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val start = DateTimeFormatter
-                        .ofPattern("yyyy.MM.dd")
+                        .ofPattern("dd.MM.yyyy")
                         .withZone(ZoneOffset.UTC)
                         .format(Instant.ofEpochSecond(course.startDate))
                     val end = DateTimeFormatter
-                        .ofPattern("yyyy.MM.dd")
+                        .ofPattern("dd.MM.yyyy")
                         .withZone(ZoneOffset.UTC)
                         .format(Instant.ofEpochSecond(course.endDate))
                     Text(text = start, style = Typography.bodyLarge)
