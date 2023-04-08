@@ -28,7 +28,6 @@ fun SuccessMainScreen(
         contentAlignment = Alignment.BottomCenter
     ) {
         ScreenBackgroundImage(R.drawable.ic_background_authorization_screen)
-
         Column(
             modifier = Modifier
                 .padding(16.dp)
