@@ -5,16 +5,14 @@ on:
     branches: [ "dev" ]
   pull_request:
     branches: [ "master" ]
-    
-permissions:
-  contents: 'read'
-  id-token: 'write'
-  issues: 'write'
-  packages: 'write'
 
 jobs:
   build:
-
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+      packages: 'write'
     runs-on: ubuntu-latest
 
     steps:
