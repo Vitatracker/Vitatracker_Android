@@ -24,23 +24,23 @@ android {
     }
 
     buildTypes {
-        debug {
-            android.applicationVariants.all { variant ->
-                variant.outputs.all {
-                    def date = new Date()
-                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
-                    outputFileName = "${variant.name}_${formattedDate}.apk"
-                }
-            }
-        }
+//        debug {
+//            android.applicationVariants.all { variant ->
+//                variant.outputs.all {
+//                    def date = new Date()
+//                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
+//                    outputFileName = "${variant.name}_${formattedDate}.apk"
+//                }
+//            }
+//        }
         release {
-            android.applicationVariants.all { variant ->
-                variant.outputs.all {
-                    def date = new Date()
-                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
-                    outputFileName = "${variant.name}_${formattedDate}.apk"
-                }
-            }
+//            android.applicationVariants.all { variant ->
+//                variant.outputs.all {
+//                    def date = new Date()
+//                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
+//                    outputFileName = "${variant.name}_${formattedDate}.apk"
+//                }
+//            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
