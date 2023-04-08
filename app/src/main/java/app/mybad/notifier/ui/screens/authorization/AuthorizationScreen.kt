@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import app.mybad.notifier.ui.screens.common.ScreenBackgroundImage
 
 @Composable
 fun MainAuthorizationScreen(navController: NavHostController) {
@@ -28,7 +29,7 @@ fun MainAuthorizationScreen(navController: NavHostController) {
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        AuthorizationScreenBackgroundImage()
+        ScreenBackgroundImage()
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -40,17 +41,6 @@ fun MainAuthorizationScreen(navController: NavHostController) {
         }
     }
 
-}
-
-@Composable
-fun AuthorizationScreenBackgroundImage() {
-    Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_authorization_screen),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
-        alignment = Alignment.TopCenter,
-        contentScale = ContentScale.FillWidth
-    )
 }
 
 @Composable

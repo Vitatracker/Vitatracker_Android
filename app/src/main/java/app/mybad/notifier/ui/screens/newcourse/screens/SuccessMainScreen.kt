@@ -15,10 +15,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.common.ScreenBackgroundImage
 import app.mybad.notifier.ui.theme.Typography
 
-@Preview(showBackground = true)
 @Composable
+@Preview(showBackground = true)
 fun SuccessMainScreen(
     modifier: Modifier = Modifier,
     onGo: () -> Unit = {}
@@ -27,7 +28,7 @@ fun SuccessMainScreen(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        StartScreenBackgroundImage()
+        ScreenBackgroundImage()
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -40,23 +41,12 @@ fun SuccessMainScreen(
 }
 
 @Composable
-private fun StartScreenBackgroundImage() {
-    Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
-        alignment = Alignment.TopCenter,
-        contentScale = ContentScale.FillWidth
-    )
-}
-
-@Composable
 private fun StartScreenImage() {
     Image(
         modifier = Modifier
             .fillMaxWidth()
             .padding(36.dp),
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
+        imageVector = ImageVector.vectorResource(id = R.drawable.done_man),
         contentDescription = null,
         contentScale = ContentScale.FillWidth
     )
