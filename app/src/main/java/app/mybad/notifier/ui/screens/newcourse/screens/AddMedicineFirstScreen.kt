@@ -26,6 +26,7 @@ fun AddMedicineFirstScreen(
 ) {
     val name = stringResource(R.string.add_med_name)
     val context = LocalContext.current
+
     val fieldsError = stringResource(R.string.add_med_error_unfilled_fields)
 
     Column(
