@@ -23,10 +23,10 @@ jobs:
       - name: Check with Gradle
         id: check_apk
         run: |
-          ./gradlew check --stacktrace
+          ./gradlew check app --stacktrace
 
       - name: Check outputs
-        run: echo ${{steps.check_apk.outputs}}
+        run: echo ${{steps.check_apk.output}}
 
 #      - name: Upload a Check Artifact
 #        uses: actions/upload-artifact@v3.1.2
