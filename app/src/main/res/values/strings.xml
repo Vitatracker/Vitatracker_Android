@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Vitatracker</string>
     <string name="add_med_h">Add a new medicament</string>
-    <string name="add_med_name">Name of medicament</string>
+    <string name="add_med_name">Name of medicament *</string>
     <string name="add_med_dose">Dose</string>
     <string name="add_med_unit">Measurement unit</string>
     <string name="add_med_food_relation">Relation to food</string>
