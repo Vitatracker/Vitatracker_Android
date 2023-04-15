@@ -112,6 +112,6 @@
     <string name="main_screen_top_bar_name">Reminder dialy</string>
     <string name="main_screen_text_category">Medicines</string>
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
-    <string name="add_notifications_time_set">Set up notificaiton time</string>
+    <string name="add_notifications_time_set">Set up notification time *</string>
     <string name="mycourse_remaining">Remains days: %s</string>
 </resources>
