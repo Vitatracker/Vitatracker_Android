@@ -19,6 +19,7 @@ import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
@@ -51,11 +52,11 @@ fun MainNav(
             startDestination = NavItemMain.Notifications.route
         ) {
             composable(NavItemMain.Notifications.route) {
+                isOnTopLevel = true
                 StartMainScreen(
                     navController = navController,
                     vm = mainScreenVm
                 )
-                isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
                 val myCoursesNavController = rememberNavController()
@@ -93,10 +94,10 @@ fun MainNav(
                     modifier = modifier,
                     navHostController = nc,
                     vm = createCourseVm,
-//                    onCancel = {
-//                        navController.popBackStack()
-//                        createCourseVm.reduce(NewCourseIntent.Drop)
-//                    },
+                    onCancel = {
+                        navController.popBackStack()
+                        createCourseVm.reduce(NewCourseIntent.Drop)
+                    },
                     onFinish = { navController.popBackStack() }
                 )
             }
