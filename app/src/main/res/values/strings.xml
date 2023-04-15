@@ -114,4 +114,5 @@
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
     <string name="add_notifications_time_set">Set up notification time *</string>
     <string name="mycourse_remaining">Remains days: %s</string>
+    <string name="mycourse_per_day_listitem">per day</string>
 </resources>

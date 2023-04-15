@@ -119,7 +119,10 @@ fun AddNotificationsMainScreen(
         Button(
             modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
             shape = RoundedCornerShape(10.dp),
-            onClick = onNext::invoke
+            onClick = {
+                reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
+                onNext()
+            }
         ) {
             Text(
                 text = stringResource(R.string.navigation_next),
