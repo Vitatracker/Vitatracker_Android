@@ -114,7 +114,6 @@ private fun CourseItem(
 
     Log.w("MC_usages_in_item", "$usages")
     val types = stringArrayResource(R.array.types)
-    val relations = stringArrayResource(R.array.food_relations)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
     val itemsCount = if(usages.isNotEmpty()) {
