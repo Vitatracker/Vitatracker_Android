@@ -33,7 +33,6 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     fun changeData(date: LocalDateTime) {
-        //
         scope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
         Log.d("MainScreen", "changeData: $date")
         updateUsages()
