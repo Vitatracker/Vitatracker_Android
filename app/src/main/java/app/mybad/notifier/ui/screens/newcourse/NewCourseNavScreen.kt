@@ -27,7 +27,6 @@ fun NewCourseNavScreen(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     vm: CreateCourseViewModel,
-    onCancel: () -> Unit,
     onFinish: () -> Unit
 ) {
 
@@ -60,7 +59,6 @@ fun NewCourseNavScreen(
                     med = state.value.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route) },
-                    onBack = onCancel::invoke,
                 )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
@@ -70,7 +68,6 @@ fun NewCourseNavScreen(
                     med = state.value.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
-                    onBack =  { navHostController.popBackStack() },
                 )
             }
             composable(NewCourseNavItem.AddCourse.route) {

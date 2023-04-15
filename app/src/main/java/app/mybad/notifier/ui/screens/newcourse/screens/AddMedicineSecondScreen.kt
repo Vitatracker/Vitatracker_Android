@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.newcourse.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.*
@@ -27,7 +27,6 @@ fun AddMedicineSecondScreen(
     med: MedDomainModel,
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
-    onBack: () -> Unit,
 ) {
 
     val types = stringArrayResource(R.array.types)
@@ -62,11 +61,16 @@ fun AddMedicineSecondScreen(
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
         }
-
-        NavigationRow(
-            onBack = onBack::invoke,
-            onNext = onNext::invoke,
-        )
+        Button(
+            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+            shape = RoundedCornerShape(10.dp),
+            onClick = onNext::invoke
+        ) {
+            Text(
+                text = stringResource(R.string.navigation_next),
+                style = Typography.bodyLarge
+            )
+        }
     }
     if(selectedInput != -1) {
         Dialog(onDismissRequest = { selectedInput = -1 } ) {

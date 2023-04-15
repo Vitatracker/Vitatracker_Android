@@ -14,7 +14,6 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
@@ -94,10 +93,10 @@ fun MainNav(
                     modifier = modifier,
                     navHostController = nc,
                     vm = createCourseVm,
-                    onCancel = {
-                        navController.popBackStack()
-                        createCourseVm.reduce(NewCourseIntent.Drop)
-                    },
+//                    onCancel = {
+//                        navController.popBackStack()
+//                        createCourseVm.reduce(NewCourseIntent.Drop)
+//                    },
                     onFinish = { navController.popBackStack() }
                 )
             }
