@@ -4,8 +4,8 @@
         <item>ug</item>
         <item>mg</item>
         <item>g</item>
-        <item>ul</item>
         <item>ml</item>
+        <item>%</item>
     </string-array>
     <string-array name="months_full">
         <item>January</item>
@@ -45,20 +45,20 @@
         <item>Sun</item>
     </string-array>
     <string-array name="food_relations">
-        <item>2 hour before meals</item>
-        <item>1 hour before meals</item>
-        <item>45 minutes before meals</item>
-        <item>30 minutes before meals</item>
-        <item>15 minutes before meals</item>
+<!--        <item>2 hour before meals</item>-->
+<!--        <item>1 hour before meals</item>-->
+<!--        <item>45 minutes before meals</item>-->
+<!--        <item>30 minutes before meals</item>-->
+<!--        <item>15 minutes before meals</item>-->
         <item>Before meals</item>
         <item>Not related</item>
         <item>During meals</item>
         <item>After meals</item>
-        <item>15 minutes after meals</item>
-        <item>30 minutes after meals</item>
-        <item>45 minutes after meals</item>
-        <item>1 hour after meals</item>
-        <item>2 hour after meals</item>
+<!--        <item>15 minutes after meals</item>-->
+<!--        <item>30 minutes after meals</item>-->
+<!--        <item>45 minutes after meals</item>-->
+<!--        <item>1 hour after meals</item>-->
+<!--        <item>2 hour after meals</item>-->
     </string-array>
     <string-array name="regime">
         <item>Every day</item>
@@ -67,12 +67,16 @@
         <item>Every 3 days</item>
     </string-array>
     <string-array name="types">
-        <item>Pill</item>
         <item>Tablet</item>
-        <item>Spray</item>
+        <item>Pill</item>
+        <item>Inhalator</item>
         <item>Injection</item>
-        <item>Inhalation</item>
+        <item>Drops</item>
+        <item>Solution</item>
+        <item>Suppository</item>
         <item>Syrup</item>
+        <item>Spray</item>
+        <item>Suspension</item>
     </string-array>
     <integer-array name="icons">
         <item>@drawable/pill</item>
