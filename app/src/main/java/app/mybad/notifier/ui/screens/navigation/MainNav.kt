@@ -14,12 +14,12 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
@@ -52,11 +52,11 @@ fun MainNav(
             startDestination = NavItemMain.Notifications.route
         ) {
             composable(NavItemMain.Notifications.route) {
+                isOnTopLevel = true
                 StartMainScreen(
                     navController = navController,
                     vm = mainScreenVm
                 )
-                isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
                 val myCoursesNavController = rememberNavController()

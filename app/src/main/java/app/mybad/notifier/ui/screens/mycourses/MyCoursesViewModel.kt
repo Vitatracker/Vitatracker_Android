@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
+import app.mybad.domain.usecases.meds.UpdateMedUseCase
+import app.mybad.domain.usecases.usages.UpdateAllUsagesInCourseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +19,9 @@ import javax.inject.Inject
 class MyCoursesViewModel @Inject constructor(
     private val loadCourses: LoadCoursesUseCase,
     private val deleteCourse: DeleteCourseUseCase,
-    private val updateCourse: UpdateCourseUseCase
+    private val updateCourse: UpdateCourseUseCase,
+    private val updateMed: UpdateMedUseCase,
+    private val updateUsagesInCourse: UpdateAllUsagesInCourseUseCase,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -42,7 +46,11 @@ class MyCoursesViewModel @Inject constructor(
                 scope.launch { deleteCourse.execute(intent.courseId) }
             }
             is MyCoursesIntent.Update -> {
-                scope.launch { updateCourse.execute(intent.courseId, intent.updatedCourse) }
+                scope.launch {
+                    updateMed(intent.med)
+                    updateCourse.execute(intent.course.id, intent.course)
+                    updateUsagesInCourse(intent.usagesPattern, intent.med, intent.course)
+                }
             }
         }
     }

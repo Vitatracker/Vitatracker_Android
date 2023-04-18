@@ -114,10 +114,9 @@ private fun CourseItem(
 
     Log.w("MC_usages_in_item", "$usages")
     val types = stringArrayResource(R.array.types)
-    val relations = stringArrayResource(R.array.food_relations)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
-    val usagesCount = if(usages.isNotEmpty()) {
+    val itemsCount = if(usages.isNotEmpty()) {
         val firstCount = usages.first().quantity
         var correct = true
         usages.forEach {
@@ -125,6 +124,7 @@ private fun CourseItem(
         }
         if(correct) firstCount else 0
     } else 0
+    val usagesCount = usages.size
 
     Surface(
         shape = RoundedCornerShape(10.dp),
@@ -164,7 +164,7 @@ private fun CourseItem(
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(Modifier.fillMaxWidth(0.85f)) {
@@ -175,19 +175,24 @@ private fun CourseItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Row {
-                            if(usagesCount != 0) {
-                                Text(text = "$usagesCount, ${types[med.type]}", style = Typography.labelMedium)
-                                Divider(
-                                    thickness = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                    modifier = Modifier
-                                        .height(16.dp)
-                                        .padding(horizontal = 8.dp)
-                                        .width(1.dp)
-                                )
+                        if(itemsCount != 0 || usagesCount > 0) {
+                            Row {
+                                if(itemsCount != 0) {
+                                    Text(text = "$itemsCount, ${types[med.type]}", style = Typography.labelMedium)
+                                    Divider(
+                                        thickness = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                        modifier = Modifier
+                                            .height(16.dp)
+                                            .padding(horizontal = 8.dp)
+                                            .width(1.dp)
+                                    )
+                                }
+                                if(usagesCount > 0) {
+//                                Text(text = relations[med.beforeFood], style = Typography.labelMedium)
+                                    Text(text = "$usagesCount ${stringResource(R.string.mycourse_per_day_listitem)}", style = Typography.labelMedium)
+                                }
                             }
-                            Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                         }
                     }
                     Surface(

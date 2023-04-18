@@ -20,11 +20,11 @@ import androidx.compose.ui.window.DialogProperties
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
-import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
+import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
@@ -39,7 +39,6 @@ fun AddCourseMainScreen(
     course: CourseDomainModel,
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
-    onBack: () -> Unit,
 ) {
 
     val startLabel = stringResource(R.string.add_course_start_time)
@@ -108,18 +107,16 @@ fun AddCourseMainScreen(
                     Text(text = stringResource(R.string.add_course_reminder))
                 }
             }
-            NavigationRow(
-                onNext = {
-                    scope.launch { sState.bottomSheetState.collapse() }.invokeOnCompletion {
-                        onNext()
-                    }
-                },
-                onBack = {
-                    scope.launch { sState.bottomSheetState.collapse() }.invokeOnCompletion {
-                        onBack()
-                    }
-                }
-            )
+            androidx.compose.material3.Button(
+                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                shape = RoundedCornerShape(10.dp),
+                onClick = onNext::invoke
+            ) {
+                Text(
+                    text = stringResource(R.string.navigation_next),
+                    style = Typography.bodyLarge
+                )
+            }
         }
     }
 

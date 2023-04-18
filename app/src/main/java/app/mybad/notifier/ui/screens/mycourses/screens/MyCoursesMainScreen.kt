@@ -75,12 +75,17 @@ fun MyCoursesMainScreen(
                             course = selectedCourse!!,
                             med = state.value.meds.first { it.id == selectedCourse!!.medId },
                             usagePattern = generatePattern(selectedCourse!!.medId, state.value.usages),
-                            onSave = {
-                                navHostController.popBackStack()
-                            },
-                            onDelete = {
-                                navHostController.popBackStack()
-                                vm.reduce(MyCoursesIntent.Delete(it))
+                            reducer = {
+                                when(it) {
+                                    is MyCoursesIntent.Update -> {
+                                        vm.reduce(MyCoursesIntent.Update(it.course, it.med, it.usagesPattern))
+                                        navHostController.popBackStack()
+                                    }
+                                    is MyCoursesIntent.Delete -> {
+                                        vm.reduce(MyCoursesIntent.Delete(selectedCourse!!.id))
+                                        navHostController.popBackStack()
+                                    }
+                                }
                             }
                         )
                     }

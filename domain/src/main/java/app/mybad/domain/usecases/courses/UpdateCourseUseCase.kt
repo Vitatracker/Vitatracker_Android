@@ -11,5 +11,4 @@ class UpdateCourseUseCase @Inject constructor(
     suspend fun execute(courseId: Long, updatedCourse: CourseDomainModel) {
         coursesRepo.updateSingle(courseId, updatedCourse)
     }
-
 }
