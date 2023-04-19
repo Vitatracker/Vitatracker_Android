@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -8,6 +9,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,9 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
@@ -40,32 +46,15 @@ fun SettingsProfile(
     val editEmail = remember { mutableStateOf(userModel.email) }
 
     Column(
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        UserImage(url = editUserAvatar.value, showEdit = true) {
-            editUserAvatar.value = it
-        }
-        Spacer(Modifier.height(32.dp))
-        SettingsProfileEditText(
-            label = stringResource(id = R.string.settings_user_name),
-            enabled = true,
-            icon = Icons.Default.AccountCircle,
-            valueString = editUserName.value.toString()
-        ) {
-            editUserName.value = it
-        }
-        Spacer(Modifier.height(24.dp))
-        SettingsProfileEditText(
-            label = stringResource(id = R.string.settings_user_email),
-            enabled = true,
-            icon = Icons.Default.Email,
-            valueString = editEmail.value.toString()
-        ) {
-            editEmail.value = it
-        }
-        Spacer(Modifier.height(24.dp))
+        SettingsProfileTop(
+            editEmail = editEmail,
+            editUserName = editUserName,
+            editUserAvatar = editUserAvatar
+        )
         when {
             (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSavable(
                 onDismiss = onDismiss,
@@ -74,10 +63,100 @@ fun SettingsProfile(
                 editUserAvatar = editUserAvatar.value.toString(),
                 savePersonal = savePersonal
             )
-            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileButtonChangePassword(
+
+            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileBottom(
                 onPasswordEdit = onPasswordEdit
             )
         }
+    }
+}
+
+@Composable
+private fun SettingsProfileTop(
+    editEmail: MutableState<String?>,
+    editUserAvatar: MutableState<String?>,
+    editUserName: MutableState<String?>
+) {
+    Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        UserImage(url = editUserAvatar.value, showEdit = true) {
+            editUserAvatar.value = it
+        }
+        Spacer(Modifier.height(32.dp))
+        SettingsProfileEditText(
+            label = stringResource(id = R.string.settings_user_name),
+            enabled = true,
+            icon = R.drawable.icon_settings_user,
+            valueString = editUserName.value.toString()
+        ) {
+            editUserName.value = it
+        }
+        Spacer(Modifier.height(24.dp))
+        SettingsProfileEditText(
+            label = stringResource(id = R.string.settings_user_email),
+            enabled = true,
+            icon = R.drawable.icon_settings_mail,
+            valueString = editEmail.value.toString()
+        ) {
+            editEmail.value = it
+        }
+    }
+}
+
+@Composable
+private fun SettingsProfileBottom(onPasswordEdit: () -> Unit) {
+    Column(
+        modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SettingsProfileBottomElement(
+            text = R.string.settings_change_password,
+            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_lock),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+
+        SettingsProfileBottomElement(
+            text = R.string.settings_delete_account,
+            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
+            tint = Color.Gray
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+
+        SettingsProfileBottomElement(
+            text = R.string.settings_change_password,
+            icon = Icons.Default.ErrorOutline,
+            tint = MaterialTheme.colorScheme.error
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+    }
+}
+
+@Composable
+private fun SettingsProfileBottomElement(text: Int, icon: ImageVector, tint: Color) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(id = text), modifier = Modifier, fontSize = 20.sp)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(30.dp),
+            tint = tint
+        )
     }
 }
 
@@ -86,7 +165,7 @@ private fun SettingsProfileEditText(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
-    icon: ImageVector,
+    icon: Int = 0,
     valueString: String,
     onEdit: (String) -> Unit
 ) {
@@ -113,12 +192,12 @@ private fun SettingsProfileEditText(
             onNext = { focusManager.clearFocus() }
         ),
         shape = RoundedCornerShape(10.dp),
-        leadingIcon = {
+        trailingIcon = {
             Icon(
                 modifier = Modifier.size(30.dp),
-                imageVector = icon,
+                imageVector = ImageVector.vectorResource(id = icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = Color.Gray
             )
         }
     )

@@ -51,8 +51,8 @@ fun UserImage(
         ) {
             val req = ImageRequest.Builder(LocalContext.current)
                 .data(editAvatar.value?.toUri())
-                .placeholder(R.drawable.round_supervised_user_circle_24)
-                .error(R.drawable.round_supervised_user_circle_24)
+                .placeholder(R.drawable.icon_profile_mobile_app)
+                .error(R.drawable.icon_profile_mobile_app)
                 .diskCachePolicy(CachePolicy.ENABLED)
                 .networkCachePolicy(CachePolicy.ENABLED)
                 .memoryCachePolicy(CachePolicy.ENABLED)
@@ -62,7 +62,7 @@ fun UserImage(
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(100.dp)
+                    .size(130.dp)
                     .border(
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                         shape = CircleShape

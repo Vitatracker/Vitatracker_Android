@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.usecases.meds.LoadMedsFromList
+import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
+import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StartMainScreenViewModel @Inject constructor(
-    private val usages: UsagesRepo,
-    private val meds: MedsRepo
+    private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
+    private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
+    private val loadMedsFromList: LoadMedsFromList
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -27,8 +31,9 @@ class StartMainScreenViewModel @Inject constructor(
 
     init {
         scope.launch {
-            _uiState.emit(_uiState.value.copy(date = LocalDateTime.now()))
+            setDataNow()
             updateUsages()
+            getAllUsages()
         }
     }
 
@@ -38,11 +43,19 @@ class StartMainScreenViewModel @Inject constructor(
         updateUsages()
     }
 
+    private fun setDataNow() {
+        scope.launch { _uiState.emit(_uiState.value.copy(date = LocalDateTime.now())) }
+    }
+
+    private fun getAllUsages() {
+        scope.launch { _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute().size)) }
+    }
+
     private fun updateUsages() {
         scope.launch {
             _uiState.emit(
                 _uiState.value.copy(
-                    usages = usages.getUsagesByInterval(
+                    usages = loadUsagesByIntervalUseCase.execute(
                         convertDateToLong(
                             _uiState.value.date.withHour(0).withMinute(0).withSecond(0)
                         ),
@@ -52,7 +65,6 @@ class StartMainScreenViewModel @Inject constructor(
                     )
                 )
             )
-            Log.d("MainScreen", "usages: ${_uiState.value.usages.size}")
             updateMeds()
         }
     }
@@ -63,10 +75,9 @@ class StartMainScreenViewModel @Inject constructor(
         scope.launch {
             _uiState.emit(
                 _uiState.value.copy(
-                    meds = meds.getFromList(listMedsId = listMeds)
+                    meds = loadMedsFromList.execute(listMedsId = listMeds)
                 )
             )
-            Log.d("MainScreen", "meds: ${_uiState.value.meds.size}")
         }
     }
 

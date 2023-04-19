@@ -23,6 +23,7 @@ import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
+import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishes
 import app.mybad.notifier.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,6 +94,10 @@ fun SettingsNav(
                     onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
+            }
+            composable(NavItemSettings.LeaveYourWishes.route) {
+                title = stringResource(NavItemSettings.LeaveYourWishes.stringId)
+                SettingsLeaveWishes()
             }
             composable(NavItemSettings.PasswordChange.route) {
                 title = stringResource(NavItemSettings.PasswordChange.stringId)

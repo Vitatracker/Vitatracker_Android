@@ -57,6 +57,7 @@ fun SettingsNavScreen(
             Spacer(Modifier.height(32.dp))
             SettingsItem(
                 label = stringResource(R.string.settings_profile),
+                icon = R.drawable.icon_settings_user,
                 onSelect = onProfile::invoke
             )
             Divider(
@@ -67,6 +68,7 @@ fun SettingsNavScreen(
 
             SettingsItem(
                 label = stringResource(R.string.settings_notifications),
+                icon = R.drawable.icon_settings_notifications,
                 onSelect = onNotifications::invoke
             )
             Divider(
@@ -76,7 +78,8 @@ fun SettingsNavScreen(
             )
 
             SettingsItem(
-                label = stringResource(R.string.settings_about),
+                label = stringResource(R.string.settings_leave_your_wishes),
+                icon = R.drawable.icon_settings_help,
                 onSelect = onAbout::invoke
             )
             Divider(
@@ -85,13 +88,17 @@ fun SettingsNavScreen(
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
             )
 
-            DeleteAccountItem(
-                label = stringResource(R.string.settings_delete_account),
-                onSelect = { reducer(SettingsIntent.DeleteAccount) }
+            SettingsItem(
+                label = stringResource(R.string.settings_about),
+                icon = R.drawable.icon_settings_information,
+                onSelect = onAbout::invoke
+            )
+            Divider(
+                modifier = Modifier.padding(vertical = 16.dp),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
             )
         }
-        SettingsQuit(onQuit = { reducer(SettingsIntent.Exit) })
-
     }
 
 }

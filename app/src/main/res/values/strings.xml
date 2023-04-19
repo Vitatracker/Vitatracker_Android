@@ -89,6 +89,7 @@
     <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
     <string name="settings_user_name">Name</string>
     <string name="settings_user_email">Email</string>
+    <string name="settings_leave_your_wishes">Leave your wishes</string>
 
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
@@ -118,4 +119,7 @@
     <string name="mycourse_reminders">Reminders *</string>
     <string name="mycourse_edit_icon">Edit icon</string>
     <string name="mycourse_edit_icon_color">Edit icon color</string>
+    <string name="main_screen_meds_clear_start">Lets start!</string>
+    <string name="main_screen_meds_clear_add">Add the first medicines</string>
+
 </resources>

@@ -68,6 +68,7 @@
     <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
     <string name="settings_user_name">Имя</string>
     <string name="settings_user_email">Электронная почта</string>
+    <string name="settings_leave_your_wishes">Оставить свои пожелания</string>
 
     <string name="text_continue">Продолжить</string>
 
@@ -101,7 +102,6 @@
 
     <!--CALENDAR -->
     <string name="calendar_h">Мой календарь</string>
-    <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_text_category">Лекарства</string>
     <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
     <string name="add_notifications_time_set">Настроить напоминание *</string>
@@ -111,5 +111,9 @@
     <string name="mycourse_edit_icon">Edit icon</string>
     <string name="mycourse_edit_icon_color">Edit icon color</string>
 
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Дневник напоминаний</string>
+    <string name="main_screen_meds_clear_start">Давайте начнем!</string>
+    <string name="main_screen_meds_clear_add">Добавьте первое лекарство</string>
 
 </resources>

@@ -10,6 +10,7 @@ val errorRed = Color(0xFFDB5A5A)
 val cardBackground = Color(0xFFF4FFFF)
 val errorBackground = Color(0xFFFFF1F1)
 val notAvailableBackground = Color(0xFFEFEFEF)
+val backgroundCard = Color(0xFFF9FAFE)
 
 val primary100 = Color(0xFFFFFFFF)
 val primary90 = Color(0xFF58F8F8)
