@@ -1,12 +1,10 @@
 package app.mybad.notifier.ui.screens.mainscreen
 
 import android.content.res.Resources
-import android.graphics.Paint
 import android.icu.util.Calendar
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -16,7 +14,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -508,7 +505,7 @@ private fun MainScreenFormCourseHeader(
 @Composable
 private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -582,7 +579,7 @@ private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
 @Composable
 private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -605,7 +602,7 @@ private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
 @Composable
 private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -627,7 +624,7 @@ private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStro
 @Composable
 private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -647,7 +644,7 @@ private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
 private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
 
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -666,7 +663,7 @@ private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
 @Composable
 private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
     val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = usageTime)
+    val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
@@ -691,7 +688,7 @@ private fun getTimeFromLong(time: Long): String {
 private fun getDateFromLong(date: Long): String {
     return LocalDateTime
         .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("HH:mm"))
+        .format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
 }
 
 private fun convertDateToLong(date: LocalDateTime): Long {
