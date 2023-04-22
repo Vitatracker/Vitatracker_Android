@@ -52,7 +52,7 @@ fun StartMainScreen(
     navController: NavHostController,
     vm: StartMainScreenViewModel
 ) {
-
+//
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
