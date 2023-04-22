@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-//
+
     private val createCourseVm : CreateCourseViewModel by viewModels()
     private val myCoursesVm: MyCoursesViewModel by viewModels()
     private val settingsVm : SettingsViewModel by viewModels()
