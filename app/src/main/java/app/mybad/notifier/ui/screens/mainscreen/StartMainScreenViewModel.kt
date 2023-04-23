@@ -2,11 +2,10 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.meds.LoadMedsFromList
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
+import app.mybad.domain.usecases.usages.UpdateUsageFactTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,8 @@ import javax.inject.Inject
 class StartMainScreenViewModel @Inject constructor(
     private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
     private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
-    private val loadMedsFromList: LoadMedsFromList
+    private val loadMedsFromList: LoadMedsFromList,
+    private val updateUsageFactTimeUseCase: UpdateUsageFactTimeUseCase
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -34,6 +34,17 @@ class StartMainScreenViewModel @Inject constructor(
             setDataNow()
             updateUsages()
             getAllUsages()
+        }
+    }
+
+    fun setUsagesFactTime(medId: Long, usageTime: Long, factTime: Long) {
+        scope.launch {
+            updateUsageFactTimeUseCase.execute(
+                medId = medId,
+                usageTime = usageTime,
+                factTime = factTime
+            )
+            updateUsages()
         }
     }
 

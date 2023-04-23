@@ -142,7 +142,7 @@ private fun MainScreenMonthPager(
     HorizontalPager(
         pageCount = Month.values().size,
         state = stateMonth,
-        pageSpacing = 13.dp,
+        pageSpacing = 10.dp,
         pageSize = PageSize.Fixed(40.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -470,7 +470,7 @@ private fun MainScreenFormCourseHeader(
                         painter = painterResource(r.getResourceId(med.icon, 0)),
                         contentDescription = null,
                         modifier = Modifier.size(25.dp),
-                        tint = Color(colors[med.color])//MaterialTheme.colorScheme.primary
+                        tint = Color(colors[med.color])
                     )
                 }
                 Row(
