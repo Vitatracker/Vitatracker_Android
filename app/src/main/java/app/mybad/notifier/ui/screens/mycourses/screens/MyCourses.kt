@@ -116,15 +116,16 @@ private fun CourseItem(
     val colors = integerArrayResource(R.array.colors)
     val itemsCount = if (usages.isNotEmpty()) {
         val firstCount = usages.first().quantity
+        val firstTime = usages.first().useTime
         var correct = true
-        usages.forEach {
+        usages.filter { it.useTime <= (firstTime + 86400) }.forEach {
             if (it.quantity != firstCount) correct = false
         }
         if (correct) firstCount else 0
     } else {
         0
     }
-    val usagesCount = usages.size
+    val usagesCount = usages.filter { it.useTime <= (usages.first().useTime + 86400) }.size
 
     Surface(
         shape = RoundedCornerShape(10.dp),
