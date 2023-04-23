@@ -177,9 +177,7 @@ fun AddCourseMainScreen(
                             reducer(
                                 NewCourseIntent.UpdateCourse(
                                     course.copy(
-                                        endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(
-                                            ZoneOffset.UTC
-                                        ) ?: 0L,
+                                        endDate = ed?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
                                     )
                                 )
                             )
