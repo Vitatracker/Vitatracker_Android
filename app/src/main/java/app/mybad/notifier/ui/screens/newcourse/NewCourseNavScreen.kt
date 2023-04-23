@@ -29,38 +29,40 @@ fun NewCourseNavScreen(
     onCancel: () -> Unit,
     onFinish: () -> Unit
 ) {
-
     val state = vm.state.collectAsState()
     val dest = navHostController.currentBackStackEntryAsState()
     val h = stringResource(R.string.add_med_h)
     var title by remember { mutableStateOf(h) }
 
     Column {
-        if(dest.value?.destination?.route != NewCourseNavItem.Success.route) CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = title,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-                )
-            },
-            navigationIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.back),
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 16.dp).clickable(
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    ) {
-                        if(dest.value?.destination?.route == NewCourseNavItem.AddMedicineFirst.route)
-                            onCancel()
-                        else
-                            navHostController.popBackStack()
-                    }
-                )
-            }
-        )
+        if (dest.value?.destination?.route != NewCourseNavItem.Success.route) {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = title,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary,
+                        style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                },
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.back),
+                        contentDescription = null,
+                        modifier = Modifier.padding(start = 16.dp).clickable(
+                            indication = null,
+                            interactionSource = MutableInteractionSource()
+                        ) {
+                            if (dest.value?.destination?.route == NewCourseNavItem.AddMedicineFirst.route) {
+                                onCancel()
+                            } else {
+                                navHostController.popBackStack()
+                            }
+                        }
+                    )
+                }
+            )
+        }
         NavHost(
             modifier = modifier,
             navController = navHostController,
@@ -72,7 +74,9 @@ fun NewCourseNavScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
                     reducer = vm::reduce,
-                    onNext = { navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route) },
+                    onNext = {
+                        navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route)
+                    },
                 )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
@@ -90,7 +94,9 @@ fun NewCourseNavScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     course = state.value.course,
                     reducer = vm::reduce,
-                    onNext = { navHostController.navigate(NewCourseNavItem.AddNotifications.route) },
+                    onNext = {
+                        navHostController.navigate(NewCourseNavItem.AddNotifications.route)
+                    },
                 )
             }
             composable(NewCourseNavItem.AddNotifications.route) {

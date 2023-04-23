@@ -32,10 +32,9 @@ fun DaySelectorSlider(
     date: LocalDateTime? = null,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
-
     val pagerState = rememberPagerState(initialPage = date?.dayOfMonth ?: 0)
     val scope = rememberCoroutineScope()
-    val padding = PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp/2 + 20 + 8).dp)
+    val padding = PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp / 2 + 20 + 8).dp)
     val dow = stringArrayResource(R.array.days_short)
 
     HorizontalPager(
@@ -46,12 +45,12 @@ fun DaySelectorSlider(
         pageSize = PageSize.Fixed(40.dp),
         modifier = modifier.fillMaxWidth()
     ) {
-        val itsDate = date?.withDayOfMonth(it+1)
+        val itsDate = date?.withDayOfMonth(it + 1)
         val isSelected = itsDate?.isEqual(date) ?: false
         Surface(
             shape = RoundedCornerShape(10.dp),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = if(isSelected) 1f else 0.5f)),
-            color = if(isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = if (isSelected) 1f else 0.5f)),
+            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
             modifier = Modifier
                 .height(50.dp)
                 .width(40.dp)
@@ -72,11 +71,11 @@ fun DaySelectorSlider(
                 ) {
                     Text(
                         text = "${itsDate?.dayOfMonth}",
-                        color = if(isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                     )
                     Text(
-                        text = dow[(itsDate?.dayOfWeek?.value ?: 1)-1],
-                        color = if(isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
+                        text = dow[(itsDate?.dayOfWeek?.value ?: 1) - 1],
+                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                     )
                 }
             }

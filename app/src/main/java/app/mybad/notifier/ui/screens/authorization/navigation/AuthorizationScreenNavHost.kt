@@ -13,7 +13,6 @@ import app.mybad.notifier.ui.screens.start.StartScreenApp
 
 @Composable
 fun AuthorizationScreenNavHost() {
-
     val navController = rememberNavController()
 
     NavHost(
@@ -39,5 +38,4 @@ fun AuthorizationScreenNavHost() {
             StartMainNewPasswordScreenAuth(navController = navController)
         }
     }
-
 }

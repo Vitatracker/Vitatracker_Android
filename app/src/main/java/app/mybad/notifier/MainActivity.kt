@@ -17,11 +17,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val createCourseVm : CreateCourseViewModel by viewModels()
+    private val createCourseVm: CreateCourseViewModel by viewModels()
     private val myCoursesVm: MyCoursesViewModel by viewModels()
-    private val settingsVm : SettingsViewModel by viewModels()
-    private val calendarVm : CalendarViewModel by viewModels()
-    private val mainScreenVm : StartMainScreenViewModel by viewModels()
+    private val settingsVm: SettingsViewModel by viewModels()
+    private val calendarVm: CalendarViewModel by viewModels()
+    private val mainScreenVm: StartMainScreenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -27,5 +27,4 @@ class CreateCourseUseCase @Inject constructor(
         notificationsScheduler.add(usages)
         notificationsScheduler.add(course)
     }
-
 }

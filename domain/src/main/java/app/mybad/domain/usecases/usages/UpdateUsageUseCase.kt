@@ -11,5 +11,4 @@ class UpdateUsageUseCase @Inject constructor(
     suspend fun execute(usage: UsageCommonDomainModel) {
         usagesRepo.updateSingle(usage)
     }
-
 }

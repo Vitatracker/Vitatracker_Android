@@ -31,8 +31,12 @@ fun AddMedicineFirstScreen(
         Column {
             MultiBox(
                 {
-                    BasicKeyboardInput(label = name, init = med.name, hideOnGo = true,
-                        onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name = it))) })
+                    BasicKeyboardInput(
+                        label = name,
+                        init = med.name,
+                        hideOnGo = true,
+                        onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -44,8 +48,11 @@ fun AddMedicineFirstScreen(
             )
             MultiBox(
                 {
-                    IconSelector(selected = med.icon, color = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) })
+                    IconSelector(
+                        selected = med.icon,
+                        color = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -57,8 +64,10 @@ fun AddMedicineFirstScreen(
             )
             MultiBox(
                 {
-                    ColorSelector(selected = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) })
+                    ColorSelector(
+                        selected = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,

@@ -24,7 +24,6 @@ import app.mybad.notifier.ui.screens.common.ScreenBackgroundImage
 
 @Composable
 fun MainAuthorizationScreen(navController: NavHostController) {
-
     Box(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
@@ -40,7 +39,6 @@ fun MainAuthorizationScreen(navController: NavHostController) {
             SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
-
 }
 
 @Composable

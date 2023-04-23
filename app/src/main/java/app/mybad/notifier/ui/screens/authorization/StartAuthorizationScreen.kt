@@ -12,7 +12,6 @@ import androidx.navigation.NavHostController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartAuthorizationScreen(navController: NavHostController) {
-
     Scaffold(
         content = { contentPadding ->
             Surface(
@@ -22,6 +21,6 @@ fun StartAuthorizationScreen(navController: NavHostController) {
             ) {
                 MainAuthorizationScreen(navController)
             }
-        })
-
+        }
+    )
 }

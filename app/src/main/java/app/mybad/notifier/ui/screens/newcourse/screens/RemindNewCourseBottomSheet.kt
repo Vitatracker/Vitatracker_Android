@@ -30,7 +30,6 @@ fun RemindNewCourseBottomSheet(
     onSave: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-
     val interval = stringResource(R.string.add_next_course_interval)
     val remindBefore = stringResource(R.string.add_next_course_remind_before)
     val remindTimeLabel = stringResource(R.string.add_next_course_remind_time)
@@ -49,13 +48,28 @@ fun RemindNewCourseBottomSheet(
     ) {
         Column {
             MultiBox(
-                { ParameterIndicator(name = interval, value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
-                    onClick = { selectedInput = 1 }) },
-                { ParameterIndicator(name = remindBefore, value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
-                    onClick = { selectedInput = 2 }) },
-                { ParameterIndicator(name = remindTimeLabel, value = remindTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                    onClick = { selectedInput = 3 }) },
-                itemsPadding =  PaddingValues(16.dp)
+                {
+                    ParameterIndicator(
+                        name = interval,
+                        value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
+                        onClick = { selectedInput = 1 }
+                    )
+                },
+                {
+                    ParameterIndicator(
+                        name = remindBefore,
+                        value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
+                        onClick = { selectedInput = 2 }
+                    )
+                },
+                {
+                    ParameterIndicator(
+                        name = remindTimeLabel,
+                        value = remindTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        onClick = { selectedInput = 3 }
+                    )
+                },
+                itemsPadding = PaddingValues(16.dp)
             )
         }
         NavigationRow(
@@ -67,22 +81,25 @@ fun RemindNewCourseBottomSheet(
                     .withHour(remindTime.hour).withMinute(remindTime.minute)
                 onSave()
                 reducer(
-                    NewCourseIntent.UpdateCourse(course.copy(
-                    remindDate = reminder.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                    interval = nextCourseStart.atZone(ZoneId.systemDefault()).toEpochSecond() - course.startDate,
-                )))
+                    NewCourseIntent.UpdateCourse(
+                        course.copy(
+                            remindDate = reminder.atZone(ZoneId.systemDefault()).toEpochSecond(),
+                            interval = nextCourseStart.atZone(ZoneId.systemDefault()).toEpochSecond() - course.startDate,
+                        )
+                    )
+                )
             },
             onBack = onCancel::invoke
         )
     }
 
-    if(selectedInput != -1) {
+    if (selectedInput != -1) {
         Dialog(onDismissRequest = { selectedInput = -1 }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background
             ) {
-                when(selectedInput) {
+                when (selectedInput) {
                     1 -> DateDelaySelector(
                         initValue = coursesInterval,
                         onSelect = { coursesInterval = it; selectedInput = -1 }

@@ -3,7 +3,6 @@ package app.mybad.notifier.ui.screens.settings
 import androidx.annotation.StringRes
 import app.mybad.notifier.R
 
-
 sealed class NavItemSettings(
     val route: String,
     @StringRes val stringId: Int

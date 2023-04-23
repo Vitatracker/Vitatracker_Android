@@ -17,14 +17,11 @@ import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.notifier.di.DataModule
-import app.mybad.notifier.di.DataStoreModule
-import app.mybad.notifier.di.NotificationsModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import org.jetbrains.annotations.TestOnly
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -37,13 +34,12 @@ class TestDataModule {
 
     @Provides
     @Named("test_db")
-    fun providesInMemoryDb(@ApplicationContext context: Context) : MedDB {
+    fun providesInMemoryDb(@ApplicationContext context: Context): MedDB {
         return Room.inMemoryDatabaseBuilder(
             context,
             MedDB::class.java
         ).allowMainThreadQueries().build()
     }
-
 
     @Provides
     @Singleton

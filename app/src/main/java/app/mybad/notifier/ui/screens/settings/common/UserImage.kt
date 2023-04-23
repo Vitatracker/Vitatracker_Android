@@ -31,7 +31,6 @@ fun UserImage(
     showEdit: Boolean = true,
     onEdit: (String) -> Unit
 ) {
-
     val editAvatar = remember { mutableStateOf(url) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),

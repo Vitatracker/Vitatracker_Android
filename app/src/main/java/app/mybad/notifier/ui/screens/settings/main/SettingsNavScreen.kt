@@ -15,8 +15,6 @@ import app.mybad.notifier.ui.screens.settings.common.SettingsItem
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
-import app.mybad.notifier.ui.screens.settings.common.DeleteAccountItem
-import app.mybad.notifier.ui.screens.settings.common.SettingsQuit
 
 @Composable
 fun SettingsNavScreen(
@@ -27,7 +25,6 @@ fun SettingsNavScreen(
     onNotifications: () -> Unit = {},
     onAbout: () -> Unit = {},
 ) {
-
     val editAvatar = remember { mutableStateOf(userModel.avatar) }
 
     Column(
@@ -100,5 +97,4 @@ fun SettingsNavScreen(
             )
         }
     }
-
 }

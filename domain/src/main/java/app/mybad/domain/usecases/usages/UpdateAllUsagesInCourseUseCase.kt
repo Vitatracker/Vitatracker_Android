@@ -13,9 +13,9 @@ import kotlin.math.absoluteValue
 
 class UpdateAllUsagesInCourseUseCase @Inject constructor(
     private val usagesRepo: UsagesRepo
-){
+) {
 
-    suspend operator fun invoke(usagesPattern: List<Pair<Long,Int>>, med: MedDomainModel, course: CourseDomainModel) {
+    suspend operator fun invoke(usagesPattern: List<Pair<Long, Int>>, med: MedDomainModel, course: CourseDomainModel) {
         usagesRepo.deleteUsagesByMedId(med.id)
         val usages = generateCommonUsages(
             usagesByDay = usagesPattern,
@@ -35,29 +35,30 @@ class UpdateAllUsagesInCourseUseCase @Inject constructor(
         startDate: Long,
         endDate: Long,
         regime: Int,
-    ) : List<UsageCommonDomainModel> {
+    ): List<UsageCommonDomainModel> {
         val now = Instant.now().epochSecond
         val startLocalDate = LocalDateTime.ofEpochSecond(startDate, 0, ZoneOffset.UTC).toLocalDate()
         val endLocalDate = LocalDateTime.ofEpochSecond(endDate, 0, ZoneOffset.UTC).toLocalDate()
         val interval = ChronoUnit.DAYS.between(startLocalDate, endLocalDate).toInt().absoluteValue
         return mutableListOf<UsageCommonDomainModel>().apply {
             repeat(interval) { position ->
-                if(position % (regime+1) == 0) {
+                if (position % (regime + 1) == 0) {
                     usagesByDay.forEach {
                         val time = (it.first)
-                        if(time > now) this.add(
-                            UsageCommonDomainModel(
-                                medId = medId,
-                                userId = userId,
-                                creationTime = now,
-                                useTime = time,
-                                quantity = it.second
+                        if (time > now) {
+                            this.add(
+                                UsageCommonDomainModel(
+                                    medId = medId,
+                                    userId = userId,
+                                    creationTime = now,
+                                    useTime = time,
+                                    quantity = it.second
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
         }
     }
-
 }

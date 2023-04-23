@@ -74,5 +74,4 @@ class UserDataRepoImpl @Inject constructor(
     override suspend fun getUserRules(): RulesUserDomainModel {
         return dataStore_userRules.data.first().mapToDomain()
     }
-
 }

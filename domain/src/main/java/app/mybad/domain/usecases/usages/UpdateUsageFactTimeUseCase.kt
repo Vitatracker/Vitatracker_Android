@@ -14,5 +14,4 @@ class UpdateUsageFactTimeUseCase @Inject constructor(
             factTime = factTime
         )
     }
-
 }

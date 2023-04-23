@@ -33,8 +33,8 @@ fun DateDelaySelector(
 ) {
     val days = (0..30).toList()
     val months = (0..12).toList()
-    val pagerStateMonths = rememberPagerState(initialPage = months.size*10000 + initValue.months)
-    val pagerStateDays = rememberPagerState(initialPage = days.size*10000 + initValue.days)
+    val pagerStateMonths = rememberPagerState(initialPage = months.size * 10000 + initValue.months)
+    val pagerStateDays = rememberPagerState(initialPage = days.size * 10000 + initValue.days)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -68,7 +68,7 @@ fun DateDelaySelector(
                         else -> 0.7f
                     }
                     val a = when ((pagerStateMonths.currentPage - it).absoluteValue) {
-                        0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                        0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
                     val scale by animateFloatAsState(
@@ -87,8 +87,8 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if(months[it % months.size] < 10) "0${months[it % months.size]}" else "${months[it % months.size]}"
-                        Text( text = t, style = Typography.headlineLarge)
+                        val t = if (months[it % months.size] < 10) "0${months[it % months.size]}" else "${months[it % months.size]}"
+                        Text(text = t, style = Typography.headlineLarge)
                     }
                 }
             }
@@ -113,7 +113,7 @@ fun DateDelaySelector(
                         else -> 0.7f
                     }
                     val a = when ((pagerStateDays.currentPage - it).absoluteValue) {
-                        0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                        0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
                     val scale by animateFloatAsState(
@@ -132,7 +132,7 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if(days[it % days.size] < 10) "0${days[it % days.size]}" else "${days[it % days.size]}"
+                        val t = if (days[it % days.size] < 10) "0${days[it % days.size]}" else "${days[it % days.size]}"
                         Text(text = t, style = Typography.headlineLarge)
                     }
                 }
@@ -151,5 +151,4 @@ fun DateDelaySelector(
             content = { Text(text = stringResource(R.string.settings_save)) }
         )
     }
-
 }

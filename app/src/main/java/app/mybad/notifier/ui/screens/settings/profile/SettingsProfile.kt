@@ -1,16 +1,12 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
@@ -40,7 +36,6 @@ fun SettingsProfile(
     onPasswordEdit: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
-
     val editUserAvatar = remember { mutableStateOf(userModel.avatar) }
     val editUserName = remember { mutableStateOf(userModel.name) }
     val editEmail = remember { mutableStateOf(userModel.email) }
@@ -203,7 +198,6 @@ private fun SettingsProfileEditText(
     )
 }
 
-
 @Composable
 private fun SettingsProfileButtonSavable(
     onDismiss: () -> Unit,
@@ -218,7 +212,6 @@ private fun SettingsProfileButtonSavable(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Button(
             onClick = {
                 onDismiss()

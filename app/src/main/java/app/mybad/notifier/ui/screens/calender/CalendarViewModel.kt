@@ -33,7 +33,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun reducer(intent: CalendarIntent) {
-        when(intent) {
+        when (intent) {
             is CalendarIntent.SetUsage -> {
                 scope.launch {
                     updateUsage.execute(intent.usage)
@@ -41,5 +41,4 @@ class CalendarViewModel @Inject constructor(
             }
         }
     }
-
 }

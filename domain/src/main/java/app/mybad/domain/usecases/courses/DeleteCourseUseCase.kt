@@ -17,7 +17,7 @@ class DeleteCourseUseCase @Inject constructor(
         val medId = coursesRepo.getSingle(courseId).medId
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
         notificationsScheduler.cancelByMedId(medId) {
-            usagesRepo.deleteUsagesByInterval(medId, now, now+157766400)
+            usagesRepo.deleteUsagesByInterval(medId, now, now + 157766400)
             coursesRepo.deleteSingle(courseId)
         }
     }

@@ -32,7 +32,7 @@ import java.time.ZoneOffset
 import java.util.*
 
 private val usagesPattern = listOf<Pair<Long, Int>>(
-    Pair(1678190400,1),
+    Pair(1678190400, 1),
     Pair(1678197600, 3),
     Pair(1678204800, 2)
 )
@@ -45,7 +45,6 @@ fun CourseInfoScreen(
     med: MedDomainModel = MedDomainModel(),
     reducer: (MyCoursesIntent) -> Unit = {},
 ) {
-
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
     val rels = stringArrayResource(R.array.food_relations)
@@ -62,20 +61,40 @@ fun CourseInfoScreen(
     val endLabel = stringResource(R.string.add_course_end_time)
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
-    var startDate = LocalDateTime.ofEpochSecond(courseInternal.startDate, 0, ZoneId.systemDefault().rules.getOffset(
-        Instant.now()))
+    var startDate = LocalDateTime.ofEpochSecond(
+        courseInternal.startDate,
+        0,
+        ZoneId.systemDefault().rules.getOffset(
+            Instant.now()
+        )
+    )
         .withHour(0).withMinute(0)
-    var endDate = LocalDateTime.ofEpochSecond(courseInternal.endDate, 0, ZoneId.systemDefault().rules.getOffset(
-        Instant.now()))
+    var endDate = LocalDateTime.ofEpochSecond(
+        courseInternal.endDate,
+        0,
+        ZoneId.systemDefault().rules.getOffset(
+            Instant.now()
+        )
+    )
         .withHour(23).withMinute(59)
     var selectedInput by remember { mutableStateOf(-1) }
 
     LaunchedEffect(courseInternal) {
-        startDate = LocalDateTime.ofEpochSecond(courseInternal.startDate, 0, ZoneId.systemDefault().rules.getOffset(
-            Instant.now()))
+        startDate = LocalDateTime.ofEpochSecond(
+            courseInternal.startDate,
+            0,
+            ZoneId.systemDefault().rules.getOffset(
+                Instant.now()
+            )
+        )
             .withHour(0).withMinute(0)
-        endDate = LocalDateTime.ofEpochSecond(courseInternal.endDate, 0, ZoneId.systemDefault().rules.getOffset(
-            Instant.now()))
+        endDate = LocalDateTime.ofEpochSecond(
+            courseInternal.endDate,
+            0,
+            ZoneId.systemDefault().rules.getOffset(
+                Instant.now()
+            )
+        )
             .withHour(23).withMinute(59)
     }
 
@@ -91,8 +110,11 @@ fun CourseInfoScreen(
             )
             MultiBox(
                 {
-                    IconSelector(selected = medInternal.icon, color = medInternal.color,
-                        onSelect = { medInternal = medInternal.copy(icon = it) })
+                    IconSelector(
+                        selected = medInternal.icon,
+                        color = medInternal.color,
+                        onSelect = { medInternal = medInternal.copy(icon = it) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -104,8 +126,10 @@ fun CourseInfoScreen(
             )
             MultiBox(
                 {
-                    ColorSelector(selected = medInternal.color,
-                        onSelect = { medInternal = medInternal.copy(color = it) })
+                    ColorSelector(
+                        selected = medInternal.color,
+                        onSelect = { medInternal = medInternal.copy(color = it) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -117,15 +141,20 @@ fun CourseInfoScreen(
             )
             MultiBox(
                 {
-                    BasicKeyboardInput(label = name, init = medInternal.name, hideOnGo = true,
-                        onChange = { medInternal = medInternal.copy(name = it) })
+                    BasicKeyboardInput(
+                        label = name,
+                        init = medInternal.name,
+                        hideOnGo = true,
+                        onChange = { medInternal = medInternal.copy(name = it) }
+                    )
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
                     ParameterIndicator(
                         name = form,
                         value = types[med.type],
-                        onClick = { exp = true })
+                        onClick = { exp = true }
+                    )
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -133,15 +162,18 @@ fun CourseInfoScreen(
                     ) {
                         types.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     medInternal = medInternal.copy(type = index)
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },
                 {
-                    BasicKeyboardInput(label = dose,
+                    BasicKeyboardInput(
+                        label = dose,
                         init = if (medInternal.dose == 0) "" else medInternal.dose.toString(),
                         hideOnGo = true,
                         keyboardType = KeyboardType.Number,
@@ -152,14 +184,16 @@ fun CourseInfoScreen(
                                 style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                             )
                         },
-                        onChange = { medInternal = medInternal.copy(dose = it.toIntOrNull() ?: 0) })
+                        onChange = { medInternal = medInternal.copy(dose = it.toIntOrNull() ?: 0) }
+                    )
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
                     ParameterIndicator(
                         name = unit,
                         value = units[medInternal.measureUnit],
-                        onClick = { exp = true })
+                        onClick = { exp = true }
+                    )
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -167,10 +201,12 @@ fun CourseInfoScreen(
                     ) {
                         units.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     medInternal = medInternal.copy(measureUnit = index)
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },
@@ -179,7 +215,8 @@ fun CourseInfoScreen(
                     ParameterIndicator(
                         name = rel,
                         value = rels[medInternal.beforeFood],
-                        onClick = { exp = true })
+                        onClick = { exp = true }
+                    )
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -187,10 +224,12 @@ fun CourseInfoScreen(
                     ) {
                         rels.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     medInternal = medInternal.copy(beforeFood = index)
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },
@@ -203,26 +242,39 @@ fun CourseInfoScreen(
                 style = Typography.bodyLarge,
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
             )
-            val monthStart = if (Locale.getDefault().language == "ru")
+            val monthStart = if (Locale.getDefault().language == "ru") {
                 stringArrayResource(R.array.months_full_more)[startDate.monthValue - 1]
-            else stringArrayResource(R.array.months_full)[startDate.monthValue - 1]
-            val monthEnd = if (Locale.getDefault().language == "ru")
+            } else {
+                stringArrayResource(R.array.months_full)[startDate.monthValue - 1]
+            }
+            val monthEnd = if (Locale.getDefault().language == "ru") {
                 stringArrayResource(R.array.months_full_more)[endDate.monthValue - 1]
-            else stringArrayResource(R.array.months_full)[endDate.monthValue - 1]
+            } else {
+                stringArrayResource(R.array.months_full)[endDate.monthValue - 1]
+            }
             val sd = "${startDate.dayOfMonth} $monthStart ${startDate.year}"
             val ed = "${endDate.dayOfMonth} $monthEnd ${endDate.year}"
             MultiBox(
                 {
-                    ParameterIndicator(name = startLabel, value = sd,
-                        onClick = { selectedInput = 1 })
+                    ParameterIndicator(
+                        name = startLabel,
+                        value = sd,
+                        onClick = { selectedInput = 1 }
+                    )
                 },
                 {
-                    ParameterIndicator(name = endLabel, value = ed,
-                        onClick = { selectedInput = 2 })
+                    ParameterIndicator(
+                        name = endLabel,
+                        value = ed,
+                        onClick = { selectedInput = 2 }
+                    )
                 },
                 {
-                    ParameterIndicator(name = regimeLabel, value = regimeList[courseInternal.regime],
-                        onClick = { selectedInput = 3 })
+                    ParameterIndicator(
+                        name = regimeLabel,
+                        value = regimeList[courseInternal.regime],
+                        onClick = { selectedInput = 3 }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp)
             )
@@ -239,7 +291,7 @@ fun CourseInfoScreen(
                         modifier = Modifier.clickable(
                             indication = null,
                             interactionSource = MutableInteractionSource(),
-                            onClick = {  }
+                            onClick = { }
                         )
                     )
                 },
@@ -249,14 +301,14 @@ fun CourseInfoScreen(
         }
         Spacer(Modifier.height(16.dp))
         SaveDecline(
-            onSave = { reducer(MyCoursesIntent.Update(courseInternal, medInternal, patternInternal)) },
+            onSave = {
+                reducer(MyCoursesIntent.Update(courseInternal, medInternal, patternInternal))
+            },
             onDelete = { reducer(MyCoursesIntent.Delete(courseInternal.id)) },
         )
-
-
     }
 
-    if(selectedInput != -1) {
+    if (selectedInput != -1) {
         Dialog(
             onDismissRequest = { selectedInput = -1 },
             properties = DialogProperties()
@@ -265,14 +317,14 @@ fun CourseInfoScreen(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                when(selectedInput) {
+                when (selectedInput) {
                     1 -> CalendarSelectorScreen(
                         startDay = startDate.toLocalDate(),
                         endDay = endDate.toLocalDate(),
                         onSelect = { sd ->
                             courseInternal = courseInternal.copy(
-                                    startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
-                                )
+                                startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                            )
                             selectedInput = -1
                         },
                         onDismiss = { selectedInput = -1 },
@@ -283,9 +335,10 @@ fun CourseInfoScreen(
                         endDay = endDate.toLocalDate(),
                         onSelect = { ed ->
                             courseInternal = courseInternal.copy(
-                                    endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(
-                                        ZoneOffset.UTC) ?: 0L,
-                                )
+                                endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(
+                                    ZoneOffset.UTC
+                                ) ?: 0L,
+                            )
                             selectedInput = -1
                         },
                         onDismiss = { selectedInput = -1 },

@@ -7,14 +7,28 @@ buildscript {
         hilt_version = '2.45'
         room = '2.5.0'
         data_store = '1.1.0-alpha01'
+        detekt = "1.23.0-RC1"
     }
 }
 
 plugins {
+    id 'io.gitlab.arturbosch.detekt' version "1.23.0-RC1"
     id 'com.android.application' version '8.0.0' apply false
     id 'com.android.library' version '8.0.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
     id 'org.jetbrains.kotlin.jvm' version '1.8.20' apply false
     id 'com.google.dagger.hilt.android' version "2.44" apply false
     id 'checkstyle'
+}
+
+dependencies {
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:$detekt"
+}
+
+detekt {
+    toolVersion = detekt
+    autoCorrect = true
+    config = files("config/detekt/detekt.yml")
+    source = files(projectDir)
+    buildUponDefaultConfig = false
 }

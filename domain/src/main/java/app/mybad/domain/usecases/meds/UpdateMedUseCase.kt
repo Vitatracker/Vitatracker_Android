@@ -11,5 +11,4 @@ class UpdateMedUseCase @Inject constructor(
     suspend operator fun invoke(med: MedDomainModel) {
         medsRepo.updateSingle(med.id, med)
     }
-
 }

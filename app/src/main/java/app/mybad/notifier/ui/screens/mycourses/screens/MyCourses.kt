@@ -37,7 +37,6 @@ fun MyCourses(
     meds: List<MedDomainModel>,
     onSelect: (Long) -> Unit
 ) {
-
     val height = LocalConfiguration.current.screenHeightDp
     Column(
         verticalArrangement = Arrangement.Top,
@@ -48,7 +47,7 @@ fun MyCourses(
         courses.forEach {
             Log.w("MC_courses", "$it")
         }
-        if(courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
+        if (courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
             LazyColumn(Modifier.heightIn(max = height.dp)) {
                 courses.forEach { course ->
                     item {
@@ -64,22 +63,22 @@ fun MyCourses(
                     }
                 }
                 courses.forEach { nCourse ->
-                    if(
+                    if (
                         nCourse.interval > 0 &&
                         nCourse.startDate + nCourse.interval > now &&
-                        nCourse.startDate + nCourse.interval < now + 86400*3+1
+                        nCourse.startDate + nCourse.interval < now + 86400 * 3 + 1
                     ) {
                         item {
                             CourseItem(
                                 course = nCourse.copy(
                                     startDate = nCourse.startDate + nCourse.interval,
                                     endDate = nCourse.endDate + nCourse.interval,
-                                    ),
+                                ),
                                 med = meds.first { it.id == nCourse.medId },
                                 usages = usages.filter {
                                     it.medId == nCourse.medId && it.useTime >= nCourse.startDate && it.useTime < nCourse.startDate + 86400
                                 }.take(10),
-                                startInDays = ((nCourse.startDate + nCourse.interval - now)/86400).toInt(),
+                                startInDays = ((nCourse.startDate + nCourse.interval - now) / 86400).toInt(),
                             )
                         }
                     }
@@ -92,7 +91,7 @@ fun MyCourses(
 private fun validate(
     meds: List<MedDomainModel>,
     courses: List<CourseDomainModel>
-) : Boolean {
+): Boolean {
     var isValid = true
     val mm = meds.mapIndexed { index, medDomainModel -> index to medDomainModel.id }.toMap()
     courses.forEach {
@@ -111,19 +110,20 @@ private fun CourseItem(
     startInDays: Int = -1,
     onSelect: (Long) -> Unit = {},
 ) {
-
     Log.w("MC_usages_in_item", "$usages")
     val types = stringArrayResource(R.array.types)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
-    val itemsCount = if(usages.isNotEmpty()) {
+    val itemsCount = if (usages.isNotEmpty()) {
         val firstCount = usages.first().quantity
         var correct = true
         usages.forEach {
-            if(it.quantity != firstCount) correct = false
+            if (it.quantity != firstCount) correct = false
         }
-        if(correct) firstCount else 0
-    } else 0
+        if (correct) firstCount else 0
+    } else {
+        0
+    }
     val usagesCount = usages.size
 
     Surface(
@@ -175,9 +175,9 @@ private fun CourseItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        if(itemsCount != 0 || usagesCount > 0) {
+                        if (itemsCount != 0 || usagesCount > 0) {
                             Row {
-                                if(itemsCount != 0) {
+                                if (itemsCount != 0) {
                                     Text(text = "$itemsCount, ${types[med.type]}", style = Typography.labelMedium)
                                     Divider(
                                         thickness = 1.dp,
@@ -188,9 +188,12 @@ private fun CourseItem(
                                             .width(1.dp)
                                     )
                                 }
-                                if(usagesCount > 0) {
+                                if (usagesCount > 0) {
 //                                Text(text = relations[med.beforeFood], style = Typography.labelMedium)
-                                    Text(text = "$usagesCount ${stringResource(R.string.mycourse_per_day_listitem)}", style = Typography.labelMedium)
+                                    Text(
+                                        text = "$usagesCount ${stringResource(R.string.mycourse_per_day_listitem)}",
+                                        style = Typography.labelMedium
+                                    )
                                 }
                             }
                         }
@@ -215,9 +218,7 @@ private fun CourseItem(
                             )
                         }
                     }
-
                 }
-
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -251,7 +252,7 @@ private fun CourseItem(
                         )
                         Text(text = end, style = Typography.bodyLarge)
                     }
-                    if(startInDays > 0) {
+                    if (startInDays > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(Modifier.size(16.dp))
                             Surface(
@@ -259,7 +260,10 @@ private fun CourseItem(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                             ) {
-                                val startsIn = String.format(stringResource(R.string.mycourse_remaining), startInDays.toString())
+                                val startsIn = String.format(
+                                    stringResource(R.string.mycourse_remaining),
+                                    startInDays.toString()
+                                )
                                 Text(
                                     text = startsIn,
                                     style = Typography.bodySmall,

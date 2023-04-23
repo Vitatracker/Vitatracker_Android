@@ -10,10 +10,10 @@ import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun SettingsAboutItem(
-   modifier: Modifier = Modifier,
-   label: String = "label",
-   summary: String = "summary",
-   text: String = "text"
+    modifier: Modifier = Modifier,
+    label: String = "label",
+    summary: String = "summary",
+    text: String = "text"
 ) {
     Column(
         verticalArrangement = Arrangement.Top,

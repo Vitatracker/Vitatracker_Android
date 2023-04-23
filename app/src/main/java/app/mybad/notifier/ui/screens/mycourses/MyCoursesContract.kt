@@ -9,8 +9,8 @@ sealed interface MyCoursesIntent {
     data class Update(
         val course: CourseDomainModel,
         val med: MedDomainModel,
-        val usagesPattern: List<Pair<Long,Int>>
-        ) : MyCoursesIntent
+        val usagesPattern: List<Pair<Long, Int>>
+    ) : MyCoursesIntent
 }
 
 data class MyCoursesState(

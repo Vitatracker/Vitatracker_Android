@@ -11,5 +11,4 @@ class UpdateUserPersonalDomainModelUseCase @Inject constructor(
     suspend fun execute(personalDomainModel: PersonalDomainModel) {
         userDataRepo.updateUserPersonal(personalDomainModel)
     }
-
 }

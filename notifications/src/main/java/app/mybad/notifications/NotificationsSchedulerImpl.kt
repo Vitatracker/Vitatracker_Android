@@ -29,14 +29,14 @@ class NotificationsSchedulerImpl
         usages.forEach {
             val med = medsRepo.getSingle(it.medId)
             val pi = generateUsagePi(med, it, context)
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000L, pi)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime * 1000L, pi)
         }
     }
 
     override suspend fun add(course: CourseDomainModel) {
         val med = medsRepo.getSingle(course.medId)
         val pi = generateCoursePi(course, med, context)
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, course.remindDate*1000L, pi)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, course.remindDate * 1000L, pi)
     }
 
     override suspend fun cancel(usages: List<UsageCommonDomainModel>) {
@@ -67,25 +67,25 @@ class NotificationsSchedulerImpl
     }
 
     override suspend fun rescheduleAll(onComplete: () -> Unit) {
-        val now = System.currentTimeMillis()/1000
+        val now = System.currentTimeMillis() / 1000
         usagesRepo.getCommonAll().forEach {
-            if(it.useTime >= now) {
+            if (it.useTime >= now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateUsagePi(med, it, context)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime*1000, pi)
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime * 1000, pi)
             }
         }
         coursesRepo.getAll().forEach {
-            if(it.remindDate > now) {
+            if (it.remindDate > now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateCoursePi(it, med, context)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.remindDate*1000, pi)
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.remindDate * 1000, pi)
             }
         }
         onComplete()
     }
 
-    private fun generateUsagePi(med: MedDomainModel, usage: UsageCommonDomainModel, context: Context) : PendingIntent {
+    private fun generateUsagePi(med: MedDomainModel, usage: UsageCommonDomainModel, context: Context): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = NOTIFICATION_INTENT
         i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
@@ -100,7 +100,7 @@ class NotificationsSchedulerImpl
         i.putExtra(Extras.QUANTITY.name, usage.quantity)
         return PendingIntent.getBroadcast(context, (usage.useTime + med.id).toInt(), i, 0)
     }
-    private fun generateCoursePi(course: CourseDomainModel, med: MedDomainModel, context: Context) : PendingIntent {
+    private fun generateCoursePi(course: CourseDomainModel, med: MedDomainModel, context: Context): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = COURSE_NOTIFICATION_INTENT
         i.data = Uri.parse("custom://${(course.id + med.id).toInt()}")

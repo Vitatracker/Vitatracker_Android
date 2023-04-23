@@ -20,14 +20,16 @@ import javax.inject.Inject
 class TakeOrDelayUsageService : Service() {
 
     @Inject lateinit var usagesRepo: UsagesRepo
+
     @Inject lateinit var updateUseCase: UpdateUsageUseCase
+
     @Inject lateinit var notificationsScheduler: NotificationsSchedulerImpl
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onBind(p0: Intent?) = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when(intent?.action) {
+        when (intent?.action) {
             TAKE_INTENT -> {
                 scope.launch {
                     val uDef = usagesRepo.getUsagesByIntervalByMed(
@@ -46,7 +48,7 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                         intent.getLongExtra(USAGE_TIME.name, 0L),
                     ).first()
-                    val u = uDef.copy(useTime = Instant.now().epochSecond+20)
+                    val u = uDef.copy(useTime = Instant.now().epochSecond + 20)
                     notificationsScheduler.add(listOf(u))
                 }
             }

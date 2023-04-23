@@ -24,7 +24,6 @@ import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalTime
 import kotlin.math.absoluteValue
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimeSelector(
@@ -34,8 +33,8 @@ fun TimeSelector(
 ) {
     val minutes = (0..59).toList()
     val hours = (0..23).toList()
-    val pagerStateHours = rememberPagerState(initialPage = minutes.size*10000 + initTime.hour)
-    val pagerStateMinutes = rememberPagerState(initialPage = hours.size*10000 + initTime.minute)
+    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + initTime.hour)
+    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + initTime.minute)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,7 +60,7 @@ fun TimeSelector(
                     else -> 0.7f
                 }
                 val a = when ((pagerStateHours.currentPage - it).absoluteValue) {
-                    0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                    0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                     else -> 0f
                 }
                 val scale by animateFloatAsState(
@@ -80,8 +79,8 @@ fun TimeSelector(
                         .wrapContentWidth()
                         .scale(scale)
                 ) {
-                    val t = if(hours[it % hours.size] < 10) "0${hours[it % hours.size]}" else "${hours[it % hours.size]}"
-                    Text( text = t, style = Typography.headlineLarge)
+                    val t = if (hours[it % hours.size] < 10) "0${hours[it % hours.size]}" else "${hours[it % hours.size]}"
+                    Text(text = t, style = Typography.headlineLarge)
                 }
             }
             VerticalPager(
@@ -98,7 +97,7 @@ fun TimeSelector(
                     else -> 0.7f
                 }
                 val a = when ((pagerStateMinutes.currentPage - it).absoluteValue) {
-                    0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                    0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                     else -> 0f
                 }
                 val scale by animateFloatAsState(
@@ -117,7 +116,7 @@ fun TimeSelector(
                         .wrapContentWidth()
                         .scale(scale)
                 ) {
-                    val t = if(minutes[it % minutes.size] < 10) "0${minutes[it % minutes.size]}" else "${minutes[it % minutes.size]}"
+                    val t = if (minutes[it % minutes.size] < 10) "0${minutes[it % minutes.size]}" else "${minutes[it % minutes.size]}"
                     Text(text = t, style = Typography.headlineLarge)
                 }
             }
@@ -135,5 +134,4 @@ fun TimeSelector(
             content = { Text(text = stringResource(R.string.settings_save)) }
         )
     }
-
 }

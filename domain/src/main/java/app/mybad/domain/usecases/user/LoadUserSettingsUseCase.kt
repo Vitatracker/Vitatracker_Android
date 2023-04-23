@@ -12,5 +12,4 @@ class LoadUserSettingsUseCase @Inject constructor(
     suspend fun getUserPersonal() = userDataRepo.getUserPersonal()
 
     suspend fun getUserRules() = userDataRepo.getUserRules()
-
 }

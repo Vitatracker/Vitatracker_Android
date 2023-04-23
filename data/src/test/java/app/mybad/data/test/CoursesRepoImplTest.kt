@@ -28,25 +28,44 @@ import javax.inject.Named
 class CoursesRepoImplTest {
 
     @get:Rule var hiltRule = HiltAndroidRule(this)
+
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     @Named("test_db")
     lateinit var db: MedDB
-    lateinit var userDao : MedDAO
+    lateinit var userDao: MedDAO
     private val now = Instant.now().epochSecond
     private val testCoursesData = listOf(
         CourseDataModel(
-            id = 1L, userId = "userid", creationDate = now, startDate = now, endDate = now+86400*30,
-            medId = 1L, updateDate = now, interval = 86400*90
+            id = 1L,
+            userId = "userid",
+            creationDate = now,
+            startDate = now,
+            endDate = now + 86400 * 30,
+            medId = 1L,
+            updateDate = now,
+            interval = 86400 * 90
         ),
         CourseDataModel(
-            id = 2L, userId = "userid", creationDate = now, startDate = now, endDate = now+86400*30,
-            medId = 2L, updateDate = now, interval = 86400*90
+            id = 2L,
+            userId = "userid",
+            creationDate = now,
+            startDate = now,
+            endDate = now + 86400 * 30,
+            medId = 2L,
+            updateDate = now,
+            interval = 86400 * 90
         ),
         CourseDataModel(
-            id = 3L, userId = "userid", creationDate = now, startDate = now, endDate = now+86400*30,
-            medId = 3L, updateDate = now, interval = 86400*90
+            id = 3L,
+            userId = "userid",
+            creationDate = now,
+            startDate = now,
+            endDate = now + 86400 * 30,
+            medId = 3L,
+            updateDate = now,
+            interval = 86400 * 90
         ),
     )
 
@@ -55,6 +74,7 @@ class CoursesRepoImplTest {
         hiltRule.inject()
         userDao = db.dao()
     }
+
     @After
     fun tearDown() {
         db.close()
@@ -95,7 +115,6 @@ class CoursesRepoImplTest {
         runTest {
             Assert.assertEquals(testCoursesData, r.first())
         }
-
     }
 
     @Test

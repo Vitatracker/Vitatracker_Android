@@ -13,24 +13,32 @@ import kotlinx.coroutines.flow.Flow
 interface MedDAO {
 
     @Query("select * from meds where id=(:medId) limit 1")
-    fun getMedById(medId: Long) : MedDataModel
+    fun getMedById(medId: Long): MedDataModel
+
     @Query("select * from meds")
-    fun getAllMeds() : List<MedDataModel>
+    fun getAllMeds(): List<MedDataModel>
+
     @Query("select * from meds")
-    fun getAllMedsFlow() : Flow<List<MedDataModel>>
+    fun getAllMedsFlow(): Flow<List<MedDataModel>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMed(med: MedDataModel)
+
     @Query("delete from meds where id=(:medId)")
     fun deleteMed(medId: Long)
 
     @Query("select * from courses where id=(:courseId) limit 1")
-    fun getCourseById(courseId: Long) : CourseDataModel
+    fun getCourseById(courseId: Long): CourseDataModel
+
     @Query("select * from courses")
-    fun getAllCourses() : List<CourseDataModel>
+    fun getAllCourses(): List<CourseDataModel>
+
     @Query("select * from courses")
-    fun getAllCoursesFlow() : Flow<List<CourseDataModel>>
+    fun getAllCoursesFlow(): Flow<List<CourseDataModel>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCourse(course: CourseDataModel)
+
     @Query("delete from courses where id=(:courseId)")
     fun deleteCourse(courseId: Long)
 
@@ -39,18 +47,25 @@ interface MedDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun updateSingleUsage(usage: UsageCommonDataModel)
+
     @Query("select * from usages_common where medId=(:medId)")
-    fun getUsagesById(medId: Long) : List<UsageCommonDataModel>
+    fun getUsagesById(medId: Long): List<UsageCommonDataModel>
+
     @Query("select * from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
-    fun getUsagesByIntervalByMed(medId: Long, startTime: Long, endTime: Long) : List<UsageCommonDataModel>
+    fun getUsagesByIntervalByMed(medId: Long, startTime: Long, endTime: Long): List<UsageCommonDataModel>
+
     @Query("delete from usages_common where medId=(:medId)")
     fun deleteUsagesById(medId: Long)
+
     @Query("delete from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
     fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
+
     @Query("select * from usages_common")
-    fun getAllCommonUsagesFlow() : Flow<List<UsageCommonDataModel>>
+    fun getAllCommonUsagesFlow(): Flow<List<UsageCommonDataModel>>
+
     @Query("SELECT * FROM usages_common WHERE useTime BETWEEN (:startTime) AND (:endTime)")
-    fun getUsagesByInterval(startTime: Long, endTime: Long) : List<UsageCommonDataModel>
+    fun getUsagesByInterval(startTime: Long, endTime: Long): List<UsageCommonDataModel>
+
     @Query("SELECT * FROM meds WHERE id IN (:listId) ")
-    fun getMedByList(listId: List<Long>) : List<MedDataModel>
+    fun getMedByList(listId: List<Long>): List<MedDataModel>
 }

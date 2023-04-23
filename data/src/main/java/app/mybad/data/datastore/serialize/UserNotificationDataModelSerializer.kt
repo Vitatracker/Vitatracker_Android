@@ -22,5 +22,4 @@ object UserNotificationDataModelSerializer : Serializer<UserNotificationsDataMod
     override suspend fun writeTo(t: UserNotificationsDataModel, output: OutputStream) {
         t.writeTo(output)
     }
-
 }

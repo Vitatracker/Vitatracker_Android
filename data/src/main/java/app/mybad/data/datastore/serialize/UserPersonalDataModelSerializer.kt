@@ -22,5 +22,4 @@ object UserPersonalDataModelSerializer : Serializer<UserPersonalDataModel> {
     override suspend fun writeTo(t: UserPersonalDataModel, output: OutputStream) {
         t.writeTo(output)
     }
-
 }

@@ -25,7 +25,6 @@ fun AddMedicineSecondScreen(
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
 ) {
-
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
     val rels = stringArrayResource(R.array.food_relations)
@@ -47,7 +46,9 @@ fun AddMedicineSecondScreen(
             MultiBox(
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = form, value = types[med.type], onClick = { exp = true })
+                    ParameterIndicator(name = form, value = types[med.type], onClick = {
+                        exp = true
+                    })
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -55,20 +56,35 @@ fun AddMedicineSecondScreen(
                     ) {
                         types.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     reducer(NewCourseIntent.UpdateMed(med.copy(type = index)))
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },
-                { BasicKeyboardInput(label = dose, init = if(med.dose == 0) "" else med.dose.toString(), hideOnGo = true,
-                    keyboardType = KeyboardType.Number, alignRight = true,
-                    prefix = { Text(text = dose, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)) },
-                    onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(dose = it.toIntOrNull() ?: 0))) }) },
+                {
+                    BasicKeyboardInput(
+                        label = dose,
+                        init = if (med.dose == 0) "" else med.dose.toString(),
+                        hideOnGo = true,
+                        keyboardType = KeyboardType.Number,
+                        alignRight = true,
+                        prefix = {
+                            Text(text = dose, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                        },
+                        onChange = {
+                            reducer(NewCourseIntent.UpdateMed(med.copy(dose = it.toIntOrNull() ?: 0)))
+                        }
+                    )
+                },
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = { exp = true })
+                    ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = {
+                        exp = true
+                    })
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -76,16 +92,20 @@ fun AddMedicineSecondScreen(
                     ) {
                         units.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     reducer(NewCourseIntent.UpdateMed(med.copy(measureUnit = index)))
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = rel, value = rels[med.beforeFood], onClick = { exp = true })
+                    ParameterIndicator(name = rel, value = rels[med.beforeFood], onClick = {
+                        exp = true
+                    })
                     DropdownMenu(
                         expanded = exp,
                         onDismissRequest = { exp = false },
@@ -93,10 +113,12 @@ fun AddMedicineSecondScreen(
                     ) {
                         rels.forEachIndexed { index, item ->
                             DropdownMenuItem(
-                                text = { Text(item) }, onClick = {
+                                text = { Text(item) },
+                                onClick = {
                                     reducer(NewCourseIntent.UpdateMed(med.copy(beforeFood = index)))
                                     exp = false
-                                })
+                                }
+                            )
                         }
                     }
                 },

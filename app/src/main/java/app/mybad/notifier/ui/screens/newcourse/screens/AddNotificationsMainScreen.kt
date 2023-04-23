@@ -44,11 +44,10 @@ fun AddNotificationsMainScreen(
     onNext: () -> Unit = {},
     onBack: () -> Unit = {},
 ) {
-
     val forms = stringArrayResource(R.array.types)
     var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) }
     var dialogIsShown by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf<Pair<LocalTime,Int>?>(null) }
+    var selectedItem by remember { mutableStateOf<Pair<LocalTime, Int>?>(null) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -67,7 +66,7 @@ fun AddNotificationsMainScreen(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(LocalTime.now().withSecond(0),1))
+                        add(Pair(LocalTime.now().withSecond(0), 1))
                     }
                 }
             ) {
@@ -131,7 +130,7 @@ fun AddNotificationsMainScreen(
         }
     }
 
-    if(dialogIsShown && selectedItem != null) {
+    if (dialogIsShown && selectedItem != null) {
         Dialog(onDismissRequest = { dialogIsShown = false }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
@@ -172,7 +171,7 @@ private fun NotificationItem(
         val q = quantity.toString()
         field = field.copy(
             text = q,
-            selection = if(quantity == 0) TextRange(0,1) else TextRange(q.length,q.length),
+            selection = if (quantity == 0) TextRange(0, 1) else TextRange(q.length, q.length),
         )
     }
 
@@ -217,7 +216,7 @@ private fun NotificationItem(
                     onValueChange = {
                         field = it
                         val res = it.text.toFloatOrNull() ?: 0f
-                        onDoseChange(if(res>10f) 10f else res)
+                        onDoseChange(if (res > 10f) 10f else res)
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -231,7 +230,7 @@ private fun NotificationItem(
                         }
                     ),
                     modifier = Modifier.width(25.dp).onFocusChanged {
-                        if(it.hasFocus || it.isFocused) {
+                        if (it.hasFocus || it.isFocused) {
                             field = field.copy(selection = TextRange(0, field.text.length))
                         }
                     }

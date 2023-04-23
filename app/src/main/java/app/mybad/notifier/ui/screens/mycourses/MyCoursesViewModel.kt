@@ -30,18 +30,26 @@ class MyCoursesViewModel @Inject constructor(
 
     init {
         scope.launch {
-            loadCourses.getCoursesFlow().collect { courses -> _state.update { it.copy(courses = courses) } }
+            loadCourses.getCoursesFlow().collect { courses ->
+                _state.update {
+                    it.copy(courses = courses)
+                }
+            }
         }
         scope.launch {
             loadCourses.getMedsFlow().collect { meds -> _state.update { it.copy(meds = meds) } }
         }
         scope.launch {
-            loadCourses.getUsagesFlow().collect { usages -> _state.update { it.copy(usages = usages) } }
+            loadCourses.getUsagesFlow().collect { usages ->
+                _state.update {
+                    it.copy(usages = usages)
+                }
+            }
         }
     }
 
     fun reduce(intent: MyCoursesIntent) {
-        when(intent) {
+        when (intent) {
             is MyCoursesIntent.Delete -> {
                 scope.launch { deleteCourse.execute(intent.courseId) }
             }
@@ -54,5 +62,4 @@ class MyCoursesViewModel @Inject constructor(
             }
         }
     }
-
 }

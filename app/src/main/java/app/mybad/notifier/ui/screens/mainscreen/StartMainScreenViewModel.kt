@@ -59,7 +59,9 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     private fun getAllUsages() {
-        scope.launch { _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute().size)) }
+        scope.launch {
+            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute().size))
+        }
     }
 
     private fun updateUsages() {

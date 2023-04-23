@@ -27,13 +27,14 @@ import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavIt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainLoginScreen(navController: NavHostController) {
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(route = AuthorizationNavItem.Authorization.route) }) {
+                    IconButton(onClick = {
+                        navController.navigate(route = AuthorizationNavItem.Authorization.route)
+                    }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
                 },
@@ -49,13 +50,12 @@ fun StartMainLoginScreen(navController: NavHostController) {
             ) {
                 MainLoginScreen(navController = navController)
             }
-        })
-
+        }
+    )
 }
 
 @Composable
 private fun MainLoginScreen(navController: NavHostController) {
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -71,13 +71,10 @@ private fun MainLoginScreen(navController: NavHostController) {
             SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
-
 }
 
 @Composable
 private fun LoginScreenBackgroundImage() {
-
-
 }
 
 @Composable
@@ -197,4 +194,3 @@ private fun LoginScreenTextPolicy() {
         )
     }
 }
-

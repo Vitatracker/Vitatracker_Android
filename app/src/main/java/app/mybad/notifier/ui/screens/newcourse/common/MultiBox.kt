@@ -18,7 +18,6 @@ fun MultiBox(
     outlineColor: Color = MaterialTheme.colorScheme.primary,
     itemsPadding: PaddingValues,
 ) {
-
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
@@ -28,7 +27,7 @@ fun MultiBox(
         Column {
             items.forEachIndexed { index, item ->
                 Box(Modifier.padding(itemsPadding)) { item() }
-                if(index < items.lastIndex) Divider(thickness = 1.dp, color = outlineColor)
+                if (index < items.lastIndex) Divider(thickness = 1.dp, color = outlineColor)
             }
         }
     }

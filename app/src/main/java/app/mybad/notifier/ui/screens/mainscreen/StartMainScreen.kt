@@ -52,7 +52,6 @@ fun StartMainScreen(
     navController: NavHostController,
     vm: StartMainScreenViewModel
 ) {
-
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
@@ -91,7 +90,6 @@ fun StartMainScreen(
             )
         }
     }
-
 }
 
 @Composable
@@ -103,9 +101,9 @@ private fun MainScreen(
     usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>
 ) {
-
     Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         MainScreenBackgroundImage()
         Column(
@@ -119,12 +117,10 @@ private fun MainScreen(
             MainScreenLazyMedicines(usages = usages, meds = meds, sizeUsages = sizeUsages)
         }
     }
-
 }
 
 @Composable
 private fun MainScreenBackgroundImage() {
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -133,7 +129,6 @@ private fun MainScreenMonthPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
-
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
     val stateMonth = rememberPagerState(LocalDate.now().month.ordinal)
@@ -227,7 +222,6 @@ private fun MainScreenWeekPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
-
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
 
@@ -279,11 +273,10 @@ private fun MainScreenWeekPager(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-
                 countDay = it + 1
                 calendar.time = Date(Year.now().value, monthState, it - 1)
                 shortNameOfDay = daysShortsArray[calendar.get(Calendar.DAY_OF_WEEK) - 1]
-                //DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
+                // DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
@@ -299,7 +292,6 @@ private fun MainScreenWeekPager(
                     textAlign = TextAlign.Center
                 )
             }
-
         }
     }
 }
@@ -412,7 +404,6 @@ private fun MainScreenCourseItem(
             MainScreenFormCourseHeader(med = med, usages = usage)
         }
     }
-
 }
 
 @Composable
@@ -596,7 +587,6 @@ private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
     } else {
         BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
-
 }
 
 @Composable
@@ -642,21 +632,20 @@ private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
 
 @Composable
 private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-
     val nowTime = convertDateToLong(LocalDateTime.now())
     val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
     return if (isDone) {
-        Color(0xFFF9FAFE)//MaterialTheme.colorScheme.primaryContainer
+        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
     } else if (nowDate > usageDate) {
-        Color(0xFFF2B2B2)//MaterialTheme.colorScheme.errorContainer
+        Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
     } else if (nowDate < usageDate) {
-        Color(0xFFF9FAFE)//MaterialTheme.colorScheme.primaryContainer
+        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
     } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        Color(0xFFF2B2B2)//MaterialTheme.colorScheme.errorContainer
+        Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
     } else {
-        Color(0xFFF9FAFE)//MaterialTheme.colorScheme.primaryContainer
+        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
     }
 }
 

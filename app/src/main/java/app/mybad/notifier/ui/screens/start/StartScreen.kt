@@ -30,7 +30,8 @@ fun StartScreenApp(navController: NavHostController) {
             ) {
                 StartWelcomeScreen(navController = navController)
             }
-        })
+        }
+    )
 }
 
 @Composable
@@ -121,7 +122,8 @@ private fun TextRecommendation(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(id = R.string.start_screen_recomendation_1),
             fontSize = 16.sp,
-            textAlign = TextAlign.Justify, modifier = modifier
+            textAlign = TextAlign.Justify,
+            modifier = modifier
         )
         Text(
             text = stringResource(id = R.string.start_screen_recomendation_2),

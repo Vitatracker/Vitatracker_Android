@@ -7,7 +7,10 @@ class SwitchGlobalNotificationsUseCase @Inject constructor(
     private val notificationsScheduler: NotificationsScheduler
 ) {
     suspend fun execute(enabled: Boolean) {
-        if(enabled) notificationsScheduler.rescheduleAll()
-        else notificationsScheduler.cancelAll()
+        if (enabled) {
+            notificationsScheduler.rescheduleAll()
+        } else {
+            notificationsScheduler.cancelAll()
+        }
     }
 }

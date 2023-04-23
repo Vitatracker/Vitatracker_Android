@@ -14,5 +14,4 @@ interface UserDataRepo {
     suspend fun updateUserRules(rules: RulesUserDomainModel)
 
     suspend fun getUserRules(): RulesUserDomainModel
-
 }
