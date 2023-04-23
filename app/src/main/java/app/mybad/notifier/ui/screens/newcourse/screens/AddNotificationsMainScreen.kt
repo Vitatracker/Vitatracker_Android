@@ -59,30 +59,15 @@ fun AddNotificationsMainScreen(
                 modifier = Modifier.padding(bottom = 4.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            AddNotificationButton(
+                form = med.type,
+                forms = forms,
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
                         add(Pair(LocalTime.now().withSecond(0), 1))
                     }
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircleOutline,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .size(16.dp)
-                )
-                Text(
-                    text = stringResource(R.string.add_notifications_time),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+            )
             Spacer(Modifier.height(16.dp))
             LazyColumn {
                 notificationsPattern.forEachIndexed { index, item ->
@@ -116,7 +101,9 @@ fun AddNotificationsMainScreen(
             Spacer(Modifier.height(16.dp))
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
@@ -229,14 +216,65 @@ private fun NotificationItem(
                             field = field.copy(selection = TextRange.Zero)
                         }
                     ),
-                    modifier = Modifier.width(25.dp).onFocusChanged {
-                        if (it.hasFocus || it.isFocused) {
-                            field = field.copy(selection = TextRange(0, field.text.length))
+                    modifier = Modifier
+                        .width(25.dp)
+                        .onFocusChanged {
+                            if (it.hasFocus || it.isFocused) {
+                                field = field.copy(selection = TextRange(0, field.text.length))
+                            }
                         }
-                    }
                 )
                 Text(
                     text = forms[form],
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+            Spacer(Modifier.width(0.dp))
+        }
+    }
+}
+
+@Composable
+private fun AddNotificationButton(
+    modifier: Modifier = Modifier,
+    form: Int,
+    forms: Array<String>,
+    onClick: () -> Unit,
+) {
+
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.background,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        modifier = modifier.clickable(
+            indication = null,
+            interactionSource = MutableInteractionSource(),
+            onClick = onClick
+        ),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.AddCircleOutline,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(16.dp)
+            )
+            Text(
+                text = stringResource(R.string.add_notifications_choose_time),
+                style = Typography.bodyLarge,
+            )
+            Row {
+                Text(
+                    text = "1 ${forms[form]}",
                     style = Typography.bodyMedium,
                     modifier = Modifier.padding(start = 4.dp)
                 )

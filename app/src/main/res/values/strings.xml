@@ -28,7 +28,7 @@
     <string name="add_course_days">Days</string>
     <string name="add_next_course_interval">Start next course in</string>
     <string name="add_course_end_time">End time</string>
-    <string name="medication_regime">Schedule of medications</string>
+    <string name="medication_regime">Schedule of medications *</string>
     <string name="add_course_reminder">Add reminder for  next course</string>
     <string name="add_next_course_remind_time">Time of remind</string>
 
@@ -121,5 +121,7 @@
     <string name="mycourse_edit_icon_color">Edit icon color</string>
     <string name="main_screen_meds_clear_start">Lets start!</string>
     <string name="main_screen_meds_clear_add">Add the first medicines</string>
+    <string name="add_notifications_choose_time">Choose time</string>
+    <string name="add_med_error_empty_name">You should type the name of medicine</string>
 
 </resources>
