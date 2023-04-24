@@ -5,5 +5,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthorizationRepoImpl @Inject constructor(
-    private val dataStore: String
-)
+//    private val dataStore: DataStorePref
+) {
+
+}

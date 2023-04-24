@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerArrayResource
@@ -55,6 +56,7 @@ fun StartMainScreen(
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
+    val usageCommon = remember { mutableStateOf(UsageCommonDomainModel(medId = -1, userId = "")) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -70,8 +72,7 @@ fun StartMainScreen(
                             textAlign = TextAlign.Justify
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                }
             )
         }
     ) { contentPadding ->
@@ -86,7 +87,9 @@ fun StartMainScreen(
                 changeData = { vm.changeData(dateNow.value) },
                 sizeUsages = sizeUsages.value,
                 usages = uiState.usages,
-                meds = uiState.meds
+                meds = uiState.meds,
+                usageCommon = usageCommon,
+                setUsageFactTime = { vm.setUsagesFactTime(usage = usageCommon.value) }
             )
         }
     }
@@ -99,7 +102,9 @@ private fun MainScreen(
     changeData: (MutableState<LocalDateTime>) -> Unit,
     sizeUsages: Int,
     usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>
+    meds: List<MedDomainModel>,
+    usageCommon: MutableState<UsageCommonDomainModel>,
+    setUsageFactTime: (UsageCommonDomainModel) -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -114,7 +119,15 @@ private fun MainScreen(
                 changeData = changeData
             )
             MainScreenTextCategory()
-            MainScreenLazyMedicines(usages = usages, meds = meds, sizeUsages = sizeUsages)
+            MainScreenLazyMedicines(
+                uiState = uiState,
+                changeData = changeData,
+                usages = usages,
+                meds = meds,
+                sizeUsages = sizeUsages,
+                usageCommon = usageCommon,
+                setUsageFactTime = setUsageFactTime
+            )
         }
     }
 }
@@ -309,9 +322,13 @@ private fun MainScreenTextCategory() {
 
 @Composable
 private fun MainScreenLazyMedicines(
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit,
     usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>,
-    sizeUsages: Int
+    sizeUsages: Int,
+    usageCommon: MutableState<UsageCommonDomainModel>,
+    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
 ) {
     if (sizeUsages == 0) {
         MainScreenMedsClear()
@@ -322,7 +339,11 @@ private fun MainScreenLazyMedicines(
                     item {
                         MainScreenCourseItem(
                             usage = usage,
-                            med = meds.filter { it.id == usage.medId }[0]
+                            med = meds.filter { it.id == usage.medId }[0],
+                            usageCommon = usageCommon,
+                            setUsageFactTime = setUsageFactTime,
+                            uiState = uiState,
+                            changeData = changeData
                         )
                     }
                 }
@@ -380,7 +401,11 @@ private fun MainScreenMedsClearImage() {
 @Composable
 private fun MainScreenCourseItem(
     usage: UsageCommonDomainModel,
-    med: MedDomainModel
+    med: MedDomainModel,
+    usageCommon: MutableState<UsageCommonDomainModel>,
+    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -401,7 +426,14 @@ private fun MainScreenCourseItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MainScreenTimeCourse(usageTime = usage.useTime, usage.factUseTime.toInt() != -1)
-            MainScreenFormCourseHeader(med = med, usages = usage)
+            MainScreenFormCourseHeader(
+                med = med,
+                usages = usage,
+                usageCommon = usageCommon,
+                setUsageFactTime = setUsageFactTime,
+                uiState = uiState,
+                changeData = changeData
+            )
         }
     }
 }
@@ -428,7 +460,11 @@ private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
 @Composable
 private fun MainScreenFormCourseHeader(
     med: MedDomainModel,
-    usages: UsageCommonDomainModel
+    usages: UsageCommonDomainModel,
+    usageCommon: MutableState<UsageCommonDomainModel>,
+    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
+    uiState: MutableState<LocalDateTime>,
+    changeData: (MutableState<LocalDateTime>) -> Unit
 ) {
     val usageTime = usages.useTime
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
@@ -487,84 +523,66 @@ private fun MainScreenFormCourseHeader(
             }
             MainScreenButtonAccept(
                 usageTime = usageTime,
-                isDone = usages.factUseTime.toInt() != -1
+                isDone = usages.factUseTime.toInt() != -1,
+                setUsageFactTime = {
+                    usageCommon.value = usages.copy(
+                        factUseTime = if (usages.factUseTime.toInt() == -1) convertDateToLong(
+                            LocalDateTime.now()
+                        ) else -1
+                    )
+                    setUsageFactTime(
+                        usageCommon.value
+                    )
+                    changeData(uiState)
+                }
             )
         }
     }
 }
 
 @Composable
-private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
+private fun MainScreenButtonAccept(
+    usageTime: Long,
+    isDone: Boolean,
+    setUsageFactTime: () -> Unit
+) {
     val nowTime = convertDateToLong(LocalDateTime.now())
     val nowDate = getDateFromLong(date = nowTime)
     val usageDate = getDateFromLong(date = usageTime)
 
-    return if (isDone) {
-        Icon(
-            painter = painterResource(R.drawable.done),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable {
-//                    val n = Instant.now().epochSecond
-                }
-        )
+    val tint: Color
+    val painter: Painter
+
+    if (isDone) {
+        painter = painterResource(R.drawable.done)
+        tint = MaterialTheme.colorScheme.primary
     } else if (nowDate > usageDate) {
-        Icon(
-            painter = painterResource(R.drawable.undone),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable {
-//                    val n = Instant.now().epochSecond
-                }
-        )
+        painter = painterResource(R.drawable.undone)
+        tint = MaterialTheme.colorScheme.error
     } else if (nowDate < usageDate) {
-        Icon(
-            painter = painterResource(R.drawable.undone),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable {
-//                    val n = Instant.now().epochSecond
-                }
-        )
+        painter = painterResource(R.drawable.undone)
+        tint = MaterialTheme.colorScheme.primary
     } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        Icon(
-            painter = painterResource(R.drawable.undone),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable {
-//                    val n = Instant.now().epochSecond
-                }
-        )
+        painter = painterResource(R.drawable.undone)
+        tint = MaterialTheme.colorScheme.error
     } else {
-        Icon(
-            painter = painterResource(R.drawable.undone),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable {
-//                    val n = Instant.now().epochSecond
-                }
-        )
+        painter = painterResource(R.drawable.undone)
+        tint = MaterialTheme.colorScheme.primary
     }
+
+    return Icon(
+        painter = painter,
+        contentDescription = null,
+        tint = tint,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable {
+                setUsageFactTime()
+            }
+    )
+
 }
 
 @Composable

@@ -27,6 +27,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+//            MyBADTheme {
+//                StartAuthorizationScreen(navController = navController)
+//            }
             MyBADTheme {
                 MainNav(
                     navController = navController,

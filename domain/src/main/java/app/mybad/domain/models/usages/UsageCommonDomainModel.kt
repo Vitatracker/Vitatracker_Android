@@ -6,7 +6,7 @@ data class UsageCommonDomainModel(
     val userId: String,
     val creationTime: Long = 0L,
     val editTime: Long = 0L,
-    val useTime: Long,
+    val useTime: Long = 0L,
     val factUseTime: Long = -1L,
     val quantity: Int = 1,
     val isDeleted: Boolean = false

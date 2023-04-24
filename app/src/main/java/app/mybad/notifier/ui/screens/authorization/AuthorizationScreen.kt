@@ -28,7 +28,7 @@ fun MainAuthorizationScreen(navController: NavHostController) {
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        ScreenBackgroundImage(R.drawable.ic_background_authorization_screen_new)
+        ScreenBackgroundImage(R.drawable.ic_background_authorization_screen)
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -7,4 +7,5 @@ interface AuthorizationRepo {
     suspend fun loginWithGoogle()
 
     suspend fun loginWithEmail()
+
 }

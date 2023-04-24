@@ -2,10 +2,11 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.usecases.meds.LoadMedsFromList
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
-import app.mybad.domain.usecases.usages.UpdateUsageFactTimeUseCase
+import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ class StartMainScreenViewModel @Inject constructor(
     private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
     private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
     private val loadMedsFromList: LoadMedsFromList,
-    private val updateUsageFactTimeUseCase: UpdateUsageFactTimeUseCase
+    private val updateUsageUseCase: UpdateUsageUseCase
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -37,13 +38,13 @@ class StartMainScreenViewModel @Inject constructor(
         }
     }
 
-    fun setUsagesFactTime(medId: Long, usageTime: Long, factTime: Long) {
+    fun setUsagesFactTime(usage: UsageCommonDomainModel) {
         scope.launch {
-            updateUsageFactTimeUseCase.execute(
-                medId = medId,
-                usageTime = usageTime,
-                factTime = factTime
-            )
+            updateUsageUseCase.execute(usage = usage)
+//                medId = usage.medId,
+//                usageTime = usage.useTime,
+//                factTime = convertDateToLong(LocalDateTime.now())
+//            )
             updateUsages()
         }
     }
