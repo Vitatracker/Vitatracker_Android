@@ -11,6 +11,9 @@ import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.network.repos.repo.AuthorizationNetworkRepo
+import app.mybad.network.repos.repo.CoursesNetworkRepo
+import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -29,21 +32,24 @@ class DataModule {
     fun providesUserRepo(
         dataStore_userNotification: DataStore<UserNotificationsDataModel>,
         dataStore_userPersonal: DataStore<UserPersonalDataModel>,
-        dataStore_userRules: DataStore<UserRulesDataModel>
+        dataStore_userRules: DataStore<UserRulesDataModel>,
+        settingsNetworkRepo: SettingsNetworkRepo
     ): UserDataRepo {
         return UserDataRepoImpl(
-            dataStore_userNotification,
-            dataStore_userPersonal,
-            dataStore_userRules
+            dataStore_userNotification = dataStore_userNotification,
+            dataStore_userPersonal = dataStore_userPersonal,
+            dataStore_userRules = dataStore_userRules,
+            settingsNetworkRepo = settingsNetworkRepo
         )
     }
 
     @Provides
     @Singleton
     fun providesCoursesRepo(
-        db: MedDAO
+        db: MedDAO,
+        coursesNetworkRepo: CoursesNetworkRepo
     ): CoursesRepo {
-        return CoursesRepoImpl(db)
+        return CoursesRepoImpl(db = db, coursesNetworkRepo = coursesNetworkRepo)
     }
 
     @Provides
@@ -51,7 +57,7 @@ class DataModule {
     fun providesMedsRepo(
         db: MedDAO
     ): MedsRepo {
-        return MedsRepoImpl(db)
+        return MedsRepoImpl(db = db)
     }
 
     @Provides
@@ -59,15 +65,19 @@ class DataModule {
     fun providesUsagesRepo(
         db: MedDAO
     ): UsagesRepo {
-        return UsagesRepoImpl(db)
+        return UsagesRepoImpl(db = db)
     }
 
     @Provides
     @Singleton
     fun providesAuthorizationRepo(
-        dataStore: DataStore<Preferences>
+        dataStore: DataStore<Preferences>,
+        authorizationNetworkRepo: AuthorizationNetworkRepo
     ): AuthorizationRepo {
-        return AuthorizationRepoImpl(dataStore = dataStore)
+        return AuthorizationRepoImpl(
+            dataStore = dataStore,
+            authorizationNetworkRepo = authorizationNetworkRepo
+        )
     }
 
     @Provides

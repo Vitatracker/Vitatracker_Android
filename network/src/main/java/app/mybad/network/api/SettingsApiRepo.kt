@@ -1,4 +1,4 @@
-package app.mybad.data.api
+package app.mybad.network.api
 
 interface SettingsApiRepo {
 }

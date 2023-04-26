@@ -47,6 +47,7 @@ kapt {
 
 dependencies {
 
+    implementation project(path: ":network")
     implementation project(path: ':domain')
     implementation project(path: ':notifications')
 

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.*
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 class UserDataRepoImpl @Inject constructor(
     private val dataStore_userNotification: DataStore<UserNotificationsDataModel>,
     private val dataStore_userPersonal: DataStore<UserPersonalDataModel>,
-    private val dataStore_userRules: DataStore<UserRulesDataModel>
+    private val dataStore_userRules: DataStore<UserRulesDataModel>,
+    private val settingsNetworkRepo: SettingsNetworkRepo
 ) : UserDataRepo {
 
     val scope = CoroutineScope(Dispatchers.IO)
