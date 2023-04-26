@@ -46,7 +46,7 @@
 
     <!--LOGIN-->
     <string name="sign_in">Sign in</string>
-    <string name="login_email">Login/Email</string>
+    <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_password_confirm">Confirm password</string>
     <string name="login_forgot_password">Forgot your password?</string>

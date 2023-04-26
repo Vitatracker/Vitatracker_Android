@@ -9,6 +9,9 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.RulesUserDomainModel
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 
 fun CourseDataModel.mapToDomain(): CourseDomainModel {
     return CourseDomainModel(

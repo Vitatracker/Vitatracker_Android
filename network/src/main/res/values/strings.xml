@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name" translatable="false">Vitatracker</string>
+    <string name="add_med_h">Add a new medicament</string>
+    <string name="add_med_name">Name of medicament</string>
+    <string name="add_med_dose">Dose</string>
+    <string name="add_med_unit">Measurement unit</string>
+    <string name="navigation_back">Back</string>
+    <string name="navigation_next">Next</string>
+    <string name="add_course_h">Choose time</string>
+    <string name="add_course_notifications_time">Time of notifications</string>
+    <string name="add_course_date_from">From </string>
+    <string name="add_course_start_time">Start time</string>
+    <string name="add_course_comment">Comment</string>
+    <string name="add_next_course_remind_before">Remind in, days</string>
+    <string name="add_med_error_unfilled_fields">You should fill all fields</string>
+    <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
+    <string name="add_course_months">Months</string>
+    <string name="add_course_days">Days</string>
+    <string name="add_next_course_interval">Start next course in</string>
+
+    <!--START SCREEN-->
+    <string name="start_screen_welcome">Welcome</string>
+    <string name="start_screen_to">to </string>
+    <string name="start_screen_recomendation_1">Before using this app, </string>
+    <string name="start_screen_recomendation_2">you must authorization </string>
+    <string name="start_screen_go">Go</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Login</string>
+    <string name="authorization_screen_registration">Registration</string>
+    <string name="authorization_screen_text_recomendation">Sign in with</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Sign in</string>
+    <string name="login_email">Login/Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_password_confirm">Confirm password</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_agree_policy_text">By clicking the Sign in button, you agree to the </string>
+    <string name="login_text_privacy_policy">Privacy Policy</string>
+
+    <!--REGISTRATION-->
+    <string name="text_continue">Continue</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Dont worry. That happens.</string>
+    <string name="recovery_text_2">Please enter your email</string>
+    <string name="recovery_text_3">associated with your account</string>
+
+    <!--NEW PASSWORD-->
+
+    <!--DIFFERENCE-->
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="google" translatable="false">Google</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Profile</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_about">About application</string>
+    <string name="settings_quit">Quit</string>
+    <string name="settings_delete_account">Delete account</string>
+    <string name="settings_change_password">Change password</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_current_password">Current password</string>
+    <string name="settings_new_password">New password</string>
+    <string name="settings_repeat_new_password">Repeat new password</string>
+    <string name="settings_enable_notifications">Global notifications</string>
+    <string name="settings_enable_notifications_description">Enables and disables all notifications in this application. It will not change your courses settings.</string>
+    <string name="settings_enable_float_notifications">Floating notifications</string>
+    <string name="settings_enable_float_notifications_description">Notifications will float over all items on your screen until you will react</string>
+    <string name="settings_enable_medication_control">Medication control</string>
+    <string name="settings_enable_medication_control_description">This setting switches on and off medication control - you will be should mark usages pf all your medicaments in the end of the day</string>
+    <string name="settings_enable_next_course_start">Next course start</string>
+    <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
+
+    <!--NAVIGATION MAIN-->
+    <string name="navigation_settings_main">Settings</string>
+    <string name="navigation_settings_profile">Profile</string>
+    <string name="navigation_courses">Courses</string>
+    <string name="navigation_add">Add new</string>
+    <string name="navigation_notifications">Notifications</string>
+    <string name="navigation_calendar">Calendar</string>
+
+    <!--MY COURSES-->
+    <string name="my_course_h">My courses</string>
+    <string name="mycourse_duration">Duration</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">My calendar</string>
+
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Reminder dialy</string>
+    <string name="main_screen_text_category">Medicines</string>
+
+    <string name="notifications_channel_description">Notifications from Vitatracker med reminder</string>
+    <string name="notifications_time_to_use">It is time to use your medication!</string>
+    <string name="notifications_text_template">Use your %s!\n%d, %s</string>
+    <string name="notifications_action_take">Take</string>
+    <string name="notifications_action_delay">Delay</string>
+    <string name="notifications_new_course_start">New course starts!</string>
+    <string name="notifications_new_course_start_text_template">New course starts %s!\nYou will have a course of %s, %d %s, %s</string>
+
+</resources>

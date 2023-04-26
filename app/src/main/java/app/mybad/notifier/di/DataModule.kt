@@ -1,16 +1,19 @@
 package app.mybad.notifier.di
 
 import androidx.datastore.core.DataStore
-import app.mybad.data.UserNotificationsDataModel
-import app.mybad.data.UserPersonalDataModel
-import app.mybad.data.UserRulesDataModel
+import androidx.datastore.preferences.core.Preferences
 import app.mybad.data.datastore.serialize.*
 import app.mybad.data.repos.*
 import app.mybad.data.room.MedDAO
+import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.repos.CoursesRepo
+import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +23,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+
     @Provides
     @Singleton
     fun providesUserRepo(
@@ -56,5 +60,21 @@ class DataModule {
         db: MedDAO
     ): UsagesRepo {
         return UsagesRepoImpl(db)
+    }
+
+    @Provides
+    @Singleton
+    fun providesAuthorizationRepo(
+        dataStore: DataStore<Preferences>
+    ): AuthorizationRepo {
+        return AuthorizationRepoImpl(dataStore = dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun providesDataStoreRepo(
+        dataStore: DataStore<Preferences>
+    ): DataStoreRepo {
+        return DataStoreRepoImpl(dataStore = dataStore)
     }
 }

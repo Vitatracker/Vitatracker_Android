@@ -11,6 +11,9 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import app.mybad.data.*
 import app.mybad.data.datastore.serialize.*
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +29,8 @@ private const val NOTIFICATION_STORE_FILE_NAME = "user_notification.pb"
 private const val PERSONAL_STORE_FILE_NAME = "user_personal.pb"
 private const val RULES_STORE_FILE_NAME = "user_rules.pb"
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object DataStoreModule {
 
     @Singleton
@@ -44,7 +47,7 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStore_userNotification(@ApplicationContext appContext: Context): DataStore<UserNotificationsDataModel> {
+    fun provideProtoDataStoreUserNotification(@ApplicationContext appContext: Context): DataStore<UserNotificationsDataModel> {
         return DataStoreFactory.create(
             serializer = UserNotificationDataModelSerializer,
             produceFile = { appContext.dataStoreFile(NOTIFICATION_STORE_FILE_NAME) },
@@ -57,7 +60,7 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStore_userPersonal(@ApplicationContext appContext: Context): DataStore<UserPersonalDataModel> {
+    fun provideProtoDataStoreUserPersonal(@ApplicationContext appContext: Context): DataStore<UserPersonalDataModel> {
         return DataStoreFactory.create(
             serializer = UserPersonalDataModelSerializer,
             produceFile = { appContext.dataStoreFile(PERSONAL_STORE_FILE_NAME) },
@@ -70,7 +73,7 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStore_userRules(@ApplicationContext appContext: Context): DataStore<UserRulesDataModel> {
+    fun provideProtoDataStoreUserRules(@ApplicationContext appContext: Context): DataStore<UserRulesDataModel> {
         return DataStoreFactory.create(
             serializer = UserRulesDataModelSerializer,
             produceFile = { appContext.dataStoreFile(RULES_STORE_FILE_NAME) },

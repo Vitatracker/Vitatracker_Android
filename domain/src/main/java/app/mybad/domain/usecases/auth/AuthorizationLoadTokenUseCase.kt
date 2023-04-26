@@ -1,9 +1,12 @@
 package app.mybad.domain.usecases.auth
 
+import app.mybad.domain.repos.DataStoreRepo
 import javax.inject.Inject
 
 class AuthorizationLoadTokenUseCase @Inject constructor(
-//    private val dataStore: DataStorePref
+    private val dataStore: DataStoreRepo
 ) {
-//    fun execute() = authorizationRepo
+
+    suspend fun execute() = dataStore.getToken()
+
 }

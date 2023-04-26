@@ -6,6 +6,6 @@ interface AuthorizationRepo {
 
     suspend fun loginWithGoogle()
 
-    suspend fun loginWithEmail()
+    suspend fun loginWithEmail(login: String, password: String)
 
 }

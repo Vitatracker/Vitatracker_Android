@@ -21,12 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainLoginScreen(navController: NavHostController) {
+fun StartMainLoginScreen(navController: NavHostController, authVM: AuthorizationScreenViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,8 +38,7 @@ fun StartMainLoginScreen(navController: NavHostController) {
                     }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -48,14 +48,17 @@ fun StartMainLoginScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainLoginScreen(navController = navController)
+                MainLoginScreen(navController = navController, authVM = authVM)
             }
         }
     )
 }
 
 @Composable
-private fun MainLoginScreen(navController: NavHostController) {
+private fun MainLoginScreen(
+    navController: NavHostController,
+    authVM: AuthorizationScreenViewModel
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter

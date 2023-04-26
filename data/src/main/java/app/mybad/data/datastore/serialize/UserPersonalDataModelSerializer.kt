@@ -2,7 +2,7 @@ package app.mybad.data.datastore.serialize
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import app.mybad.data.UserPersonalDataModel
+import app.vitatracker.data.UserPersonalDataModel
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream

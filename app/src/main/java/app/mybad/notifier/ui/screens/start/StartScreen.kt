@@ -55,7 +55,7 @@ private fun StartWelcomeScreen(navController: NavHostController) {
 @Composable
 private fun StartScreenBackgroundImage() {
     Image(
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen_new),
+        imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen),
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         alignment = Alignment.TopCenter,

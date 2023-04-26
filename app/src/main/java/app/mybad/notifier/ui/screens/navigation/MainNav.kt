@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,13 +26,13 @@ import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 @Composable
 fun MainNav(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     createCourseVm: CreateCourseViewModel,
     myCoursesVm: MyCoursesViewModel,
     settingsVm: SettingsViewModel,
     calendarVm: CalendarViewModel,
     mainScreenVm: StartMainScreenViewModel
 ) {
+    val navController = rememberNavController()
     var isOnTopLevel by remember { mutableStateOf(true) }
     val calendarState = calendarVm.state.collectAsState()
 

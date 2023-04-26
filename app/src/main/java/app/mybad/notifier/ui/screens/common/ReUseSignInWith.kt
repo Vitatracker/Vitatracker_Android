@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 
 @Composable
@@ -21,20 +23,21 @@ fun SurfaceSignInWith(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoginScreenTextHelp()
-        LoginScreenButtonLoginWith(onClick)
+        LoginScreenButtonLoginWith(onClick = onClick)
     }
 }
 
 @Composable
 private fun LoginScreenTextHelp() {
     Row(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.authorization_screen_text_recomendation),
             modifier = Modifier.padding(top = 16.dp),
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Justify
         )
     }
 }
@@ -71,10 +74,10 @@ private fun LoginScreenButtonLoginWithFacebook(modifier: Modifier = Modifier, on
         Icon(
             painter = painterResource(id = R.drawable.icon_email),
             contentDescription = stringResource(id = R.string.facebook),
-            modifier = Modifier.size(ButtonDefaults.IconSize)
+            modifier = Modifier.size(30.dp)
         )
         Spacer(Modifier.size(ButtonDefaults.IconSize))
-        Text(text = stringResource(id = R.string.facebook))
+        Text(text = stringResource(id = R.string.facebook), fontSize = 17.sp)
     }
 }
 
@@ -89,9 +92,9 @@ private fun LoginScreenButtonLoginWithGoogle(modifier: Modifier = Modifier, onCl
         Icon(
             painter = painterResource(id = R.drawable.icon_google),
             contentDescription = stringResource(id = R.string.google),
-            modifier = Modifier.size(ButtonDefaults.IconSize)
+            modifier = Modifier.size(30.dp)
         )
-        Spacer(Modifier.size(ButtonDefaults.IconSize))
-        Text(text = stringResource(id = R.string.google))
+        Spacer(Modifier.width(8.dp))
+        Text(text = stringResource(id = R.string.google), fontSize = 17.sp)
     }
 }

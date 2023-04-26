@@ -28,7 +28,7 @@ class StartMainScreenViewModel @Inject constructor(
 
     private val scope = CoroutineScope(Dispatchers.IO)
     private val _uiState = MutableStateFlow(MainScreenContract())
-    var uiState = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         scope.launch {

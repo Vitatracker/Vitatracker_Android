@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="units">
+        <item>ug</item>
+        <item>mg</item>
+        <item>g</item>
+        <item>ul</item>
+        <item>ml</item>
+    </string-array>
+    <string-array name="months_full">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+    <string-array name="days_short">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+    <string-array name="types">
+        <item>Pill</item>
+        <item>Tablet</item>
+        <item>Spray</item>
+        <item>Injection</item>
+        <item>Inhalation</item>
+        <item>Syrup</item>
+    </string-array>
+    <integer-array name="colors">
+        <item>0xFFDDF7FB</item>
+        <item>0xFFDEDDFB</item>
+        <item>0xFFFBDDDD</item>
+        <item>0xFFF9FBDD</item>
+        <item>0xFFF7DDFB</item>
+        <item>0xFFDDFBE5</item>
+    </integer-array>
+    <integer-array name="icons">
+        <item>@drawable/pill</item>
+        <item>@drawable/blister</item>
+        <item>@drawable/pills_jar</item>
+        <item>@drawable/drops</item>
+        <item>@drawable/syrup</item>
+        <item>@drawable/jar</item>
+    </integer-array>
+</resources>

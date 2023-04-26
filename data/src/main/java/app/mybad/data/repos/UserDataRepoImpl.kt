@@ -1,12 +1,12 @@
 package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
-import app.mybad.data.UserNotificationsDataModel
-import app.mybad.data.UserPersonalDataModel
-import app.mybad.data.UserRulesDataModel
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.*
 import app.mybad.domain.repos.UserDataRepo
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

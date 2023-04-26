@@ -12,19 +12,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainRegistrationScreen(navController: NavHostController) {
+fun StartMainRegistrationScreen(
+    navController: NavHostController,
+    authVM: AuthorizationScreenViewModel
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,8 +43,7 @@ fun StartMainRegistrationScreen(navController: NavHostController) {
                     ) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -48,14 +53,17 @@ fun StartMainRegistrationScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainRegistrationScreen(navController = navController)
+                MainRegistrationScreen(navController = navController, authVM = authVM)
             }
         }
     )
 }
 
 @Composable
-private fun MainRegistrationScreen(navController: NavHostController) {
+private fun MainRegistrationScreen(
+    navController: NavHostController,
+    authVM: AuthorizationScreenViewModel
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -88,27 +96,33 @@ private fun RegistrationScreenBaseForSignIn() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegistrationScreenEnteredEmail() {
     var loginState by remember { mutableStateOf("") }
 
     OutlinedTextField(
         value = loginState,
+        shape = MaterialTheme.shapes.small,
         onValueChange = { newLogin -> loginState = newLogin },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         enabled = true,
         singleLine = true,
-        label = { Text(text = stringResource(id = R.string.login_email)) },
-        placeholder = { Text(text = stringResource(id = R.string.login_email)) },
+        label = { Text(text = stringResource(id = R.string.login_email), color = Color.LightGray) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = Next
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer
         )
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegistrationScreenEnteredPassword(textId: Int) {
     var passwordState by remember { mutableStateOf("") }
@@ -116,17 +130,21 @@ private fun RegistrationScreenEnteredPassword(textId: Int) {
 
     OutlinedTextField(
         value = passwordState,
+        shape = MaterialTheme.shapes.small,
         onValueChange = { newPassword -> passwordState = newPassword },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         enabled = true,
         singleLine = true,
-        label = { Text(text = stringResource(id = textId)) },
-        placeholder = { Text(text = stringResource(id = textId)) },
+        label = { Text(text = stringResource(id = textId), color = Color.LightGray) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = Done
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer
         ),
         visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
@@ -163,6 +181,10 @@ private fun RegistrationScreenButtonRegistration() {
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {
-        Text(text = stringResource(id = R.string.text_continue))
+        Text(
+            text = stringResource(id = R.string.text_continue),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
