@@ -1,56 +1,46 @@
 package app.mybad.network.di
 
-import app.mybad.data.api.RemoteApi
-import app.mybad.network.BuildConfig
+import app.mybad.network.api.AuthorizationApiRepo
+import app.mybad.network.api.CoursesApiRepo
+import app.mybad.network.api.SettingsApiRepo
+import app.mybad.network.repos.impl.AuthorizationNetworkRepoImpl
+import app.mybad.network.repos.impl.CoursesNetworkRepoImpl
+import app.mybad.network.repos.impl.SettingsNetworkRepoImpl
+import app.mybad.network.repos.repo.AuthorizationNetworkRepo
+import app.mybad.network.repos.repo.CoursesNetworkRepo
+import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Call
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://restcountries.eu/rest/v2/"
-
     @Provides
     @Singleton
-    fun okHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
-        .addInterceptor(
-            HttpLoggingInterceptor()
-                .apply {
-                    if (BuildConfig.DEBUG) {
-                        setLevel(HttpLoggingInterceptor.Level.BODY)
-                    }
-                },
-        )
-        .build()
+    fun providesAuthorizationNetworkRepo(
+        authorizationApiRepo: AuthorizationApiRepo
+    ): AuthorizationNetworkRepo {
+        return AuthorizationNetworkRepoImpl(authorizationApiRepo = authorizationApiRepo)
+    }
 
-    @Singleton
-    @Provides
-    fun providesOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-        OkHttpClient
-            .Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-
-    @Singleton
-    @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .build()
-
-    @Singleton
-    @Provides
-    fun provideApiService(retrofit: Retrofit): RemoteApi = retrofit.create(RemoteApi::class.java)
+//    @Provides
+//    @Singleton
+//    fun providesCoursesNetworkRepo(
+//        coursesApiRepo: CoursesApiRepo
+//    ): CoursesNetworkRepo {
+//        return CoursesNetworkRepoImpl(coursesApiRepo = coursesApiRepo)
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun providesSettingsNetworkRepo(
+//        settingsApiRepo: SettingsApiRepo
+//    ): SettingsNetworkRepo {
+//        return SettingsNetworkRepoImpl(settingsApiRepo = settingsApiRepo)
+//    }
 
 }
