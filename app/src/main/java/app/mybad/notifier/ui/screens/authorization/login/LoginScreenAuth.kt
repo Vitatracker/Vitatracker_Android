@@ -59,7 +59,6 @@ private fun MainLoginScreen(
     navController: NavHostController,
     authVM: AuthorizationScreenViewModel
 ) {
-    //
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
