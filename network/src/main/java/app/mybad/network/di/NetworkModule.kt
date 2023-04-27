@@ -27,20 +27,20 @@ object NetworkModule {
         return AuthorizationNetworkRepoImpl(authorizationApiRepo = authorizationApiRepo)
     }
 
-//    @Provides
-//    @Singleton
-//    fun providesCoursesNetworkRepo(
-//        coursesApiRepo: CoursesApiRepo
-//    ): CoursesNetworkRepo {
-//        return CoursesNetworkRepoImpl(coursesApiRepo = coursesApiRepo)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun providesSettingsNetworkRepo(
-//        settingsApiRepo: SettingsApiRepo
-//    ): SettingsNetworkRepo {
-//        return SettingsNetworkRepoImpl(settingsApiRepo = settingsApiRepo)
-//    }
+    @Provides
+    @Singleton
+    fun providesCoursesNetworkRepo(
+        coursesApiRepo: CoursesApiRepo
+    ): CoursesNetworkRepo {
+        return CoursesNetworkRepoImpl(coursesApiRepo = coursesApiRepo)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSettingsNetworkRepo(
+        settingsApiRepo: SettingsApiRepo
+    ): SettingsNetworkRepo {
+        return SettingsNetworkRepoImpl(settingsApiRepo = settingsApiRepo)
+    }
 
 }

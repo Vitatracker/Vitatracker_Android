@@ -50,7 +50,5 @@ dependencies {
 
     //Hilt
     implementation("com.google.dagger:hilt-android:$hilt_version")
-    implementation 'androidx.test:runner:1.5.2'
-    testImplementation project(path: ':app')
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 }
