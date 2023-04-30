@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
@@ -30,7 +31,8 @@ fun MainNav(
     myCoursesVm: MyCoursesViewModel,
     settingsVm: SettingsViewModel,
     calendarVm: CalendarViewModel,
-    mainScreenVm: StartMainScreenViewModel
+    mainScreenVm: StartMainScreenViewModel,
+    mainVM: MainActivityViewModel
 ) {
     val navController = rememberNavController()
     var isOnTopLevel by remember { mutableStateOf(true) }

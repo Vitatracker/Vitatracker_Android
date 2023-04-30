@@ -1,4 +1,4 @@
-package app.mybad.network.di
+package app.mybad.notifier.di
 
 import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.BuildConfig

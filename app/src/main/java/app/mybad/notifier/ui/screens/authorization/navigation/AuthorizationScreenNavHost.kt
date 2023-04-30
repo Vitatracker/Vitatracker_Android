@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
@@ -13,7 +14,10 @@ import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistr
 import app.mybad.notifier.ui.screens.start.StartScreenApp
 
 @Composable
-fun AuthorizationScreenNavHost(authVM: AuthorizationScreenViewModel) {
+fun AuthorizationScreenNavHost(
+    authVM: AuthorizationScreenViewModel,
+    mainVM: MainActivityViewModel
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -27,10 +31,14 @@ fun AuthorizationScreenNavHost(authVM: AuthorizationScreenViewModel) {
             StartAuthorizationScreen(navController = navController, authVM = authVM)
         }
         composable(route = AuthorizationNavItem.Login.route) {
-            StartMainLoginScreen(navController = navController, authVM = authVM)
+            StartMainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
         }
         composable(route = AuthorizationNavItem.Registration.route) {
-            StartMainRegistrationScreen(navController = navController, authVM = authVM)
+            StartMainRegistrationScreen(
+                navController = navController,
+                authVM = authVM,
+                mainVM = mainVM
+            )
         }
         composable(route = AuthorizationNavItem.RecoveryPassword.route) {
             StartMainRecoveryPasswordScreenAuth(navController = navController)

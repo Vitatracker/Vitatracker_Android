@@ -21,6 +21,10 @@ class MainActivityViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        updateToken()
+    }
+
+    fun updateToken() {
         scope.launch {
             _uiState.emit(
                 _uiState.value.copy(

@@ -124,6 +124,13 @@ dependencies {
     implementation "androidx.datastore:datastore:$data_store"
     implementation "androidx.datastore:datastore-core:$data_store"
     implementation "com.google.protobuf:protobuf-javalite:3.21.12"
+
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    // Logging interceptor
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.1'
 }
 
 protobuf {

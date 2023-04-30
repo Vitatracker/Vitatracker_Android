@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
@@ -29,7 +30,8 @@ import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavIt
 @Composable
 fun StartMainRegistrationScreen(
     navController: NavHostController,
-    authVM: AuthorizationScreenViewModel
+    authVM: AuthorizationScreenViewModel,
+    mainVM: MainActivityViewModel
 ) {
     Scaffold(
         topBar = {
@@ -53,7 +55,11 @@ fun StartMainRegistrationScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainRegistrationScreen(navController = navController, authVM = authVM)
+                MainRegistrationScreen(
+                    navController = navController,
+                    authVM = authVM,
+                    mainVM = mainVM
+                )
             }
         }
     )
@@ -62,8 +68,12 @@ fun StartMainRegistrationScreen(
 @Composable
 private fun MainRegistrationScreen(
     navController: NavHostController,
-    authVM: AuthorizationScreenViewModel
+    authVM: AuthorizationScreenViewModel,
+    mainVM: MainActivityViewModel
 ) {
+    val loginState = remember { mutableStateOf("bob@mail.ru") }
+    val passwordState = remember { mutableStateOf("12345678") }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -72,10 +82,13 @@ private fun MainRegistrationScreen(
         Column(
             modifier = Modifier
         ) {
-            RegistrationScreenBaseForSignIn()
-            RegistrationScreenButtonRegistration()
+            RegistrationScreenBaseForSignIn(loginState = loginState, passwordState = passwordState)
+            RegistrationScreenButtonRegistration(onClick = {
+                authVM.registration(login = loginState.value, password = passwordState.value)
+                mainVM.updateToken()
+            })
             Spacer(modifier = Modifier.height(30.dp))
-            SurfaceSignInWith(onClick = { /*TODO*/ })
+            SurfaceSignInWith(onClick = { mainVM.updateToken() })
         }
     }
 }
@@ -85,26 +98,34 @@ private fun RegistrationScreenBackgroundImage() {
 }
 
 @Composable
-private fun RegistrationScreenBaseForSignIn() {
+private fun RegistrationScreenBaseForSignIn(
+    loginState: MutableState<String>,
+    passwordState: MutableState<String>
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegistrationScreenEnteredEmail()
-        RegistrationScreenEnteredPassword(R.string.login_password)
-        RegistrationScreenEnteredPassword(R.string.login_password_confirm)
+        RegistrationScreenEnteredEmail(loginState = loginState)
+        RegistrationScreenEnteredPassword(
+            passwordState = passwordState,
+            textId = R.string.login_password
+        )
+        RegistrationScreenEnteredPassword(
+            passwordState = passwordState,
+            textId = R.string.login_password_confirm
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RegistrationScreenEnteredEmail() {
-    var loginState by remember { mutableStateOf("") }
+private fun RegistrationScreenEnteredEmail(loginState: MutableState<String>) {
 
     OutlinedTextField(
-        value = loginState,
+        value = loginState.value,
         shape = MaterialTheme.shapes.small,
-        onValueChange = { newLogin -> loginState = newLogin },
+        onValueChange = { newLogin -> loginState.value = newLogin },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -124,14 +145,13 @@ private fun RegistrationScreenEnteredEmail() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RegistrationScreenEnteredPassword(textId: Int) {
-    var passwordState by remember { mutableStateOf("") }
+private fun RegistrationScreenEnteredPassword(passwordState: MutableState<String>, textId: Int) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = passwordState,
+        value = passwordState.value,
         shape = MaterialTheme.shapes.small,
-        onValueChange = { newPassword -> passwordState = newPassword },
+        onValueChange = { newPassword -> passwordState.value = newPassword },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -172,12 +192,12 @@ private fun RegistrationScreenEnteredPassword(textId: Int) {
 }
 
 @Composable
-private fun RegistrationScreenButtonRegistration() {
+private fun RegistrationScreenButtonRegistration(onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 30.dp, start = 8.dp, end = 8.dp),
-        onClick = { },
+        onClick = { onClick() },
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {

@@ -34,14 +34,18 @@ class MainActivity : ComponentActivity() {
 
             MyBADTheme {
                 if (uiState.value.token.isEmpty()) {
-                    AuthorizationScreenNavHost(authVM = authorizationScreenViewModel)
+                    AuthorizationScreenNavHost(
+                        authVM = authorizationScreenViewModel,
+                        mainVM = mainActivityViewModel
+                    )
                 } else {
                     MainNav(
                         createCourseVm = createCourseVm,
                         myCoursesVm = myCoursesVm,
                         settingsVm = settingsVm,
                         calendarVm = calendarVm,
-                        mainScreenVm = mainScreenVm
+                        mainScreenVm = mainScreenVm,
+                        mainVM = mainActivityViewModel
                     )
                 }
             }
