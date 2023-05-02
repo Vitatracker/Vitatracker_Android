@@ -19,8 +19,8 @@ class AuthorizationScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AuthorizationScreenContract())
     val uiState = _uiState.asStateFlow()
 
-    fun logIn(login: String, password: String) {
-        scope.launch { authorizationRepo.loginWithEmail(login = login, password = password) }
+    suspend fun logIn(login: String, password: String) {
+        authorizationRepo.loginWithEmail(login = login, password = password)
     }
 
     fun registration(login: String, password: String) {

@@ -34,14 +34,15 @@ class AuthorizationRepoImpl @Inject constructor(
         dataStore.edit { it[PreferencesKeys.token] = token }
     }
 
-    override suspend fun registrationUser(login: String, password: String) {
-        val token = authorizationNetworkRepo.registrationUser(
+    override suspend fun registrationUser(login: String, password: String, name: String) {
+        authorizationNetworkRepo.registrationUser(
             authorizationUserNetwork = AuthorizationUserNetwork(
                 email = login,
-                password = password
+                password = password,
+                name = name
             )
         )
-        dataStore.edit { it[PreferencesKeys.token] = token }
+        loginWithEmail(login = login, password = password)
     }
 
 }
