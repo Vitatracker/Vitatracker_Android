@@ -32,6 +32,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState = mainActivityViewModel.uiState.collectAsState()
 
+            mainActivityViewModel.clearToken()
+
             MyBADTheme {
                 if (uiState.value.token.isEmpty()) {
                     AuthorizationScreenNavHost(

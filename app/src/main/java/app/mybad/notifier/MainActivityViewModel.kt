@@ -34,4 +34,11 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    fun clearToken() {
+        scope.launch {
+            dataStoreRepo.updateToken("")
+            updateToken()
+        }
+    }
+
 }

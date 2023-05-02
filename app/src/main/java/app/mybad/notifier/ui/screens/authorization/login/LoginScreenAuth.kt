@@ -25,6 +25,10 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,11 +84,14 @@ private fun MainLoginScreen(
             LoginScreenForgotPassword(navController = navController)
             LoginScreenButtonSignIn(
                 onClick = {
-                    authVM.logIn(
-                        login = loginState.value,
-                        password = passwordState.value
-                    )
-                    mainVM.updateToken()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        authVM.logIn(
+                            login = loginState.value,
+                            password = passwordState.value
+                        )
+                        delay(1200)
+                        mainVM.updateToken()
+                    }
                 }
             )
             LoginScreenTextPolicy()

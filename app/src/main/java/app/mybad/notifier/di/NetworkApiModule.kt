@@ -4,6 +4,8 @@ import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.BuildConfig
 import app.mybad.network.api.CoursesApiRepo
 import app.mybad.network.api.SettingsApiRepo
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +24,17 @@ object NetworkApiModule {
 
     @Singleton
     @Provides
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .setLenient()
+            .create()
+    }
+
+    @Singleton
+    @Provides
     fun provideRetrofit(): Retrofit {
         val interceptor = HttpLoggingInterceptor().apply {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 setLevel(HttpLoggingInterceptor.Level.BODY)
             }
         }
@@ -33,7 +43,7 @@ object NetworkApiModule {
             .addInterceptor(interceptor)
             .build()
         return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(provideGson()))
             .baseUrl(BASE_URL)
             .client(client)
             .build()
