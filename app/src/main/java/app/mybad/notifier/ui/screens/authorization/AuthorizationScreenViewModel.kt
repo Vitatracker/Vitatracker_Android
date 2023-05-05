@@ -20,11 +20,17 @@ class AuthorizationScreenViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     suspend fun logIn(login: String, password: String) {
-        authorizationRepo.loginWithEmail(login = login, password = password)
+        val result = authorizationRepo.loginWithEmail(login = login, password = password)
     }
 
-    fun registration(login: String, password: String) {
-        scope.launch { authorizationRepo.loginWithEmail(login = login, password = password) }
+    fun registration(login: String, password: String, userName: String) {
+        scope.launch {
+            authorizationRepo.registrationUser(
+                login = login,
+                password = password,
+                userName = userName
+            )
+        }
     }
 
     fun loginWithFacebook() {

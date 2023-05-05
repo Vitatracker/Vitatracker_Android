@@ -1,4 +1,4 @@
-package app.mybad.notifier.di
+package app.mybad.network.di
 
 import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.api.CoursesApiRepo

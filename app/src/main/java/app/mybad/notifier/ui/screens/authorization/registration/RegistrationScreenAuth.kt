@@ -25,6 +25,10 @@ import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,6 +75,7 @@ private fun MainRegistrationScreen(
     authVM: AuthorizationScreenViewModel,
     mainVM: MainActivityViewModel
 ) {
+    val userNameState = remember { mutableStateOf("") }
     val loginState = remember { mutableStateOf("bob@mail.ru") }
     val passwordState = remember { mutableStateOf("12345678") }
 
@@ -82,10 +87,21 @@ private fun MainRegistrationScreen(
         Column(
             modifier = Modifier
         ) {
-            RegistrationScreenBaseForSignIn(loginState = loginState, passwordState = passwordState)
+            RegistrationScreenBaseForSignIn(
+                loginState = loginState,
+                passwordState = passwordState,
+                userNameState = userNameState
+            )
             RegistrationScreenButtonRegistration(onClick = {
-                authVM.registration(login = loginState.value, password = passwordState.value)
-                mainVM.updateToken()
+                CoroutineScope(Dispatchers.IO).launch {
+                    authVM.registration(
+                        login = loginState.value,
+                        password = passwordState.value,
+                        userName = userNameState.value
+                    )
+                    delay(1200)
+                    mainVM.updateToken()
+                }
             })
             Spacer(modifier = Modifier.height(30.dp))
             SurfaceSignInWith(onClick = { mainVM.updateToken() })
@@ -100,13 +116,15 @@ private fun RegistrationScreenBackgroundImage() {
 @Composable
 private fun RegistrationScreenBaseForSignIn(
     loginState: MutableState<String>,
-    passwordState: MutableState<String>
+    passwordState: MutableState<String>,
+    userNameState: MutableState<String>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RegistrationScreenEnteredEmail(loginState = loginState)
+        RegistrationScreenEnteredName(nameState = userNameState)
         RegistrationScreenEnteredPassword(
             passwordState = passwordState,
             textId = R.string.login_password
@@ -116,6 +134,31 @@ private fun RegistrationScreenBaseForSignIn(
             textId = R.string.login_password_confirm
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RegistrationScreenEnteredName(nameState: MutableState<String>) {
+
+    OutlinedTextField(
+        value = nameState.value,
+        shape = MaterialTheme.shapes.small,
+        onValueChange = { newName -> nameState.value = newName },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        enabled = true,
+        singleLine = true,
+        label = { Text(text = stringResource(id = R.string.login_email), color = Color.LightGray) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = Next
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

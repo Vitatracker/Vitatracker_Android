@@ -2,10 +2,9 @@ package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import app.mybad.data.datastore.PreferencesKeys
 import app.mybad.domain.repos.AuthorizationRepo
-import app.mybad.network.models.AuthorizationUserNetwork
+import app.mybad.network.models.request.AuthorizationUserLogin
+import app.mybad.network.models.request.AuthorizationUserRegistration
 import app.mybad.network.repos.repo.AuthorizationNetworkRepo
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,21 +24,20 @@ class AuthorizationRepoImpl @Inject constructor(
     }
 
     override suspend fun loginWithEmail(login: String, password: String) {
-        val token = authorizationNetworkRepo.loginUser(
-            authorizationUserNetwork = AuthorizationUserNetwork(
+        authorizationNetworkRepo.loginUser(
+            authorizationUserLogin = AuthorizationUserLogin(
                 email = login,
                 password = password
             )
         )
-        dataStore.edit { it[PreferencesKeys.token] = token }
     }
 
-    override suspend fun registrationUser(login: String, password: String, name: String) {
+    override suspend fun registrationUser(login: String, password: String, userName: String) {
         authorizationNetworkRepo.registrationUser(
-            authorizationUserNetwork = AuthorizationUserNetwork(
+            authorizationUserRegistration = AuthorizationUserRegistration(
                 email = login,
                 password = password,
-                name = name
+                name = userName
             )
         )
         loginWithEmail(login = login, password = password)

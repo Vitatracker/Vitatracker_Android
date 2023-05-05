@@ -8,6 +8,6 @@ interface AuthorizationRepo {
 
     suspend fun loginWithEmail(login: String, password: String)
 
-    suspend fun registrationUser(login: String, password: String, name: String)
+    suspend fun registrationUser(login: String, password: String, userName: String)
 
 }

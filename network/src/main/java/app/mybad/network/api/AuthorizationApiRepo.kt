@@ -1,6 +1,8 @@
 package app.mybad.network.api
 
-import app.mybad.network.models.AuthorizationUserNetwork
+import app.mybad.network.models.request.AuthorizationUserLogin
+import app.mybad.network.models.request.AuthorizationUserRegistration
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -9,10 +11,10 @@ interface AuthorizationApiRepo {
 
     @Headers("Content-Type: application/json")
     @POST(value = "api/login")
-    suspend fun loginUser(@Body authorizationUserNetwork: AuthorizationUserNetwork): String
+    fun loginUser(@Body authorizationUserLogin: AuthorizationUserLogin): Call<List<AuthorizationUserLogin>>
 
     @Headers("Content-Type: application/json")
     @POST(value = "api/users")
-    suspend fun registrationUser(@Body authorizationUserNetwork: AuthorizationUserNetwork): String
+    fun registrationUser(@Body authorizationUserRegistration: AuthorizationUserRegistration): Call<List<AuthorizationUserLogin>>
 
 }
