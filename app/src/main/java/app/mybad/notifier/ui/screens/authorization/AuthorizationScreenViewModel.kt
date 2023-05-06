@@ -1,7 +1,10 @@
 package app.mybad.notifier.ui.screens.authorization
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.AuthorizationRepo
+import app.mybad.domain.repos.DataStoreRepo
+import app.mybad.domain.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorizationScreenViewModel @Inject constructor(
-    private val authorizationRepo: AuthorizationRepo
+    private val authorizationRepo: AuthorizationRepo,
+    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -21,6 +25,16 @@ class AuthorizationScreenViewModel @Inject constructor(
 
     suspend fun logIn(login: String, password: String) {
         val result = authorizationRepo.loginWithEmail(login = login, password = password)
+        viewModelScope.launch {
+            when (result) {
+                is ApiResult.ApiSuccess -> dataStoreRepo.updateToken(
+                    token = result.data.toString()
+                )
+
+                is ApiResult.ApiError -> _uiState.emit(_uiState.value.copy(error = "${result.code} ${result.message}"))
+                is ApiResult.ApiException -> _uiState.emit(_uiState.value.copy(exception = "${result.e}"))
+            }
+        }
     }
 
     fun registration(login: String, password: String, userName: String) {

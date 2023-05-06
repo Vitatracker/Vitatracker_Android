@@ -1,11 +1,11 @@
 package app.mybad.network.repos.impl
 
+import app.mybad.domain.utils.ApiResult
+import app.mybad.network.utils.ApiHandler.handleApi
 import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.models.request.AuthorizationUserLogin
 import app.mybad.network.models.request.AuthorizationUserRegistration
 import app.mybad.network.repos.repo.AuthorizationNetworkRepo
-import app.mybad.network.utils.ApiHandler.handleApi
-import app.mybad.network.utils.ApiResult
 import retrofit2.Call
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,7 +28,6 @@ class AuthorizationNetworkRepoImpl @Inject constructor(
                 code = response.code,
                 message = response.message
             )
-
             is ApiResult.ApiException -> ApiResult.ApiException(e = response.e)
         }
     }

@@ -1,5 +1,6 @@
 package app.mybad.network.utils
 
+import app.mybad.domain.utils.ApiResult
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -9,7 +10,7 @@ object ApiHandler {
         return try {
             val response = execute()
             if (response.isSuccessful) {
-                ApiResult.ApiSuccess(data = response.body() as List<Any>)
+                ApiResult.ApiSuccess(data = response.body() as Any)
             } else {
                 ApiResult.ApiError(code = response.code(), message = response.message())
             }

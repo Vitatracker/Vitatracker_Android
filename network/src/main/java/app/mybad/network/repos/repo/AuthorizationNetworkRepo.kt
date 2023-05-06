@@ -1,8 +1,8 @@
 package app.mybad.network.repos.repo
 
+import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.request.AuthorizationUserLogin
 import app.mybad.network.models.request.AuthorizationUserRegistration
-import app.mybad.network.utils.ApiResult
 
 interface AuthorizationNetworkRepo {
 

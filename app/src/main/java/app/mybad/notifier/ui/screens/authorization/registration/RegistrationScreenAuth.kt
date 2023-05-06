@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,7 +74,7 @@ private fun MainRegistrationScreen(
     authVM: AuthorizationScreenViewModel,
     mainVM: MainActivityViewModel
 ) {
-    val userNameState = remember { mutableStateOf("") }
+    val userNameState = remember { mutableStateOf("Ivan") }
     val loginState = remember { mutableStateOf("bob@mail.ru") }
     val passwordState = remember { mutableStateOf("12345678") }
 
@@ -149,9 +148,14 @@ private fun RegistrationScreenEnteredName(nameState: MutableState<String>) {
             .padding(8.dp),
         enabled = true,
         singleLine = true,
-        label = { Text(text = stringResource(id = R.string.login_email), color = Color.LightGray) },
+        label = {
+            Text(
+                text = stringResource(id = R.string.settings_user_name),
+                color = Color.LightGray
+            )
+        },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email,
+            keyboardType = KeyboardType.Text,
             imeAction = Next
         ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -203,7 +207,7 @@ private fun RegistrationScreenEnteredPassword(passwordState: MutableState<String
         label = { Text(text = stringResource(id = textId), color = Color.LightGray) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
-            imeAction = Done
+            imeAction = Next
         ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
