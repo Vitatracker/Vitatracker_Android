@@ -131,6 +131,13 @@ dependencies {
 
     // Logging interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.1'
+
+    //sign in with google
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
+    //sign in with facebook
+    implementation 'com.facebook.android:facebook-login:latest.release'
+    
 }
 
 protobuf {
