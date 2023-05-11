@@ -2,8 +2,10 @@ package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
 import app.mybad.data.mapToDomain
+import app.mybad.data.mapToNetwork
 import app.mybad.domain.models.user.*
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.utils.ApiResult
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
@@ -76,4 +78,22 @@ class UserDataRepoImpl @Inject constructor(
     override suspend fun getUserRules(): RulesUserDomainModel {
         return dataStore_userRules.data.first().mapToDomain()
     }
+
+    //api
+    override suspend fun getUserModel(): ApiResult {
+        return settingsNetworkRepo.getUserModel()
+    }
+
+    override suspend fun postUserModel(userDomainModel: UserDomainModel) {
+        settingsNetworkRepo.postUserModel(userModel = userDomainModel.mapToNetwork())
+    }
+
+    override suspend fun deleteUserModel() {
+        settingsNetworkRepo.deleteUserModel()
+    }
+
+    override suspend fun putUserModel(userDomainModel: UserDomainModel) {
+        settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
+    }
+
 }
