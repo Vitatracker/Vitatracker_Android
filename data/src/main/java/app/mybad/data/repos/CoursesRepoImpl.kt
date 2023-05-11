@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @Singleton
 class CoursesRepoImpl @Inject constructor(
     private val db: MedDAO,
-    private val coursesNetworkRepo: CoursesNetworkRepo
 ) : CoursesRepo {
 
     override suspend fun getAll(): List<CourseDomainModel> {

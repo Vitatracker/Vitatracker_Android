@@ -56,7 +56,7 @@ fun StartMainScreen(
     val uiState by vm.uiState.collectAsState()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
-    val usageCommon = remember { mutableStateOf(UsageCommonDomainModel(medId = -1, userId = "")) }
+    val usageCommon = remember { mutableStateOf(UsageCommonDomainModel(medId = -1, userId = 0L)) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

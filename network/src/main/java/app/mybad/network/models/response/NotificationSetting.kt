@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class NotificationSetting(
     @SerializedName("id") val id: Long,
-    @SerializedName("userId") val userId: Long,
+    @SerializedName("userid") val userId: Long,
     @SerializedName("isEnabled") val isEnabled: Boolean,
     @SerializedName("isFloat") val isFloat: Boolean,
     @SerializedName("medicalControl") val medicalControl: Boolean,

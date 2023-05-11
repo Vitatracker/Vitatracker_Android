@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Remedies(
     @SerializedName("id") val id: Long,
-    @SerializedName("userId") val userId: Long,
+    @SerializedName("userid") val userId: Long,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String,
     @SerializedName("comment") val comment: String,
@@ -15,9 +15,6 @@ data class Remedies(
     @SerializedName("measureUnit") val measureUnit: Int,
     @SerializedName("beforeFood") val beforeFood: Int,
     @SerializedName("photo") val photo: String,
-    @SerializedName("notUsed") val notUsed: Boolean,
-    @SerializedName("created") val created: Long,
-    @SerializedName("updated") val updated: Long,
     @SerializedName("historyRemedys") val historyRemedys: List<HistoryRemedys>?,
     @SerializedName("courses") val courses: List<Courses>?
 )

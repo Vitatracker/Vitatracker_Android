@@ -1,7 +1,10 @@
 package app.mybad.notifier
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.DataStoreRepo
+import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo
+    private val dataStoreRepo: DataStoreRepo,
+    private val coursesNetworkRepo: CoursesNetworkRepo,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -32,6 +36,14 @@ class MainActivityViewModel @Inject constructor(
                 )
             )
         }
+        viewModelScope.launch {
+            dataStoreRepo.getToken().collect {
+                Log.w("MAVM", "token: $it")
+                if(it.isNotBlank()) scope.launch {
+                    coursesNetworkRepo.getAll()
+                }
+            }
+        }
     }
 
     fun clearToken() {
@@ -40,5 +52,4 @@ class MainActivityViewModel @Inject constructor(
             updateToken()
         }
     }
-
 }

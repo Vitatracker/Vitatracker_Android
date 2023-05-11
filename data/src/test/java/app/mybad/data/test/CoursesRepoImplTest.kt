@@ -39,7 +39,7 @@ class CoursesRepoImplTest {
     private val testCoursesData = listOf(
         CourseDataModel(
             id = 1L,
-            userId = "userid",
+            userId = 0L,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
@@ -49,7 +49,7 @@ class CoursesRepoImplTest {
         ),
         CourseDataModel(
             id = 2L,
-            userId = "userid",
+            userId = 0L,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
@@ -59,7 +59,7 @@ class CoursesRepoImplTest {
         ),
         CourseDataModel(
             id = 3L,
-            userId = "userid",
+            userId = 0L,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,

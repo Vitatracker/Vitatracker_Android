@@ -8,7 +8,7 @@ data class CourseDataModel(
     @PrimaryKey var id: Long = 0L,
     val creationDate: Long = 0L,
     val updateDate: Long = 0L,
-    val userId: String = "userid",
+    val userId: Long = 0L,
     val comment: String = "",
     val medId: Long = -1L,
     val startDate: Long = -1L,

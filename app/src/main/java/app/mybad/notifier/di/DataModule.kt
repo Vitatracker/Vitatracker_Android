@@ -47,9 +47,8 @@ class DataModule {
     @Singleton
     fun providesCoursesRepo(
         db: MedDAO,
-        coursesNetworkRepo: CoursesNetworkRepo
     ): CoursesRepo {
-        return CoursesRepoImpl(db = db, coursesNetworkRepo = coursesNetworkRepo)
+        return CoursesRepoImpl(db = db)
     }
 
     @Provides

@@ -18,5 +18,5 @@ data class NewCourseState(
     val med: MedDomainModel = MedDomainModel(),
     val course: CourseDomainModel = CourseDomainModel(),
     val usages: List<UsageCommonDomainModel> = emptyList(),
-    val userId: String = "userid"
+    val userId: Long = 0L
 )

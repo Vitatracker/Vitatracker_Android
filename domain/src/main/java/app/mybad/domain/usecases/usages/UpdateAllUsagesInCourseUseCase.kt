@@ -31,7 +31,7 @@ class UpdateAllUsagesInCourseUseCase @Inject constructor(
     private fun generateCommonUsages(
         usagesByDay: List<Pair<Long, Int>>,
         medId: Long,
-        userId: String,
+        userId: Long,
         startDate: Long,
         endDate: Long,
         regime: Int,

@@ -42,7 +42,7 @@ interface MedDAO {
     @Query("delete from courses where id=(:courseId)")
     fun deleteCourse(courseId: Long)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addUsages(usages: List<UsageCommonDataModel>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

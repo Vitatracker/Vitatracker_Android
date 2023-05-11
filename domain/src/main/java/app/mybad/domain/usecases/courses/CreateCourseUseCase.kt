@@ -13,7 +13,7 @@ class CreateCourseUseCase @Inject constructor(
     private val medsRepo: MedsRepo,
     private val coursesRepo: CoursesRepo,
     private val usagesRepo: UsagesRepo,
-    private val notificationsScheduler: NotificationsScheduler
+    private val notificationsScheduler: NotificationsScheduler,
 ) {
 
     suspend fun execute(
