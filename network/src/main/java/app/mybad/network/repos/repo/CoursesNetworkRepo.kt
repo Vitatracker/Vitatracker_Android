@@ -12,16 +12,10 @@ interface CoursesNetworkRepo {
     suspend fun getUserModel()
     suspend fun getAll()
     suspend fun updateUsage(usage: UsageCommonDomainModel)
-    suspend fun updateCourse(course: CourseDomainModel)
     suspend fun updateAll(
         med: MedDomainModel,
         course: CourseDomainModel,
         usages: List<UsageCommonDomainModel>
     )
-    suspend fun addUsages(usages: List<UsageCommonDomainModel>)
-    suspend fun addCourse(course: CourseDomainModel)
-    suspend fun addMed(med: MedDomainModel)
-    suspend fun deleteUsage(usageId: Long)
-    suspend fun deleteCourse(courseId: Long)
     suspend fun deleteMed(medId: Long)
 }

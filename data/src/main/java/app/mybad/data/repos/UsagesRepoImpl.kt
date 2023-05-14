@@ -5,6 +5,7 @@ import app.mybad.data.mapToDomain
 import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.UsagesRepo
+import app.mybad.network.repos.repo.CoursesNetworkRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -13,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class UsagesRepoImpl @Inject constructor(
-    private val db: MedDAO
+    private val db: MedDAO,
+    private val coursesNetworkRepo: CoursesNetworkRepo
 ) : UsagesRepo {
 
     override suspend fun getCommonAllFlow(): Flow<List<UsageCommonDomainModel>> {
@@ -55,6 +57,7 @@ class UsagesRepoImpl @Inject constructor(
 
     override suspend fun updateSingle(usage: UsageCommonDomainModel) {
         db.updateSingleUsage(usage.mapToData())
+        coursesNetworkRepo.updateUsage(usage)
     }
 
     override suspend fun deleteUsagesByMedId(medId: Long) {

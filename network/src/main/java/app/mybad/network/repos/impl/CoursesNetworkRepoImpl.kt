@@ -110,11 +110,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
         }
     }
     override suspend fun updateUsage(usage: UsageCommonDomainModel) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateCourse(course: CourseDomainModel) {
-        TODO("Not yet implemented")
+        execute { coursesApi.updateUsage(usage) }
     }
 
     override suspend fun updateAll(
@@ -143,28 +139,8 @@ class CoursesNetworkRepoImpl @Inject constructor(
         execute { coursesApi.addAll(remedies) }
     }
 
-    override suspend fun addUsages(usages: List<UsageCommonDomainModel>) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun addCourse(course: CourseDomainModel) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun addMed(med: MedDomainModel) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteUsage(usageId: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteCourse(courseId: Long) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun deleteMed(medId: Long) {
-        TODO("Not yet implemented")
+        execute { coursesApi.deleteMed(medId) }
     }
 
     private suspend fun execute(request: () -> Call<*>): ApiResult {

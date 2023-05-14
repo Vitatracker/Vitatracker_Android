@@ -5,7 +5,7 @@ import app.mybad.domain.repos.UsagesRepo
 import javax.inject.Inject
 
 class UpdateUsageUseCase @Inject constructor(
-    private val usagesRepo: UsagesRepo
+    private val usagesRepo: UsagesRepo,
 ) {
 
     suspend fun execute(usage: UsageCommonDomainModel) {
