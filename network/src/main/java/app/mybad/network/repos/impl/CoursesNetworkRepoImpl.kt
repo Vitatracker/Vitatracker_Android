@@ -110,7 +110,9 @@ class CoursesNetworkRepoImpl @Inject constructor(
         }
     }
     override suspend fun updateUsage(usage: UsageCommonDomainModel) {
-        execute { coursesApi.updateUsage(usage) }
+        val a = coursesRepo.getAll().first { it.medId == usage.medId }
+        val u = usage.mapToNet(a.id)
+        execute { coursesApi.updateUsage(u, u.id) }
     }
 
     override suspend fun updateAll(

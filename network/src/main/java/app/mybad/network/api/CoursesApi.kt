@@ -3,6 +3,7 @@ package app.mybad.network.api
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.network.models.response.Courses
 import app.mybad.network.models.response.Remedies
+import app.mybad.network.models.response.Usages
 import app.mybad.network.models.response.UserModel
 import retrofit2.Call
 import retrofit2.http.Body
@@ -18,13 +19,13 @@ interface CoursesApi {
     @Headers("Content-Type: application/json")
     fun getUserModel(@Path("id") id: Long): Call<UserModel>
 
-    @GET("api/Remedies")
+    @GET("api/Remedies?strategy=haveAttach")
     @Headers("Content-Type: application/json")
     fun getAll(): Call<List<Remedies>>
 
-    @PUT("api/Usages")
+    @PUT("api/Usages/{id}")
     @Headers("Content-Type: application/json")
-    fun updateUsage(@Body usage: UsageCommonDomainModel): Call<Any>
+    fun updateUsage(@Body usage: Usages, @Path("id") id : Long): Call<Any>
 
     @PUT("api/Courses")
     @Headers("Content-Type: application/json")
