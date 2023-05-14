@@ -84,7 +84,7 @@ private fun MainLoginScreen(
             LoginScreenForgotPassword(navController = navController)
             LoginScreenButtonSignIn(
                 onClick = {
-                    CoroutineScope(Dispatchers.Main).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         authVM.logIn(
                             login = loginState.value,
                             password = passwordState.value

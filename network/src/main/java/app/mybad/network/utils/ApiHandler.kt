@@ -15,8 +15,10 @@ object ApiHandler {
                 ApiResult.ApiError(code = response.code(), message = response.message())
             }
         } catch (e: HttpException) {
+            e.printStackTrace()
             ApiResult.ApiError(code = e.code(), message = e.message())
         } catch (e: Throwable) {
+            e.printStackTrace()
             ApiResult.ApiException(e = e)
         }
     }
