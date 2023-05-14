@@ -7,6 +7,7 @@ import app.mybad.domain.usecases.meds.LoadMedsFromList
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
+import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ class StartMainScreenViewModel @Inject constructor(
     private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
     private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
     private val loadMedsFromList: LoadMedsFromList,
-    private val updateUsageUseCase: UpdateUsageUseCase
+    private val updateUsageUseCase: UpdateUsageUseCase,
+    private val coursesNetworkRepo: CoursesNetworkRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -41,6 +43,7 @@ class StartMainScreenViewModel @Inject constructor(
     fun setUsagesFactTime(usage: UsageCommonDomainModel) {
         scope.launch {
             updateUsageUseCase.execute(usage = usage)
+            coursesNetworkRepo.updateUsage(usage)
 //                medId = usage.medId,
 //                usageTime = usage.useTime,
 //                factTime = convertDateToLong(LocalDateTime.now())

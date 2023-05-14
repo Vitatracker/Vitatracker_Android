@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
+import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.MED_ID
@@ -20,6 +21,8 @@ import javax.inject.Inject
 class TakeOrDelayUsageService : Service() {
 
     @Inject lateinit var usagesRepo: UsagesRepo
+
+    @Inject lateinit var coursesNetworkRepo : CoursesNetworkRepo
 
     @Inject lateinit var updateUseCase: UpdateUsageUseCase
 
@@ -39,6 +42,7 @@ class TakeOrDelayUsageService : Service() {
                     ).first()
                     val u = uDef.copy(factUseTime = Instant.now().epochSecond)
                     updateUseCase.execute(u)
+                    coursesNetworkRepo.updateUsage(u)
                 }
             }
             DELAY_INTENT -> {

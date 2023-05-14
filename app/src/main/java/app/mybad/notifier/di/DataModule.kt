@@ -63,7 +63,7 @@ class DataModule {
     fun providesUsagesRepo(
         db: MedDAO
     ): UsagesRepo {
-        return UsagesRepoImpl(db = db)
+        return UsagesRepoImpl(db)
     }
 
     @Provides

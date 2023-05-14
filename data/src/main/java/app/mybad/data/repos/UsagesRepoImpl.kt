@@ -14,8 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UsagesRepoImpl @Inject constructor(
-    private val db: MedDAO,
-    private val coursesNetworkRepo: CoursesNetworkRepo
+    private val db: MedDAO
 ) : UsagesRepo {
 
     override suspend fun getCommonAllFlow(): Flow<List<UsageCommonDomainModel>> {
@@ -57,7 +56,6 @@ class UsagesRepoImpl @Inject constructor(
 
     override suspend fun updateSingle(usage: UsageCommonDomainModel) {
         db.updateSingleUsage(usage.mapToData())
-        coursesNetworkRepo.updateUsage(usage)
     }
 
     override suspend fun deleteUsagesByMedId(medId: Long) {
