@@ -7,8 +7,7 @@ import app.mybad.network.models.response.Courses
 import app.mybad.network.models.response.Remedies
 import app.mybad.network.models.response.Usages
 
-
-fun Usages.mapToDomain(medId: Long, userId: Long) : UsageCommonDomainModel {
+fun Usages.mapToDomain(medId: Long, userId: Long): UsageCommonDomainModel {
     return UsageCommonDomainModel(
         id = id.toInt(),
         medId = medId,
@@ -20,7 +19,7 @@ fun Usages.mapToDomain(medId: Long, userId: Long) : UsageCommonDomainModel {
     )
 }
 
-fun List<Usages>.mapToDomain(medId: Long, userId: Long) : List<UsageCommonDomainModel> {
+fun List<Usages>.mapToDomain(medId: Long, userId: Long): List<UsageCommonDomainModel> {
     return mutableListOf<UsageCommonDomainModel>().apply {
         this@mapToDomain.forEach {
             add(it.mapToDomain(medId, userId))
@@ -28,7 +27,7 @@ fun List<Usages>.mapToDomain(medId: Long, userId: Long) : List<UsageCommonDomain
     }.toList()
 }
 
-fun Courses.mapToDomain(userId: Long) : CourseDomainModel {
+fun Courses.mapToDomain(userId: Long): CourseDomainModel {
     return CourseDomainModel(
         id = id,
         medId = remedyId,
@@ -44,7 +43,7 @@ fun Courses.mapToDomain(userId: Long) : CourseDomainModel {
     )
 }
 
-fun CourseDomainModel.mapToNet(usages: List<UsageCommonDomainModel>) : Courses {
+fun CourseDomainModel.mapToNet(usages: List<UsageCommonDomainModel>): Courses {
     return Courses(
         id = id,
         remedyId = medId,
@@ -61,7 +60,7 @@ fun CourseDomainModel.mapToNet(usages: List<UsageCommonDomainModel>) : Courses {
     )
 }
 
-fun List<Courses>.mapToDomain(userId: Long) : List<CourseDomainModel> {
+fun List<Courses>.mapToDomain(userId: Long): List<CourseDomainModel> {
     return mutableListOf<CourseDomainModel>().apply {
         this@mapToDomain.forEach {
             add(it.mapToDomain(userId))
@@ -69,7 +68,7 @@ fun List<Courses>.mapToDomain(userId: Long) : List<CourseDomainModel> {
     }
 }
 
-fun Remedies.mapToDomain() : MedDomainModel {
+fun Remedies.mapToDomain(): MedDomainModel {
     return MedDomainModel(
         id = id,
         userId = userId,
@@ -85,7 +84,7 @@ fun Remedies.mapToDomain() : MedDomainModel {
     )
 }
 
-fun UsageCommonDomainModel.mapToNet(courseId: Long) : Usages {
+fun UsageCommonDomainModel.mapToNet(courseId: Long): Usages {
     return Usages(
         id = id.toLong(),
         courseId = courseId,
@@ -96,7 +95,7 @@ fun UsageCommonDomainModel.mapToNet(courseId: Long) : Usages {
     )
 }
 
-fun List<UsageCommonDomainModel>.mapToNet(courseId: Long) : List<Usages> {
+fun List<UsageCommonDomainModel>.mapToNet(courseId: Long): List<Usages> {
     return mutableListOf<Usages>().apply {
         this@mapToNet.forEach {
             add(it.mapToNet(courseId))

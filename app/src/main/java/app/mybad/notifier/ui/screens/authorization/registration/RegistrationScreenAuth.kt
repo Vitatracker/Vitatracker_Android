@@ -138,7 +138,6 @@ private fun RegistrationScreenBaseForSignIn(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegistrationScreenEnteredName(nameState: MutableState<String>) {
-
     OutlinedTextField(
         value = nameState.value,
         shape = MaterialTheme.shapes.small,
@@ -168,7 +167,6 @@ private fun RegistrationScreenEnteredName(nameState: MutableState<String>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegistrationScreenEnteredEmail(loginState: MutableState<String>) {
-
     OutlinedTextField(
         value = loginState.value,
         shape = MaterialTheme.shapes.small,

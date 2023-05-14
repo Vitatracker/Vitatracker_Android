@@ -8,5 +8,4 @@ class AuthorizationLoadTokenUseCase @Inject constructor(
 ) {
 
     suspend fun execute() = dataStore.getToken()
-
 }

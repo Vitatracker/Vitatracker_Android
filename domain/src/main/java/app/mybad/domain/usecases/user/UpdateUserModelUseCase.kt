@@ -11,5 +11,4 @@ class UpdateUserModelUseCase @Inject constructor(
     suspend fun execute(userDomainModel: UserDomainModel) {
         userDataRepo.putUserModel(userDomainModel = userDomainModel)
     }
-
 }

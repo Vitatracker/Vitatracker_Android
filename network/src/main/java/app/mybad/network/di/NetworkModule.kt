@@ -17,7 +17,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -58,5 +57,4 @@ object NetworkModule {
     ): SettingsNetworkRepo {
         return SettingsNetworkRepoImpl(settingsApiRepo = settingsApiRepo)
     }
-
 }

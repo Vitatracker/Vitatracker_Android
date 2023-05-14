@@ -16,7 +16,7 @@ interface UserDataRepo {
 
     suspend fun getUserRules(): RulesUserDomainModel
 
-    //api
+    // api
     suspend fun getUserModel(): ApiResult
 
     suspend fun postUserModel(userDomainModel: UserDomainModel)

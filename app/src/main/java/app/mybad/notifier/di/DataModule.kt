@@ -12,7 +12,6 @@ import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.network.repos.repo.AuthorizationNetworkRepo
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel

@@ -39,14 +39,14 @@ class CoursesNetworkRepoImpl @Inject constructor(
 ) : CoursesNetworkRepo {
     private val scope = CoroutineScope(Dispatchers.IO)
     private var token = ""
-    private var userId : Long? = null
+    private var userId: Long? = null
     private val _result = MutableStateFlow<ApiResult>(ApiResult.ApiSuccess(""))
     override val result: StateFlow<ApiResult> get() = _result
     init {
         scope.launch {
             dataStoreRepo.getToken().collect {
                 token = it
-                if(token.isNotBlank()) {
+                if (token.isNotBlank()) {
                     val b2 = token.split('.')[1]
                     val body = Base64.UrlSafe.decode(b2).decodeToString()
                     val gson = Gson()
@@ -59,7 +59,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
         try {
             if (userId != null) {
                 val r = handleApi { coursesApi.getUserModel(userId!!).execute() }
-                if(r is ApiResult.ApiSuccess && r.data is UserModel) {
+                if (r is ApiResult.ApiSuccess && r.data is UserModel) {
                     (r.data as UserModel).remedies?.forEach { remedies ->
                         medsRepo.add(remedies.mapToDomain())
                         remedies.courses?.forEach { courses ->
@@ -83,7 +83,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
             if (userId != null) {
                 val r = handleApi { coursesApi.getAll().execute() }
                 Log.w("CNRI", "api result: $r")
-                if(
+                if (
                     r is ApiResult.ApiSuccess &&
                     r.data is List<*> &&
                     (r.data as List<*>).isNotEmpty() &&

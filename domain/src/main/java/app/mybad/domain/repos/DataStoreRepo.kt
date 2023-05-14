@@ -7,5 +7,4 @@ interface DataStoreRepo {
     suspend fun getToken(): Flow<String>
 
     suspend fun updateToken(token: String)
-
 }

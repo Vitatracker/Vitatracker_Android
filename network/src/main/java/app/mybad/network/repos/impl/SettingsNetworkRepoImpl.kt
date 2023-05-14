@@ -40,5 +40,4 @@ class SettingsNetworkRepoImpl @Inject constructor(
             is ApiResult.ApiException -> ApiResult.ApiException(e = response.e)
         }
     }
-
 }

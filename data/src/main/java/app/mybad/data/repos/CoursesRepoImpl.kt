@@ -5,7 +5,6 @@ import app.mybad.data.mapToDomain
 import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.repos.CoursesRepo
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

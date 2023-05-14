@@ -19,7 +19,9 @@ class AuthorizationNetworkRepoImpl @Inject constructor(
         execute { authorizationApiRepo.loginUser(authorizationUserLogin = authorizationUserLogin) }
 
     override suspend fun registrationUser(authorizationUserRegistration: AuthorizationUserRegistration): ApiResult =
-        execute { authorizationApiRepo.registrationUser(authorizationUserRegistration = authorizationUserRegistration) }
+        execute {
+            authorizationApiRepo.registrationUser(authorizationUserRegistration = authorizationUserRegistration)
+        }
 
     private suspend fun execute(request: () -> Call<*>): ApiResult {
         return when (val response = handleApi { request.invoke().execute() }) {
@@ -31,5 +33,4 @@ class AuthorizationNetworkRepoImpl @Inject constructor(
             is ApiResult.ApiException -> ApiResult.ApiException(e = response.e)
         }
     }
-
 }

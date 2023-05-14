@@ -1,7 +1,6 @@
 package app.mybad.network.di
 
 import android.util.Log
-import android.webkit.HttpAuthHandler
 import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.BuildConfig
@@ -16,11 +15,9 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -60,7 +57,7 @@ object NetworkApiModule {
         }
         val authInterceptor = Interceptor {
             var r = it.request()
-            if(token.isNotBlank()) {
+            if (token.isNotBlank()) {
                 r = r.newBuilder().addHeader("Authorization", "Bearer $token").build()
                 Log.w("NAM", "auth with token $token")
             }
@@ -93,5 +90,4 @@ object NetworkApiModule {
     @Provides
     fun provideSettingsApiService(retrofit: Retrofit): SettingsApiRepo =
         retrofit.create(SettingsApiRepo::class.java)
-
 }

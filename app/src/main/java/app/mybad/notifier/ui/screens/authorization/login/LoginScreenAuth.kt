@@ -102,7 +102,6 @@ private fun MainLoginScreen(
 
 @Composable
 private fun LoginScreenBackgroundImage() {
-
 }
 
 @Composable
@@ -121,7 +120,6 @@ private fun LoginScreenBaseForSignIn(
 
 @Composable
 private fun LoginScreenEnteredEmail(loginState: MutableState<String>) {
-
     OutlinedTextField(
         value = loginState.value,
         onValueChange = { newLogin -> loginState.value = newLogin },

@@ -25,5 +25,4 @@ interface SettingsApiRepo {
     @POST("api/Users/")
     @Headers("Content-Type: application/json")
     fun putUserModel(@Body userModel: UserModel): Call<UserModel>
-
 }

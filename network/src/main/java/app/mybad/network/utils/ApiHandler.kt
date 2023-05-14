@@ -22,5 +22,4 @@ object ApiHandler {
             ApiResult.ApiException(e = e)
         }
     }
-
 }

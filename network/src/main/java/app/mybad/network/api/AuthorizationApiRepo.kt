@@ -17,5 +17,4 @@ interface AuthorizationApiRepo {
     @Headers("Content-Type: application/json")
     @POST(value = "api/users")
     fun registrationUser(@Body authorizationUserRegistration: AuthorizationUserRegistration): Call<UserModel>
-
 }

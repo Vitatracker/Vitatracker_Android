@@ -10,5 +10,4 @@ class DeleteUserModelUseCase @Inject constructor(
     suspend fun execute() {
         userDataRepo.deleteUserModel()
     }
-
 }

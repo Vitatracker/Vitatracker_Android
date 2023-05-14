@@ -11,5 +11,4 @@ interface AuthorizationRepo {
     suspend fun loginWithEmail(login: String, password: String): ApiResult
 
     suspend fun registrationUser(login: String, password: String, userName: String): ApiResult
-
 }

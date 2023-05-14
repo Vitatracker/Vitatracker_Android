@@ -35,5 +35,4 @@ class DataStoreRepoImpl @Inject constructor(
     override suspend fun updateToken(token: String) {
         dataStore.edit { it[PreferencesKeys.token] = token }
     }
-
 }

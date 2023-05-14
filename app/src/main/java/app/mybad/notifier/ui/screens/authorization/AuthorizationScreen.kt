@@ -52,7 +52,7 @@ fun MainAuthorizationScreen(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        //ScreenBackgroundImage(R.drawable.ic_background_authorization_screen)
+        // ScreenBackgroundImage(R.drawable.ic_background_authorization_screen)
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,

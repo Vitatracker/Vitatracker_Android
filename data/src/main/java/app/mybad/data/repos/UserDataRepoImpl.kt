@@ -79,7 +79,7 @@ class UserDataRepoImpl @Inject constructor(
         return dataStore_userRules.data.first().mapToDomain()
     }
 
-    //api
+    // api
     override suspend fun getUserModel(): ApiResult {
         return settingsNetworkRepo.getUserModel()
     }
@@ -95,5 +95,4 @@ class UserDataRepoImpl @Inject constructor(
     override suspend fun putUserModel(userDomainModel: UserDomainModel) {
         settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
     }
-
 }

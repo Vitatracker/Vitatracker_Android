@@ -54,5 +54,4 @@ class AuthorizationScreenViewModel @Inject constructor(
     fun loginWithGoogle() {
         scope.launch { authorizationRepo.loginWithGoogle() }
     }
-
 }

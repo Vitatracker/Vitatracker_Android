@@ -83,8 +83,11 @@ fun AddMedicineFirstScreen(
                 .padding(start = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
-                if(!med.name.isNullOrBlank()) onNext()
-                else Toast.makeText(context, noNameError, Toast.LENGTH_LONG).show()
+                if (!med.name.isNullOrBlank()) {
+                    onNext()
+                } else {
+                    Toast.makeText(context, noNameError, Toast.LENGTH_LONG).show()
+                }
             }
         ) {
             Text(

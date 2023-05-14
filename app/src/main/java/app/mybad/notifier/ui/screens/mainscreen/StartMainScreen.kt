@@ -526,9 +526,13 @@ private fun MainScreenFormCourseHeader(
                 isDone = usages.factUseTime.toInt() != -1,
                 setUsageFactTime = {
                     usageCommon.value = usages.copy(
-                        factUseTime = if (usages.factUseTime.toInt() == -1) convertDateToLong(
-                            LocalDateTime.now()
-                        ) else -1
+                        factUseTime = if (usages.factUseTime.toInt() == -1) {
+                            convertDateToLong(
+                                LocalDateTime.now()
+                            )
+                        } else {
+                            -1
+                        }
                     )
                     setUsageFactTime(
                         usageCommon.value
@@ -582,7 +586,6 @@ private fun MainScreenButtonAccept(
                 setUsageFactTime()
             }
     )
-
 }
 
 @Composable

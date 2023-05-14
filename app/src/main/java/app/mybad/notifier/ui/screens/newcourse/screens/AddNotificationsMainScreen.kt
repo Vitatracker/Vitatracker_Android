@@ -242,7 +242,6 @@ private fun AddNotificationButton(
     forms: Array<String>,
     onClick: () -> Unit,
 ) {
-
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
