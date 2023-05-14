@@ -58,8 +58,8 @@ class MyCoursesViewModel @Inject constructor(
         when (intent) {
             is MyCoursesIntent.Delete -> {
                 scope.launch {
-                    deleteCourse.execute(intent.courseId)
                     val mId = coursesRepo.getSingle(intent.courseId).medId
+                    deleteCourse.execute(intent.courseId)
                     coursesNetworkRepo.deleteMed(mId)
                 }
             }

@@ -43,15 +43,15 @@ interface CoursesApi {
     @Headers("Content-Type: application/json")
     fun addAll(@Body med: Remedies): Call<Any>
 
-    @DELETE("api/Usages")
+    @DELETE("api/Usages/{id}")
     @Headers("Content-Type: application/json")
-    fun deleteUsage(@Body usageId: Long): Call<Any>
+    fun deleteUsage(@Path("id") usageId: Long): Call<Any>
 
-    @DELETE("api/Courses")
+    @DELETE("api/Courses/{id}")
     @Headers("Content-Type: application/json")
-    fun deleteCourse(@Body courseId: Long): Call<Any>
+    fun deleteCourse(@Path("id") courseId: Long): Call<Any>
 
-    @DELETE("api/Remedies")
+    @DELETE("api/Remedies/{id}")
     @Headers("Content-Type: application/json")
-    fun deleteMed(@Body medId: Long): Call<Any>
+    fun deleteMed(@Path("id") medId: Long): Call<Any>
 }
