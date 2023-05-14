@@ -22,7 +22,7 @@ class TakeOrDelayUsageService : Service() {
 
     @Inject lateinit var usagesRepo: UsagesRepo
 
-    @Inject lateinit var coursesNetworkRepo : CoursesNetworkRepo
+    @Inject lateinit var coursesNetworkRepo: CoursesNetworkRepo
 
     @Inject lateinit var updateUseCase: UpdateUsageUseCase
 

@@ -76,7 +76,7 @@ fun MyCoursesMainScreen(
                     )
                 }
                 composable(MyCoursesNavItem.Course.route) {
-                    if(state.value.meds.isEmpty()) selectedCourse = null
+                    if (state.value.meds.isEmpty()) selectedCourse = null
                     if (selectedCourse != null) {
                         CourseInfoScreen(
                             course = selectedCourse!!,

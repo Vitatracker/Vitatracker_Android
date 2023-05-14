@@ -5,7 +5,6 @@ import app.mybad.data.mapToDomain
 import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.UsagesRepo
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

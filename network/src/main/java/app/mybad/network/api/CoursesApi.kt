@@ -1,6 +1,5 @@
 package app.mybad.network.api
 
-import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.network.models.response.Courses
 import app.mybad.network.models.response.Remedies
 import app.mybad.network.models.response.Usages
@@ -25,7 +24,7 @@ interface CoursesApi {
 
     @PUT("api/Usages/{id}")
     @Headers("Content-Type: application/json")
-    fun updateUsage(@Body usage: Usages, @Path("id") id : Long): Call<Any>
+    fun updateUsage(@Body usage: Usages, @Path("id") id: Long): Call<Any>
 
     @PUT("api/Courses")
     @Headers("Content-Type: application/json")
