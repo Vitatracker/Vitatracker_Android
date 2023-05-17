@@ -1,7 +1,7 @@
 package app.mybad.network.repos.repo
 
 import app.mybad.domain.utils.ApiResult
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 
 interface SettingsNetworkRepo {
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.utils.ApiResult
+import app.mybad.network.models.response.Authorization
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,23 +28,30 @@ class AuthorizationScreenViewModel @Inject constructor(
         val result = authorizationRepo.loginWithEmail(login = login, password = password)
         viewModelScope.launch {
             when (result) {
-                is ApiResult.ApiSuccess -> dataStoreRepo.updateToken(
-                    token = result.data.toString()
-                )
-
+                is ApiResult.ApiSuccess -> setResultData(result.data as Authorization)
                 is ApiResult.ApiError -> _uiState.emit(_uiState.value.copy(error = "${result.code} ${result.message}"))
                 is ApiResult.ApiException -> _uiState.emit(_uiState.value.copy(exception = "${result.e}"))
             }
         }
     }
 
-    fun registration(login: String, password: String, userName: String) {
-        scope.launch {
-            authorizationRepo.registrationUser(
-                login = login,
-                password = password,
-                userName = userName
-            )
+    private suspend fun setResultData(result: Authorization) {
+        dataStoreRepo.updateToken(token = result.token)
+        dataStoreRepo.updateUserId(userId = result.userId)
+    }
+
+    suspend fun registration(login: String, password: String, userName: String) {
+        val result = authorizationRepo.registrationUser(
+            login = login,
+            password = password,
+            userName = userName
+        )
+        viewModelScope.launch {
+            when (result) {
+                is ApiResult.ApiSuccess -> setResultData(result.data as Authorization)
+                is ApiResult.ApiError -> _uiState.emit(_uiState.value.copy(error = "${result.code} ${result.message}"))
+                is ApiResult.ApiException -> _uiState.emit(_uiState.value.copy(exception = "${result.e}"))
+            }
         }
     }
 

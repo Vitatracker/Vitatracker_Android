@@ -35,4 +35,22 @@ class DataStorePrefImpl @Inject constructor(
                 preferences[PreferencesKeys.token] ?: ""
             }
     }
+
+    override suspend fun updateUserId(userId: String) {
+        dataStore.edit { it[PreferencesKeys.userId] = userId }
+    }
+
+    override suspend fun getUserId(): Flow<String> {
+        return dataStore.data
+            .catch { exception ->
+                // dataStore.data throws an IOException when an error is encountered when reading data
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { preferences ->
+                preferences[PreferencesKeys.userId] ?: ""
+            }
+    }
 }

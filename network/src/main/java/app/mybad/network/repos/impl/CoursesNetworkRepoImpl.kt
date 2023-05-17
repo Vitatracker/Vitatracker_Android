@@ -13,7 +13,7 @@ import app.mybad.network.api.CoursesApi
 import app.mybad.network.models.mapToDomain
 import app.mybad.network.models.mapToNet
 import app.mybad.network.models.response.Remedies
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.utils.ApiHandler.handleApi
 import com.google.gson.Gson

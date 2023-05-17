@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
@@ -32,6 +33,7 @@ fun SettingsNav(
     modifier: Modifier = Modifier,
     vm: SettingsViewModel,
     navController: NavHostController,
+    mainVM: MainActivityViewModel,
     onDismiss: () -> Unit = { }
 ) {
     var title by remember { mutableStateOf("") }
@@ -102,6 +104,8 @@ fun SettingsNav(
                     onPasswordEdit = {
                         navController.navigate(NavItemSettings.PasswordChange.route)
                     },
+                    mainVM = mainVM,
+                    settingsVM = vm,
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
             }

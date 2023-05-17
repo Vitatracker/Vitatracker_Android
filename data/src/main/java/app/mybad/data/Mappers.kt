@@ -16,7 +16,7 @@ import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.RulesUserDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.network.models.response.NotificationSetting
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -182,6 +182,7 @@ fun UserDomainModel.mapToNetwork(): UserModel {
         id = id,
         name = personal.name.toString(),
         email = personal.email.toString(),
+        password = "123456",    //все дело в бэке, не сочтите за Альцгеймер
         avatar = personal.avatar.toString(),
         notificationSettings = NotificationSetting(
             id = settings.notifications.medsId,

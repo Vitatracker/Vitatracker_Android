@@ -1,12 +1,13 @@
 package app.mybad.network.api
 
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface SettingsApiRepo {
 
@@ -22,7 +23,7 @@ interface SettingsApiRepo {
     @Headers("Content-Type: application/json")
     fun deleteUserModel(): Call<UserModel>
 
-    @POST("api/Users/")
+    @PUT("api/Users/")
     @Headers("Content-Type: application/json")
     fun putUserModel(@Body userModel: UserModel): Call<UserModel>
 }

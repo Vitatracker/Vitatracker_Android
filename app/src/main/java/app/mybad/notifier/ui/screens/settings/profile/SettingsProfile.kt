@@ -1,13 +1,13 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
+import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
 @Composable
 fun SettingsProfile(
@@ -34,6 +36,8 @@ fun SettingsProfile(
     userModel: PersonalDomainModel = PersonalDomainModel(),
     savePersonal: (SettingsIntent) -> Unit,
     onPasswordEdit: () -> Unit = {},
+    mainVM: MainActivityViewModel,
+    settingsVM: SettingsViewModel,
     onDismiss: () -> Unit = {},
 ) {
     val editUserAvatar = remember { mutableStateOf(userModel.avatar) }
@@ -60,7 +64,9 @@ fun SettingsProfile(
             )
 
             (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileBottom(
-                onPasswordEdit = onPasswordEdit
+                onPasswordEdit = onPasswordEdit,
+                settingsVM = settingsVM,
+                mainVM = mainVM
             )
         }
     }
@@ -98,7 +104,11 @@ private fun SettingsProfileTop(
 }
 
 @Composable
-private fun SettingsProfileBottom(onPasswordEdit: () -> Unit) {
+private fun SettingsProfileBottom(
+    onPasswordEdit: () -> Unit,
+    settingsVM: SettingsViewModel,
+    mainVM: MainActivityViewModel
+) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -106,7 +116,22 @@ private fun SettingsProfileBottom(onPasswordEdit: () -> Unit) {
         SettingsProfileBottomElement(
             text = R.string.settings_change_password,
             icon = ImageVector.vectorResource(id = R.drawable.icon_settings_lock),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
+            onClick = { onPasswordEdit() }
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+
+        SettingsProfileBottomElement(
+            text = R.string.settings_quit,
+            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
+            tint = Color.Gray,
+            onClick = {
+                mainVM.clearDataStore()
+            }
         )
         Divider(
             modifier = Modifier.padding(vertical = 16.dp),
@@ -116,19 +141,12 @@ private fun SettingsProfileBottom(onPasswordEdit: () -> Unit) {
 
         SettingsProfileBottomElement(
             text = R.string.settings_delete_account,
-            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
-            tint = Color.Gray
-        )
-        Divider(
-            modifier = Modifier.padding(vertical = 16.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-        )
-
-        SettingsProfileBottomElement(
-            text = R.string.settings_change_password,
             icon = Icons.Default.ErrorOutline,
-            tint = MaterialTheme.colorScheme.error
+            tint = MaterialTheme.colorScheme.error,
+            onClick = {
+                settingsVM.reduce(SettingsIntent.DeleteAccount)
+                mainVM.clearDataStore()
+            }
         )
         Divider(
             modifier = Modifier.padding(vertical = 16.dp),
@@ -139,9 +157,16 @@ private fun SettingsProfileBottom(onPasswordEdit: () -> Unit) {
 }
 
 @Composable
-private fun SettingsProfileBottomElement(text: Int, icon: ImageVector, tint: Color) {
+private fun SettingsProfileBottomElement(
+    text: Int,
+    icon: ImageVector,
+    tint: Color,
+    onClick: () -> Unit
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

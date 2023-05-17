@@ -35,4 +35,22 @@ class DataStoreRepoImpl @Inject constructor(
     override suspend fun updateToken(token: String) {
         dataStore.edit { it[PreferencesKeys.token] = token }
     }
+
+    override suspend fun getUserId(): Flow<String> {
+        return dataStore.data
+            .catch { exception ->
+                // dataStore.data throws an IOException when an error is encountered when reading data
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { preferences ->
+                preferences[PreferencesKeys.userId] ?: ""
+            }
+    }
+
+    override suspend fun updateUserId(userId: String) {
+        dataStore.edit { it[PreferencesKeys.userId] = userId }
+    }
 }

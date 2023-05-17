@@ -85,6 +85,7 @@ fun MainNav(
                     modifier = modifier.padding(horizontal = 16.dp),
                     vm = settingsVm,
                     navController = settingsNavController,
+                    mainVM = mainVM,
                     onDismiss = { navController.popBackStack() }
                 )
             }

@@ -84,9 +84,9 @@ class UserDataRepoImpl @Inject constructor(
         return settingsNetworkRepo.getUserModel()
     }
 
-    override suspend fun postUserModel(userDomainModel: UserDomainModel) {
-        settingsNetworkRepo.postUserModel(userModel = userDomainModel.mapToNetwork())
-    }
+//    override suspend fun postUserModel(userDomainModel: UserDomainModel) {
+//        settingsNetworkRepo.postUserModel(userModel = userDomainModel.mapToNetwork())
+//    }
 
     override suspend fun deleteUserModel() {
         settingsNetworkRepo.deleteUserModel()

@@ -9,4 +9,5 @@ interface AuthorizationNetworkRepo {
     suspend fun loginUser(authorizationUserLogin: AuthorizationUserLogin): ApiResult
 
     suspend fun registrationUser(authorizationUserRegistration: AuthorizationUserRegistration): ApiResult
+
 }

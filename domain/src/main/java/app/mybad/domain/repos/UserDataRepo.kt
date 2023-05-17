@@ -19,7 +19,7 @@ interface UserDataRepo {
     // api
     suspend fun getUserModel(): ApiResult
 
-    suspend fun postUserModel(userDomainModel: UserDomainModel)
+    //suspend fun postUserModel(userDomainModel: UserDomainModel)
 
     suspend fun deleteUserModel()
 

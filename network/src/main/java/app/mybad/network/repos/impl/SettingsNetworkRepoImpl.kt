@@ -2,7 +2,7 @@ package app.mybad.network.repos.impl
 
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.api.SettingsApiRepo
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.mybad.network.utils.ApiHandler
 import retrofit2.Call

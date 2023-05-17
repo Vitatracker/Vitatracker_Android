@@ -38,7 +38,7 @@ class MainActivityViewModel @Inject constructor(
         }
         viewModelScope.launch {
             dataStoreRepo.getToken().collect {
-                Log.w("MAVM", "token: $it")
+                Log.w("MainActivity", "token: $it")
                 if (it.isNotBlank()) {
                     scope.launch {
                         coursesNetworkRepo.getAll()
@@ -48,10 +48,12 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun clearToken() {
+    fun clearDataStore() {
         scope.launch {
             dataStoreRepo.updateToken("")
+            dataStoreRepo.updateUserId("")
             updateToken()
         }
     }
+
 }

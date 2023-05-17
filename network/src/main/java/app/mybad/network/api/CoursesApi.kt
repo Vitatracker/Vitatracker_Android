@@ -3,7 +3,7 @@ package app.mybad.network.api
 import app.mybad.network.models.response.Courses
 import app.mybad.network.models.response.Remedies
 import app.mybad.network.models.response.Usages
-import app.mybad.network.models.response.UserModel
+import app.mybad.network.models.UserModel
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
