@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
@@ -53,7 +54,7 @@ fun StartMainScreen(
     navController: NavHostController,
     vm: StartMainScreenViewModel
 ) {
-    val uiState by vm.uiState.collectAsState()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
     val usageCommon = remember { mutableStateOf(UsageCommonDomainModel(medId = -1, userId = 0L)) }

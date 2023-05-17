@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,7 +38,7 @@ fun SettingsNav(
     onDismiss: () -> Unit = { }
 ) {
     var title by remember { mutableStateOf("") }
-    val state = vm.state.collectAsState()
+    val state = vm.state.collectAsStateWithLifecycle()
     val userModel = state.value.userModel
     val userPersonalModel = state.value.personalDomainModel
     val userNotificationModel = state.value.notificationsUserDomainModel
