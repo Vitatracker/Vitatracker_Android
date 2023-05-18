@@ -74,9 +74,9 @@ private fun MainRegistrationScreen(
     authVM: AuthorizationScreenViewModel,
     mainVM: MainActivityViewModel
 ) {
-    val userNameState = remember { mutableStateOf("Ivan") }
-    val loginState = remember { mutableStateOf("bob@mail.ru") }
-    val passwordState = remember { mutableStateOf("12345678") }
+    val userNameState = remember { mutableStateOf("") }
+    val loginState = remember { mutableStateOf("") }
+    val passwordState = remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize(),
