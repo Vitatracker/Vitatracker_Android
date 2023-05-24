@@ -77,8 +77,8 @@ private fun MainLoginScreen(
         Column(
             modifier = Modifier
         ) {
-            val loginState = remember { mutableStateOf("bob@mail.ru") }
-            val passwordState = remember { mutableStateOf("12345678") }
+            val loginState = remember { mutableStateOf("") }    //{ mutableStateOf("bob@mail.ru") }
+            val passwordState = remember { mutableStateOf("") } //{ mutableStateOf("12345678") }
 
             LoginScreenBaseForSignIn(loginState = loginState, passwordState = passwordState)
             LoginScreenForgotPassword(navController = navController)
