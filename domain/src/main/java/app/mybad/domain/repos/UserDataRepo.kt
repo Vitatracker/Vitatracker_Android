@@ -21,7 +21,7 @@ interface UserDataRepo {
 
     //suspend fun postUserModel(userDomainModel: UserDomainModel)
 
-    suspend fun deleteUserModel()
+    suspend fun deleteUserModel(id: String)
 
     suspend fun putUserModel(userDomainModel: UserDomainModel)
 }

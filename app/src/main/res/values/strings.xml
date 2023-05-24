@@ -124,4 +124,9 @@
     <string name="add_notifications_choose_time">Choose time</string>
     <string name="add_med_error_empty_name">You should type the name of medicine</string>
 
+    <!--LEAVE YOUR WISHES-->
+    <string name="wishes_text_header">Leave your wishes</string>
+    <string name="wishes_text_main">If you have any suggestions for improving the application or want to leave feedback, please contact us at the email address provided:</string>
+    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
+
 </resources>

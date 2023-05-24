@@ -7,7 +7,7 @@ class DeleteUserModelUseCase @Inject constructor(
     private val userDataRepo: UserDataRepo
 ) {
 
-    suspend fun execute() {
-        userDataRepo.deleteUserModel()
+    suspend fun execute(id: String) {
+        userDataRepo.deleteUserModel(id = id)
     }
 }

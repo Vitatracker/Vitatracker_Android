@@ -24,6 +24,7 @@ fun SettingsNavScreen(
     onProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
     onAbout: () -> Unit = {},
+    onWishes: () -> Unit = {}
 ) {
     val editAvatar = remember { mutableStateOf(userModel.avatar) }
 
@@ -77,7 +78,7 @@ fun SettingsNavScreen(
             SettingsItem(
                 label = stringResource(R.string.settings_leave_your_wishes),
                 icon = R.drawable.icon_settings_help,
-                onSelect = onAbout::invoke
+                onSelect = onWishes::invoke
             )
             Divider(
                 modifier = Modifier.padding(vertical = 16.dp),

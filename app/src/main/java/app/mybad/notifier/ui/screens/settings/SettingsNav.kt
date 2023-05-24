@@ -41,8 +41,8 @@ fun SettingsNav(
     val state = vm.state.collectAsStateWithLifecycle()
     val userModel = state.value.userModel
     val userPersonalModel = state.value.personalDomainModel
-    val userNotificationModel = state.value.notificationsUserDomainModel
-    val userRulesModel = state.value.rulesUserDomainModel
+//    val userNotificationModel = state.value.notificationsUserDomainModel
+//    val userRulesModel = state.value.rulesUserDomainModel
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -88,6 +88,7 @@ fun SettingsNav(
                     reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
+                    onWishes = { navController.navigate(NavItemSettings.LeaveYourWishes.route) },
                     onNotifications = {
                         navController.navigate(NavItemSettings.Notifications.route)
                     },

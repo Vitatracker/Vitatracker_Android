@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface SettingsApiRepo {
 
@@ -21,7 +22,7 @@ interface SettingsApiRepo {
 
     @DELETE("api/Users/")
     @Headers("Content-Type: application/json")
-    fun deleteUserModel(): Call<UserModel>
+    fun deleteUserModel(@Query("id") id: String): Call<UserModel>
 
     @PUT("api/Users/")
     @Headers("Content-Type: application/json")

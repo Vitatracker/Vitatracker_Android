@@ -119,7 +119,6 @@ private fun MainScreen(
                 uiState = uiState,
                 changeData = changeData
             )
-            MainScreenTextCategory()
             MainScreenLazyMedicines(
                 uiState = uiState,
                 changeData = changeData,
@@ -335,6 +334,7 @@ private fun MainScreenLazyMedicines(
         MainScreenMedsClear()
     } else {
         if (meds.isNotEmpty() && usages.isNotEmpty()) {
+            MainScreenTextCategory()
             LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
                 usages.sortedBy { it.useTime }.forEach { usage ->
                     item {

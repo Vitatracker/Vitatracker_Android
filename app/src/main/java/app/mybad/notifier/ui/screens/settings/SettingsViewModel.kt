@@ -35,7 +35,7 @@ class SettingsViewModel @Inject constructor(
     private val coursesRepo: CoursesRepo,
     private val deleteUserModelUseCase: DeleteUserModelUseCase,
     private val updateUserModelUseCase: UpdateUserModelUseCase,
-    private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
+//    private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
     private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
@@ -45,13 +45,13 @@ class SettingsViewModel @Inject constructor(
 
     init {
         scope.launch {
+            getUserModel()
+            delay(500)
             _state.emit(_state.value.copy(courses = coursesRepo.getAll()))
             _state.emit(_state.value.copy(personalDomainModel = userSettingsUseCase.getUserPersonal()))
             _state.emit(_state.value.copy(notificationsUserDomainModel = userSettingsUseCase.getUserNotification()))
             _state.emit(_state.value.copy(rulesUserDomainModel = userSettingsUseCase.getUserRules()))
             _state.emit(_state.value.copy(userModel = setUserModelForRequest()))
-            delay(100)
-            getUserModel()
         }
     }
 
@@ -102,7 +102,11 @@ class SettingsViewModel @Inject constructor(
     fun reduce(intent: SettingsIntent) {
         when (intent) {
             is SettingsIntent.DeleteAccount -> {
-                deleteUserModelUseCase
+                scope.launch {
+                    deleteUserModelUseCase.execute(_state.value.userModel.id.toString())
+                    dataStoreRepo.updateUserId(userId = "")
+                    dataStoreRepo.updateToken(token = "")
+                }
             }
 
             is SettingsIntent.Exit -> {}
@@ -110,6 +114,7 @@ class SettingsViewModel @Inject constructor(
                 scope.launch {
                     userNotificationDomainModelUseCase.execute(notificationsUserDomainModel = intent.notifications)
                     _state.emit(_state.value.copy(notificationsUserDomainModel = intent.notifications))
+                    delay(100)
                     setUserModelForRequest()
                     updateUserModelUseCase.execute(
                         userDomainModel =

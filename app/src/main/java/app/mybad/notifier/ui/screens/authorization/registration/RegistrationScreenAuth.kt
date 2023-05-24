@@ -77,6 +77,7 @@ private fun MainRegistrationScreen(
     val userNameState = remember { mutableStateOf("") }
     val loginState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+    val confirmPasswordState = remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -89,7 +90,8 @@ private fun MainRegistrationScreen(
             RegistrationScreenBaseForSignIn(
                 loginState = loginState,
                 passwordState = passwordState,
-                userNameState = userNameState
+                userNameState = userNameState,
+                confirmPasswordState = confirmPasswordState
             )
             RegistrationScreenButtonRegistration(onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -116,6 +118,7 @@ private fun RegistrationScreenBackgroundImage() {
 private fun RegistrationScreenBaseForSignIn(
     loginState: MutableState<String>,
     passwordState: MutableState<String>,
+    confirmPasswordState: MutableState<String>,
     userNameState: MutableState<String>
 ) {
     Column(
@@ -129,7 +132,7 @@ private fun RegistrationScreenBaseForSignIn(
             textId = R.string.login_password
         )
         RegistrationScreenEnteredPassword(
-            passwordState = passwordState,
+            passwordState = confirmPasswordState,
             textId = R.string.login_password_confirm
         )
     }

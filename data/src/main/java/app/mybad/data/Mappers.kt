@@ -186,6 +186,7 @@ fun UserDomainModel.mapToNetwork(): UserModel {
         avatar = personal.avatar.toString(),
         notificationSettings = NotificationSetting(
             id = settings.notifications.medsId,
+            userId = id,
             isEnabled = settings.notifications.isEnabled,
             isFloat = settings.notifications.isFloat,
             medicalControl = settings.notifications.medicationControl,

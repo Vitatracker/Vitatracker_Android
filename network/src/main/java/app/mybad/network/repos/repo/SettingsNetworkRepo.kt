@@ -9,7 +9,7 @@ interface SettingsNetworkRepo {
 
     suspend fun postUserModel(userModel: UserModel)
 
-    suspend fun deleteUserModel()
+    suspend fun deleteUserModel(id: String)
 
     suspend fun putUserModel(userModel: UserModel)
 }

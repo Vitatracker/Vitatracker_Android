@@ -21,8 +21,8 @@ class SettingsNetworkRepoImpl @Inject constructor(
         execute { settingsApiRepo.postUserModel(userModel = userModel) }
     }
 
-    override suspend fun deleteUserModel() {
-        execute { settingsApiRepo.deleteUserModel() }
+    override suspend fun deleteUserModel(id: String) {
+        execute { settingsApiRepo.deleteUserModel(id = id) }
     }
 
     override suspend fun putUserModel(userModel: UserModel) {

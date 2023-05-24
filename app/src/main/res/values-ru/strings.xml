@@ -118,4 +118,9 @@
     <string name="add_notifications_choose_time">Выберите время</string>
     <string name="add_med_error_empty_name">Введите название препарата</string>
 
+    <!--LEAVE YOUR WISHES-->
+    <string name="wishes_text_header">Оставьте свои пожелания</string>
+    <string name="wishes_text_main">Если у вас есть пожелания по улучшению приложения или вы хотите оставить отзыв, пожалуйста, свяжитесь с нами по указанному емейлу:</string>
+    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
+
 </resources>
