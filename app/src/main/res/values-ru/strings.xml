@@ -2,7 +2,7 @@
 <resources>
     <string name="add_med_h">Добавить лекарство</string>
     <string name="add_med_name">Название препарата *</string>
-    <string name="add_med_dose">Доза</string>
+    <string name="add_med_dose">Дозировка</string>
     <string name="add_med_unit">Единица измерения</string>
     <string name="add_med_food_relation">Связь с едой</string>
     <string name="add_med_settings">Настройки</string>
