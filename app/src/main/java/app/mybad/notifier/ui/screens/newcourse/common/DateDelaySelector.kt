@@ -18,8 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import java.time.Period
 import kotlin.math.absoluteValue
@@ -33,8 +36,8 @@ fun DateDelaySelector(
 ) {
     val days = (0..30).toList()
     val months = (0..12).toList()
-    val pagerStateMonths = rememberPagerState(initialPage = months.size*10000 + initValue.months)
-    val pagerStateDays = rememberPagerState(initialPage = days.size*10000 + initValue.days)
+    val pagerStateMonths = rememberPagerState(initialPage = months.size * 10000 + initValue.months)
+    val pagerStateDays = rememberPagerState(initialPage = days.size * 10000 + initValue.days)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -87,8 +90,8 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if(months[it % months.size] < 10) "0${months[it % months.size]}" else "${months[it % months.size]}"
-                        Text( text = t, style = Typography.headlineLarge)
+                        val t = if (months[it % months.size] < 10) "${months[it % months.size]}" else "${months[it % months.size]}"
+                        Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
             }
@@ -132,15 +135,17 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if(days[it % days.size] < 10) "0${days[it % days.size]}" else "${days[it % days.size]}"
-                        Text(text = t, style = Typography.headlineLarge)
+                        val t = if (days[it % days.size] < 10) "${days[it % days.size]}" else "${days[it % days.size]}"
+                        Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
             }
             Spacer(Modifier.width(0.dp))
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 val newTime = Period.ofDays(0)
@@ -152,4 +157,12 @@ fun DateDelaySelector(
         )
     }
 
+}
+
+@Preview
+@Composable
+fun DateSelectorPreview() {
+    MyBADTheme {
+        DateDelaySelector(initValue = Period.ZERO, onSelect = {})
+    }
 }

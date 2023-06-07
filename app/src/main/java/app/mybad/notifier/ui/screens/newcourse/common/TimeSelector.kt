@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalTime
@@ -81,7 +82,7 @@ fun TimeSelector(
                         .scale(scale)
                 ) {
                     val t = if(hours[it % hours.size] < 10) "0${hours[it % hours.size]}" else "${hours[it % hours.size]}"
-                    Text( text = t, style = Typography.headlineLarge)
+                    Text( text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                 }
             }
             VerticalPager(
@@ -118,7 +119,7 @@ fun TimeSelector(
                         .scale(scale)
                 ) {
                     val t = if(minutes[it % minutes.size] < 10) "0${minutes[it % minutes.size]}" else "${minutes[it % minutes.size]}"
-                    Text(text = t, style = Typography.headlineLarge)
+                    Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                 }
             }
             Spacer(Modifier.width(0.dp))
