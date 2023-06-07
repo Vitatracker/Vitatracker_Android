@@ -14,4 +14,5 @@ sealed class NavItemSettings(
     object PasswordChange : NavItemSettings("settings_password_change", R.string.settings_change_password)
     object Notifications : NavItemSettings("settings_notifications", R.string.settings_notifications)
     object About : NavItemSettings("settings_about", R.string.settings_about)
+    object OurContacts : NavItemSettings("settings_about_our_contacts", R.string.settings_our_contacts)
 }

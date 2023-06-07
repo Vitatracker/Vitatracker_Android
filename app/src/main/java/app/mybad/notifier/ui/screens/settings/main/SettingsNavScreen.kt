@@ -15,6 +15,7 @@ import app.mybad.notifier.ui.screens.settings.common.SettingsItem
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
+import app.mybad.notifier.ui.screens.settings.common.BaseDivider
 import app.mybad.notifier.ui.screens.settings.common.DeleteAccountItem
 import app.mybad.notifier.ui.screens.settings.common.SettingsQuit
 
@@ -59,39 +60,23 @@ fun SettingsNavScreen(
                 label = stringResource(R.string.settings_profile),
                 onSelect = onProfile::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-
+            BaseDivider()
             SettingsItem(
                 label = stringResource(R.string.settings_notifications),
                 onSelect = onNotifications::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-
+            BaseDivider()
             SettingsItem(
                 label = stringResource(R.string.settings_about),
                 onSelect = onAbout::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-
+            BaseDivider()
             DeleteAccountItem(
                 label = stringResource(R.string.settings_delete_account),
                 onSelect = { reducer(SettingsIntent.DeleteAccount) }
             )
         }
         SettingsQuit(onQuit = { reducer(SettingsIntent.Exit) })
-
     }
 
 }

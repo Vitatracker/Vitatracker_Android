@@ -89,7 +89,13 @@
     <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
     <string name="settings_user_name">Name</string>
     <string name="settings_user_email">Email</string>
-
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_user_agreement">User agreement</string>
+    <string name="settings_our_contacts">Our contacts</string>
+    <string name="settings_current_build_year">Vitatracker 2023</string>
+    <string name="settings_contacts_back_end_team">Back-end team:</string>
+    <string name="settings_contacts_front_end_team">Front-end team:</string>
+    <string name="settings_contacts_android_team">Android team:</string>
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
     <string name="navigation_settings_profile">Profile</string>
@@ -114,4 +120,5 @@
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
     <string name="add_notifications_time_set">Set up notificaiton time</string>
     <string name="mycourse_remaining">Remains days: %s</string>
+    <string name="version_code">"Version "</string>
 </resources>

@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
+import app.mybad.notifier.ui.screens.settings.about.SettingsOurContacts
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
@@ -31,7 +32,7 @@ fun SettingsNav(
     modifier: Modifier = Modifier,
     vm: SettingsViewModel,
     navController: NavHostController,
-    onDismiss: () -> Unit = {  }
+    onDismiss: () -> Unit = { }
 ) {
 
     var title by remember { mutableStateOf("") }
@@ -47,15 +48,17 @@ fun SettingsNav(
         modifier = modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = { Text(
-                text = title,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 24.dp),
-                color = MaterialTheme.colorScheme.primary,
-                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-            ) },
+            title = {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 24.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            },
             navigationIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowBack, contentDescription = null,
@@ -112,7 +115,15 @@ fun SettingsNav(
             }
             composable(NavItemSettings.About.route) {
                 title = stringResource(NavItemSettings.About.stringId)
-                SettingsAbout()
+                SettingsAbout(
+                    onContacts = {
+                        navController.navigate(NavItemSettings.OurContacts.route)
+                    }
+                )
+            }
+            composable(NavItemSettings.OurContacts.route) {
+                title = stringResource(NavItemSettings.OurContacts.stringId)
+                SettingsOurContacts()
             }
         }
     }

@@ -68,6 +68,13 @@
     <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
     <string name="settings_user_name">Имя</string>
     <string name="settings_user_email">Электронная почта</string>
+    <string name="settings_current_build_year">Vitatracker 2023</string>
+    <string name="settings_user_agreement">Пользовательское соглашение</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_our_contacts">Наши контакты</string>
+    <string name="settings_contacts_back_end_team">Back-end команда:</string>
+    <string name="settings_contacts_front_end_team">Front-end команда:</string>
+    <string name="settings_contacts_android_team">Android команда:</string>
 
     <string name="text_continue">Продолжить</string>
 
@@ -106,6 +113,6 @@
     <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
     <string name="add_notifications_time_set">Настроить напоминание</string>
     <string name="mycourse_remaining">Старт через %s д.</string>
-
+    <string name="version_code">"Версия "</string>
 
 </resources>
