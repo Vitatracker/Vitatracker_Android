@@ -23,7 +23,6 @@ fun DeleteAccountItem(
     label: String = "setting",
     onSelect: () -> Unit = {}
 ) {
-
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
@@ -58,5 +57,4 @@ fun DeleteAccountItem(
             }
         }
     }
-
 }

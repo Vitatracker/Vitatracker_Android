@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class UsageCommonDataModel(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val medId: Long,
-    val userId: String,
+    val userId: Long,
     val creationTime: Long = 0L,
     val editTime: Long = 0L,
     val useTime: Long,

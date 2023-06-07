@@ -6,20 +6,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
@@ -27,13 +27,14 @@ import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 @Composable
 fun MainNav(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     createCourseVm: CreateCourseViewModel,
     myCoursesVm: MyCoursesViewModel,
     settingsVm: SettingsViewModel,
     calendarVm: CalendarViewModel,
-    mainScreenVm: StartMainScreenViewModel
+    mainScreenVm: StartMainScreenViewModel,
+    mainVM: MainActivityViewModel
 ) {
+    val navController = rememberNavController()
     var isOnTopLevel by remember { mutableStateOf(true) }
     val calendarState = calendarVm.state.collectAsState()
 
@@ -52,11 +53,11 @@ fun MainNav(
             startDestination = NavItemMain.Notifications.route
         ) {
             composable(NavItemMain.Notifications.route) {
+                isOnTopLevel = true
                 StartMainScreen(
                     navController = navController,
                     vm = mainScreenVm
                 )
-                isOnTopLevel = true
             }
             composable(NavItemMain.Courses.route) {
                 val myCoursesNavController = rememberNavController()
@@ -84,6 +85,7 @@ fun MainNav(
                     modifier = modifier.padding(horizontal = 16.dp),
                     vm = settingsVm,
                     navController = settingsNavController,
+                    mainVM = mainVM,
                     onDismiss = { navController.popBackStack() }
                 )
             }

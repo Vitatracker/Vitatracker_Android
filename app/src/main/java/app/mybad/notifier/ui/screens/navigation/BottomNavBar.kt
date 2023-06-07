@@ -32,7 +32,7 @@ fun BottomNavBar(
     val backStackEntry = navController?.currentBackStackEntryAsState()
     var selected by remember { mutableStateOf(NavItemMain.Notifications.route) }
 
-    if(isVisible) {
+    if (isVisible) {
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = modifier
@@ -125,9 +125,8 @@ private fun MainNavigationItem(
     isSelected: Boolean = false,
     onSelect: () -> Unit,
 ) {
-
     val indicatorColor by animateColorAsState(
-        targetValue = if(isSelected) MaterialTheme.colorScheme.outlineVariant else Color.Transparent,
+        targetValue = if (isSelected) MaterialTheme.colorScheme.outlineVariant else Color.Transparent,
         animationSpec = tween(
             durationMillis = 300,
             delayMillis = 40,
@@ -135,7 +134,7 @@ private fun MainNavigationItem(
         )
     )
     val iconAlpha by animateFloatAsState(
-        targetValue = if(isSelected) 1f else 0.5f,
+        targetValue = if (isSelected) 1f else 0.5f,
         animationSpec = tween(
             durationMillis = 300,
             delayMillis = 40,

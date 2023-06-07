@@ -12,7 +12,6 @@ class LoadCoursesUseCase @Inject constructor(
 ) {
 
     suspend fun getMedsFlow() = medsRepo.getAllFlow()
-    suspend fun  getCoursesFlow() = coursesRepo.getAllFlow()
+    suspend fun getCoursesFlow() = coursesRepo.getAllFlow()
     suspend fun getUsagesFlow() = usagesRepo.getCommonAllFlow()
-
 }

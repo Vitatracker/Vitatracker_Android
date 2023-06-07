@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_med_h">Добавить лекарство</string>
+    <string name="add_med_name">Название препарата</string>
+    <string name="add_med_dose">Доза</string>
+    <string name="add_med_unit">Единица измерения</string>
+    <string name="navigation_back">Назад</string>
+    <string name="navigation_next">Вперед</string>
+    <string name="add_course_h">Выбрать время</string>
+    <string name="add_course_notifications_time">Время уведомлений</string>
+    <string name="add_course_date_from">C </string>
+    <string name="add_course_start_time">Начало приема</string>
+    <string name="add_course_comment">Комментарий</string>
+    <string name="add_next_course_remind_before">Напомнить за, дней</string>
+    <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
+    <string name="add_course_congratulations">Ура! Теперь вы не пропустите прием лекарств!</string>
+    <string name="add_course_months">Месяцы</string>
+    <string name="add_course_days">Дни</string>
+    <string name="add_next_course_interval">Начать следующий курс через</string>
+
+    <!--START SCREEN-->
+    <string name="start_screen_welcome">Добро пожаловать</string>
+    <string name="start_screen_to">в </string>
+    <string name="start_screen_recomendation_1">Перед использованием приложения, </string>
+    <string name="start_screen_recomendation_2">Вам нужно авторизоваться</string>
+    <string name="start_screen_go">Погнали!</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Логин</string>
+    <string name="authorization_screen_registration">Регистрация</string>
+    <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Профиль</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_quit">Выйти</string>
+    <string name="settings_delete_account">Удалить учетную запись</string>
+    <string name="settings_change_password">Изменить пароль</string>
+    <string name="settings_cancel">Отменить</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_current_password">Текущий пароль</string>
+    <string name="settings_new_password">Новый пароль</string>
+    <string name="settings_repeat_new_password">Повторите новый пароль</string>
+    <string name="navigation_settings_main">Настройки</string>
+    <string name="navigation_settings_profile">Профиль</string>
+    <string name="settings_enable_notifications">Уведомления</string>
+    <string name="settings_enable_notifications_description">Включает и выключает все уведомления от приложения. Не влияет на индивидуальные настройки курсов.</string>
+    <string name="settings_enable_float_notifications">Плавающие уведомления</string>
+    <string name="settings_enable_float_notifications_description">Уведомления будут всплывать в верхней части экрана поверх всех открытых приложений и оставаться там, пока вы не отреагируете.</string>
+    <string name="settings_enable_medication_control">Контроль приёма</string>
+    <string name="settings_enable_medication_control_description">Включает контроль приема медикаметов в конце дня - вы будете должны повторно отметить все приёмы выших медикаментов.</string>
+    <string name="settings_enable_next_course_start">Начала следующих курсов</string>
+    <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
+
+    <string name="text_continue">Продолжить</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Вход</string>
+    <string name="login_email">Логин/Электронная почта</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_password_confirm">Подверждение пароля</string>
+    <string name="login_forgot_password">Забыли пароль?</string>
+    <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
+    <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Не беспокойтесь. Такое случается.</string>
+    <string name="recovery_text_2">пожалуйста введите ваш E-mail,</string>
+    <string name="recovery_text_3">связанный с вашей учетной записью</string>
+
+    <!--NEW PASSWORD-->
+
+    <!--NAVIGATION MAIN-->
+    <string name="navigation_courses">Курсы</string>
+    <string name="navigation_add">Добавить</string>
+    <string name="navigation_notifications">Уведомления</string>
+    <string name="navigation_calendar">Календарь</string>
+
+    <string name="my_course_h">Мои курсы</string>
+    <string name="mycourse_duration">Продолжительность</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">Мой календарь</string>
+    <string name="main_screen_top_bar_name">Дневник напоминаний</string>
+    <string name="main_screen_text_category">Лекарства</string>
+
+    <string name="notifications_channel_description">Уведомления о приемах лекарств</string>
+    <string name="notifications_time_to_use">Время приема лекарства!</string>
+    <string name="notifications_text_template">Примите %1$s!\n%2$d, %3$s</string>
+    <string name="notifications_action_take">Take</string>
+    <string name="notifications_action_delay">Delay</string>
+    <string name="notifications_new_course_start">New course starts!</string>
+    <string name="notifications_new_course_start_text_template">Новый курс начинается %s!\n Препарат: %s, %d %s, %s</string>
+
+</resources>

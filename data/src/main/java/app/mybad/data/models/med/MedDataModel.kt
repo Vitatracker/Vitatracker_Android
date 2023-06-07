@@ -8,7 +8,7 @@ data class MedDataModel(
     @PrimaryKey var id: Long = 0L,
     val creationDate: Long = 0L,
     val updateDate: Long = 0L,
-    val userId: String = "userid",
+    val userId: Long = 0L,
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,

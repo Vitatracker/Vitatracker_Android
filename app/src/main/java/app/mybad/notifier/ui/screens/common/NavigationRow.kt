@@ -31,7 +31,7 @@ fun NavigationRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(end=8.dp),
+                .padding(end = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = onBack::invoke,
         ) {

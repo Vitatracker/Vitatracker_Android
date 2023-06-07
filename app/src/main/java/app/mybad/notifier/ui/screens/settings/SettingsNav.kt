@@ -15,14 +15,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
+import app.mybad.notifier.ui.screens.settings.about.SettingsOurContacts
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
+import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishes
 import app.mybad.notifier.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,15 +35,15 @@ fun SettingsNav(
     modifier: Modifier = Modifier,
     vm: SettingsViewModel,
     navController: NavHostController,
-    onDismiss: () -> Unit = {  }
+    mainVM: MainActivityViewModel,
+    onDismiss: () -> Unit = { }
 ) {
-
     var title by remember { mutableStateOf("") }
-    val state = vm.state.collectAsState()
+    val state = vm.state.collectAsStateWithLifecycle()
     val userModel = state.value.userModel
     val userPersonalModel = state.value.personalDomainModel
-    val userNotificationModel = state.value.notificationsUserDomainModel
-    val userRulesModel = state.value.rulesUserDomainModel
+//    val userNotificationModel = state.value.notificationsUserDomainModel
+//    val userRulesModel = state.value.rulesUserDomainModel
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -47,18 +51,21 @@ fun SettingsNav(
         modifier = modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = { Text(
-                text = title,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 24.dp),
-                color = MaterialTheme.colorScheme.primary,
-                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-            ) },
+            title = {
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 24.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            },
             navigationIcon = {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack, contentDescription = null,
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = null,
                     modifier = Modifier
                         .clickable(
                             indication = null,
@@ -82,17 +89,32 @@ fun SettingsNav(
                     reducer = { vm.reduce(it) },
                     onAbout = { navController.navigate(NavItemSettings.About.route) },
                     onProfile = { navController.navigate(NavItemSettings.Profile.route) },
-                    onNotifications = { navController.navigate(NavItemSettings.Notifications.route) },
+                    onWishes = { navController.navigate(NavItemSettings.LeaveYourWishes.route) },
+                    onNotifications = {
+                        navController.navigate(NavItemSettings.Notifications.route)
+                    },
                 )
             }
             composable(NavItemSettings.Profile.route) {
                 title = stringResource(NavItemSettings.Profile.stringId)
                 SettingsProfile(
                     userModel = userPersonalModel,
-                    savePersonal = { vm.reduce(SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)) },
-                    onPasswordEdit = { navController.navigate(NavItemSettings.PasswordChange.route) },
+                    savePersonal = {
+                        vm.reduce(
+                            SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)
+                        )
+                    },
+                    onPasswordEdit = {
+                        navController.navigate(NavItemSettings.PasswordChange.route)
+                    },
+                    mainVM = mainVM,
+                    settingsVM = vm,
                     onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
                 )
+            }
+            composable(NavItemSettings.LeaveYourWishes.route) {
+                title = stringResource(NavItemSettings.LeaveYourWishes.stringId)
+                SettingsLeaveWishes()
             }
             composable(NavItemSettings.PasswordChange.route) {
                 title = stringResource(NavItemSettings.PasswordChange.stringId)
@@ -112,7 +134,13 @@ fun SettingsNav(
             }
             composable(NavItemSettings.About.route) {
                 title = stringResource(NavItemSettings.About.stringId)
-                SettingsAbout()
+                SettingsAbout(onContacts = {
+                    navController.navigate(NavItemSettings.OurContacts.route)
+                })
+            }
+            composable(NavItemSettings.OurContacts.route) {
+                title = stringResource(NavItemSettings.OurContacts.stringId)
+                SettingsOurContacts()
             }
         }
     }

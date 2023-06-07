@@ -25,7 +25,6 @@ import app.mybad.notifier.ui.theme.Typography
 import java.time.LocalTime
 import kotlin.math.absoluteValue
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimeSelector(
@@ -35,8 +34,8 @@ fun TimeSelector(
 ) {
     val minutes = (0..59).toList()
     val hours = (0..23).toList()
-    val pagerStateHours = rememberPagerState(initialPage = minutes.size*10000 + initTime.hour)
-    val pagerStateMinutes = rememberPagerState(initialPage = hours.size*10000 + initTime.minute)
+    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + initTime.hour)
+    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + initTime.minute)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,7 +61,7 @@ fun TimeSelector(
                     else -> 0.7f
                 }
                 val a = when ((pagerStateHours.currentPage - it).absoluteValue) {
-                    0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                    0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                     else -> 0f
                 }
                 val scale by animateFloatAsState(
@@ -99,7 +98,7 @@ fun TimeSelector(
                     else -> 0.7f
                 }
                 val a = when ((pagerStateMinutes.currentPage - it).absoluteValue) {
-                    0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                    0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                     else -> 0f
                 }
                 val scale by animateFloatAsState(

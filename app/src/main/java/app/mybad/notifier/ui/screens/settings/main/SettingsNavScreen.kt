@@ -15,8 +15,7 @@ import app.mybad.notifier.ui.screens.settings.common.SettingsItem
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
-import app.mybad.notifier.ui.screens.settings.common.DeleteAccountItem
-import app.mybad.notifier.ui.screens.settings.common.SettingsQuit
+import app.mybad.notifier.ui.screens.settings.common.BaseDivider
 
 @Composable
 fun SettingsNavScreen(
@@ -26,8 +25,8 @@ fun SettingsNavScreen(
     onProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
     onAbout: () -> Unit = {},
+    onWishes: () -> Unit = {}
 ) {
-
     val editAvatar = remember { mutableStateOf(userModel.avatar) }
 
     Column(
@@ -57,41 +56,29 @@ fun SettingsNavScreen(
             Spacer(Modifier.height(32.dp))
             SettingsItem(
                 label = stringResource(R.string.settings_profile),
+                icon = R.drawable.icon_settings_user,
                 onSelect = onProfile::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-
+            BaseDivider()
             SettingsItem(
                 label = stringResource(R.string.settings_notifications),
+                icon = R.drawable.icon_settings_notifications,
                 onSelect = onNotifications::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            BaseDivider()
+            SettingsItem(
+                label = stringResource(R.string.settings_leave_your_wishes),
+                icon = R.drawable.icon_settings_help,
+                onSelect = onWishes::invoke
             )
+            BaseDivider()
 
             SettingsItem(
                 label = stringResource(R.string.settings_about),
+                icon = R.drawable.icon_settings_information,
                 onSelect = onAbout::invoke
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 16.dp),
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-
-            DeleteAccountItem(
-                label = stringResource(R.string.settings_delete_account),
-                onSelect = { reducer(SettingsIntent.DeleteAccount) }
-            )
+            BaseDivider()
         }
-        SettingsQuit(onQuit = { reducer(SettingsIntent.Exit) })
-
     }
-
 }

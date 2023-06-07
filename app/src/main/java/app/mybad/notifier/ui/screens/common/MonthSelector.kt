@@ -62,7 +62,7 @@ fun MonthSelector(
                         enter = scaleIn(),
                         exit = scaleOut()
                     ),
-                    text = months[targetCount-1],
+                    text = months[targetCount - 1],
                     style = Typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -88,5 +88,4 @@ fun MonthSelector(
                 }
         )
     }
-
 }

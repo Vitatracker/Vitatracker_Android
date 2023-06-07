@@ -18,7 +18,6 @@ fun NotificationSettingItem(
     description: String = "description of setting",
     onSwitch: (Boolean) -> Unit = {}
 ) {
-
     var checked by remember { mutableStateOf(isChecked) }
 
     Row(
@@ -43,5 +42,4 @@ fun NotificationSettingItem(
             modifier = Modifier.padding(start = 32.dp)
         )
     }
-
 }

@@ -26,7 +26,6 @@ import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,13 +49,12 @@ fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
             ) {
                 MainNewPasswordScreenAuth(navController = navController)
             }
-        })
-
+        }
+    )
 }
 
 @Composable
 private fun MainNewPasswordScreenAuth(navController: NavHostController) {
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -67,15 +65,17 @@ private fun MainNewPasswordScreenAuth(navController: NavHostController) {
         ) {
             NewPasswordScreenEnteredPassword(R.string.login_password)
             NewPasswordScreenEnteredPassword(R.string.login_password_confirm)
-            ReUseButtonContinue(textId = R.string.text_continue) { navController.navigate(route = AuthorizationNavItem.Authorization.route) }
+            ReUseButtonContinue(textId = R.string.text_continue) {
+                navController.navigate(
+                    route = AuthorizationNavItem.Authorization.route
+                )
+            }
         }
     }
-
 }
 
 @Composable
 private fun NewPasswordScreenBackgroundImage() {
-
 }
 
 @Composable

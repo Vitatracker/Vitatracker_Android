@@ -11,7 +11,11 @@ sealed class NavItemMain(
 ) {
     object Courses : NavItemMain(route = "Courses", label = R.string.navigation_courses, icon = R.drawable.pill)
     object Add : NavItemMain(route = "Add", label = R.string.navigation_add, icon = R.drawable.settings)
-    object Notifications : NavItemMain(route = "Notifications", label = R.string.navigation_notifications, icon = R.drawable.notif)
+    object Notifications : NavItemMain(
+        route = "Notifications",
+        label = R.string.navigation_notifications,
+        icon = R.drawable.notif
+    )
     object Settings : NavItemMain(route = "Settings", label = R.string.navigation_settings_main, icon = R.drawable.sett)
     object Calendar : NavItemMain(route = "Calendar", label = R.string.navigation_calendar, icon = R.drawable.calendar)
 }

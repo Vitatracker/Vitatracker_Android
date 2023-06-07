@@ -3,12 +3,23 @@ package app.mybad.data
 import app.mybad.data.models.course.CourseDataModel
 import app.mybad.data.models.med.MedDataModel
 import app.mybad.data.models.usages.UsageCommonDataModel
+import app.mybad.data.models.user.NotificationsUserDataModel
+import app.mybad.data.models.user.PersonalDataModel
+import app.mybad.data.models.user.RulesUserDataModel
+import app.mybad.data.models.user.UserDataModel
+import app.mybad.data.models.user.UserSettingsDataModel
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.RulesUserDomainModel
+import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.network.models.response.NotificationSetting
+import app.mybad.network.models.UserModel
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 
 fun CourseDataModel.mapToDomain(): CourseDomainModel {
     return CourseDomainModel(
@@ -164,4 +175,41 @@ fun UserNotificationsDataModel.mapToDomain(): NotificationsUserDomainModel {
 
 fun UserRulesDataModel.mapToDomain(): RulesUserDomainModel {
     return RulesUserDomainModel(canEdit, canAdd, canShare, canInvite)
+}
+
+fun UserDomainModel.mapToNetwork(): UserModel {
+    return UserModel(
+        id = id,
+        name = personal.name.toString(),
+        email = personal.email.toString(),
+        password = "123456",    //все дело в бэке, не сочтите за Альцгеймер
+        avatar = personal.avatar.toString(),
+        notificationSettings = NotificationSetting(
+            id = settings.notifications.medsId,
+            userId = id,
+            isEnabled = settings.notifications.isEnabled,
+            isFloat = settings.notifications.isFloat,
+            medicalControl = settings.notifications.medicationControl,
+            nextCourseStart = settings.notifications.nextCourseStart
+        ),
+        notUsed = null,
+        remedies = emptyList()
+    )
+}
+
+fun UserModel.mapToDomain(): UserDataModel {
+    return UserDataModel(
+        id = id,
+        personal = PersonalDataModel(name = name, avatar = avatar, email = email),
+        settings = UserSettingsDataModel(
+            notifications = NotificationsUserDataModel(
+                isEnabled = notificationSettings!!.isEnabled,
+                isFloat = notificationSettings!!.isFloat,
+                medicationControl = notificationSettings!!.medicalControl,
+                nextCourseStart = notificationSettings!!.nextCourseStart,
+                medsId = notificationSettings!!.id
+            ),
+            rules = RulesUserDataModel()
+        )
+    )
 }

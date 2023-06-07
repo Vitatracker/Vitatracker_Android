@@ -50,8 +50,8 @@ private fun SingleUsageItem(
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
     val now = Instant.now().epochSecond
-    val outlineColor = if(now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-    val alpha = if((now-date).absoluteValue > 3600) 0.6f else 1f
+    val outlineColor = if (now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+    val alpha = if ((now - date).absoluteValue > 3600) 0.6f else 1f
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
     Row(
@@ -107,7 +107,7 @@ private fun SingleUsageItem(
                         Text(text = "$quantity ${types[med.type]}", style = Typography.labelMedium)
                     }
                 }
-                when(now-date) {
+                when (now - date) {
                     in Long.MIN_VALUE..-3600 -> {
                         Icon(
                             painter = painterResource(R.drawable.locked),
@@ -121,7 +121,7 @@ private fun SingleUsageItem(
                     }
                     in -3600..3600 -> {
                         Icon(
-                            painter = painterResource(if(isTaken) R.drawable.done else R.drawable.undone ),
+                            painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
                             contentDescription = null,
                             tint = outlineColor,
                             modifier = Modifier
@@ -136,7 +136,7 @@ private fun SingleUsageItem(
                     }
                     in 3600..Long.MAX_VALUE -> {
                         Icon(
-                            painter = painterResource(if(isTaken) R.drawable.done else R.drawable.undone ),
+                            painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
                             contentDescription = null,
                             tint = outlineColor,
                             modifier = Modifier
@@ -165,7 +165,6 @@ fun DailyUsages(
     onNewDate: (LocalDateTime?) -> Unit = {},
     onUsed: (UsageCommonDomainModel) -> Unit
 ) {
-
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         color = MaterialTheme.colorScheme.background,

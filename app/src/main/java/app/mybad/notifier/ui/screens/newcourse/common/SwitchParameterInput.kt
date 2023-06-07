@@ -29,7 +29,7 @@ fun SwitchParameterInput(
         Switch(
             enabled = isActive,
             checked = initValue,
-            onCheckedChange = {onSwitch(it)}
+            onCheckedChange = { onSwitch(it) }
         )
     }
 }

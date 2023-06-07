@@ -15,14 +15,12 @@ import app.mybad.notifier.ui.screens.common.NavigationRow
 
 @Composable
 @Preview(showBackground = true)
-
 fun SettingsPasswordEdit(
     modifier: Modifier = Modifier,
     userModel: UserDomainModel = UserDomainModel(),
     onSave: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {
-
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,

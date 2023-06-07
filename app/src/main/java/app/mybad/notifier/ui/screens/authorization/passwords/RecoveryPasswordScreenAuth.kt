@@ -21,7 +21,6 @@ import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,33 +44,33 @@ fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
             ) {
                 MainRecoveryPasswordScreenAuth(navController = navController)
             }
-        })
-
+        }
+    )
 }
 
 @Composable
 private fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
         RecoveryPasswordScreenBackgroundImage()
         Column(
-            modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             RecoveryPasswordScreenTextUser()
             Spacer(modifier = Modifier.height(15.dp))
             RecoveryPasswordScreenTextEmail()
-            ReUseButtonContinue(textId = R.string.text_continue) { navController.navigate(route = AuthorizationNavItem.NewPassword.route) }
+            ReUseButtonContinue(textId = R.string.text_continue) {
+                navController.navigate(route = AuthorizationNavItem.NewPassword.route)
+            }
         }
     }
-
 }
 
 @Composable
 private fun RecoveryPasswordScreenBackgroundImage() {
-
 }
 
 @Composable

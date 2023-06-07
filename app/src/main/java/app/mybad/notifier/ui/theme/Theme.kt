@@ -15,20 +15,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
-//private val DarkColorScheme = darkColorScheme(
+// private val DarkColorScheme = darkColorScheme(
 //    primary = primaryBlue,
 //    primaryContainer = primaryContainerBlue,
 //    error = errorRed,
 //    outlineVariant = primaryIndication,
 //    surfaceVariant = secondaryContainerBlue,
-//)
+// )
 
 private val LightColorScheme = lightColorScheme(
     primary = primaryBlue,
     primaryContainer = primaryContainerBlue,
     error = errorRed,
     outlineVariant = primaryIndication,
-    surfaceVariant = secondaryContainerBlue,
+    surfaceVariant = secondaryContainerBlue
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -68,7 +68,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = neutral80
 )
 //
-//private val LightColorScheme = lightColorScheme(
+// private val LightColorScheme = lightColorScheme(
 //    primary = primary40,
 //    onPrimary = primary100,
 //    primaryContainer = primary90,
@@ -93,7 +93,7 @@ private val DarkColorScheme = darkColorScheme(
 //    onBackground = neutral10,
 //    surface = neutral99,
 //    onSurface = neutral10
-//)
+// )
 
 @Composable
 fun MyBADTheme(

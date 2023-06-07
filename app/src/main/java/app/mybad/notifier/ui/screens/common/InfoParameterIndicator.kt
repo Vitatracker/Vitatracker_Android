@@ -33,7 +33,7 @@ fun ParameterIndicator(
                 onClick = onClick::invoke
             )
     ) {
-        if(!name.isNullOrBlank()) {
+        if (!name.isNullOrBlank()) {
             Text(
                 text = name,
                 style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
@@ -45,7 +45,7 @@ fun ParameterIndicator(
                 style = Typography.bodyMedium,
                 color = Color.Unspecified.copy(alpha = 0.6f)
             )
-            if(!name.isNullOrBlank()) {
+            if (!name.isNullOrBlank()) {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,

@@ -6,7 +6,7 @@ import app.mybad.data.room.MedDAO
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.UsagesRepo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,7 +21,7 @@ class UsagesRepoImpl @Inject constructor(
     }
 
     override suspend fun getCommonAll(): List<UsageCommonDomainModel> {
-        return db.getAllCommonUsagesFlow().last().mapToDomain()
+        return db.getAllCommonUsagesFlow().first().mapToDomain()
     }
 
     override suspend fun deleteSingle(medId: Long) {

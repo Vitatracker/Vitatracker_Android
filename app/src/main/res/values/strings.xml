@@ -46,7 +46,7 @@
 
     <!--LOGIN-->
     <string name="sign_in">Sign in</string>
-    <string name="login_email">Login/Email</string>
+    <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_password_confirm">Confirm password</string>
     <string name="login_forgot_password">Forgot your password?</string>
@@ -89,6 +89,14 @@
     <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
     <string name="settings_user_name">Name</string>
     <string name="settings_user_email">Email</string>
+    <string name="settings_leave_your_wishes">Leave your wishes</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_user_agreement">User agreement</string>
+    <string name="settings_our_contacts">Our contacts</string>
+    <string name="settings_current_build_year">Vitatracker 2023</string>
+    <string name="settings_contacts_back_end_team">Back-end team:</string>
+    <string name="settings_contacts_front_end_team">Front-end team:</string>
+    <string name="settings_contacts_android_team">Android team:</string>
 
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
@@ -112,6 +120,20 @@
     <string name="main_screen_top_bar_name">Reminder dialy</string>
     <string name="main_screen_text_category">Medicines</string>
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
-    <string name="add_notifications_time_set">Set up notificaiton time</string>
+    <string name="add_notifications_time_set">Set up notification time *</string>
     <string name="mycourse_remaining">Remains days: %s</string>
+    <string name="mycourse_per_day_listitem">per day</string>
+    <string name="mycourse_reminders">Reminders *</string>
+    <string name="mycourse_edit_icon">Edit icon</string>
+    <string name="mycourse_edit_icon_color">Edit icon color</string>
+    <string name="main_screen_meds_clear_start">Lets start!</string>
+    <string name="main_screen_meds_clear_add">Add the first medicines</string>
+    <string name="add_notifications_choose_time">Choose time</string>
+    <string name="add_med_error_empty_name">You should type the name of medicine</string>
+    <string name="version_code">"Version "</string>
+    <!--LEAVE YOUR WISHES-->
+    <string name="wishes_text_header">Leave your wishes</string>
+    <string name="wishes_text_main">If you have any suggestions for improving the application or want to leave feedback, please contact us at the email address provided:</string>
+    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
+
 </resources>

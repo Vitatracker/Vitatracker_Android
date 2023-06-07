@@ -30,10 +30,12 @@ fun BottomSlideInDialog(
     content: @Composable () -> Unit
 ) {
     val animateTrigger = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = Unit) { launch {
-        delay(100)
-        animateTrigger.value = true
-    }}
+    LaunchedEffect(key1 = Unit) {
+        launch {
+            delay(100)
+            animateTrigger.value = true
+        }
+    }
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
@@ -46,7 +48,7 @@ fun BottomSlideInDialog(
         dialogWindowProvider.window.setGravity(Gravity.BOTTOM)
         Box(
             contentAlignment = contentAlignment,
-            modifier = modifier.fillMaxWidth().heightIn(0.dp,1000.dp)
+            modifier = modifier.fillMaxWidth().heightIn(0.dp, 1000.dp)
         ) {
             val density = LocalDensity.current
             AnimatedVisibility(

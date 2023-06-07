@@ -20,24 +20,34 @@ import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainLoginScreen(navController: NavHostController) {
-
+fun StartMainLoginScreen(
+    navController: NavHostController,
+    authVM: AuthorizationScreenViewModel,
+    mainVM: MainActivityViewModel
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(route = AuthorizationNavItem.Authorization.route) }) {
+                    IconButton(onClick = {
+                        navController.navigate(route = AuthorizationNavItem.Authorization.route)
+                    }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -47,15 +57,18 @@ fun StartMainLoginScreen(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainLoginScreen(navController = navController)
+                MainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
             }
-        })
-
+        }
+    )
 }
 
 @Composable
-private fun MainLoginScreen(navController: NavHostController) {
-
+private fun MainLoginScreen(
+    navController: NavHostController,
+    authVM: AuthorizationScreenViewModel,
+    mainVM: MainActivityViewModel
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -64,40 +77,52 @@ private fun MainLoginScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
         ) {
-            LoginScreenBaseForSignIn()
+            val loginState = remember { mutableStateOf("") }    //{ mutableStateOf("bob@mail.ru") }
+            val passwordState = remember { mutableStateOf("") } //{ mutableStateOf("12345678") }
+
+            LoginScreenBaseForSignIn(loginState = loginState, passwordState = passwordState)
             LoginScreenForgotPassword(navController = navController)
-            LoginScreenButtonSignIn()
+            LoginScreenButtonSignIn(
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        authVM.logIn(
+                            login = loginState.value,
+                            password = passwordState.value
+                        )
+                        delay(1200)
+                        mainVM.updateToken()
+                    }
+                }
+            )
             LoginScreenTextPolicy()
-            SurfaceSignInWith(onClick = { /*TODO*/ })
+            SurfaceSignInWith(onClick = { mainVM.updateToken() })
         }
     }
-
 }
 
 @Composable
 private fun LoginScreenBackgroundImage() {
-
-
 }
 
 @Composable
-private fun LoginScreenBaseForSignIn() {
+private fun LoginScreenBaseForSignIn(
+    loginState: MutableState<String>,
+    passwordState: MutableState<String>
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoginScreenEnteredEmail()
-        LoginScreenEnteredPassword()
+        LoginScreenEnteredEmail(loginState = loginState)
+        LoginScreenEnteredPassword(passwordState = passwordState)
     }
 }
 
 @Composable
-private fun LoginScreenEnteredEmail() {
-    var loginState by remember { mutableStateOf("") }
-
+private fun LoginScreenEnteredEmail(loginState: MutableState<String>) {
     OutlinedTextField(
-        value = loginState,
-        onValueChange = { newLogin -> loginState = newLogin },
+        value = loginState.value,
+        onValueChange = { newLogin -> loginState.value = newLogin },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -113,13 +138,12 @@ private fun LoginScreenEnteredEmail() {
 }
 
 @Composable
-private fun LoginScreenEnteredPassword() {
-    var passwordState by remember { mutableStateOf("") }
+private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = passwordState,
-        onValueChange = { newPassword -> passwordState = newPassword },
+        value = passwordState.value,
+        onValueChange = { newPassword -> passwordState.value = newPassword },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -167,12 +191,12 @@ private fun LoginScreenForgotPassword(navController: NavHostController) {
 }
 
 @Composable
-private fun LoginScreenButtonSignIn() {
+private fun LoginScreenButtonSignIn(onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 45.dp, start = 8.dp, end = 8.dp),
-        onClick = { /*TODO*/ },
+        onClick = { onClick() },
         contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
         shape = MaterialTheme.shapes.small
     ) {
@@ -197,4 +221,3 @@ private fun LoginScreenTextPolicy() {
         )
     }
 }
-

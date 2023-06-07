@@ -39,7 +39,7 @@ fun StylishTextBox(
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, if(outlined) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
+        border = BorderStroke(1.dp, if (outlined) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
@@ -59,7 +59,7 @@ fun StylishTextBox(
                 readOnly = readOnly
             ) { innerField ->
                 Box {
-                    if(value.isNullOrBlank() && !label.isNullOrBlank()) {
+                    if (value.isNullOrBlank() && !label.isNullOrBlank()) {
                         Text(
                             text = label,
                             style = Typography.bodyLarge,
@@ -69,7 +69,7 @@ fun StylishTextBox(
                     innerField()
                 }
             }
-            if(icon != null) {
+            if (icon != null) {
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = null,

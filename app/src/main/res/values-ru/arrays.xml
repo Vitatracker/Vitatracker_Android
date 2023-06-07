@@ -4,8 +4,8 @@
         <item>мкг</item>
         <item>мг</item>
         <item>г</item>
-        <item>мкл</item>
         <item>мл</item>
+        <item>%</item>
     </string-array>
     <string-array name="months_short">
         <item>Янв</item>
@@ -59,20 +59,20 @@
         <item>Вс</item>
     </string-array>
     <string-array name="food_relations">
-        <item>За 2 часа до еды</item>
-        <item>За 1 час до еды</item>
-        <item>За 45 минут до еды</item>
-        <item>За 30 минут до еды</item>
-        <item>За 15 минут до еды</item>
+<!--        <item>За 2 часа до еды</item>-->
+<!--        <item>За 1 час до еды</item>-->
+<!--        <item>За 45 минут до еды</item>-->
+<!--        <item>За 30 минут до еды</item>-->
+<!--        <item>За 15 минут до еды</item>-->
         <item>Перед едой</item>
         <item>Неважно</item>
         <item>Во время еды</item>
         <item>После еды</item>
-        <item>Через 15 минут после еды</item>
-        <item>Через 30 минут после еды</item>
-        <item>Через 45 минут после еды</item>
-        <item>Через 1 час после еды</item>
-        <item>Через 2 часа после еды</item>
+<!--        <item>Через 15 минут после еды</item>-->
+<!--        <item>Через 30 минут после еды</item>-->
+<!--        <item>Через 45 минут после еды</item>-->
+<!--        <item>Через 1 час после еды</item>-->
+<!--        <item>Через 2 часа после еды</item>-->
     </string-array>
     <string-array name="regime">
         <item>Каждый день</item>
@@ -81,11 +81,15 @@
         <item>Каждые 3 дня</item>
     </string-array>
     <string-array name="types">
-        <item>Капсула</item>
         <item>Таблетка</item>
-        <item>Спрей</item>
-        <item>Укол</item>
-        <item>Ингаляция</item>
+        <item>Капсула</item>
+        <item>Ингалятор</item>
+        <item>Инъекция</item>
+        <item>Капли</item>
+        <item>Раствор</item>
+        <item>Свеча</item>
         <item>Сироп</item>
+        <item>Спрей</item>
+        <item>Суспензия</item>
     </string-array>
 </resources>

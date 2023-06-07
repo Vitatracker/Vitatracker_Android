@@ -42,7 +42,7 @@ fun ColorSelector(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    if(selected == index) {
+                    if (selected == index) {
                         Icon(
                             imageVector = Icons.Default.Done,
                             contentDescription = null,

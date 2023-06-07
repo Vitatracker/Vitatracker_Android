@@ -1,14 +1,13 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,14 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
+import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
 @Composable
 fun SettingsProfile(
@@ -32,40 +35,24 @@ fun SettingsProfile(
     userModel: PersonalDomainModel = PersonalDomainModel(),
     savePersonal: (SettingsIntent) -> Unit,
     onPasswordEdit: () -> Unit = {},
+    mainVM: MainActivityViewModel,
+    settingsVM: SettingsViewModel,
     onDismiss: () -> Unit = {},
 ) {
-
     val editUserAvatar = remember { mutableStateOf(userModel.avatar) }
     val editUserName = remember { mutableStateOf(userModel.name) }
     val editEmail = remember { mutableStateOf(userModel.email) }
 
     Column(
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        UserImage(url = editUserAvatar.value, showEdit = true) {
-            editUserAvatar.value = it
-        }
-        Spacer(Modifier.height(32.dp))
-        SettingsProfileEditText(
-            label = stringResource(id = R.string.settings_user_name),
-            enabled = true,
-            icon = Icons.Default.AccountCircle,
-            valueString = editUserName.value.toString()
-        ) {
-            editUserName.value = it
-        }
-        Spacer(Modifier.height(24.dp))
-        SettingsProfileEditText(
-            label = stringResource(id = R.string.settings_user_email),
-            enabled = true,
-            icon = Icons.Default.Email,
-            valueString = editEmail.value.toString()
-        ) {
-            editEmail.value = it
-        }
-        Spacer(Modifier.height(24.dp))
+        SettingsProfileTop(
+            editEmail = editEmail,
+            editUserName = editUserName,
+            editUserAvatar = editUserAvatar
+        )
         when {
             (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSavable(
                 onDismiss = onDismiss,
@@ -74,10 +61,121 @@ fun SettingsProfile(
                 editUserAvatar = editUserAvatar.value.toString(),
                 savePersonal = savePersonal
             )
-            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileButtonChangePassword(
-                onPasswordEdit = onPasswordEdit
+
+            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileBottom(
+                onPasswordEdit = onPasswordEdit,
+                settingsVM = settingsVM,
+                mainVM = mainVM
             )
         }
+    }
+}
+
+@Composable
+private fun SettingsProfileTop(
+    editEmail: MutableState<String?>,
+    editUserAvatar: MutableState<String?>,
+    editUserName: MutableState<String?>
+) {
+    Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        UserImage(url = editUserAvatar.value, showEdit = true) {
+            editUserAvatar.value = it
+        }
+        Spacer(Modifier.height(32.dp))
+        SettingsProfileEditText(
+            label = stringResource(id = R.string.settings_user_name),
+            enabled = true,
+            icon = R.drawable.icon_settings_user,
+            valueString = editUserName.value.toString()
+        ) {
+            editUserName.value = it
+        }
+        Spacer(Modifier.height(24.dp))
+        SettingsProfileEditText(
+            label = stringResource(id = R.string.settings_user_email),
+            enabled = true,
+            icon = R.drawable.icon_settings_mail,
+            valueString = editEmail.value.toString()
+        ) {
+            editEmail.value = it
+        }
+    }
+}
+
+@Composable
+private fun SettingsProfileBottom(
+    onPasswordEdit: () -> Unit,
+    settingsVM: SettingsViewModel,
+    mainVM: MainActivityViewModel
+) {
+    Column(
+        modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SettingsProfileBottomElement(
+            text = R.string.settings_change_password,
+            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_lock),
+            tint = MaterialTheme.colorScheme.primary,
+            onClick = { onPasswordEdit() }
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+
+        SettingsProfileBottomElement(
+            text = R.string.settings_quit,
+            icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
+            tint = Color.Gray,
+            onClick = {
+                mainVM.clearDataStore()
+            }
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+
+        SettingsProfileBottomElement(
+            text = R.string.settings_delete_account,
+            icon = Icons.Default.ErrorOutline,
+            tint = MaterialTheme.colorScheme.error,
+            onClick = {
+                settingsVM.reduce(SettingsIntent.DeleteAccount)
+                mainVM.clearDataStore()
+            }
+        )
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+    }
+}
+
+@Composable
+private fun SettingsProfileBottomElement(
+    text: Int,
+    icon: ImageVector,
+    tint: Color,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(id = text), modifier = Modifier, fontSize = 20.sp)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(30.dp),
+            tint = tint
+        )
     }
 }
 
@@ -86,7 +184,7 @@ private fun SettingsProfileEditText(
     modifier: Modifier = Modifier,
     label: String,
     enabled: Boolean,
-    icon: ImageVector,
+    icon: Int = 0,
     valueString: String,
     onEdit: (String) -> Unit
 ) {
@@ -113,17 +211,16 @@ private fun SettingsProfileEditText(
             onNext = { focusManager.clearFocus() }
         ),
         shape = RoundedCornerShape(10.dp),
-        leadingIcon = {
+        trailingIcon = {
             Icon(
                 modifier = Modifier.size(30.dp),
-                imageVector = icon,
+                imageVector = ImageVector.vectorResource(id = icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = Color.Gray
             )
         }
     )
 }
-
 
 @Composable
 private fun SettingsProfileButtonSavable(
@@ -139,7 +236,6 @@ private fun SettingsProfileButtonSavable(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Button(
             onClick = {
                 onDismiss()
@@ -191,33 +287,6 @@ private fun SettingsProfileButtonSavable(
                     color = Color.White
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun SettingsProfileButtonChangePassword(
-    onPasswordEdit: () -> Unit = {},
-) {
-    ElevatedButton(
-        onClick = onPasswordEdit::invoke,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(R.string.settings_change_password),
-                color = MaterialTheme.colorScheme.primary
-            )
-            Icon(
-                imageVector = Icons.Outlined.Lock,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 16.dp)
-            )
         }
     }
 }

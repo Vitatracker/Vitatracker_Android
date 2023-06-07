@@ -1,8 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id("com.google.dagger.hilt.android")
+    id 'kotlin-kapt'
+    id 'io.gitlab.arturbosch.detekt'
 }
 
 android {
@@ -24,16 +25,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 }
+
 kapt {
     correctErrorTypes = true
 }
+
 dependencies {
     implementation project(path: ":domain")
 
@@ -41,5 +44,6 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.45")
     implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
+    implementation project(path: ':network')
     kapt("com.google.dagger:hilt-android-compiler:2.45")
 }

@@ -18,7 +18,6 @@ fun SettingsNotifications(
     init: NotificationsUserDomainModel = NotificationsUserDomainModel(),
     onSwitch: (NotificationsUserDomainModel) -> Unit = {}
 ) {
-
     var newNotifications by remember { mutableStateOf(init) }
 
     Column(
@@ -35,7 +34,11 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(isEnabled = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
 
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_float_notifications),
@@ -45,7 +48,11 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(isFloat = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
 
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_medication_control),
@@ -55,7 +62,11 @@ fun SettingsNotifications(
             newNotifications = newNotifications.copy(medicationControl = it)
             onSwitch(newNotifications)
         }
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
 
         NotificationSettingItem(
             label = stringResource(R.string.settings_enable_next_course_start),

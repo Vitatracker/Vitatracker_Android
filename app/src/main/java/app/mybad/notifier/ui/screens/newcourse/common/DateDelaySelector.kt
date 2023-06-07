@@ -71,7 +71,7 @@ fun DateDelaySelector(
                         else -> 0.7f
                     }
                     val a = when ((pagerStateMonths.currentPage - it).absoluteValue) {
-                        0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                        0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
                     val scale by animateFloatAsState(
@@ -116,7 +116,7 @@ fun DateDelaySelector(
                         else -> 0.7f
                     }
                     val a = when ((pagerStateDays.currentPage - it).absoluteValue) {
-                        0 -> 1f;1 -> 0.5f;2 -> 0.3f
+                        0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
                     val scale by animateFloatAsState(
@@ -143,9 +143,7 @@ fun DateDelaySelector(
             Spacer(Modifier.width(0.dp))
         }
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 val newTime = Period.ofDays(0)
@@ -156,7 +154,6 @@ fun DateDelaySelector(
             content = { Text(text = stringResource(R.string.settings_save)) }
         )
     }
-
 }
 
 @Preview

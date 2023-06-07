@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CoursesRepoImpl @Inject constructor(
-    private val db: MedDAO
+    private val db: MedDAO,
 ) : CoursesRepo {
 
     override suspend fun getAll(): List<CourseDomainModel> {

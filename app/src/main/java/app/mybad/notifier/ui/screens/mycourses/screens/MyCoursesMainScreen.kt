@@ -30,7 +30,6 @@ fun MyCoursesMainScreen(
     navHostController: NavHostController,
     vm: MyCoursesViewModel,
 ) {
-
     var selectedCourse by remember { mutableStateOf<CourseDomainModel?>(null) }
     val state = vm.state.collectAsState()
     val ncState = navHostController.currentBackStackEntryAsState()
@@ -40,8 +39,15 @@ fun MyCoursesMainScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if(ncState.value?.destination?.route == MyCoursesNavItem.Main.route) stringResource(R.string.my_course_h)
-                        else state.value.meds.firstOrNull { it.id == selectedCourse?.medId }?.name ?: "no data",
+                        text = if (ncState.value?.destination?.route == MyCoursesNavItem.Main.route) {
+                            stringResource(
+                                R.string.my_course_h
+                            )
+                        } else {
+                            state.value.meds.firstOrNull {
+                                it.id == selectedCourse?.medId
+                            }?.name ?: "no data"
+                        },
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -70,17 +76,23 @@ fun MyCoursesMainScreen(
                     )
                 }
                 composable(MyCoursesNavItem.Course.route) {
-                    if(selectedCourse != null) {
+                    if (state.value.meds.isEmpty()) selectedCourse = null
+                    if (selectedCourse != null) {
                         CourseInfoScreen(
                             course = selectedCourse!!,
                             med = state.value.meds.first { it.id == selectedCourse!!.medId },
                             usagePattern = generatePattern(selectedCourse!!.medId, state.value.usages),
-                            onSave = {
-                                navHostController.popBackStack()
-                            },
-                            onDelete = {
-                                navHostController.popBackStack()
-                                vm.reduce(MyCoursesIntent.Delete(it))
+                            reducer = {
+                                when (it) {
+                                    is MyCoursesIntent.Update -> {
+                                        vm.reduce(MyCoursesIntent.Update(it.course, it.med, it.usagesPattern))
+                                        navHostController.popBackStack()
+                                    }
+                                    is MyCoursesIntent.Delete -> {
+                                        vm.reduce(MyCoursesIntent.Delete(selectedCourse!!.id))
+                                        navHostController.popBackStack()
+                                    }
+                                }
                             }
                         )
                     }
@@ -91,15 +103,15 @@ fun MyCoursesMainScreen(
 }
 
 private fun generatePattern(
-    medId : Long,
+    medId: Long,
     usages: List<UsageCommonDomainModel>
-) : List<Pair<Long, Int>> {
+): List<Pair<Long, Int>> {
     if (usages.isNotEmpty()) {
         val list = usages.filter { it.medId == medId }
-        if(list.isNotEmpty()) {
+        if (list.isNotEmpty()) {
             val firstTime = list.minByOrNull { it.useTime }!!.useTime
             val prePattern = list.filter { it.useTime < (firstTime + 86400) }
-            if(prePattern.isNotEmpty()) return prePattern.map { it.useTime to it.quantity }
+            if (prePattern.isNotEmpty()) return prePattern.map { it.useTime to it.quantity }
         }
     }
     return emptyList()

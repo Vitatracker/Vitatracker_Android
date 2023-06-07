@@ -38,8 +38,11 @@ fun IconSelector(
         icons.forEachIndexed { index, _ ->
             Surface(
                 shape = CircleShape,
-                color = if(index == selected) Color(colors[color]) else MaterialTheme.colorScheme.background,
-                border = BorderStroke(1.dp, if(index == selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline),
+                color = if (index == selected) Color(colors[color]) else MaterialTheme.colorScheme.background,
+                border = BorderStroke(
+                    1.dp,
+                    if (index == selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline
+                ),
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
@@ -50,7 +53,7 @@ fun IconSelector(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Icon(
-                        painter = painterResource(r.getResourceId(index,0)),
+                        painter = painterResource(r.getResourceId(index, 0)),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.outline

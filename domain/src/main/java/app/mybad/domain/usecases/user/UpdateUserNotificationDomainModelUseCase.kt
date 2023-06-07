@@ -11,5 +11,4 @@ class UpdateUserNotificationDomainModelUseCase @Inject constructor(
     suspend fun execute(notificationsUserDomainModel: NotificationsUserDomainModel) {
         userDataRepo.updateUserNotification(notification = notificationsUserDomainModel)
     }
-
 }

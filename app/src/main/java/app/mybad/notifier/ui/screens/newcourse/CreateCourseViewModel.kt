@@ -6,6 +6,7 @@ import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
+import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,8 @@ import kotlin.math.absoluteValue
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
-    private val createCourseUseCase: CreateCourseUseCase
+    private val createCourseUseCase: CreateCourseUseCase,
+    private val coursesNetworkRepo: CoursesNetworkRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -29,7 +31,7 @@ class CreateCourseViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
 
     fun reduce(intent: NewCourseIntent) {
-        when(intent) {
+        when (intent) {
             is NewCourseIntent.Drop -> { scope.launch { _state.emit(newState()) } }
             is NewCourseIntent.Finish -> {
                 scope.launch {
@@ -68,6 +70,13 @@ class CreateCourseViewModel @Inject constructor(
                         usages = _state.value.usages
                     )
                 }.invokeOnCompletion {
+                    scope.launch {
+                        coursesNetworkRepo.updateAll(
+                            med = _state.value.med,
+                            course = _state.value.course,
+                            usages = _state.value.usages
+                        )
+                    }
                     viewModelScope.launch {
                         _state.emit(newState())
                     }
@@ -80,35 +89,41 @@ class CreateCourseViewModel @Inject constructor(
         usagesByDay: List<Pair<LocalTime, Int>>,
         now: Long,
         medId: Long,
-        userId: String,
+        userId: Long,
         startDate: Long,
         endDate: Long,
         regime: Int,
-    ) : List<UsageCommonDomainModel> {
+    ): List<UsageCommonDomainModel> {
         val startLocalDate = LocalDateTime.ofEpochSecond(startDate, 0, ZoneOffset.UTC).toLocalDate()
         val endLocalDate = LocalDateTime.ofEpochSecond(endDate, 0, ZoneOffset.UTC).toLocalDate()
         val interval = ChronoUnit.DAYS.between(startLocalDate, endLocalDate).toInt().absoluteValue
         return mutableListOf<UsageCommonDomainModel>().apply {
             repeat(interval) { position ->
-                if(position % (regime+1) == 0) {
+                if (position % (regime + 1) == 0) {
                     usagesByDay.forEach {
-                        val time = (it.first.atDate(startLocalDate).plusDays(position.toLong()).atZone(ZoneOffset.systemDefault()).toEpochSecond())
-                        if(time>now) this.add(
-                            UsageCommonDomainModel(
-                                medId = medId,
-                                userId = userId,
-                                creationTime = now,
-                                useTime = time,
-                                quantity = it.second
+                        val time = (
+                            it.first.atDate(startLocalDate).plusDays(position.toLong()).atZone(
+                                ZoneOffset.systemDefault()
+                            ).toEpochSecond()
                             )
-                        )
+                        if (time > now) {
+                            this.add(
+                                UsageCommonDomainModel(
+                                    medId = medId,
+                                    userId = userId,
+                                    creationTime = now,
+                                    useTime = time,
+                                    quantity = it.second
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun newState(userid: String = "userid") : NewCourseState {
+    private fun newState(userid: Long = 0L): NewCourseState {
         now = LocalDateTime.now()
         return NewCourseState(
             userId = userid,
@@ -129,4 +144,3 @@ class CreateCourseViewModel @Inject constructor(
         )
     }
 }
-

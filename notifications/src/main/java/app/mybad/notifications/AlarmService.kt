@@ -36,18 +36,23 @@ class AlarmService : Service() {
             .setName(CHANNEL_NAME)
             .setDescription(baseContext.getString(R.string.notifications_channel_description))
             .setVibrationEnabled(true)
-            .setVibrationPattern(longArrayOf(300L,300L,100L,300L,300L,300L, 100L, 300L))
+            .setVibrationPattern(longArrayOf(300L, 300L, 100L, 300L, 300L, 300L, 100L, 300L))
             .setLightsEnabled(true)
             .setShowBadge(true)
             .build()
         NotificationManagerCompat.from(applicationContext).createNotificationChannel(channel)
-        when(intent?.action) {
+        when (intent?.action) {
             FORCE_CLOSE -> stopSelf()
             NOTIFICATION_INTENT -> {
                 val type = intent.getIntExtra(Extras.TYPE.name, 0)
                 val qty = intent.getIntExtra(Extras.QUANTITY.name, 0)
                 val name = intent.getStringExtra(Extras.MED_NAME.name)
-                val contentText = String.format(baseContext.getString(R.string.notifications_text_template), name, qty, types[type])
+                val contentText = String.format(
+                    baseContext.getString(R.string.notifications_text_template),
+                    name,
+                    qty,
+                    types[type]
+                )
                 val takeIntent = Intent(baseContext, AlarmReceiver::class.java).apply {
                     action = TAKE_INTENT
                     putExtra(Extras.MED_ID.name, intent.getLongExtra(Extras.MED_ID.name, 0L))
@@ -75,7 +80,14 @@ class AlarmService : Service() {
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 //                    .format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-                val contentText = String.format(baseContext.getString(R.string.notifications_new_course_start_text_template), date, name, dose, units[unit], types[type])
+                val contentText = String.format(
+                    baseContext.getString(R.string.notifications_new_course_start_text_template),
+                    date,
+                    name,
+                    dose,
+                    units[unit],
+                    types[type]
+                )
                 val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                     .setSmallIcon(R.drawable.main_icon)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -90,5 +102,4 @@ class AlarmService : Service() {
         }
         return START_STICKY
     }
-
 }

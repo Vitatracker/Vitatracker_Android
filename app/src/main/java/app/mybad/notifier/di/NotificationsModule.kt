@@ -31,14 +31,13 @@ class NotificationsModule {
         medsRepo: MedsRepo,
         coursesRepo: CoursesRepo
     ) = NotificationsSchedulerImpl(
-            context = context,
-            usagesRepo = usagesRepo,
-            medsRepo = medsRepo,
-            coursesRepo = coursesRepo,
-        )
+        context = context,
+        usagesRepo = usagesRepo,
+        medsRepo = medsRepo,
+        coursesRepo = coursesRepo,
+    )
 
     @Provides
     @Singleton
-    fun providesNotificationSchedulerImpl(impl: NotificationsSchedulerImpl) : NotificationsScheduler = impl
-
+    fun providesNotificationSchedulerImpl(impl: NotificationsSchedulerImpl): NotificationsScheduler = impl
 }

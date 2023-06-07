@@ -2,6 +2,8 @@ package app.mybad.notifier.ui.screens.newcourse.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -11,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.*
 import app.mybad.notifier.ui.theme.Typography
@@ -22,11 +23,10 @@ fun AddMedicineFirstScreen(
     med: MedDomainModel,
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
-    onBack: () -> Unit,
 ) {
     val name = stringResource(R.string.add_med_name)
+    val noNameError = stringResource(id = R.string.add_med_error_empty_name)
     val context = LocalContext.current
-    val fieldsError = stringResource(R.string.add_med_error_unfilled_fields)
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -35,8 +35,12 @@ fun AddMedicineFirstScreen(
         Column {
             MultiBox(
                 {
-                    BasicKeyboardInput(label = name, init = med.name, hideOnGo = true,
-                        onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name = it))) })
+                    BasicKeyboardInput(
+                        label = name,
+                        init = med.name,
+                        hideOnGo = true,
+                        onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -48,8 +52,11 @@ fun AddMedicineFirstScreen(
             )
             MultiBox(
                 {
-                    IconSelector(selected = med.icon, color = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) })
+                    IconSelector(
+                        selected = med.icon,
+                        color = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -61,23 +68,32 @@ fun AddMedicineFirstScreen(
             )
             MultiBox(
                 {
-                    ColorSelector(selected = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) })
+                    ColorSelector(
+                        selected = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) }
+                    )
                 },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
         }
-        NavigationRow(
-            onBack = onBack::invoke,
-            onNext = {
-                if (med.name.isNullOrBlank()) Toast.makeText(
-                    context,
-                    fieldsError,
-                    Toast.LENGTH_SHORT
-                ).show()
-                else onNext()
-            },
-        )
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp),
+            shape = RoundedCornerShape(10.dp),
+            onClick = {
+                if (!med.name.isNullOrBlank()) {
+                    onNext()
+                } else {
+                    Toast.makeText(context, noNameError, Toast.LENGTH_LONG).show()
+                }
+            }
+        ) {
+            Text(
+                text = stringResource(R.string.navigation_next),
+                style = Typography.bodyLarge
+            )
+        }
     }
 }

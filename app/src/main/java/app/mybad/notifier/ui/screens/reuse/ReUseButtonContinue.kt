@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ReUseButtonContinue(textId: Int, onClick: () -> Unit) {
-
     Button(
         modifier = Modifier
             .fillMaxWidth()
@@ -24,5 +23,4 @@ fun ReUseButtonContinue(textId: Int, onClick: () -> Unit) {
     ) {
         Text(text = stringResource(id = textId))
     }
-
 }

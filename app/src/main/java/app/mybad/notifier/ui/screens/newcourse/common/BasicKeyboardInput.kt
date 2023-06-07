@@ -41,12 +41,12 @@ fun BasicKeyboardInput(
         singleLine = true,
         modifier = modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(
-            imeAction = if(hideOnGo) ImeAction.Go else ImeAction.Next,
+            imeAction = if (hideOnGo) ImeAction.Go else ImeAction.Next,
             keyboardType = keyboardType,
             capitalization = capitalization
         ),
         keyboardActions = KeyboardActions(onGo = { lfm.clearFocus(true) }),
-        textStyle = if(!alignRight) style else style.copy(textAlign = TextAlign.End),
+        textStyle = if (!alignRight) style else style.copy(textAlign = TextAlign.End),
     ) { innerTextField ->
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -54,14 +54,17 @@ fun BasicKeyboardInput(
         ) {
             prefix()
             Box(
-                contentAlignment = if(!alignRight) Alignment.CenterStart else Alignment.CenterEnd
+                contentAlignment = if (!alignRight) Alignment.CenterStart else Alignment.CenterEnd
             ) {
                 if (init.isNullOrBlank()) {
                     Text(
                         text = label,
                         modifier = Modifier.alpha(0.3f),
-                        style = if(!alignRight) style.copy(fontWeight = FontWeight.Bold)
-                        else style.copy(textAlign = TextAlign.End, fontWeight = FontWeight.Bold)
+                        style = if (!alignRight) {
+                            style.copy(fontWeight = FontWeight.Bold)
+                        } else {
+                            style.copy(textAlign = TextAlign.End, fontWeight = FontWeight.Bold)
+                        }
                     )
                 }
                 innerTextField()

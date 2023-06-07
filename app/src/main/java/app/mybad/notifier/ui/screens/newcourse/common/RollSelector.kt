@@ -35,7 +35,7 @@ fun RollSelector(
     list: List<String>,
     startOffset: Int = 0
 ) {
-    val pagerState = rememberPagerState(initialPage = list.size*10000 + startOffset)
+    val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,13 +51,13 @@ fun RollSelector(
             pageSize = PageSize.Fixed(32.dp),
             modifier = Modifier.height(200.dp)
         ) {
-            val ts = when((pagerState.currentPage - it).absoluteValue) {
+            val ts = when ((pagerState.currentPage - it).absoluteValue) {
                 0 -> 1f
                 1 -> 0.85f
                 else -> 0.7f
             }
-            val a = when((pagerState.currentPage - it).absoluteValue) {
-                0 -> 1f;1 -> 0.5f;2 -> 0.3f
+            val a = when ((pagerState.currentPage - it).absoluteValue) {
+                0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                 else -> 0f
             }
             val scale by animateFloatAsState(
@@ -82,7 +82,7 @@ fun RollSelector(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Text(
-                        text = list[it%list.size],
+                        text = list[it % list.size],
                         style = Typography.bodyLarge.copy(fontSize = 16.sp),
                         modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
                     )

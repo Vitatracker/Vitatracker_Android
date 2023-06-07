@@ -1,12 +1,15 @@
 package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
-import app.mybad.data.UserNotificationsDataModel
-import app.mybad.data.UserPersonalDataModel
-import app.mybad.data.UserRulesDataModel
 import app.mybad.data.mapToDomain
+import app.mybad.data.mapToNetwork
 import app.mybad.domain.models.user.*
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.utils.ApiResult
+import app.mybad.network.repos.repo.SettingsNetworkRepo
+import app.vitatracker.data.UserNotificationsDataModel
+import app.vitatracker.data.UserPersonalDataModel
+import app.vitatracker.data.UserRulesDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -18,7 +21,8 @@ import javax.inject.Singleton
 class UserDataRepoImpl @Inject constructor(
     private val dataStore_userNotification: DataStore<UserNotificationsDataModel>,
     private val dataStore_userPersonal: DataStore<UserPersonalDataModel>,
-    private val dataStore_userRules: DataStore<UserRulesDataModel>
+    private val dataStore_userRules: DataStore<UserRulesDataModel>,
+    private val settingsNetworkRepo: SettingsNetworkRepo
 ) : UserDataRepo {
 
     val scope = CoroutineScope(Dispatchers.IO)
@@ -75,4 +79,20 @@ class UserDataRepoImpl @Inject constructor(
         return dataStore_userRules.data.first().mapToDomain()
     }
 
+    // api
+    override suspend fun getUserModel(): ApiResult {
+        return settingsNetworkRepo.getUserModel()
+    }
+
+//    override suspend fun postUserModel(userDomainModel: UserDomainModel) {
+//        settingsNetworkRepo.postUserModel(userModel = userDomainModel.mapToNetwork())
+//    }
+
+    override suspend fun deleteUserModel(id: String) {
+        settingsNetworkRepo.deleteUserModel(id = id)
+    }
+
+    override suspend fun putUserModel(userDomainModel: UserDomainModel) {
+        settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
+    }
 }
