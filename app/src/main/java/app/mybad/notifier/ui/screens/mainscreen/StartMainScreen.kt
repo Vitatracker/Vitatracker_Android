@@ -151,7 +151,7 @@ private fun MainScreenMonthPager(
     HorizontalPager(
         pageCount = Month.values().size,
         state = stateMonth,
-        pageSpacing = 10.dp,
+        pageSpacing = 13.dp,
         pageSize = PageSize.Fixed(50.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -229,7 +229,7 @@ private fun MainScreenWeekPager(
     HorizontalPager(
         pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
         state = stateDay,
-        pageSpacing = 10.dp,
+        pageSpacing = 13.dp,
         pageSize = PageSize.Fill,
         modifier = Modifier
             .fillMaxWidth()
