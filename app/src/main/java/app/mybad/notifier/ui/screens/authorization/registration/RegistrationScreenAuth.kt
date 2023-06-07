@@ -15,12 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import app.mybad.notifier.ui.theme.MyBADTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,3 +171,10 @@ private fun RegistrationScreenButtonRegistration() {
     }
 }
 
+@Preview
+@Composable
+fun StartMainRegistrationScreenPreview(){
+    MyBADTheme() {
+        StartMainRegistrationScreen(navController= rememberNavController())
+    }
+}

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -34,12 +36,17 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.*
+import java.time.chrono.Chronology
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.FormatStyle
 import java.util.*
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +60,7 @@ fun StartMainScreen(
     val dateNow = remember { mutableStateOf(uiState.date) }
 
     Scaffold(
-       modifier = modifier,
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.main_screen_top_bar_name)) },
@@ -121,49 +128,37 @@ private fun MainScreenMonthPager(
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
 
-    val paddingStart = 10.dp
-    val paddingEnd = 10.dp
     val stateMonth = rememberPagerState(LocalDate.now().month.ordinal)
     val scope = rememberCoroutineScope()
+    val monthsShortsArray = stringArrayResource(R.array.months_short)
 
     HorizontalPager(
         pageCount = Month.values().size,
         state = stateMonth,
         pageSpacing = 13.dp,
-        pageSize = PageSize.Fixed(40.dp),
+        pageSize = PageSize.Fixed(50.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 14.dp, start = paddingStart, end = paddingEnd),
+            .padding(top = 14.dp, start = 10.dp, end = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         contentPadding = PaddingValues(
-            horizontal = ((Resources.getSystem().configuration.screenWidthDp - 60) / 2).dp
+            horizontal = ((LocalConfiguration.current.screenWidthDp - 70) / 2).dp
         )
     ) { month ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp)
         ) {
+            val shortNameOfMonth = monthsShortsArray[Month.values()[month].ordinal]
             Text(
-                text = AnnotatedString(Month.values()[month].toString().substring(0, 3)),
+                text = AnnotatedString(shortNameOfMonth),
                 color = when (stateMonth.currentPage) {
-                    month -> {
-                        MaterialTheme.colorScheme.primary
-                    }
-                    month + 1 -> {
-                        Color.Black
-                    }
-                    month - 1 -> {
-                        Color.Black
-                    }
-                    month + 2 -> {
-                        Color.Gray
-                    }
-                    month - 2 -> {
-                        Color.Gray
-                    }
-                    else -> {
-                        Color.LightGray
-                    }
+                    month -> MaterialTheme.colorScheme.primary
+                    month + 1 -> Color.Black
+                    month - 1 -> Color.Black
+                    month + 2 -> Color.Gray
+                    month - 2 -> Color.Gray
+                    else -> Color.LightGray
                 },
                 modifier = Modifier
                     .padding(1.dp)
@@ -171,18 +166,10 @@ private fun MainScreenMonthPager(
                         scope.launch { stateMonth.animateScrollToPage(month) }
                     },
                 fontWeight = when (stateMonth.currentPage) {
-                    month -> {
-                        FontWeight.Bold
-                    }
-                    month + 1 -> {
-                        FontWeight.Normal
-                    }
-                    month - 1 -> {
-                        FontWeight.Normal
-                    }
-                    else -> {
-                        FontWeight.Normal
-                    }
+                    month -> FontWeight.Bold
+                    month + 1 -> FontWeight.Normal
+                    month - 1 -> FontWeight.Normal
+                    else -> FontWeight.Normal
                 },
                 maxLines = 1,
                 textAlign = TextAlign.Center
@@ -225,7 +212,7 @@ private fun MainScreenWeekPager(
         pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
         state = stateDay,
         pageSpacing = 13.dp,
-        pageSize = PageSize.Fixed(40.dp),
+        pageSize = PageSize.Fill,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp, start = paddingStart, end = paddingEnd),
@@ -249,7 +236,6 @@ private fun MainScreenWeekPager(
                 countDay = it + 1
                 calendar.time = Date(Year.now().value, monthState, it - 1)
                 shortNameOfDay = daysShortsArray[calendar.get(Calendar.DAY_OF_WEEK) - 1]
-                //DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
@@ -438,7 +424,6 @@ private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
                 .size(40.dp)
                 .clip(CircleShape)
                 .clickable {
-//                    val n = Instant.now().epochSecond
                 }
         )
     } else if (getTime(nowTime) < getTime(usageTime.minus(3600))) {
@@ -473,7 +458,6 @@ private fun MainScreenButtonAccept(usageTime: Long, isDone: Boolean) {
                 .size(40.dp)
                 .clip(CircleShape)
                 .clickable {
-//                    val n = Instant.now().epochSecond
                 }
         )
     }

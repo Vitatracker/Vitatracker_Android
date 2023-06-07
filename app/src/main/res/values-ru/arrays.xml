@@ -7,6 +7,20 @@
         <item>мкл</item>
         <item>мл</item>
     </string-array>
+    <string-array name="months_short">
+        <item>Янв</item>
+        <item>Фев</item>
+        <item>Март</item>
+        <item>Апр</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Авг</item>
+        <item>Сент</item>
+        <item>Окт</item>
+        <item>Ноя</item>
+        <item>Дек</item>
+    </string-array>
     <string-array name="months_full">
         <item>Январь</item>
         <item>Февраль</item>
