@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -40,45 +41,36 @@ fun SettingsOurContacts(modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
-        ClickableText(text = link("https://lnkd.in/eHz-Andj"), onClick = {
-
-        })
+        HyperLinkText("https://lnkd.in/eHz-Andj")
         BaseDivider()
         Text(
             text = stringResource(R.string.settings_contacts_front_end_team),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
-        ClickableText(text = link("https://lnkd.in/eKz_n5Df"), onClick = {
-
-        })
-
-        ClickableText(text = link("https://lnkd.in/eaSMTNie"), modifier = Modifier.padding(top = 16.dp), onClick = {
-
-        })
+        HyperLinkText("https://lnkd.in/eKz_n5Df")
+        HyperLinkText("https://lnkd.in/eaSMTNie", modifier = Modifier.padding(top = 16.dp))
         BaseDivider()
         Text(
             text = stringResource(R.string.settings_contacts_android_team),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
-
-        ClickableText(text = link("https://lnkd.in/eGmXzP6b"), onClick = {
-
-        })
-
-        ClickableText(text = link("https://lnkd.in/eX4htR79"), modifier = Modifier.padding(top = 16.dp), onClick = {
-
-        })
+        HyperLinkText("https://lnkd.in/eGmXzP6b")
+        HyperLinkText("https://lnkd.in/eX4htR79", modifier = Modifier.padding(top = 16.dp))
         BaseDivider()
     }
 }
 
 @Composable
-fun link(text: String): AnnotatedString {
-    return buildAnnotatedString {
+fun HyperLinkText(link: String, modifier: Modifier = Modifier) {
+    val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline, fontSize = 14.sp)) {
-            append(text)
+            append(link)
         }
     }
+    val uriHandler = LocalUriHandler.current
+    ClickableText(text = annotatedString, modifier = modifier, onClick = {
+        uriHandler.openUri(annotatedString.text)
+    })
 }
