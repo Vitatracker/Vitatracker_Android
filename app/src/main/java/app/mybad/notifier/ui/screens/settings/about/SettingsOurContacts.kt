@@ -4,22 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.reuse.HyperLinkText
 import app.mybad.notifier.ui.screens.settings.common.BaseDivider
 
 @Composable
@@ -55,17 +49,4 @@ fun SettingsOurContacts(modifier: Modifier = Modifier) {
         HyperLinkText("https://lnkd.in/eX4htR79", modifier = Modifier.padding(top = 16.dp))
         BaseDivider()
     }
-}
-
-@Composable
-fun HyperLinkText(link: String, modifier: Modifier = Modifier) {
-    val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline, fontSize = 14.sp)) {
-            append(link)
-        }
-    }
-    val uriHandler = LocalUriHandler.current
-    ClickableText(text = annotatedString, modifier = modifier, onClick = {
-        uriHandler.openUri(annotatedString.text)
-    })
 }
