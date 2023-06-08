@@ -1,5 +1,6 @@
 package app.mybad.data.repos
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
@@ -41,12 +42,13 @@ class DataStoreRepoImpl @Inject constructor(
             .catch { exception ->
                 // dataStore.data throws an IOException when an error is encountered when reading data
                 if (exception is IOException) {
+                    Log.w("NAM", "getUserId error: ${exception.message}")
                     emit(emptyPreferences())
                 } else {
                     throw exception
                 }
             }.map { preferences ->
-                preferences[PreferencesKeys.userId] ?: ""
+                preferences[PreferencesKeys.userId] ?: "0"
             }
     }
 

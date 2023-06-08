@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.mainscreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.usecases.meds.LoadMedsFromList
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -25,7 +27,8 @@ class StartMainScreenViewModel @Inject constructor(
     private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
     private val loadMedsFromList: LoadMedsFromList,
     private val updateUsageUseCase: UpdateUsageUseCase,
-    private val coursesNetworkRepo: CoursesNetworkRepo
+    private val coursesNetworkRepo: CoursesNetworkRepo,
+    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -64,7 +67,8 @@ class StartMainScreenViewModel @Inject constructor(
 
     private fun getAllUsages() {
         scope.launch {
-            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute().size))
+            val userId = dataStoreRepo.getUserId().first().toLong()
+            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute(userId).size))
         }
     }
 

@@ -11,7 +11,7 @@ class LoadCoursesUseCase @Inject constructor(
     private val usagesRepo: UsagesRepo,
 ) {
 
-    suspend fun getMedsFlow() = medsRepo.getAllFlow()
-    suspend fun getCoursesFlow() = coursesRepo.getAllFlow()
-    suspend fun getUsagesFlow() = usagesRepo.getCommonAllFlow()
+    suspend fun getMedsFlow(userId: Long) = medsRepo.getAllFlow(userId)
+    suspend fun getCoursesFlow(userId: Long) = coursesRepo.getAllFlow(userId)
+    suspend fun getUsagesFlow(userId: Long) = usagesRepo.getCommonAllFlow(userId)
 }

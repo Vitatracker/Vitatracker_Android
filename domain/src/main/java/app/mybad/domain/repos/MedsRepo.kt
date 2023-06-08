@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MedsRepo {
     suspend fun getAll(): List<MedDomainModel>
-    suspend fun getAllFlow(): Flow<List<MedDomainModel>>
+    suspend fun getAllFlow(userId: Long): Flow<List<MedDomainModel>>
     suspend fun getSingle(medId: Long): MedDomainModel
     suspend fun add(med: MedDomainModel)
     suspend fun updateSingle(medId: Long, item: MedDomainModel)

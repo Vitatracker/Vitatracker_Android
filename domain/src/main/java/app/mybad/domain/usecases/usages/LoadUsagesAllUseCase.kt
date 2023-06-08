@@ -7,5 +7,5 @@ class LoadUsagesAllUseCase @Inject constructor(
     private val usagesRepo: UsagesRepo
 ) {
 
-    suspend fun execute() = usagesRepo.getCommonAll()
+    suspend fun execute(userId: Long) = usagesRepo.getCommonAll(userId)
 }

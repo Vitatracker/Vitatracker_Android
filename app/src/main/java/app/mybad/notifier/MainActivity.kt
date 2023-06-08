@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState = mainActivityViewModel.uiState.collectAsStateWithLifecycle()
 
-            mainActivityViewModel.clearDataStore()
+//            mainActivityViewModel.clearDataStore()
 
             MyBADTheme {
                 if (uiState.value.token.isEmpty()) {

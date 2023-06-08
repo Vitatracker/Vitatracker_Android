@@ -19,8 +19,8 @@ class MedsRepoImpl @Inject constructor(
         return db.getAllMeds().mapToDomain()
     }
 
-    override suspend fun getAllFlow(): Flow<List<MedDomainModel>> {
-        return db.getAllMedsFlow().map { it.mapToDomain() }
+    override suspend fun getAllFlow(userId: Long): Flow<List<MedDomainModel>> {
+        return db.getAllMedsFlow(userId).map { it.mapToDomain() }
     }
 
     override suspend fun getSingle(medId: Long): MedDomainModel {

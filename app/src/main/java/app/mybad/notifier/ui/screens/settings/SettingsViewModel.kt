@@ -47,7 +47,7 @@ class SettingsViewModel @Inject constructor(
         scope.launch {
             getUserModel()
             delay(500)
-            _state.emit(_state.value.copy(courses = coursesRepo.getAll()))
+            _state.emit(_state.value.copy(courses = coursesRepo.getAll(dataStoreRepo.getUserId().first().toLong())))
             _state.emit(_state.value.copy(personalDomainModel = userSettingsUseCase.getUserPersonal()))
             _state.emit(_state.value.copy(notificationsUserDomainModel = userSettingsUseCase.getUserNotification()))
             _state.emit(_state.value.copy(rulesUserDomainModel = userSettingsUseCase.getUserRules()))

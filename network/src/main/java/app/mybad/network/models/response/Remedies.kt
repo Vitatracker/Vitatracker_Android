@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Remedies(
     @SerializedName("id") val id: Long,
-    @SerializedName("userid") val userId: Long,
+    @SerializedName("userId") val userId: Long,
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String,
     @SerializedName("comment") val comment: String,

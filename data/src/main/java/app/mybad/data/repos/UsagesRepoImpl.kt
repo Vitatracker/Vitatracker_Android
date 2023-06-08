@@ -16,12 +16,12 @@ class UsagesRepoImpl @Inject constructor(
     private val db: MedDAO
 ) : UsagesRepo {
 
-    override suspend fun getCommonAllFlow(): Flow<List<UsageCommonDomainModel>> {
-        return db.getAllCommonUsagesFlow().map { it.mapToDomain() }
+    override suspend fun getCommonAllFlow(userId: Long): Flow<List<UsageCommonDomainModel>> {
+        return db.getAllCommonUsagesFlow(userId).map { it.mapToDomain() }
     }
 
-    override suspend fun getCommonAll(): List<UsageCommonDomainModel> {
-        return db.getAllCommonUsagesFlow().first().mapToDomain()
+    override suspend fun getCommonAll(userId: Long): List<UsageCommonDomainModel> {
+        return db.getAllCommonUsagesFlow(userId).first().mapToDomain()
     }
 
     override suspend fun deleteSingle(medId: Long) {

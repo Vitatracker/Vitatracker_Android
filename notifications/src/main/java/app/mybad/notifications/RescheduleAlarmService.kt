@@ -6,9 +6,11 @@ import android.content.Intent
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import app.mybad.domain.repos.DataStoreRepo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class RescheduleAlarmService : Service() {
 
     @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
+    @Inject lateinit var dataStoreRepo: DataStoreRepo
     private val scope = CoroutineScope(Dispatchers.IO)
 
     companion object {
@@ -45,7 +48,7 @@ class RescheduleAlarmService : Service() {
             .build()
         startForeground(101, notification)
         scope.launch {
-            notificationsSchedulerImpl.rescheduleAll()
+            notificationsSchedulerImpl.rescheduleAll(dataStoreRepo.getUserId().first().toLong())
             stopForeground(STOP_FOREGROUND_DETACH)
         }
         return START_STICKY

@@ -12,15 +12,15 @@ import javax.inject.Singleton
 
 @Singleton
 class CoursesRepoImpl @Inject constructor(
-    private val db: MedDAO,
+    private val db: MedDAO
 ) : CoursesRepo {
 
-    override suspend fun getAll(): List<CourseDomainModel> {
-        return db.getAllCourses().mapToDomain()
+    override suspend fun getAll(userId: Long): List<CourseDomainModel> {
+        return db.getAllCourses(userId).mapToDomain()
     }
 
-    override suspend fun getAllFlow(): Flow<List<CourseDomainModel>> {
-        return db.getAllCoursesFlow().map { it.mapToDomain() }
+    override suspend fun getAllFlow(userId: Long): Flow<List<CourseDomainModel>> {
+        return db.getAllCoursesFlow(userId).map { it.mapToDomain() }
     }
 
     override suspend fun getSingle(courseId: Long): CourseDomainModel {

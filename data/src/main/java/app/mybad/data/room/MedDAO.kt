@@ -18,8 +18,8 @@ interface MedDAO {
     @Query("select * from meds")
     fun getAllMeds(): List<MedDataModel>
 
-    @Query("select * from meds")
-    fun getAllMedsFlow(): Flow<List<MedDataModel>>
+    @Query("select * from meds where userId =:userId")
+    fun getAllMedsFlow(userId: Long): Flow<List<MedDataModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addMed(med: MedDataModel)
@@ -30,11 +30,11 @@ interface MedDAO {
     @Query("select * from courses where id=(:courseId) limit 1")
     fun getCourseById(courseId: Long): CourseDataModel
 
-    @Query("select * from courses")
-    fun getAllCourses(): List<CourseDataModel>
+    @Query("select * from courses where userId = :userId")
+    fun getAllCourses(userId: Long): List<CourseDataModel>
 
-    @Query("select * from courses")
-    fun getAllCoursesFlow(): Flow<List<CourseDataModel>>
+    @Query("select * from courses where userId = :userId")
+    fun getAllCoursesFlow(userId: Long): Flow<List<CourseDataModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCourse(course: CourseDataModel)
@@ -60,8 +60,8 @@ interface MedDAO {
     @Query("delete from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
     fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
 
-    @Query("select * from usages_common")
-    fun getAllCommonUsagesFlow(): Flow<List<UsageCommonDataModel>>
+    @Query("select * from usages_common where userId =:userId")
+    fun getAllCommonUsagesFlow(userId: Long): Flow<List<UsageCommonDataModel>>
 
     @Query("SELECT * FROM usages_common WHERE useTime BETWEEN (:startTime) AND (:endTime)")
     fun getUsagesByInterval(startTime: Long, endTime: Long): List<UsageCommonDataModel>

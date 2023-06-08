@@ -55,8 +55,8 @@ class NotificationsSchedulerImpl
         pi.cancel()
     }
 
-    override suspend fun cancelAll() {
-        val usages = usagesRepo.getCommonAll()
+    override suspend fun cancelAll(userId: Long) {
+        val usages = usagesRepo.getCommonAll(userId)
         cancel(usages)
     }
 
@@ -66,16 +66,16 @@ class NotificationsSchedulerImpl
         onComplete()
     }
 
-    override suspend fun rescheduleAll(onComplete: () -> Unit) {
+    override suspend fun rescheduleAll(userId: Long, onComplete: () -> Unit) {
         val now = System.currentTimeMillis() / 1000
-        usagesRepo.getCommonAll().forEach {
+        usagesRepo.getCommonAll(userId).forEach {
             if (it.useTime >= now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateUsagePi(med, it, context)
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime * 1000, pi)
             }
         }
-        coursesRepo.getAll().forEach {
+        coursesRepo.getAll(userId).forEach {
             if (it.remindDate > now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateCoursePi(it, med, context)

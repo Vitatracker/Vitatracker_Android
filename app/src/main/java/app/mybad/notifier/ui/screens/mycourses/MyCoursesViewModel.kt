@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.mycourses
 
 import androidx.lifecycle.ViewModel
 import app.mybad.domain.repos.CoursesRepo
+import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
@@ -14,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +30,8 @@ class MyCoursesViewModel @Inject constructor(
     private val coursesRepo: CoursesRepo,
     private val usagesRepo: UsagesRepo,
     private val updateUsagesInCourse: UpdateAllUsagesInCourseUseCase,
-    private val coursesNetworkRepo: CoursesNetworkRepo
+    private val coursesNetworkRepo: CoursesNetworkRepo,
+    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -36,19 +40,22 @@ class MyCoursesViewModel @Inject constructor(
 
     init {
         scope.launch {
-            loadCourses.getCoursesFlow().collect { courses ->
-                _state.update {
-                    it.copy(courses = courses)
+            val userId = dataStoreRepo.getUserId().first().toLong()
+            scope.launch {
+                loadCourses.getCoursesFlow(userId).collect { courses ->
+                    _state.update {
+                        it.copy(courses = courses)
+                    }
                 }
             }
-        }
-        scope.launch {
-            loadCourses.getMedsFlow().collect { meds -> _state.update { it.copy(meds = meds) } }
-        }
-        scope.launch {
-            loadCourses.getUsagesFlow().collect { usages ->
-                _state.update {
-                    it.copy(usages = usages)
+            scope.launch {
+                loadCourses.getMedsFlow(userId).collect { meds -> _state.update { it.copy(meds = meds) } }
+            }
+            scope.launch {
+                loadCourses.getUsagesFlow(userId).collect { usages ->
+                    _state.update {
+                        it.copy(usages = usages)
+                    }
                 }
             }
         }
@@ -63,6 +70,7 @@ class MyCoursesViewModel @Inject constructor(
                     coursesNetworkRepo.deleteMed(mId)
                 }
             }
+
             is MyCoursesIntent.Update -> {
                 scope.launch {
                     updateMed(intent.med)

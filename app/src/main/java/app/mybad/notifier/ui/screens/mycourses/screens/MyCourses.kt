@@ -93,9 +93,8 @@ private fun validate(
     courses: List<CourseDomainModel>
 ): Boolean {
     var isValid = true
-    val mm = meds.mapIndexed { index, medDomainModel -> index to medDomainModel.id }.toMap()
-    courses.forEach {
-        if (!mm.containsValue(it.medId)) isValid = false
+    courses.forEach { course ->
+        if (meds.find { it.id == course.medId } == null) isValid = false
     }
     return isValid
 }
