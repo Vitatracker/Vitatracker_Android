@@ -22,6 +22,7 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.mycourses.*
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.plusDay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,8 +110,8 @@ private fun generatePattern(
     if (usages.isNotEmpty()) {
         val list = usages.filter { it.medId == medId }
         if (list.isNotEmpty()) {
-            val firstTime = list.minByOrNull { it.useTime }!!.useTime
-            val prePattern = list.filter { it.useTime < (firstTime + 86400) }
+            val firstTime = list.minBy { it.useTime }.useTime
+            val prePattern = list.filter { it.useTime < (firstTime.plusDay()) }
             if (prePattern.isNotEmpty()) return prePattern.map { it.useTime to it.quantity }
         }
     }

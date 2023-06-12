@@ -4,12 +4,27 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Surface
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +41,11 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
-import java.time.*
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.utils.plusDay
+import app.mybad.notifier.utils.plusThreeDay
+import app.mybad.notifier.utils.secondsToDay
+import app.mybad.notifier.utils.toDateDisplay
+import java.time.Instant
 
 @Composable
 fun MyCourses(
@@ -55,7 +73,8 @@ fun MyCourses(
                             course = course,
                             med = meds.first { it.id == course.medId },
                             usages = usages.filter {
-                                it.medId == course.medId && it.useTime >= course.startDate && it.useTime < course.endDate + 86400
+                                it.medId == course.medId && it.useTime >= course.startDate
+                                        && it.useTime < course.endDate.plusDay()
                             },
                             onSelect = onSelect::invoke,
                         )
@@ -66,7 +85,7 @@ fun MyCourses(
                     if (
                         nCourse.interval > 0 &&
                         nCourse.startDate + nCourse.interval > now &&
-                        nCourse.startDate + nCourse.interval < now + 86400 * 3 + 1
+                        nCourse.startDate + nCourse.interval < now.plusThreeDay()
                     ) {
                         item {
                             CourseItem(
@@ -76,9 +95,10 @@ fun MyCourses(
                                 ),
                                 med = meds.first { it.id == nCourse.medId },
                                 usages = usages.filter {
-                                    it.medId == nCourse.medId && it.useTime >= nCourse.startDate && it.useTime < nCourse.startDate + 86400
+                                    it.medId == nCourse.medId && it.useTime >= nCourse.startDate
+                                            && it.useTime < nCourse.startDate.plusDay()
                                 }.take(10),
-                                startInDays = ((nCourse.startDate + nCourse.interval - now) / 86400).toInt(),
+                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay(),
                             )
                         }
                     }
@@ -178,7 +198,10 @@ private fun CourseItem(
                         if (itemsCount != 0 || usagesCount > 0) {
                             Row {
                                 if (itemsCount != 0) {
-                                    Text(text = "$itemsCount, ${types[med.type]}", style = Typography.labelMedium)
+                                    Text(
+                                        text = "$itemsCount, ${types[med.type]}",
+                                        style = Typography.labelMedium
+                                    )
                                     Divider(
                                         thickness = 1.dp,
                                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
@@ -233,14 +256,8 @@ private fun CourseItem(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        val start = DateTimeFormatter
-                            .ofPattern("dd.MM.yyyy")
-                            .withZone(ZoneOffset.UTC)
-                            .format(Instant.ofEpochSecond(course.startDate))
-                        val end = DateTimeFormatter
-                            .ofPattern("dd.MM.yyyy")
-                            .withZone(ZoneOffset.UTC)
-                            .format(Instant.ofEpochSecond(course.endDate))
+                        val start = course.startDate.toDateDisplay()
+                        val end = course.endDate.toDateDisplay()
                         Text(text = start, style = Typography.bodyLarge)
                         Icon(
                             painter = painterResource(R.drawable.arrow_right),
