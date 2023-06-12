@@ -28,7 +28,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkApiModule {
 
-    private const val BASE_URL = "http://vitatracker-001-site1.atempurl.com/"
+    private const val BASE_URL = "http://vitatracker-heroku.herokuapp.com/"
 
     @Singleton
     @Provides

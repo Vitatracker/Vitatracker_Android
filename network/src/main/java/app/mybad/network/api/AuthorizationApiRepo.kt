@@ -11,10 +11,10 @@ import retrofit2.http.POST
 interface AuthorizationApiRepo {
 
     @Headers("Content-Type: application/json")
-    @POST(value = "api/login")
+    @POST(value = "api/v1/auth/authenticate")
     fun loginUser(@Body authorizationUserLogin: AuthorizationUserLogin): Call<Authorization>
 
     @Headers("Content-Type: application/json")
-    @POST(value = "api/users")
+    @POST(value = "api/v1/auth/register")
     fun registrationUser(@Body authorizationUserRegistration: AuthorizationUserRegistration): Call<Authorization>
 }
