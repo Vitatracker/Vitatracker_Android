@@ -28,7 +28,7 @@ class CreateCourseViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
     private var now = LocalDateTime.now()
     private val _state = MutableStateFlow(newState())
-    val state get() = _state.asStateFlow()
+    val state = _state.asStateFlow()
 
     fun reduce(intent: NewCourseIntent) {
         when (intent) {

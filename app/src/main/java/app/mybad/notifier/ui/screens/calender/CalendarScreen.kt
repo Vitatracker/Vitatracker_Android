@@ -28,6 +28,7 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.secondsToDay
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
@@ -131,8 +132,9 @@ private fun CalendarScreenItem(
             if (w == 0 && d < fwd.dayOfWeek.value) {
                 val time = fwd.minusDays(fwd.dayOfWeek.value - d.toLong() - 1)
                 usages.forEach { usage ->
-                    val day = usage.useTime - (usage.useTime % 86400)
-                    if (day == time.toEpochSecond(ZoneOffset.UTC) - time.toEpochSecond(ZoneOffset.UTC) % 86400) {
+                    val day = usage.useTime - (usage.useTime.secondsToDay())
+                    val timeUtc = time.toEpochSecond(ZoneOffset.UTC)
+                    if (day == timeUtc - timeUtc.secondsToDay()) {
                         usgs[w][d].add(usage)
                     }
                 }
@@ -140,8 +142,9 @@ private fun CalendarScreenItem(
             } else {
                 val time = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
                 usages.forEach { usage ->
-                    val day = usage.useTime - (usage.useTime % 86400)
-                    if (day == time.toEpochSecond(ZoneOffset.UTC) - time.toEpochSecond(ZoneOffset.UTC) % 86400) {
+                    val day = usage.useTime - (usage.useTime.secondsToDay())
+                    val timeUtc = time.toEpochSecond(ZoneOffset.UTC)
+                    if (day == timeUtc - timeUtc.secondsToDay()) {
                         usgs[w][d].add(usage)
                     }
                 }

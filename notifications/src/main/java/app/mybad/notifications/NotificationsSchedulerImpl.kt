@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
@@ -14,6 +15,7 @@ import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
 import javax.inject.Inject
+
 @SuppressLint("UnspecifiedImmutableFlag")
 class NotificationsSchedulerImpl
 @Inject constructor(
@@ -36,7 +38,11 @@ class NotificationsSchedulerImpl
     override suspend fun add(course: CourseDomainModel) {
         val med = medsRepo.getSingle(course.medId)
         val pi = generateCoursePi(course, med, context)
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, course.remindDate * 1000L, pi)
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            course.remindDate * 1000L,
+            pi
+        )
     }
 
     override suspend fun cancel(usages: List<UsageCommonDomainModel>) {
@@ -72,20 +78,32 @@ class NotificationsSchedulerImpl
             if (it.useTime >= now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateUsagePi(med, it, context)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime * 1000, pi)
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    it.useTime * 1000,
+                    pi
+                )
             }
         }
         coursesRepo.getAll(userId).forEach {
             if (it.remindDate > now) {
                 val med = medsRepo.getSingle(it.medId)
                 val pi = generateCoursePi(it, med, context)
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.remindDate * 1000, pi)
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    it.remindDate * 1000,
+                    pi
+                )
             }
         }
         onComplete()
     }
 
-    private fun generateUsagePi(med: MedDomainModel, usage: UsageCommonDomainModel, context: Context): PendingIntent {
+    private fun generateUsagePi(
+        med: MedDomainModel,
+        usage: UsageCommonDomainModel,
+        context: Context
+    ): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = NOTIFICATION_INTENT
         i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
@@ -98,9 +116,19 @@ class NotificationsSchedulerImpl
         i.putExtra(Extras.UNIT.name, med.measureUnit)
         i.putExtra(Extras.USAGE_TIME.name, usage.useTime)
         i.putExtra(Extras.QUANTITY.name, usage.quantity)
-        return PendingIntent.getBroadcast(context, (usage.useTime + med.id).toInt(), i, 0)
+        return PendingIntent.getBroadcast(
+            context,
+            (usage.useTime + med.id).toInt(),
+            i,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+        )
     }
-    private fun generateCoursePi(course: CourseDomainModel, med: MedDomainModel, context: Context): PendingIntent {
+
+    private fun generateCoursePi(
+        course: CourseDomainModel,
+        med: MedDomainModel,
+        context: Context
+    ): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = COURSE_NOTIFICATION_INTENT
         i.data = Uri.parse("custom://${(course.id + med.id).toInt()}")
@@ -113,11 +141,18 @@ class NotificationsSchedulerImpl
         i.putExtra(Extras.UNIT.name, med.measureUnit)
         i.putExtra(Extras.NEW_COURSE_START_DATE.name, (course.startDate + course.interval))
         i.putExtra(Extras.COURSE_REMIND_TIME.name, course.remindDate)
-        return PendingIntent.getBroadcast(context, (course.remindDate + med.id).toInt(), i, 0)
+        return PendingIntent.getBroadcast(
+            context,
+            (course.remindDate + med.id).toInt(),
+            i,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+        )
     }
+
     companion object {
         const val NOTIFICATION_INTENT = "android.intent.action.NOTIFICATION"
         const val COURSE_NOTIFICATION_INTENT = "android.intent.action.COURSE_NOTIFICATION"
+
         enum class Extras {
             MED_ID,
             MED_NAME,
