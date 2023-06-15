@@ -1,8 +1,8 @@
 package app.mybad.data
 
-import app.mybad.data.models.course.CourseDataModel
-import app.mybad.data.models.med.MedDataModel
-import app.mybad.data.models.usages.UsageCommonDataModel
+import app.mybad.data.db.entity.CourseDataModel
+import app.mybad.data.db.entity.MedDataModel
+import app.mybad.data.db.entity.UsageCommonDataModel
 import app.mybad.data.models.user.NotificationsUserDataModel
 import app.mybad.data.models.user.PersonalDataModel
 import app.mybad.data.models.user.RulesUserDataModel

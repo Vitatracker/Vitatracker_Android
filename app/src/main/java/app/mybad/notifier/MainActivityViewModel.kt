@@ -35,6 +35,7 @@ class MainActivityViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        Log.w("VTTAG", "[MainActivityViewModel:init]: app start")
         updateToken()
     }
 
@@ -48,7 +49,7 @@ class MainActivityViewModel @Inject constructor(
         }
         viewModelScope.launch {
             dataStoreRepo.getToken().collect {
-                Log.w("MainActivity", "token: $it")
+                Log.w("VTTAG", "[MainActivityViewModel:updateToken] token: \"$it\"")
                 if (it.isNotBlank()) {
                     scope.launch {
                         coursesNetworkRepo.getAll()
@@ -64,11 +65,11 @@ class MainActivityViewModel @Inject constructor(
         when (settingsResult) {
             is ApiResult.ApiSuccess -> setUserModelFromBack(settingsResult.data as UserModel)
             is ApiResult.ApiError -> Log.d(
-                "TAG",
-                "error: ${settingsResult.code} ${settingsResult.message}"
+                "VTTAG",
+                "error[MainActivityViewModel:getAll]: ${settingsResult.code} ${settingsResult.message}"
             )
 
-            is ApiResult.ApiException -> Log.d("TAG", "exception: ${settingsResult.e}")
+            is ApiResult.ApiException -> Log.d("VTTAG", "exception[MainActivityViewModel:getAll]: ${settingsResult.e}")
         }
     }
 
@@ -97,7 +98,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun clearDataStore() {
-        scope.launch {
+        viewModelScope.launch {
             dataStoreRepo.updateToken("")
             dataStoreRepo.updateUserId("")
             updateToken()

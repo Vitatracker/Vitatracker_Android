@@ -80,20 +80,19 @@ fun CourseInfoScreen(
     var selectedInput by remember { mutableStateOf(-1) }
 
     LaunchedEffect(courseInternal) {
+        val currentDate = ZoneId.systemDefault().rules.getOffset(
+            Instant.now()
+        )
         startDate = LocalDateTime.ofEpochSecond(
             courseInternal.startDate,
             0,
-            ZoneId.systemDefault().rules.getOffset(
-                Instant.now()
-            )
+            currentDate
         )
             .withHour(0).withMinute(0)
         endDate = LocalDateTime.ofEpochSecond(
             courseInternal.endDate,
             0,
-            ZoneId.systemDefault().rules.getOffset(
-                Instant.now()
-            )
+            currentDate
         )
             .withHour(23).withMinute(59)
     }

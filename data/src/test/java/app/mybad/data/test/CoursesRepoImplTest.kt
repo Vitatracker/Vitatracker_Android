@@ -1,9 +1,9 @@
 package app.mybad.data.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.mybad.data.models.course.CourseDataModel
-import app.mybad.data.room.MedDAO
-import app.mybad.data.room.MedDB
+import app.mybad.data.db.entity.CourseDataModel
+import app.mybad.data.db.dao.MedDao
+import app.mybad.data.db.MedDbImpl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -33,8 +33,8 @@ class CoursesRepoImplTest {
 
     @Inject
     @Named("test_db")
-    lateinit var db: MedDB
-    lateinit var userDao: MedDAO
+    lateinit var db: MedDbImpl
+    lateinit var userDao: MedDao
     private val now = Instant.now().epochSecond
     private val testCoursesData = listOf(
         CourseDataModel(

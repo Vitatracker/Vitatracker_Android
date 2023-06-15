@@ -1,70 +1,53 @@
 package app.mybad.notifier.ui.screens.mycourses
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.meds.UpdateMedUseCase
 import app.mybad.domain.usecases.usages.UpdateAllUsagesInCourseUseCase
+import app.mybad.network.models.AuthToken
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyCoursesViewModel @Inject constructor(
-    private val loadCourses: LoadCoursesUseCase,
+    loadCourses: LoadCoursesUseCase,
+
     private val deleteCourse: DeleteCourseUseCase,
     private val updateCourse: UpdateCourseUseCase,
     private val updateMed: UpdateMedUseCase,
+
     private val coursesRepo: CoursesRepo,
     private val usagesRepo: UsagesRepo,
+
     private val updateUsagesInCourse: UpdateAllUsagesInCourseUseCase,
+
     private val coursesNetworkRepo: CoursesNetworkRepo,
-    private val dataStoreRepo: DataStoreRepo
 ) : ViewModel() {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private val _state = MutableStateFlow(MyCoursesState())
-    val state get() = _state.asStateFlow()
-
-    init {
-        scope.launch {
-            val userId = dataStoreRepo.getUserId().first().toLong()
-            scope.launch {
-                loadCourses.getCoursesFlow(userId).collect { courses ->
-                    _state.update {
-                        it.copy(courses = courses)
-                    }
-                }
-            }
-            scope.launch {
-                loadCourses.getMedsFlow(userId).collect { meds -> _state.update { it.copy(meds = meds) } }
-            }
-            scope.launch {
-                loadCourses.getUsagesFlow(userId).collect { usages ->
-                    _state.update {
-                        it.copy(usages = usages)
-                    }
-                }
-            }
-        }
-    }
+    val state = loadCourses(AuthToken.userId)
+        .mapLatest { (courses, meds, usages) ->
+            MyCoursesState(courses = courses, meds = meds, usages = usages)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+            initialValue = MyCoursesState()
+        )
 
     fun reduce(intent: MyCoursesIntent) {
         when (intent) {
             is MyCoursesIntent.Delete -> {
-                scope.launch {
+                viewModelScope.launch {
                     val mId = coursesRepo.getSingle(intent.courseId).medId
                     deleteCourse.execute(intent.courseId)
                     coursesNetworkRepo.deleteMed(mId)
@@ -72,7 +55,7 @@ class MyCoursesViewModel @Inject constructor(
             }
 
             is MyCoursesIntent.Update -> {
-                scope.launch {
+                viewModelScope.launch {
                     updateMed(intent.med)
                     updateCourse.execute(intent.course.id, intent.course)
                     updateUsagesInCourse(intent.usagesPattern, intent.med, intent.course)

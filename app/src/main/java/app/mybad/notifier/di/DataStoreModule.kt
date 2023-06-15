@@ -31,7 +31,7 @@ private const val RULES_STORE_FILE_NAME = "user_rules.pb"
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataStoreModule {
+class DataStoreModule {
 
     @Singleton
     @Provides
@@ -47,7 +47,9 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStoreUserNotification(@ApplicationContext appContext: Context): DataStore<UserNotificationsDataModel> {
+    fun provideProtoDataStoreUserNotification(
+        @ApplicationContext appContext: Context
+    ): DataStore<UserNotificationsDataModel> {
         return DataStoreFactory.create(
             serializer = UserNotificationDataModelSerializer,
             produceFile = { appContext.dataStoreFile(NOTIFICATION_STORE_FILE_NAME) },

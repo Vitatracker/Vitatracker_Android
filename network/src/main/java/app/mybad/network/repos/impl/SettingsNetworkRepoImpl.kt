@@ -5,13 +5,15 @@ import app.mybad.network.api.SettingsApiRepo
 import app.mybad.network.models.UserModel
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.mybad.network.utils.ApiHandler
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.Named
 
-@Singleton
 class SettingsNetworkRepoImpl @Inject constructor(
-    private val settingsApiRepo: SettingsApiRepo
+    private val settingsApiRepo: SettingsApiRepo,
+    @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : SettingsNetworkRepo {
 
     override suspend fun getUserModel(): ApiResult =
@@ -29,8 +31,8 @@ class SettingsNetworkRepoImpl @Inject constructor(
         execute { settingsApiRepo.putUserModel(userModel = userModel) }
     }
 
-    private suspend fun execute(request: () -> Call<*>): ApiResult {
-        return when (val response = ApiHandler.handleApi { request.invoke().execute() }) {
+    private suspend fun execute(request: () -> Call<*>): ApiResult = withContext(dispatcher) {
+        when (val response = ApiHandler.handleApi { request.invoke().execute() }) {
             is ApiResult.ApiSuccess -> ApiResult.ApiSuccess(data = response.data)
             is ApiResult.ApiError -> ApiResult.ApiError(
                 code = response.code,

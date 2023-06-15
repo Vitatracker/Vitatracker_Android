@@ -137,14 +137,14 @@ private fun CourseItem(
         val firstCount = usages.first().quantity
         val firstTime = usages.first().useTime
         var correct = true
-        usages.filter { it.useTime <= (firstTime + 86400) }.forEach {
+        usages.filter { it.useTime <= (firstTime.plusDay()) }.forEach {
             if (it.quantity != firstCount) correct = false
         }
         if (correct) firstCount else 0
     } else {
         0
     }
-    val usagesCount = usages.filter { it.useTime <= (usages.first().useTime + 86400) }.size
+    val usagesCount = usages.count { it.useTime <= (usages.first().useTime.plusDay()) }
 
     Surface(
         shape = RoundedCornerShape(10.dp),
@@ -195,6 +195,7 @@ private fun CourseItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
+                        Log.w("VTTAG","CourseItem: itemsCount=$itemsCount usagesCount=$usagesCount")
                         if (itemsCount != 0 || usagesCount > 0) {
                             Row {
                                 if (itemsCount != 0) {

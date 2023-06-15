@@ -4,7 +4,7 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface UsagesRepo {
-    suspend fun getCommonAllFlow(userId: Long): Flow<List<UsageCommonDomainModel>>
+    fun getCommonAllFlow(userId: Long): Flow<List<UsageCommonDomainModel>>
     suspend fun getCommonAll(userId: Long): List<UsageCommonDomainModel>
     suspend fun deleteSingle(medId: Long)
     suspend fun setUsageTime(medId: Long, usageTime: Long, factTime: Long)

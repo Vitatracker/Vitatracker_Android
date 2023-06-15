@@ -78,11 +78,11 @@ fun MyCoursesMainScreen(
                 }
                 composable(MyCoursesNavItem.Course.route) {
                     if (state.value.meds.isEmpty()) selectedCourse = null
-                    if (selectedCourse != null) {
+                    selectedCourse?.let {selected ->
                         CourseInfoScreen(
-                            course = selectedCourse!!,
-                            med = state.value.meds.first { it.id == selectedCourse!!.medId },
-                            usagePattern = generatePattern(selectedCourse!!.medId, state.value.usages),
+                            course = selected,
+                            med = state.value.meds.first { it.id == selected.medId },
+                            usagePattern = generatePattern(selected.medId, state.value.usages),
                             reducer = {
                                 when (it) {
                                     is MyCoursesIntent.Update -> {
@@ -90,7 +90,7 @@ fun MyCoursesMainScreen(
                                         navHostController.popBackStack()
                                     }
                                     is MyCoursesIntent.Delete -> {
-                                        vm.reduce(MyCoursesIntent.Delete(selectedCourse!!.id))
+                                        vm.reduce(MyCoursesIntent.Delete(selected.id))
                                         navHostController.popBackStack()
                                     }
                                 }

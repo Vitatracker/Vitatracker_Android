@@ -1,16 +1,16 @@
-package app.mybad.data.room
+package app.mybad.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import app.mybad.data.models.course.CourseDataModel
-import app.mybad.data.models.med.MedDataModel
-import app.mybad.data.models.usages.UsageCommonDataModel
+import app.mybad.data.db.entity.CourseDataModel
+import app.mybad.data.db.entity.MedDataModel
+import app.mybad.data.db.entity.UsageCommonDataModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MedDAO {
+interface MedDao {
 
     @Query("select * from meds where id=(:medId) limit 1")
     fun getMedById(medId: Long): MedDataModel

@@ -1,25 +1,34 @@
 package app.mybad.network.di
 
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.DataStoreRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
-import app.mybad.network.api.AuthorizationApiRepo
-import app.mybad.network.api.CoursesApi
-import app.mybad.network.api.SettingsApiRepo
 import app.mybad.network.repos.impl.AuthorizationNetworkRepoImpl
 import app.mybad.network.repos.impl.CoursesNetworkRepoImpl
 import app.mybad.network.repos.impl.SettingsNetworkRepoImpl
 import app.mybad.network.repos.repo.AuthorizationNetworkRepo
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
+interface NetworkModule {
+
+    @Binds
+    @Singleton
+    fun providesAuthorizationNetworkRepo(impl: AuthorizationNetworkRepoImpl): AuthorizationNetworkRepo
+
+    @Binds
+    @Singleton
+    fun providesCoursesNetworkRepo(impl: CoursesNetworkRepoImpl): CoursesNetworkRepo
+
+    @Binds
+    @Singleton
+    fun providesSettingsNetworkRepo(impl: SettingsNetworkRepoImpl): SettingsNetworkRepo
+}
+/*
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -58,3 +67,4 @@ object NetworkModule {
         return SettingsNetworkRepoImpl(settingsApiRepo = settingsApiRepo)
     }
 }
+*/

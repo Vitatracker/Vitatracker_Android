@@ -7,8 +7,8 @@ import app.mybad.data.repos.CoursesRepoImpl
 import app.mybad.data.repos.MedsRepoImpl
 import app.mybad.data.repos.UsagesRepoImpl
 import app.mybad.data.repos.UserDataRepoImpl
-import app.mybad.data.room.MedDAO
-import app.mybad.data.room.MedDB
+import app.mybad.data.db.dao.MedDao
+import app.mybad.data.db.MedDbImpl
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
@@ -35,10 +35,10 @@ class TestDataModule {
 
     @Provides
     @Named("test_db")
-    fun providesInMemoryDb(@ApplicationContext context: Context): MedDB {
+    fun providesInMemoryDb(@ApplicationContext context: Context): MedDbImpl {
         return Room.inMemoryDatabaseBuilder(
             context,
-            MedDB::class.java
+            MedDbImpl::class.java
         ).allowMainThreadQueries().build()
     }
 
@@ -61,7 +61,7 @@ class TestDataModule {
     @Provides
     @Singleton
     fun providesCoursesRepo(
-        db: MedDAO
+        db: MedDao
     ): CoursesRepo {
         return CoursesRepoImpl(db)
     }
@@ -69,7 +69,7 @@ class TestDataModule {
     @Provides
     @Singleton
     fun providesMedsRepo(
-        db: MedDAO
+        db: MedDao
     ): MedsRepo {
         return MedsRepoImpl(db)
     }
@@ -77,7 +77,7 @@ class TestDataModule {
     @Provides
     @Singleton
     fun providesUsagesRepo(
-        db: MedDAO
+        db: MedDao
     ): UsagesRepo {
         return UsagesRepoImpl(db)
     }

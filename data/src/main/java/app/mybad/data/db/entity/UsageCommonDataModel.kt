@@ -1,4 +1,4 @@
-package app.mybad.data.models.usages
+package app.mybad.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package app.mybad.data.models.course
+package app.mybad.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

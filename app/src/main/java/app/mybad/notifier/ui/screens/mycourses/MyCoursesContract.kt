@@ -12,9 +12,3 @@ sealed interface MyCoursesIntent {
         val usagesPattern: List<Pair<Long, Int>>
     ) : MyCoursesIntent
 }
-
-data class MyCoursesState(
-    val courses: List<CourseDomainModel> = emptyList(),
-    val meds: List<MedDomainModel> = emptyList(),
-    val usages: List<UsageCommonDomainModel> = emptyList(),
-)
