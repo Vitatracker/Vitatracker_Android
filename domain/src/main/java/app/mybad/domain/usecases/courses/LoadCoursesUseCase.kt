@@ -1,5 +1,6 @@
 package app.mybad.domain.usecases.courses
 
+import android.util.Log
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
@@ -8,6 +9,7 @@ import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class LoadCoursesUseCase @Inject constructor(
@@ -24,6 +26,8 @@ class LoadCoursesUseCase @Inject constructor(
             medsRepo.getAllFlow(userId),
             usagesRepo.getCommonAllFlow(userId),
             ::Triple
-        )
+        ).onEach  {(courses, meds, usages) ->
+            Log.w("VTTAG", "LoadCoursesUseCase: courses=${courses.size} meds=${meds.size} usages=${usages.size}")
+        }
 
 }

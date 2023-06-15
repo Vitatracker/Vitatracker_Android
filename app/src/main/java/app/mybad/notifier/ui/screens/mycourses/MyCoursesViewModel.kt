@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.mycourses
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
@@ -37,6 +38,7 @@ class MyCoursesViewModel @Inject constructor(
 
     val state = loadCourses(AuthToken.userId)
         .mapLatest { (courses, meds, usages) ->
+            Log.w("VTTAG", "MyCoursesViewModel::state: ok")
             MyCoursesState(courses = courses, meds = meds, usages = usages)
         }.stateIn(
             scope = viewModelScope,
