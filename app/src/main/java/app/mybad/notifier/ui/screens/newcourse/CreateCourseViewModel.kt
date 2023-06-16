@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.newcourse
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
@@ -25,60 +26,65 @@ class CreateCourseViewModel @Inject constructor(
     private val coursesNetworkRepo: CoursesNetworkRepo
 ) : ViewModel() {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private var now = LocalDateTime.now()
     private val _state = MutableStateFlow(newState())
     val state = _state.asStateFlow()
 
     fun reduce(intent: NewCourseIntent) {
-        when (intent) {
-            is NewCourseIntent.Drop -> { scope.launch { _state.emit(newState()) } }
-            is NewCourseIntent.Finish -> {
-                scope.launch {
-                    createCourseUseCase.execute(
-                        med = _state.value.med,
-                        course = _state.value.course,
-                        usages = _state.value.usages
-                    )
+        viewModelScope.launch {
+            when (intent) {
+                is NewCourseIntent.Drop -> {
                     _state.emit(newState())
                 }
-            }
-            is NewCourseIntent.UpdateMed -> {
-                scope.launch { _state.update { it.copy(med = intent.med) } }
-            }
-            is NewCourseIntent.UpdateCourse -> {
-                scope.launch { _state.update { it.copy(course = intent.course) } }
-            }
-            is NewCourseIntent.UpdateUsages -> {
-                scope.launch { _state.update { it.copy(usages = intent.usages) } }
-            }
-            is NewCourseIntent.UpdateUsagesPattern -> {
-                scope.launch {
-                    val usages = generateCommonUsages(
-                        usagesByDay = intent.pattern,
-                        now = Instant.now().epochSecond,
-                        medId = _state.value.med.id,
-                        userId = _state.value.userId,
-                        startDate = _state.value.course.startDate,
-                        endDate = _state.value.course.endDate,
-                        regime = _state.value.course.regime
-                    )
-                    _state.update { it.copy(usages = usages) }
-                    createCourseUseCase.execute(
-                        med = _state.value.med,
-                        course = _state.value.course,
-                        usages = _state.value.usages
-                    )
-                }.invokeOnCompletion {
-                    scope.launch {
-                        coursesNetworkRepo.updateAll(
+
+                is NewCourseIntent.Finish -> {
+                        createCourseUseCase.execute(
                             med = _state.value.med,
                             course = _state.value.course,
                             usages = _state.value.usages
                         )
-                    }
-                    viewModelScope.launch {
                         _state.emit(newState())
+                }
+
+                is NewCourseIntent.UpdateMed -> {
+                    _state.update { it.copy(med = intent.med) }
+                }
+
+                is NewCourseIntent.UpdateCourse -> {
+                     _state.update { it.copy(course = intent.course) }
+                }
+
+                is NewCourseIntent.UpdateUsages -> {
+                    _state.update { it.copy(usages = intent.usages) }
+                }
+
+                is NewCourseIntent.UpdateUsagesPattern -> {
+                    launch {
+                        val usages = generateCommonUsages(
+                            usagesByDay = intent.pattern,
+                            now = Instant.now().epochSecond,
+                            medId = _state.value.med.id,
+                            userId = _state.value.userId,
+                            startDate = _state.value.course.startDate,
+                            endDate = _state.value.course.endDate,
+                            regime = _state.value.course.regime
+                        )
+                        _state.update { it.copy(usages = usages) }
+                        createCourseUseCase.execute(
+                            med = _state.value.med,
+                            course = _state.value.course,
+                            usages = _state.value.usages
+                        )
+                    }.invokeOnCompletion {
+                        launch {
+                            coursesNetworkRepo.updateAll(
+                                med = _state.value.med,
+                                course = _state.value.course,
+                                usages = _state.value.usages
+                            )
+                            //TODO("проверить тут userId")
+                            _state.emit(newState())
+//                            _state.emit(newState(_state.value.course.userId))
+                        }
                     }
                 }
             }
@@ -123,18 +129,19 @@ class CreateCourseViewModel @Inject constructor(
         }
     }
 
-    private fun newState(userid: Long = 0L): NewCourseState {
-        now = LocalDateTime.now()
+    private fun newState(userid: Long = -1L): NewCourseState {
+        val id = userid.takeIf { it != -1L } ?: AuthToken.userId
+        val now = LocalDateTime.now()
         return NewCourseState(
-            userId = userid,
+            userId = id,
             med = MedDomainModel(
                 id = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                userId = userid
+                userId = id
             ),
             course = CourseDomainModel(
                 id = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
                 medId = now.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                userId = userid,
+                userId = id,
                 startDate = now.atZone(ZoneId.systemDefault()).withHour(0).withMinute(0)
                     .withSecond(0).toEpochSecond(),
                 endDate = now.atZone(ZoneId.systemDefault()).withHour(23).withMinute(59)

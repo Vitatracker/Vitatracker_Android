@@ -84,18 +84,21 @@ private fun MainLoginScreen(
             LoginScreenForgotPassword(navController = navController)
             LoginScreenButtonSignIn(
                 onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        authVM.logIn(
-                            login = loginState.value,
-                            password = passwordState.value
-                        )
-                        delay(1200)
-                        mainVM.updateToken()
-                    }
+                    authVM.logIn(
+                        login = loginState.value,
+                        password = passwordState.value
+                    )
+                    //TODO("проверить для чего updateToken если тут Flow")
+//                        mainVM.updateToken()
                 }
             )
             LoginScreenTextPolicy()
-            SurfaceSignInWith(onClick = { mainVM.updateToken() })
+            SurfaceSignInWith(
+                onClick = {
+                    //TODO("проверить для чего updateToken если тут Flow")
+//                    mainVM.updateToken()
+                }
+            )
         }
     }
 }

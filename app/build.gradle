@@ -135,7 +135,7 @@ dependencies {
 
     //sign in with facebook
     implementation 'com.facebook.android:facebook-login:latest.release'
-    
+
 }
 
 protobuf {

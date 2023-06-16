@@ -3,9 +3,9 @@ package app.mybad.notifier.ui.screens.calender
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
-import app.mybad.network.models.AuthToken
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class DatabaseModule {
     @Provides
     @Singleton
-    fun providesMedDB(@ApplicationContext app: Context):MedDb = Room
+    fun provideMedDB(@ApplicationContext app: Context): MedDb = Room
         .databaseBuilder(
             app,
             MedDbImpl::class.java,
@@ -27,5 +27,9 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun providesDao(db: MedDb) = db.getMedDao()
+    fun provideMedDao(db: MedDb) = db.getMedDao()
+
+    @Provides
+    @Singleton
+    fun provideUsersDao(db: MedDb) = db.getUsersDao()
 }

@@ -20,24 +20,24 @@ class NotificationsModule {
 
     @Provides
     @Singleton
-    fun providesAlarmManager(@ApplicationContext context: Context) =
+    fun provideAlarmManager(@ApplicationContext context: Context) =
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     @Provides
     @Singleton
-    fun providesNotificationScheduler(
-        @ApplicationContext context: Context,
-        usagesRepo: UsagesRepo,
-        medsRepo: MedsRepo,
-        coursesRepo: CoursesRepo
-    ) = NotificationsSchedulerImpl(
-        context = context,
-        usagesRepo = usagesRepo,
-        medsRepo = medsRepo,
-        coursesRepo = coursesRepo,
-    )
+    fun provideNotificationScheduler(impl: NotificationsSchedulerImpl): NotificationsScheduler = impl
+//        @ApplicationContext context: Context,
+//        usagesRepo: UsagesRepo,
+//        medsRepo: MedsRepo,
+//        coursesRepo: CoursesRepo
+//    ): NotificationsScheduler = NotificationsSchedulerImpl(
+//        context = context,
+//        usagesRepo = usagesRepo,
+//        medsRepo = medsRepo,
+//        coursesRepo = coursesRepo,
+//    )
 
-    @Provides
-    @Singleton
-    fun providesNotificationSchedulerImpl(impl: NotificationsSchedulerImpl): NotificationsScheduler = impl
+//    @Provides
+//    @Singleton
+//    fun providesNotificationSchedulerImpl(impl: NotificationsSchedulerImpl): NotificationsScheduler = impl
 }

@@ -3,6 +3,7 @@ package app.mybad.data
 import app.mybad.data.db.entity.CourseDataModel
 import app.mybad.data.db.entity.MedDataModel
 import app.mybad.data.db.entity.UsageCommonDataModel
+import app.mybad.data.db.entity.UserLocalDataModel
 import app.mybad.data.models.user.NotificationsUserDataModel
 import app.mybad.data.models.user.PersonalDataModel
 import app.mybad.data.models.user.RulesUserDataModel
@@ -15,11 +16,16 @@ import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.RulesUserDomainModel
 import app.mybad.domain.models.user.UserDomainModel
-import app.mybad.network.models.response.NotificationSetting
+import app.mybad.domain.models.user.UserLocalDomainModel
 import app.mybad.network.models.UserModel
+import app.mybad.network.models.response.NotificationSetting
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
+
+fun UserLocalDataModel.mapToDomain(): UserLocalDomainModel {
+    return UserLocalDomainModel(id, name, email)
+}
 
 fun CourseDataModel.mapToDomain(): CourseDomainModel {
     return CourseDomainModel(

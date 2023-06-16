@@ -4,15 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationScreenNavHost
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
-import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.navigation.MainNav
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 import app.mybad.notifier.ui.theme.MyBADTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,12 +31,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val uiState = mainActivityViewModel.uiState.collectAsStateWithLifecycle()
-
-//            mainActivityViewModel.clearDataStore()
+            val isAuthorize by mainActivityViewModel.isAuthorize.collectAsStateWithLifecycle(false)
 
             MyBADTheme {
-                if (uiState.value.token.isEmpty()) {
+                if (!isAuthorize) {
                     AuthorizationScreenNavHost(
                         authVM = authorizationScreenViewModel,
                         mainVM = mainActivityViewModel

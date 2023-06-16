@@ -3,61 +3,71 @@ package app.mybad.notifier
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
-import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.usecases.DataStoreUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.UserModel
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo,
+    private val dataStore: DataStoreUseCase,
+
     private val coursesNetworkRepo: CoursesNetworkRepo,
     private val settingsNetworkRepo: SettingsNetworkRepo,
     private val userDataRepo: UserDataRepo
 ) : ViewModel() {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private val _uiState = MutableStateFlow(MainActivityContract())
-    val uiState = _uiState.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isAuthorize = dataStore.token.mapLatest {
+        Log.w("VTTAG", "MainActivityViewModel: isAuthorize=${it.isNotBlank()}")
 
-    init {
-        Log.w("VTTAG", "[MainActivityViewModel:init]: app start")
-        updateToken()
+        it.isNotBlank()
     }
 
-    fun updateToken() {
-        scope.launch {
-            _uiState.emit(
-                _uiState.value.copy(
-                    token = dataStoreRepo.getToken().first()
-                )
-            )
-        }
+    init {
+        Log.w("VTTAG", "MainActivityViewModel::init: app start")
+        observeDataStore()
+    }
+
+    private fun observeDataStore() {
         viewModelScope.launch {
-            dataStoreRepo.getToken().collect {
-                Log.w("VTTAG", "[MainActivityViewModel:updateToken] token: \"$it\"")
-                if (it.isNotBlank()) {
-                    scope.launch {
-                        coursesNetworkRepo.getAll()
-                        getAll()
-                    }
-                }
+            dataStore.token.collect {
+                Log.w("VTTAG", "MainActivityViewModel::readDataStore: token=$it")
+                AuthToken.token = it
+                if (AuthToken.token.isNotBlank()) readData()
+            }
+            dataStore.userId.collect {
+                Log.w("VTTAG", "MainActivityViewModel::readDataStore: userId=$it")
+                AuthToken.userId = it
+            }
+            dataStore.mail.collect {
+                Log.w("VTTAG", "MainActivityViewModel::readDataStore: email=$it")
+                AuthToken.email = it
             }
         }
+    }
+
+    fun clearDataStore() {
+        viewModelScope.launch {
+            dataStore.clear()
+        }
+    }
+
+    private suspend fun readData() {
+        coursesNetworkRepo.getAll()
+        getAll()
     }
 
     private suspend fun getAll() {
@@ -66,10 +76,13 @@ class MainActivityViewModel @Inject constructor(
             is ApiResult.ApiSuccess -> setUserModelFromBack(settingsResult.data as UserModel)
             is ApiResult.ApiError -> Log.d(
                 "VTTAG",
-                "error[MainActivityViewModel:getAll]: ${settingsResult.code} ${settingsResult.message}"
+                "MainActivityViewModel::getAll: error=${settingsResult.code} ${settingsResult.message}"
             )
 
-            is ApiResult.ApiException -> Log.d("VTTAG", "exception[MainActivityViewModel:getAll]: ${settingsResult.e}")
+            is ApiResult.ApiException -> Log.d(
+                "VTTAG",
+                "MainActivityViewModel::getAll: exception=${settingsResult.e}"
+            )
         }
     }
 
@@ -95,14 +108,6 @@ class MainActivityViewModel @Inject constructor(
         userDataRepo.updateUserNotification(notification = model.settings.notifications)
         userDataRepo.updateUserPersonal(personal = model.personal)
         userDataRepo.updateUserRules(rules = model.settings.rules)
-    }
-
-    fun clearDataStore() {
-        viewModelScope.launch {
-            dataStoreRepo.updateToken("")
-            dataStoreRepo.updateUserId("")
-            updateToken()
-        }
     }
 
 }

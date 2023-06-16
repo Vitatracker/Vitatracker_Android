@@ -26,8 +26,11 @@ class LoadCoursesUseCase @Inject constructor(
             medsRepo.getAllFlow(userId),
             usagesRepo.getCommonAllFlow(userId),
             ::Triple
-        ).onEach  {(courses, meds, usages) ->
-            Log.w("VTTAG", "LoadCoursesUseCase: courses=${courses.size} meds=${meds.size} usages=${usages.size}")
+        ).onEach { (courses, meds, usages) ->
+            Log.w(
+                "VTTAG",
+                "LoadCoursesUseCase: courses=${courses.size} meds=${meds.size} usages=${usages.size}"
+            )
         }
 
 }

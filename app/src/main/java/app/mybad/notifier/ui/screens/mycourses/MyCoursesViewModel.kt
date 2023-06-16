@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
@@ -11,7 +12,6 @@ import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.meds.UpdateMedUseCase
 import app.mybad.domain.usecases.usages.UpdateAllUsagesInCourseUseCase
-import app.mybad.network.models.AuthToken
 import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

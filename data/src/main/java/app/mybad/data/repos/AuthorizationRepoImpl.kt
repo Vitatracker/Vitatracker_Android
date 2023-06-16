@@ -1,7 +1,5 @@
 package app.mybad.data.repos
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.request.AuthorizationUserLogin
@@ -15,7 +13,6 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthorizationRepoImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
     private val authorizationNetworkRepo: AuthorizationNetworkRepo,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : AuthorizationRepo {

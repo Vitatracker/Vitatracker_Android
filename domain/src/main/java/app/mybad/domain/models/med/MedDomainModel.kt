@@ -4,7 +4,7 @@ data class MedDomainModel(
     val id: Long = 0L,
     val creationDate: Long = 0L,
     val updateDate: Long = 0L,
-    val userId: Long = 0L,
+    val userId: Long = -1L, // это ошибочный id, что-то пошло не так
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,
