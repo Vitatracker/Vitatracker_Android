@@ -2,8 +2,8 @@ package app.mybad.network.di
 
 import android.util.Log
 import app.mybad.domain.repos.DataStoreRepo
-import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.BuildConfig
+import app.mybad.network.api.AuthorizationApiRepo
 import app.mybad.network.api.CoursesApi
 import app.mybad.network.api.SettingsApiRepo
 import com.google.gson.Gson
@@ -14,7 +14,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -28,7 +27,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkApiModule {
 
-    private const val BASE_URL = "http://vitatracker-heroku.herokuapp.com/"
+    private const val BASE_URL = "https://vitatracker-heroku.herokuapp.com/"
 
     @Singleton
     @Provides
