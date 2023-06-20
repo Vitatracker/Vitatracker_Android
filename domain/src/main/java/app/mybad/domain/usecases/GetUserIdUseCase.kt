@@ -7,6 +7,12 @@ class GetUserIdUseCase @Inject constructor(
     private val repository: UsersRepository,
 ) {
 
-    suspend operator fun invoke(email: String) = repository.getUserId(email)
+    suspend operator fun invoke(email: String): Long? {
+        return try {
+            repository.getUserId(email)
+        } catch (ignore: Error) {
+            null
+        }
+    }
 
 }

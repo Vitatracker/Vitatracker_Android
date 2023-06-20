@@ -54,7 +54,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
                     } else {
                     }
                 } else {
-                    ApiResult.ApiError(666, "null user id")
+                    ApiResult.ApiError(777, "null user id")
                 }
             } catch (t: Throwable) {
                 t.printStackTrace()
@@ -82,8 +82,11 @@ class CoursesNetworkRepoImpl @Inject constructor(
                             remedies.courses?.forEach { courses ->
                                 Log.w("CNRI", "course: $courses")
                                 // TODO("проверить логику с userId")
-                                coursesRepo.add(courses.mapToDomain(AuthToken.userId))
-                                courses.usages?.mapToDomain(courses.remedyId, AuthToken.userId)
+                                coursesRepo.add(courses.mapToDomain(userId = AuthToken.userId))
+                                courses.usages?.mapToDomain(
+                                    medId = courses.remedyId,
+                                    userId = AuthToken.userId
+                                )
                                     ?.let {
                                         usagesRepo.addUsages(it)
                                     }
@@ -92,7 +95,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
                     } else {
                     }
                 } else {
-                    ApiResult.ApiError(666, "null user id")
+                    ApiResult.ApiError(777, "null user id")
                 }
             } catch (t: Throwable) {
                 t.printStackTrace()

@@ -14,12 +14,12 @@ class UsersRepositoryImpl @Inject constructor(
     private val db: UsersDao,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UsersRepository {
-    override suspend fun insertUser(name: String, email: String): Long =
+    override suspend fun insertUser(name: String, email: String): Long? =
         withContext(dispatcher) {
             db.insert(UserLocalDataModel(name = name, email = email))
         }
 
-    override suspend fun getUserId(email: String): Long = withContext(dispatcher) {
+    override suspend fun getUserId(email: String): Long? = withContext(dispatcher) {
         db.getUserId(email)
     }
 

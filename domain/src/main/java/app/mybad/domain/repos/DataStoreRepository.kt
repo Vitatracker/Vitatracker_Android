@@ -6,9 +6,9 @@ interface DataStoreRepository {
 
     val observeToken: Flow<String>
     val observeUserId: Flow<Long>
-    val observeMail: Flow<String>
+    val observeEmail: Flow<String>
 
     suspend fun updateToken(token: String)
     suspend fun updateUserId(userId: Long)
-    suspend fun updateMail(mail: String)
+    suspend fun updateEmail(email: String)
 }

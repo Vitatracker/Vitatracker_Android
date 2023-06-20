@@ -43,8 +43,7 @@ class UpdateAllUsagesInCourseUseCase @Inject constructor(
         return mutableListOf<UsageCommonDomainModel>().apply {
             repeat(interval) { position ->
                 if (position % (regime + 1) == 0) {
-                    usagesByDay.forEach {
-                        val time = (it.first)
+                    usagesByDay.forEach {(time, quantity)->
                         if (time > now) {
                             this.add(
                                 UsageCommonDomainModel(
@@ -52,7 +51,7 @@ class UpdateAllUsagesInCourseUseCase @Inject constructor(
                                     userId = userId,
                                     creationTime = now,
                                     useTime = time,
-                                    quantity = it.second
+                                    quantity = quantity
                                 )
                             )
                         }

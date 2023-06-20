@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.usecases.meds.LoadMedsFromList
+import app.mybad.domain.usecases.meds.LoadMedsFromListUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class StartMainScreenViewModel @Inject constructor(
     private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
     private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
-    private val loadMedsFromList: LoadMedsFromList,
+    private val loadMedsFromList:  LoadMedsFromListUseCase,
     private val updateUsageUseCase: UpdateUsageUseCase,
     private val coursesNetworkRepo: CoursesNetworkRepo,
 ) : ViewModel() {

@@ -1,8 +1,8 @@
 package app.mybad.network.di
 
-import app.mybad.network.api.AuthorizationApiRepo
+import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.api.CoursesApi
-import app.mybad.network.api.SettingsApiRepo
+import app.mybad.network.api.SettingsApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,7 +64,7 @@ object NetworkApiModule {
 
     @Singleton
     @Provides
-    fun provideAuthorizationApiService(retrofit: Retrofit): AuthorizationApiRepo =
+    fun provideAuthorizationApiService(retrofit: Retrofit): AuthorizationApi =
         retrofit.create()
 
     @Singleton
@@ -75,6 +75,6 @@ object NetworkApiModule {
 
     @Singleton
     @Provides
-    fun provideSettingsApiService(retrofit: Retrofit): SettingsApiRepo =
+    fun provideSettingsApiService(retrofit: Retrofit): SettingsApi =
         retrofit.create()
 }

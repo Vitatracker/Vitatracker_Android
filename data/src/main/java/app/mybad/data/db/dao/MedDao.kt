@@ -22,7 +22,7 @@ interface MedDao {
     fun getAllMedsFlow(userId: Long): Flow<List<MedDataModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addMed(med: MedDataModel)
+    fun addMed(med: MedDataModel): Long?
 
     @Query("delete from meds where id=(:medId)")
     fun deleteMed(medId: Long)
@@ -37,7 +37,7 @@ interface MedDao {
     fun getAllCoursesFlow(userId: Long): Flow<List<CourseDataModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addCourse(course: CourseDataModel)
+    fun addCourse(course: CourseDataModel): Long?
 
     @Query("delete from courses where id=(:courseId)")
     fun deleteCourse(courseId: Long)

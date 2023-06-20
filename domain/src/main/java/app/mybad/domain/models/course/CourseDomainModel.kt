@@ -1,16 +1,18 @@
 package app.mybad.domain.models.course
 
+import app.mybad.domain.models.AuthToken
+
 data class CourseDomainModel(
-    val id: Long = 0L,
-    val creationDate: Long = 0L,
-    val updateDate: Long = 0L,
-    val userId: Long = 0L,
+    val id: Long = 0,
+    val creationDate: Long = 0,
+    val updateDate: Long = 0,
+    val userId: Long = AuthToken.userId,
     val comment: String = "",
-    val medId: Long = -1L,
-    val startDate: Long = -1L,
-    val endDate: Long = -1L,
-    val remindDate: Long = -1L,
-    val interval: Long = -1L,
+    val medId: Long = -1,
+    val startDate: Long = -1,
+    val endDate: Long = -1,
+    val remindDate: Long = -1,
+    val interval: Long = -1,
     val regime: Int = 0,
     val showUsageTime: Boolean = true,
     val isFinished: Boolean = false,

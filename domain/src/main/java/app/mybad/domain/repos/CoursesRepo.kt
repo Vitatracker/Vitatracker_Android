@@ -9,5 +9,5 @@ interface CoursesRepo {
     suspend fun getSingle(courseId: Long): CourseDomainModel
     suspend fun updateSingle(courseId: Long, item: CourseDomainModel)
     suspend fun deleteSingle(courseId: Long)
-    suspend fun add(item: CourseDomainModel)
+    suspend fun add(item: CourseDomainModel): Long?
 }

@@ -10,21 +10,21 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-interface SettingsApiRepo {
+interface SettingsApi {
 
-    @GET("api/Users/")
+    @GET("api/users/")
     @Headers("Content-Type: application/json")
     fun getUserModel(): Call<UserModel>
 
-    @POST("api/Users/")
+    @POST("api/users/")
     @Headers("Content-Type: application/json")
     fun postUserModel(@Body userModel: UserModel): Call<UserModel>
 
-    @DELETE("api/Users/")
+    @DELETE("api/users/")
     @Headers("Content-Type: application/json")
     fun deleteUserModel(@Path("id") id: Long): Call<UserModel>
 
-    @PUT("api/Users/")
+    @PUT("api/users/")
     @Headers("Content-Type: application/json")
     fun putUserModel(@Body userModel: UserModel): Call<UserModel>
 }

@@ -1,5 +1,6 @@
 package app.mybad.data.repos
 
+import android.util.Log
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.data.db.dao.MedDao
@@ -31,10 +32,12 @@ class MedsRepoImpl @Inject constructor(
         db.getMedById(medId).mapToDomain()
     }
 
-    override suspend fun add(med: MedDomainModel) {
-        withContext(dispatcher) {
-            db.addMed(med.mapToData())
-        }
+    override suspend fun add(med: MedDomainModel): Long? = withContext(dispatcher) {
+        Log.w("VTTAG", "MedsRepoImpl::add: id=${med.id} userId=${med.userId}")
+        val medId = db.addMed(med.mapToData())
+        Log.w("VTTAG", "MedsRepoImpl::add: id=$medId")
+
+        medId
     }
 
     override suspend fun updateSingle(medId: Long, item: MedDomainModel) {

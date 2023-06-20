@@ -8,7 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface AuthorizationApiRepo {
+interface AuthorizationApi {
 
     @Headers("Content-Type: application/json")
     @POST(value = "api/v1/auth/authenticate")

@@ -16,7 +16,11 @@ import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,32 +33,45 @@ class MainActivityViewModel @Inject constructor(
     private val userDataRepo: UserDataRepo
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val isAuthorize = dataStore.token.mapLatest {
-        Log.w("VTTAG", "MainActivityViewModel: isAuthorize=${it.isNotBlank()}")
-
-        it.isNotBlank()
-    }
+    private val _isAuthorize = MutableStateFlow(false)
+    val isAuthorize = _isAuthorize.asStateFlow()
 
     init {
         Log.w("VTTAG", "MainActivityViewModel::init: app start")
+        readDataStore()
         observeDataStore()
+    }
+
+    private fun readDataStore() {
+        viewModelScope.launch {
+            AuthToken.token = dataStore.token.first()
+            AuthToken.userId = dataStore.userId.first()
+            AuthToken.email = dataStore.email.first()
+            Log.w("VTTAG", "MainActivityViewModel::readDataStore: userId=${AuthToken.userId}")
+        }
     }
 
     private fun observeDataStore() {
         viewModelScope.launch {
-            dataStore.token.collect {
-                Log.w("VTTAG", "MainActivityViewModel::readDataStore: token=$it")
-                AuthToken.token = it
-                if (AuthToken.token.isNotBlank()) readData()
+            launch {
+                dataStore.token.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: token=$it")
+                    AuthToken.token = it
+                    _isAuthorize.value = it.isNotBlank()
+                    if (_isAuthorize.value) readData()
+                }
             }
-            dataStore.userId.collect {
-                Log.w("VTTAG", "MainActivityViewModel::readDataStore: userId=$it")
-                AuthToken.userId = it
+            launch {
+                dataStore.userId.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: userId=$it")
+                    AuthToken.userId = it
+                }
             }
-            dataStore.mail.collect {
-                Log.w("VTTAG", "MainActivityViewModel::readDataStore: email=$it")
-                AuthToken.email = it
+            launch {
+                dataStore.email.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: email=$it")
+                    AuthToken.email = it
+                }
             }
         }
     }
@@ -71,8 +88,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private suspend fun getAll() {
-        val settingsResult = settingsNetworkRepo.getUserModel()
-        when (settingsResult) {
+        when (val settingsResult = settingsNetworkRepo.getUserModel()) {
             is ApiResult.ApiSuccess -> setUserModelFromBack(settingsResult.data as UserModel)
             is ApiResult.ApiError -> Log.d(
                 "VTTAG",

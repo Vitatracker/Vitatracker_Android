@@ -1,10 +1,12 @@
 package app.mybad.domain.models.med
 
+import app.mybad.domain.models.AuthToken
+
 data class MedDomainModel(
-    val id: Long = 0L,
-    val creationDate: Long = 0L,
-    val updateDate: Long = 0L,
-    val userId: Long = -1L, // это ошибочный id, что-то пошло не так
+    val id: Long = 0,
+    val creationDate: Long = 0,
+    val updateDate: Long = 0,
+    val userId: Long = AuthToken.userId,
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,

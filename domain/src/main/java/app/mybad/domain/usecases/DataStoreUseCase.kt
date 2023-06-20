@@ -9,7 +9,7 @@ class DataStoreUseCase @Inject constructor(
 
     val token = repository.observeToken
     val userId = repository.observeUserId
-    val mail = repository.observeMail
+    val email = repository.observeEmail
 
     suspend fun updateToken(token: String) {
         try {
@@ -27,9 +27,9 @@ class DataStoreUseCase @Inject constructor(
         }
     }
 
-    suspend fun updateMail(mail: String) {
+    suspend fun updateEmail(email: String) {
         try {
-            repository.updateMail(mail)
+            repository.updateEmail(email)
         } catch (ignore: Exception) {
 
         }
@@ -38,7 +38,7 @@ class DataStoreUseCase @Inject constructor(
         try {
             updateToken("")
             updateUserId(-1)
-            updateMail("")
+            updateEmail("")
         } catch (ignore: Exception) {
 
         }

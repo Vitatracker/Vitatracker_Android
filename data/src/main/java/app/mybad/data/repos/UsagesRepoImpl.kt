@@ -48,14 +48,13 @@ class UsagesRepoImpl @Inject constructor(
         medId: Long,
         startTime: Long,
         endTime: Long
-    ): List<UsageCommonDomainModel> = withContext(dispatcher) {
+    ) = withContext(dispatcher) {
         db.getUsagesByIntervalByMed(medId, startTime, endTime).mapToDomain()
     }
 
-    override suspend fun getUsagesByMedId(medId: Long): List<UsageCommonDomainModel> =
-        withContext(dispatcher) {
-            db.getUsagesById(medId).mapToDomain()
-        }
+    override suspend fun getUsagesByMedId(medId: Long) = withContext(dispatcher) {
+        db.getUsagesById(medId).mapToDomain()
+    }
 
     override suspend fun addUsages(usages: List<UsageCommonDomainModel>) {
         withContext(dispatcher) {
@@ -84,7 +83,7 @@ class UsagesRepoImpl @Inject constructor(
     override suspend fun getUsagesByInterval(
         startTime: Long,
         endTime: Long
-    ): List<UsageCommonDomainModel> = withContext(dispatcher) {
+    ) = withContext(dispatcher) {
         db.getUsagesByInterval(startTime = startTime, endTime = endTime).mapToDomain()
     }
 }

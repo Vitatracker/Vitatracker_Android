@@ -1,14 +1,25 @@
 package app.mybad.data.db.entity
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "meds")
+@Entity(
+    tableName = "meds",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserLocalDataModel::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ]
+)
 data class MedDataModel(
-    @PrimaryKey var id: Long = 0L,
-    val creationDate: Long = 0L,
-    val updateDate: Long = 0L,
-    val userId: Long = 0L,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
+    val creationDate: Long = 0,
+    val updateDate: Long = 0,
+    val userId: Long,
     val name: String? = null,
     val description: String? = null,
     val comment: String? = null,

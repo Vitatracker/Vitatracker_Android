@@ -1,6 +1,7 @@
 package app.mybad.notifier
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -31,15 +32,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isAuthorize by mainActivityViewModel.isAuthorize.collectAsStateWithLifecycle(false)
+            val isAuthorize by mainActivityViewModel.isAuthorize.collectAsStateWithLifecycle()
 
             MyBADTheme {
                 if (!isAuthorize) {
+                    Log.w("VTTAG", "MainActivity::AuthorizationScreenNavHost: app start")
                     AuthorizationScreenNavHost(
                         authVM = authorizationScreenViewModel,
                         mainVM = mainActivityViewModel
                     )
                 } else {
+                    Log.w("VTTAG", "MainActivity::MainNav: app start")
                     MainNav(
                         createCourseVm = createCourseVm,
                         myCoursesVm = myCoursesVm,

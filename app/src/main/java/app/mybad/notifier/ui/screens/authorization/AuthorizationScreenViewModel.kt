@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.usecases.DataStoreUseCase
 import app.mybad.domain.usecases.GetUserIdUseCase
-import app.mybad.domain.usecases.InsertUserUseCase
+import app.mybad.domain.usecases.CreateUserUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.response.Authorization
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class AuthorizationScreenViewModel @Inject constructor(
     private val dataStore: DataStoreUseCase,
     private val getUserId: GetUserIdUseCase,
-    private val insertUser: InsertUserUseCase,
+    private val createUser: CreateUserUseCase,
 
     private val authorizationRepo: AuthorizationRepo,
 ) : ViewModel() {
@@ -34,7 +34,10 @@ class AuthorizationScreenViewModel @Inject constructor(
             dataStore.clear()
             // проверка почты на валидность
             if (!isEmailValid(email = login) || !isPasswordValid(password)) {
-                Log.w("VTTAG", "AuthorizationScreenViewModel::logIn: Error: email or password is not valid!")
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationScreenViewModel::logIn: Error: email or password is not valid!"
+                )
                 _uiState.emit(_uiState.value.copy(error = "Error: email or password is not valid!"))
                 return@launch
             }
@@ -42,10 +45,14 @@ class AuthorizationScreenViewModel @Inject constructor(
                 val result = authorizationRepo.loginWithEmail(login = login, password = password)
             ) {
                 is ApiResult.ApiSuccess -> {
+                    // тут не только получение id, но и если его нет, то создается
+                    val userId: Long =
+                        getUserId(email = login) ?: createUser(email = login, name = "")
+                    Log.w("VTTAG", "AuthorizationScreenViewModel::logIn: Ok: userId=$userId")
                     updateDaraStore(
-                        (result.data as Authorization).token,
-                        getUserId(email = login),
-                        login
+                        token = (result.data as Authorization).token,
+                        userId = userId,
+                        email = login,
                     )
                 }
 
@@ -60,20 +67,15 @@ class AuthorizationScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateDaraStore(token: String, userId: Long, email: String) {
-        Log.w("VTTAG", "AuthorizationScreenViewModel::updateDaraStore: userId=$userId email=$email")
-        dataStore.updateToken(token)
-        dataStore.updateMail(email)
-        // получить userId из локальной базы
-        dataStore.updateUserId(userId)
-    }
-
     fun registration(login: String, password: String, userName: String) {
         viewModelScope.launch {
             dataStore.clear()
             // проверка почты на валидность
             if (!isEmailValid(email = login) || !isPasswordValid(password)) {
-                Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Error: email or password is not valid!")
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationScreenViewModel::registration: Error: email or password is not valid!"
+                )
                 _uiState.emit(_uiState.value.copy(error = "Error: email or password is not valid!"))
                 return@launch
             }
@@ -86,7 +88,7 @@ class AuthorizationScreenViewModel @Inject constructor(
             ) {
                 is ApiResult.ApiSuccess -> {
                     // добавить в локальную db user и получим userId
-                    val userId: Long = insertUser(email = login, name = userName)
+                    val userId: Long = createUser(email = login, name = userName)
                     Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Ok: userId=$userId")
                     updateDaraStore((result.data as Authorization).token, userId, login)
                 }
@@ -115,5 +117,13 @@ class AuthorizationScreenViewModel @Inject constructor(
     private fun isEmailValid(email: String) = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
     private fun isPasswordValid(password: String) = password.length > 3
+
+    private suspend fun updateDaraStore(token: String, userId: Long, email: String) {
+        Log.w("VTTAG", "AuthorizationScreenViewModel::updateDaraStore: userId=$userId email=$email")
+        dataStore.updateToken(token)
+        dataStore.updateEmail(email)
+        // получить userId из локальной базы
+        dataStore.updateUserId(userId)
+    }
 
 }

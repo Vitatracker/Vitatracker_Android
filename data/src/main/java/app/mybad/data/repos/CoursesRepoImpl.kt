@@ -37,10 +37,8 @@ class CoursesRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(item: CourseDomainModel) {
-        withContext(dispatcher) {
-            db.addCourse(item.mapToData())
-        }
+    override suspend fun add(item: CourseDomainModel): Long? = withContext(dispatcher) {
+        db.addCourse(item.mapToData())
     }
 
     override suspend fun deleteSingle(courseId: Long) {

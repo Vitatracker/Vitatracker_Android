@@ -11,13 +11,13 @@ import app.mybad.data.db.entity.UserLocalDataModel
 interface UsersDao {
 
     @Query("select id from users_common where email=:email limit 1")
-    fun getUserId(email: String): Long
+    fun getUserId(email: String): Long?
 
     @Query("select * from users_common where id=:userId limit 1")
     fun getUser(userId: Long): UserLocalDataModel
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(user: UserLocalDataModel): Long
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(user: UserLocalDataModel): Long?
 
     @Update
     fun updateUser(user: UserLocalDataModel)

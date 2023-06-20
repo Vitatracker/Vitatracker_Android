@@ -27,7 +27,7 @@ class DataStoreRepositoryImpl @Inject constructor(
             .flowOn(dispatcher)
     override val observeUserId = context.dataStore.data.map { it[USERID] ?: -1L }
             .flowOn(dispatcher)
-    override val observeMail = context.dataStore.data.map { it[EMAIL] ?: "" }
+    override val observeEmail = context.dataStore.data.map { it[EMAIL] ?: "" }
             .flowOn(dispatcher)
 
     override suspend fun updateToken(token: String) {
@@ -42,9 +42,9 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateMail(mail: String) {
+    override suspend fun updateEmail(email: String) {
         withContext(dispatcher) {
-            context.dataStore.edit { it[EMAIL] = mail }
+            context.dataStore.edit { it[EMAIL] = email }
         }
     }
 
