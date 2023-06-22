@@ -6,7 +6,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
@@ -22,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
@@ -143,23 +142,21 @@ private fun MainScreenMonthPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
-
-    val stateMonth = rememberPagerState(LocalDate.now().month.ordinal)
+    val currentDate = LocalDate.now()
+    val stateMonth = rememberPagerState(currentDate.month.ordinal) { 12 }
     val scope = rememberCoroutineScope()
     val monthsShortsArray = stringArrayResource(R.array.months_short)
 
     HorizontalPager(
-        pageCount = Month.values().size,
-        state = stateMonth,
-        pageSpacing = 13.dp,
-        pageSize = PageSize.Fixed(50.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 14.dp, start = 10.dp, end = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        state = stateMonth,
+        pageSpacing = 13.dp,
         contentPadding = PaddingValues(
             horizontal = ((LocalConfiguration.current.screenWidthDp - 70) / 2).dp
-        )
+        ),
+        pageSize = PageSize.Fixed(50.dp)
     ) { month ->
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -178,10 +175,7 @@ private fun MainScreenMonthPager(
                 },
                 modifier = Modifier
                     .padding(1.dp)
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = null
-                    ) {
+                    .clickable {
                         scope.launch { stateMonth.animateScrollToPage(month) }
                     },
                 fontWeight = when (stateMonth.currentPage) {
@@ -215,9 +209,11 @@ private fun MainScreenWeekPager(
     val calendar: Calendar = Calendar.getInstance()
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1)
-    val scope = rememberCoroutineScope()
     val date by remember { mutableStateOf(LocalDateTime.now()) }
+    val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1) {
+        Month.values()[monthState].length(false)
+    }
+    val scope = rememberCoroutineScope()
     val daysShortsArray = stringArrayResource(R.array.days_short)
 
     LaunchedEffect(stateDay.currentPage, monthState) {
@@ -227,14 +223,11 @@ private fun MainScreenWeekPager(
     }
 
     HorizontalPager(
-        pageCount = YearMonth.of(LocalDate.now().year, monthState + 1).lengthOfMonth(),
-        state = stateDay,
-        pageSpacing = 13.dp,
-        pageSize = PageSize.Fill,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp, start = paddingStart, end = paddingEnd),
-        verticalAlignment = Alignment.CenterVertically,
+        state = stateDay,
+        pageSpacing = 13.dp,
         contentPadding = PaddingValues(
             horizontal = ((Resources.getSystem().configuration.screenWidthDp - 60) / 2).dp
         )
@@ -243,10 +236,7 @@ private fun MainScreenWeekPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(if (stateDay.currentPage == it) 1f else 0.5f)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null
-                ) {
+                .clickable {
                     scope.launch { stateDay.animateScrollToPage(it) }
                 },
             shape = RoundedCornerShape(5.dp),
@@ -263,7 +253,6 @@ private fun MainScreenWeekPager(
                 countDay = it + 1
                 calendar.time = Date(Year.now().value, monthState, it - 1)
                 shortNameOfDay = daysShortsArray[calendar.get(Calendar.DAY_OF_WEEK) - 1]
-                // DateFormatSymbols.getInstance(Locale.getDefault()).shortWeekdays[dayOfWeek]
 
                 Text(
                     text = AnnotatedString(countDay.toString()),

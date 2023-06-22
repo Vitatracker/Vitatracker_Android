@@ -36,8 +36,8 @@ fun DateDelaySelector(
 ) {
     val days = (0..30).toList()
     val months = (0..12).toList()
-    val pagerStateMonths = rememberPagerState(initialPage = months.size * 10000 + initValue.months)
-    val pagerStateDays = rememberPagerState(initialPage = days.size * 10000 + initValue.days)
+    val pagerStateMonths = rememberPagerState(initialPage = months.size * 10000 + initValue.months) { months.size }
+    val pagerStateDays = rememberPagerState(initialPage = days.size * 10000 + initValue.days) { days.size }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -58,12 +58,11 @@ fun DateDelaySelector(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 VerticalPager(
-                    pageCount = Int.MAX_VALUE,
+                    modifier = Modifier.height(200.dp),
                     state = pagerStateMonths,
                     pageSpacing = 8.dp,
                     contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
-                    pageSize = PageSize.Fixed(32.dp),
-                    modifier = Modifier.height(200.dp)
+                    pageSize = PageSize.Fixed(32.dp)
                 ) {
                     val ts = when ((pagerStateMonths.currentPage - it).absoluteValue) {
                         0 -> 1f
@@ -103,12 +102,11 @@ fun DateDelaySelector(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 VerticalPager(
-                    pageCount = Int.MAX_VALUE,
+                    modifier = Modifier.height(200.dp),
                     state = pagerStateDays,
                     pageSpacing = 8.dp,
                     contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
-                    pageSize = PageSize.Fixed(32.dp),
-                    modifier = Modifier.height(200.dp)
+                    pageSize = PageSize.Fixed(32.dp)
                 ) {
                     val ts = when ((pagerStateDays.currentPage - it).absoluteValue) {
                         0 -> 1f
@@ -143,7 +141,9 @@ fun DateDelaySelector(
             Spacer(Modifier.width(0.dp))
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 val newTime = Period.ofDays(0)

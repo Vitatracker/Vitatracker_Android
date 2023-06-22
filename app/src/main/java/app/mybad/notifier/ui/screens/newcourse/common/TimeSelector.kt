@@ -34,12 +34,14 @@ fun TimeSelector(
 ) {
     val minutes = (0..59).toList()
     val hours = (0..23).toList()
-    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + initTime.hour)
-    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + initTime.minute)
+    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + initTime.hour) { hours.size }
+    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + initTime.minute) { minutes.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp).width(200.dp)
+        modifier = modifier
+            .padding(16.dp)
+            .width(200.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -48,12 +50,11 @@ fun TimeSelector(
         ) {
             Spacer(Modifier.width(0.dp))
             VerticalPager(
-                pageCount = Int.MAX_VALUE,
+                modifier = Modifier.height(200.dp),
                 state = pagerStateHours,
                 pageSpacing = 8.dp,
                 contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
-                pageSize = PageSize.Fixed(32.dp),
-                modifier = Modifier.height(200.dp)
+                pageSize = PageSize.Fixed(32.dp)
             ) {
                 val ts = when ((pagerStateHours.currentPage - it).absoluteValue) {
                     0 -> 1f
@@ -80,17 +81,16 @@ fun TimeSelector(
                         .wrapContentWidth()
                         .scale(scale)
                 ) {
-                    val t = if(hours[it % hours.size] < 10) "0${hours[it % hours.size]}" else "${hours[it % hours.size]}"
-                    Text( text = t, style = Typography.headlineLarge, fontSize = 20.sp)
+                    val t = if (hours[it % hours.size] < 10) "0${hours[it % hours.size]}" else "${hours[it % hours.size]}"
+                    Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                 }
             }
             VerticalPager(
-                pageCount = Int.MAX_VALUE,
+                modifier = Modifier.height(200.dp),
                 state = pagerStateMinutes,
                 pageSpacing = 8.dp,
                 contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
-                pageSize = PageSize.Fixed(32.dp),
-                modifier = Modifier.height(200.dp)
+                pageSize = PageSize.Fixed(32.dp)
             ) {
                 val ts = when ((pagerStateMinutes.currentPage - it).absoluteValue) {
                     0 -> 1f
@@ -117,14 +117,16 @@ fun TimeSelector(
                         .wrapContentWidth()
                         .scale(scale)
                 ) {
-                    val t = if(minutes[it % minutes.size] < 10) "0${minutes[it % minutes.size]}" else "${minutes[it % minutes.size]}"
+                    val t = if (minutes[it % minutes.size] < 10) "0${minutes[it % minutes.size]}" else "${minutes[it % minutes.size]}"
                     Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                 }
             }
             Spacer(Modifier.width(0.dp))
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 val newTime = initTime

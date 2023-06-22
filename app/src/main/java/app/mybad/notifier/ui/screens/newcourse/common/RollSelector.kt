@@ -35,7 +35,7 @@ fun RollSelector(
     list: List<String>,
     startOffset: Int = 0
 ) {
-    val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset)
+    val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset) { list.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,12 +44,11 @@ fun RollSelector(
             .padding(16.dp)
     ) {
         VerticalPager(
-            pageCount = Int.MAX_VALUE,
+            modifier = Modifier.height(200.dp),
             state = pagerState,
             pageSpacing = 8.dp,
             contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
-            pageSize = PageSize.Fixed(32.dp),
-            modifier = Modifier.height(200.dp)
+            pageSize = PageSize.Fixed(32.dp)
         ) {
             val ts = when ((pagerState.currentPage - it).absoluteValue) {
                 0 -> 1f
