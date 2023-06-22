@@ -25,6 +25,7 @@ private val LightColorScheme = lightColorScheme(
     primary = primaryBlue,
     primaryContainer = primaryContainerBlue,
     error = errorRed,
+    errorContainer = errorRed,
     outlineVariant = primaryIndication,
     surfaceVariant = secondaryContainerBlue
 

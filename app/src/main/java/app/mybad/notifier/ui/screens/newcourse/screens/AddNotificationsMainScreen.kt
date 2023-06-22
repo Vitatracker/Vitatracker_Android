@@ -41,8 +41,7 @@ fun AddNotificationsMainScreen(
     modifier: Modifier = Modifier,
     reducer: (NewCourseIntent) -> Unit = {},
     med: MedDomainModel = MedDomainModel(),
-    onNext: () -> Unit = {},
-    onBack: () -> Unit = {},
+    onNext: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
     var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) }
@@ -184,7 +183,7 @@ private fun NotificationItem(
                     .size(16.dp)
                     .clickable(
                         indication = null,
-                        interactionSource = MutableInteractionSource(),
+                        interactionSource = remember { MutableInteractionSource() },
                         onClick = onDelete::invoke
                     )
             )
@@ -192,7 +191,7 @@ private fun NotificationItem(
                 text = time.format(DateTimeFormatter.ofPattern("HH:mm")),
                 style = Typography.bodyLarge,
                 modifier = Modifier.clickable(
-                    interactionSource = MutableInteractionSource(),
+                    interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = onTimeClick
                 )
@@ -248,7 +247,7 @@ private fun AddNotificationButton(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         modifier = modifier.clickable(
             indication = null,
-            interactionSource = MutableInteractionSource(),
+            interactionSource = remember { MutableInteractionSource() },
             onClick = onClick
         ),
     ) {

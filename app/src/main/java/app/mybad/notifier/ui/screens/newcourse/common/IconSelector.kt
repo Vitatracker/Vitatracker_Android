@@ -41,7 +41,7 @@ fun IconSelector(
                 color = if (index == selected) Color(colors[color]) else MaterialTheme.colorScheme.background,
                 border = BorderStroke(
                     1.dp,
-                    if (index == selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline
+                    if (index == selected) Color(colors[color]) else MaterialTheme.colorScheme.outline
                 ),
                 modifier = Modifier
                     .size(40.dp)

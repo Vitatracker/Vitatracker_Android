@@ -12,7 +12,7 @@
     <string name="add_med_details">Medicine details</string>
     <string name="add_med_icon_color">Select icon color</string>
     <string name="add_med_icon">Select icon</string>
-
+    <string name="enter_med_name">Enter the name of the medicament</string>
     <string name="navigation_back">Back</string>
     <string name="navigation_next">Next</string>
 
@@ -29,7 +29,7 @@
     <string name="add_next_course_interval">Start next course in</string>
     <string name="add_course_end_time">End time</string>
     <string name="medication_regime">Schedule of medications</string>
-    <string name="add_course_reminder">Add reminder for  next course</string>
+    <string name="add_course_reminder">Add reminder for next course</string>
     <string name="add_next_course_remind_time">Time of remind</string>
 
     <!--START SCREEN-->
@@ -129,7 +129,7 @@
     <string name="main_screen_meds_clear_start">Lets start!</string>
     <string name="main_screen_meds_clear_add">Add the first medicines</string>
     <string name="add_notifications_choose_time">Choose time</string>
-    <string name="add_med_error_empty_name">You should type the name of medicine</string>
+    <string name="add_med_error_empty_name">Medicine name is blank</string>
     <string name="version_code">"Version "</string>
     <!--LEAVE YOUR WISHES-->
     <string name="wishes_text_header">Leave your wishes</string>

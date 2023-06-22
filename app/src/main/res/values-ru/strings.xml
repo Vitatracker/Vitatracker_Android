@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_med_h">Добавить лекарство</string>
-    <string name="add_med_name">Название препарата *</string>
+    <string name="add_med_name">Наименование лекарства *</string>
     <string name="add_med_dose">Дозировка</string>
     <string name="add_med_unit">Единица измерения</string>
     <string name="add_med_food_relation">Связь с едой</string>
@@ -11,9 +11,9 @@
     <string name="add_med_details">Описание препарата</string>
     <string name="add_med_icon_color">Выберите цвет иконки</string>
     <string name="add_med_icon">Выберите иконку</string>
-
+    <string name="enter_med_name">Введите наименование лекарства</string>
     <string name="navigation_back">Назад</string>
-    <string name="navigation_next">Вперед</string>
+    <string name="navigation_next">Далее</string>
 
     <string name="add_course_h">Выбрать время</string>
     <string name="add_course_notifications_time">Добавить время</string>
@@ -123,7 +123,7 @@
     <string name="main_screen_meds_clear_start">Давайте начнем!</string>
     <string name="main_screen_meds_clear_add">Добавьте первое лекарство</string>
     <string name="add_notifications_choose_time">Выберите время</string>
-    <string name="add_med_error_empty_name">Введите название препарата</string>
+    <string name="add_med_error_empty_name">Наименование не заполнено</string>
 
     <!--LEAVE YOUR WISHES-->
     <string name="wishes_text_header">Оставьте свои пожелания</string>

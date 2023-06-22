@@ -23,7 +23,7 @@ import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun BasicKeyboardInput(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     init: String? = null,
     label: String,
     style: TextStyle = Typography.bodyMedium,
@@ -39,7 +39,7 @@ fun BasicKeyboardInput(
         value = init ?: "",
         onValueChange = { onChange(it) },
         singleLine = true,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         keyboardOptions = KeyboardOptions(
             imeAction = if (hideOnGo) ImeAction.Go else ImeAction.Next,
             keyboardType = keyboardType,

@@ -49,16 +49,18 @@ fun NewCourseNavScreen(
                     Icon(
                         painter = painterResource(R.drawable.back),
                         contentDescription = null,
-                        modifier = Modifier.padding(start = 16.dp).clickable(
-                            indication = null,
-                            interactionSource = MutableInteractionSource()
-                        ) {
-                            if (dest.value?.destination?.route == NewCourseNavItem.AddMedicineFirst.route) {
-                                onCancel()
-                            } else {
-                                navHostController.popBackStack()
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                if (dest.value?.destination?.route == NewCourseNavItem.AddMedicineFirst.route) {
+                                    onCancel()
+                                } else {
+                                    navHostController.popBackStack()
+                                }
                             }
-                        }
                     )
                 }
             )
@@ -80,7 +82,7 @@ fun NewCourseNavScreen(
                 )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
-                title = state.value.med.name ?: "why med hasn't name?"
+                title = state.value.med.name ?: throw IllegalStateException("Med has empty name")
                 AddMedicineSecondScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
@@ -105,8 +107,7 @@ fun NewCourseNavScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     med = state.value.med,
                     reducer = vm::reduce,
-                    onNext = { navHostController.navigate(NewCourseNavItem.Success.route) },
-                    onBack = { navHostController.popBackStack() },
+                    onNext = { navHostController.navigate(NewCourseNavItem.Success.route) }
                 )
             }
             composable(NewCourseNavItem.Success.route) {
