@@ -5,14 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.models.AuthToken
+import app.mybad.domain.repos.CoursesNetworkRepo
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
+import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
+import app.mybad.domain.usecases.meds.DeleteMedUseCase
 import app.mybad.domain.usecases.meds.UpdateMedUseCase
-import app.mybad.domain.usecases.usages.UpdateAllUsagesInCourseUseCase
-import app.mybad.network.repos.repo.CoursesNetworkRepo
+import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
+import app.mybad.notifier.ui.screens.common.generateCommonUsages
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
@@ -26,14 +31,15 @@ class MyCoursesViewModel @Inject constructor(
 
     private val deleteCourse: DeleteCourseUseCase,
     private val updateCourse: UpdateCourseUseCase,
+    private val updateCourseAll: UpdateCourseAllUseCase,
+
     private val updateMed: UpdateMedUseCase,
+    private val deleteMed: DeleteMedUseCase,
+
+    private val updateUsagesInCourse: UpdateUsagesInCourseUseCase,
 
     private val coursesRepo: CoursesRepo,
     private val usagesRepo: UsagesRepo,
-
-    private val updateUsagesInCourse: UpdateAllUsagesInCourseUseCase,
-
-    private val coursesNetworkRepo: CoursesNetworkRepo,
 ) : ViewModel() {
 
     val state = loadCourses(AuthToken.userId)
@@ -51,8 +57,8 @@ class MyCoursesViewModel @Inject constructor(
             is MyCoursesIntent.Delete -> {
                 viewModelScope.launch {
                     val mId = coursesRepo.getSingle(intent.courseId).medId
-                    deleteCourse.execute(intent.courseId)
-                    coursesNetworkRepo.deleteMed(mId)
+                    deleteCourse.execute(intent.courseId, getCurrentDateTime().toEpochSecond())
+                    deleteMed(mId)
                 }
             }
 
@@ -60,8 +66,18 @@ class MyCoursesViewModel @Inject constructor(
                 viewModelScope.launch {
                     updateMed(intent.med)
                     updateCourse.execute(intent.course.id, intent.course)
-                    updateUsagesInCourse(intent.usagesPattern, intent.med, intent.course)
-                    coursesNetworkRepo.updateAll(
+                    Log.w("VTTAG", "MyCoursesViewModel::Update: userId=${intent.med.userId} pattern=${intent.usagesPattern} ")
+                    updateUsagesInCourse(
+                        usages = generateCommonUsages(
+                            usagesByDay = intent.usagesPattern,
+                            medId = intent.med.id,
+                            userId = intent.med.userId,
+                            startDate = intent.course.startDate,
+                            endDate = intent.course.endDate,
+                            regime = intent.course.regime
+                        )
+                    )
+                    updateCourseAll(
                         med = intent.med,
                         course = intent.course,
                         usages = usagesRepo.getUsagesByMedId(intent.med.id)

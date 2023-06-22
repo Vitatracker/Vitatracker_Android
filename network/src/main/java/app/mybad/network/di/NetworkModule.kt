@@ -1,10 +1,10 @@
 package app.mybad.network.di
 
+import app.mybad.domain.repos.CoursesNetworkRepo
 import app.mybad.network.repos.impl.AuthorizationNetworkRepoImpl
 import app.mybad.network.repos.impl.CoursesNetworkRepoImpl
 import app.mybad.network.repos.impl.SettingsNetworkRepoImpl
 import app.mybad.network.repos.repo.AuthorizationNetworkRepo
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.Binds
 import dagger.Module

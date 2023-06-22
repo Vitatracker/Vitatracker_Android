@@ -6,21 +6,22 @@ import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.CreateUsagesUseCase
+import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.meds.CreateMedUseCase
-import app.mybad.network.repos.repo.CoursesNetworkRepo
+import app.mybad.notifier.ui.screens.common.generateCommonUsages
+import app.mybad.notifier.utils.atEndOfDay
+import app.mybad.notifier.utils.atStartOfDay
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.*
-import java.time.temporal.ChronoUnit
 import javax.inject.Inject
-import kotlin.math.absoluteValue
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
@@ -28,8 +29,7 @@ class CreateCourseViewModel @Inject constructor(
     private val createCourse: CreateCourseUseCase,
     private val createUsages: CreateUsagesUseCase,
     private val addNotifications: AddNotificationsUseCase,
-
-    private val coursesNetworkRepo: CoursesNetworkRepo
+    private val updateCourseAll: UpdateCourseAllUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(newState())
@@ -113,7 +113,6 @@ class CreateCourseViewModel @Inject constructor(
                         }
                         val usages = generateCommonUsages(
                             usagesByDay = intent.pattern,
-                            now = Instant.now().epochSecond,
                             medId = medId,
                             userId = _state.value.med.userId,
                             startDate = _state.value.course.startDate,
@@ -138,7 +137,7 @@ class CreateCourseViewModel @Inject constructor(
                                 "VTTAG",
                                 "CreateCourseViewModel::coursesNetworkRepo: userId=${_state.value.med.userId}"
                             )
-                            coursesNetworkRepo.updateAll(
+                            updateCourseAll(
                                 med = _state.value.med,
                                 course = _state.value.course,
                                 usages = _state.value.usages
@@ -151,63 +150,21 @@ class CreateCourseViewModel @Inject constructor(
         }
     }
 
-    private fun generateCommonUsages(
-        usagesByDay: List<Pair<LocalTime, Int>>,
-        now: Long,
-        medId: Long,
-        userId: Long,
-        startDate: Long,
-        endDate: Long,
-        regime: Int,
-    ): List<UsageCommonDomainModel> {
-        // TODO("проверить, тут должен тыть timestamp")
-        val startLocalDate = LocalDateTime.ofEpochSecond(startDate, 0, ZoneOffset.UTC).toLocalDate()
-        val endLocalDate = LocalDateTime.ofEpochSecond(endDate, 0, ZoneOffset.UTC).toLocalDate()
-        val interval = ChronoUnit.DAYS.between(startLocalDate, endLocalDate).toInt().absoluteValue
-        return mutableListOf<UsageCommonDomainModel>().apply {
-            repeat(interval) { position ->
-                if (position % (regime + 1) == 0) {
-                    usagesByDay.forEach {
-                        val time = (
-                                it.first.atDate(startLocalDate).plusDays(position.toLong()).atZone(
-                                    ZoneOffset.systemDefault()
-                                ).toEpochSecond()
-                                )
-                        if (time > now) {
-                            this.add(
-                                UsageCommonDomainModel(
-                                    medId = medId,
-                                    userId = userId,
-                                    creationTime = now,
-                                    useTime = time,
-                                    quantity = it.second
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun newState(): NewCourseState {
         val userId = AuthToken.userId
         Log.w("VTTAG", "CreateCourseViewModel::newState: userId=${AuthToken.userId}")
-        val now = LocalDateTime.now()
-        val nowAtZone = now.atZone(ZoneId.systemDefault()).toEpochSecond()
+        val currentDateTime = getCurrentDateTime()
         return NewCourseState(
 //            userId = userId,
             med = MedDomainModel(
-                creationDate = nowAtZone,
+                creationDate = currentDateTime.toEpochSecond(),
                 userId = userId
             ),
             course = CourseDomainModel(
-                creationDate = nowAtZone,
+                creationDate = currentDateTime.toEpochSecond(),
                 userId = userId,
-                startDate = now.atZone(ZoneId.systemDefault()).withHour(0).withMinute(0)
-                    .withSecond(0).toEpochSecond(),
-                endDate = now.atZone(ZoneId.systemDefault()).withHour(23).withMinute(59)
-                    .withSecond(59).plusMonths(1).toEpochSecond(),
+                startDate = currentDateTime.atStartOfDay().toEpochSecond(),
+                endDate = currentDateTime.atEndOfDay().toEpochSecond(),
             )
         )
     }

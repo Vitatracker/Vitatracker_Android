@@ -54,11 +54,17 @@ interface MedDao {
     @Query("select * from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
     fun getUsagesByIntervalByMed(medId: Long, startTime: Long, endTime: Long): List<UsageCommonDataModel>
 
+    @Query("select * from usages_common where medId=(:medId) and useTime >= (:time)")
+    fun getUsagesAfter(medId: Long, time: Long): List<UsageCommonDataModel>
+
     @Query("delete from usages_common where medId=(:medId)")
     fun deleteUsagesById(medId: Long)
 
     @Query("delete from usages_common where medId=(:medId) and useTime between (:startTime) and (:endTime)")
     fun deleteUsagesByInterval(medId: Long, startTime: Long, endTime: Long)
+
+    @Query("delete from usages_common where medId=(:medId) and useTime >= (:time)")
+    fun deleteUsagesAfter(medId: Long, time: Long)
 
     @Query("select * from usages_common where userId =:userId")
     fun getAllCommonUsagesFlow(userId: Long): Flow<List<UsageCommonDataModel>>

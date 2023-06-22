@@ -32,8 +32,12 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.getCurrentTime
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toTimeDisplay
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toJavaLocalTime
 
 @Composable
 @Preview
@@ -45,9 +49,9 @@ fun AddNotificationsMainScreen(
     onBack: () -> Unit = {},
 ) {
     val forms = stringArrayResource(R.array.types)
-    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) }
+    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
     var dialogIsShown by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf<Pair<LocalTime, Int>?>(null) }
+    var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -64,7 +68,7 @@ fun AddNotificationsMainScreen(
                 forms = forms,
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(LocalTime.now().withSecond(0), 1))
+                        add(Pair(getCurrentDateTime().toEpochSecond(), 1))
                     }
                 }
             )
@@ -103,7 +107,7 @@ fun AddNotificationsMainScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp),
+                .padding(horizontal = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
@@ -144,7 +148,7 @@ fun AddNotificationsMainScreen(
 @Composable
 private fun NotificationItem(
     modifier: Modifier = Modifier,
-    time: LocalTime,
+    time: Long,
     quantity: Int,
     form: Int,
     forms: Array<String>,
@@ -189,7 +193,7 @@ private fun NotificationItem(
                     )
             )
             Text(
-                text = time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                text = time.toTimeDisplay(),
                 style = Typography.bodyLarge,
                 modifier = Modifier.clickable(
                     interactionSource = MutableInteractionSource(),

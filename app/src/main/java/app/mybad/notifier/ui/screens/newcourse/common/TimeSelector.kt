@@ -22,20 +22,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
-import java.time.LocalTime
+import app.mybad.notifier.utils.changeTime
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toLocalDateTime
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimeSelector(
     modifier: Modifier = Modifier,
-    initTime: LocalTime,
-    onSelect: (LocalTime) -> Unit
+    initTime: Long,
+    onSelect: (Long) -> Unit
 ) {
     val minutes = (0..59).toList()
     val hours = (0..23).toList()
-    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + initTime.hour)
-    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + initTime.minute)
+    val time = initTime.toLocalDateTime()
+    val pagerStateHours = rememberPagerState(initialPage = minutes.size * 10000 + time.hour)
+    val pagerStateMinutes = rememberPagerState(initialPage = hours.size * 10000 + time.minute)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,9 +130,10 @@ fun TimeSelector(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
-                val newTime = initTime
-                    .withHour(pagerStateHours.currentPage % hours.size)
-                    .withMinute(pagerStateMinutes.currentPage % minutes.size)
+                val newTime = time.changeTime(
+                    hour = pagerStateHours.currentPage % hours.size,
+                    minute = pagerStateMinutes.currentPage % minutes.size,
+                ).toEpochSecond()
                 onSelect(newTime)
             },
             content = { Text(text = stringResource(R.string.settings_save)) }

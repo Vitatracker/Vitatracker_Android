@@ -80,6 +80,12 @@ class UsagesRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteUsagesAfter(medId: Long, time: Long) {
+        withContext(dispatcher) {
+            db.deleteUsagesAfter(medId, time)
+        }
+    }
+
     override suspend fun getUsagesByInterval(
         startTime: Long,
         endTime: Long

@@ -10,25 +10,22 @@ import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.usecases.DataStoreUseCase
+import app.mybad.domain.usecases.courses.GetCoursesAllUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.UserModel
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val dataStore: DataStoreUseCase,
+    private val getCoursesAll: GetCoursesAllUseCase,
 
-    private val coursesNetworkRepo: CoursesNetworkRepo,
     private val settingsNetworkRepo: SettingsNetworkRepo,
     private val userDataRepo: UserDataRepo
 ) : ViewModel() {
@@ -83,7 +80,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private suspend fun readData() {
-        coursesNetworkRepo.getAll()
+        getCoursesAll()
         getAll()
     }
 

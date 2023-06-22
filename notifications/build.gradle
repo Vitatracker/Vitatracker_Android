@@ -39,11 +39,13 @@ kapt {
 
 dependencies {
     implementation project(path: ":domain")
+//    implementation project(path: ':network')
 
     implementation 'androidx.core:core-ktx:1.9.0'
     //Hilt
     implementation("com.google.dagger:hilt-android:2.45")
     implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
-    implementation project(path: ':network')
     kapt("com.google.dagger:hilt-android-compiler:2.45")
+    // Date Time
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }

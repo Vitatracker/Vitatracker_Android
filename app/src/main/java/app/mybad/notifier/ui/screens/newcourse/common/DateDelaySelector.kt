@@ -4,7 +4,17 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -24,15 +34,15 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
-import java.time.Period
+import kotlinx.datetime.DateTimePeriod
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DateDelaySelector(
     modifier: Modifier = Modifier,
-    initValue: Period,
-    onSelect: (Period) -> Unit
+    initValue: DateTimePeriod,
+    onSelect: (DateTimePeriod) -> Unit
 ) {
     val days = (0..30).toList()
     val months = (0..12).toList()
@@ -90,7 +100,11 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if (months[it % months.size] < 10) "${months[it % months.size]}" else "${months[it % months.size]}"
+                        val t = if (months[it % months.size] < 10) {
+                            "${months[it % months.size]}"
+                        } else {
+                            "${months[it % months.size]}"
+                        }
                         Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
@@ -135,7 +149,8 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if (days[it % days.size] < 10) "${days[it % days.size]}" else "${days[it % days.size]}"
+                        val t =
+                            if (days[it % days.size] < 10) "${days[it % days.size]}" else "${days[it % days.size]}"
                         Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
@@ -143,12 +158,15 @@ fun DateDelaySelector(
             Spacer(Modifier.width(0.dp))
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
-                val newTime = Period.ofDays(0)
-                    .withMonths(pagerStateMonths.currentPage % months.size)
-                    .withDays(pagerStateDays.currentPage % days.size)
+                val newTime = DateTimePeriod(
+                    days = pagerStateDays.currentPage % days.size,
+                    months = pagerStateMonths.currentPage % months.size,
+                )
                 onSelect(newTime)
             },
             content = { Text(text = stringResource(R.string.settings_save)) }
@@ -160,6 +178,8 @@ fun DateDelaySelector(
 @Composable
 fun DateSelectorPreview() {
     MyBADTheme {
-        DateDelaySelector(initValue = Period.ZERO, onSelect = {})
+        DateDelaySelector(initValue = DateTimePeriod(),
+            onSelect = {}
+        )
     }
 }

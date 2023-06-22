@@ -2,9 +2,9 @@ package app.mybad.notifications
 
 import android.app.Service
 import android.content.Intent
+import app.mybad.domain.repos.CoursesNetworkRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.MED_ID
@@ -20,13 +20,18 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TakeOrDelayUsageService : Service() {
 
-    @Inject lateinit var usagesRepo: UsagesRepo
+    @Inject
+    lateinit var usagesRepo: UsagesRepo
 
-    @Inject lateinit var coursesNetworkRepo: CoursesNetworkRepo
+    @Inject
+    lateinit var coursesNetworkRepo: CoursesNetworkRepo
 
-    @Inject lateinit var updateUseCase: UpdateUsageUseCase
+    @Inject
+    lateinit var updateUseCase: UpdateUsageUseCase
 
-    @Inject lateinit var notificationsScheduler: NotificationsSchedulerImpl
+    @Inject
+    lateinit var notificationsScheduler: NotificationsSchedulerImpl
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onBind(p0: Intent?) = null
@@ -45,6 +50,7 @@ class TakeOrDelayUsageService : Service() {
                     coursesNetworkRepo.updateUsage(u)
                 }
             }
+
             DELAY_INTENT -> {
                 scope.launch {
                     val uDef = usagesRepo.getUsagesByIntervalByMed(

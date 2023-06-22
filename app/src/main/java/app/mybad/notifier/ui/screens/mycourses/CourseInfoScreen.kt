@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.notifier.R
@@ -26,16 +25,23 @@ import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.common.*
 import app.mybad.notifier.ui.theme.Typography
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import app.mybad.notifier.utils.atEndOfDayInEpochSeconds
+import app.mybad.notifier.utils.atEndOfDaySystemToUTC
+import app.mybad.notifier.utils.atStartOfDay
+import app.mybad.notifier.utils.atStartOfDayInEpochSeconds
+import app.mybad.notifier.utils.atStartOfDaySystemToUTC
+import app.mybad.notifier.utils.toDateFullDisplay
+import app.mybad.notifier.utils.toLocalDateTime
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toLocalDateTime
 import java.util.*
 
 private val usagesPattern = listOf<Pair<Long, Int>>(
-    Pair(1678190400, 1),
-    Pair(1678197600, 3),
-    Pair(1678204800, 2)
+    Pair( 1678190400L, 1),
+    Pair( 1678197600L, 3),
+    Pair( 1678204800L, 2),
 )
 
 @Composable
@@ -62,40 +68,14 @@ fun CourseInfoScreen(
     val endLabel = stringResource(R.string.add_course_end_time)
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
-    var startDate = LocalDateTime.ofEpochSecond(
-        courseInternal.startDate,
-        0,
-        ZoneId.systemDefault().rules.getOffset(
-            Instant.now()
-        )
-    )
-        .withHour(0).withMinute(0)
-    var endDate = LocalDateTime.ofEpochSecond(
-        courseInternal.endDate,
-        0,
-        ZoneId.systemDefault().rules.getOffset(
-            Instant.now()
-        )
-    )
-        .withHour(23).withMinute(59)
+    var startDate  by remember { mutableStateOf(courseInternal.startDate.atStartOfDaySystemToUTC()) }
+    var endDate by remember { mutableStateOf(courseInternal.endDate.atEndOfDaySystemToUTC()) }
     var selectedInput by remember { mutableStateOf(-1) }
 
+    //TODO("разобраться с эффектом пересчета")
     LaunchedEffect(courseInternal) {
-        val currentDate = ZoneId.systemDefault().rules.getOffset(
-            Instant.now()
-        )
-        startDate = LocalDateTime.ofEpochSecond(
-            courseInternal.startDate,
-            0,
-            currentDate
-        )
-            .withHour(0).withMinute(0)
-        endDate = LocalDateTime.ofEpochSecond(
-            courseInternal.endDate,
-            0,
-            currentDate
-        )
-            .withHour(23).withMinute(59)
+        startDate = courseInternal.startDate.atStartOfDaySystemToUTC()
+        endDate = courseInternal.endDate.atEndOfDaySystemToUTC()
     }
 
     Column(
@@ -242,30 +222,18 @@ fun CourseInfoScreen(
                 style = Typography.bodyLarge,
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
             )
-            val monthStart = if (Locale.getDefault().language == "ru") {
-                stringArrayResource(R.array.months_full_more)[startDate.monthValue - 1]
-            } else {
-                stringArrayResource(R.array.months_full)[startDate.monthValue - 1]
-            }
-            val monthEnd = if (Locale.getDefault().language == "ru") {
-                stringArrayResource(R.array.months_full_more)[endDate.monthValue - 1]
-            } else {
-                stringArrayResource(R.array.months_full)[endDate.monthValue - 1]
-            }
-            val sd = "${startDate.dayOfMonth} $monthStart ${startDate.year}"
-            val ed = "${endDate.dayOfMonth} $monthEnd ${endDate.year}"
             MultiBox(
                 {
                     ParameterIndicator(
                         name = startLabel,
-                        value = sd,
+                        value = startDate.toDateFullDisplay(),
                         onClick = { selectedInput = 1 }
                     )
                 },
                 {
                     ParameterIndicator(
                         name = endLabel,
-                        value = ed,
+                        value = endDate.toDateFullDisplay(),
                         onClick = { selectedInput = 2 }
                     )
                 },
@@ -319,31 +287,31 @@ fun CourseInfoScreen(
             ) {
                 when (selectedInput) {
                     1 -> CalendarSelectorScreen(
-                        startDay = startDate.toLocalDate(),
-                        endDay = endDate.toLocalDate(),
+                        startDay = startDate,
+                        endDay = endDate,
                         onSelect = { sd ->
                             courseInternal = courseInternal.copy(
-                                startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                                startDate = sd?.atStartOfDayInEpochSeconds() ?: 0L,
                             )
                             selectedInput = -1
                         },
                         onDismiss = { selectedInput = -1 },
                         editStart = true
                     )
+
                     2 -> CalendarSelectorScreen(
-                        startDay = startDate.toLocalDate(),
-                        endDay = endDate.toLocalDate(),
+                        startDay = startDate,
+                        endDay = endDate,
                         onSelect = { ed ->
                             courseInternal = courseInternal.copy(
-                                endDate = ed?.atStartOfDay()?.withHour(23)?.withMinute(59)?.toEpochSecond(
-                                    ZoneOffset.UTC
-                                ) ?: 0L,
+                                endDate = ed?.atEndOfDayInEpochSeconds() ?: 0L,
                             )
                             selectedInput = -1
                         },
                         onDismiss = { selectedInput = -1 },
                         editStart = false
                     )
+
                     3 -> RollSelector(
                         list = regimeList.toList(),
                         startOffset = course.regime,

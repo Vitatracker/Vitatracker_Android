@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,12 +41,14 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.secondsToDay
-import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.minusDays
+import app.mybad.notifier.utils.plusDays
+import app.mybad.notifier.utils.atEndOfDayInEpochSeconds
+import app.mybad.notifier.utils.atStartOfDayInEpochSeconds
+import app.mybad.notifier.utils.atStartOfMonth
+import app.mybad.notifier.utils.toSecondsLeftFromStartOfDay
+import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,14 +58,10 @@ fun CalendarScreen(
     meds: List<MedDomainModel>,
     reducer: (CalendarIntent) -> Unit
 ) {
-    val now = Instant.now().epochSecond
-    var date by remember {
-        mutableStateOf(LocalDateTime.ofInstant(Instant.ofEpochSecond(now), ZoneId.systemDefault()))
-    }
+    var date by remember { mutableStateOf(getCurrentDateTime()) }
     var selectedDate: LocalDateTime? by remember { mutableStateOf(date) }
-    val scope = rememberCoroutineScope()
     var dialogIsShown by remember { mutableStateOf(false) }
-    var daily = collectUsages(
+    var daily = collectUsagesToday(
         date = selectedDate,
         usages = usages
     )
@@ -100,7 +97,6 @@ fun CalendarScreen(
                 onSelect = {
                     selectedDate = it
                     dialogIsShown = true
-                    scope.launch { }
                 }
             )
             if (dialogIsShown) {
@@ -112,7 +108,7 @@ fun CalendarScreen(
                         onDismiss = { dialogIsShown = false },
                         onNewDate = {
                             selectedDate = it
-                            daily = collectUsages(
+                            daily = collectUsagesToday(
                                 date = selectedDate,
                                 usages = usages
                             )
@@ -133,36 +129,28 @@ private fun CalendarScreenItem(
     onSelect: (LocalDateTime?) -> Unit
 ) {
     val days = stringArrayResource(R.array.days_short)
-    val currentDate = LocalDateTime.now()
+    val currentDate = getCurrentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
     }
     val usgs = Array(6) {
-        Array(7) { mutableListOf<UsageCommonDomainModel>() }
+        Array(7) { listOf<UsageCommonDomainModel>() }
     }
-    val fwd = date.minusDays(date.dayOfMonth.toLong())
+    // не понятно что это, начало месяца или что или последний день предыдущего месяца
+    // minusDays(date.dayOfMonth.toLong())
+    val fwd = date.atStartOfMonth()
     for (w in 0..5) {
         for (d in 0..6) {
             if (w == 0 && d < fwd.dayOfWeek.value) {
-                val time = fwd.minusDays(fwd.dayOfWeek.value - d.toLong() - 1)
-                usages.forEach { usage ->
-                    val day = usage.useTime - (usage.useTime.secondsToDay())
-                    val timeUtc = time.toEpochSecond(ZoneOffset.UTC)
-                    if (day == timeUtc - timeUtc.secondsToDay()) {
-                        usgs[w][d].add(usage)
-                    }
-                }
+                val time = fwd.minusDays(fwd.dayOfWeek.ordinal - d)
+                usgs[w][d] =
+                    usages.filter { it.useTime.toSecondsLeftFromStartOfDay() == time.toSecondsLeftFromStartOfDay() }
                 cdr[w][d] = time
             } else {
-                val time = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
-                usages.forEach { usage ->
-                    val day = usage.useTime - (usage.useTime.secondsToDay())
-                    val timeUtc = time.toEpochSecond(ZoneOffset.UTC)
-                    if (day == timeUtc - timeUtc.secondsToDay()) {
-                        usgs[w][d].add(usage)
-                    }
-                }
-                cdr[w][d] = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
+                val time = fwd.plusDays(w * 7 + d - fwd.dayOfWeek.ordinal)
+                usgs[w][d] =
+                    usages.filter { it.useTime.toSecondsLeftFromStartOfDay() == time.toSecondsLeftFromStartOfDay() }
+                cdr[w][d] = time
             }
         }
     }
@@ -272,13 +260,12 @@ private fun CalendarDayItem(
     }
 }
 
-private fun collectUsages(
+private fun collectUsagesToday(
     date: LocalDateTime?,
     usages: List<UsageCommonDomainModel>,
 ): List<UsageCommonDomainModel> {
-    val fromTime =
-        date?.withHour(0)?.withMinute(0)?.withSecond(0)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
-    val toTime =
-        date?.withHour(23)?.withMinute(59)?.withSecond(59)?.toEpochSecond(ZoneOffset.UTC) ?: 0L
+    if (date == null) return usages
+    val fromTime = date.atStartOfDayInEpochSeconds()
+    val toTime = date.atEndOfDayInEpochSeconds()
     return usages.filter { it.useTime in fromTime..toTime }
 }

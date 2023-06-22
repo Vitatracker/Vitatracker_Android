@@ -3,13 +3,25 @@ package app.mybad.notifier.ui.screens.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,15 +32,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
-import java.time.LocalDate
+import app.mybad.notifier.utils.atStartOfDaySystemToUTC
+import app.mybad.notifier.utils.atStartOfMonth
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.minusDays
+import app.mybad.notifier.utils.plusDays
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun CalendarSelectorScreen(
     modifier: Modifier = Modifier,
-    date: LocalDate = LocalDate.now(),
-    startDay: LocalDate,
-    endDay: LocalDate,
-    onSelect: (date: LocalDate?) -> Unit,
+    date: LocalDateTime = getCurrentDateTime(),
+    startDay: LocalDateTime,
+    endDay: LocalDateTime,
+    onSelect: (date: LocalDateTime?) -> Unit,
     onDismiss: () -> Unit,
     editStart: Boolean,
 ) {
@@ -41,8 +58,8 @@ fun CalendarSelectorScreen(
     ) {
         Column {
             MonthSelector(
-                date = sDate.atStartOfDay(),
-                onSwitch = { sDate = it.toLocalDate() }
+                date = sDate.atStartOfDaySystemToUTC(),
+                onSwitch = { sDate = it }
             )
             Spacer(Modifier.height(16.dp))
             CalendarSelector(
@@ -78,26 +95,26 @@ fun CalendarSelectorScreen(
 @Composable
 fun CalendarSelector(
     modifier: Modifier = Modifier,
-    date: LocalDate,
-    startDay: LocalDate,
-    endDay: LocalDate,
+    date: LocalDateTime,
+    startDay: LocalDateTime,
+    endDay: LocalDateTime,
     editStart: Boolean,
-    onSelect: (date: LocalDate) -> Unit = { }
+    onSelect: (date: LocalDateTime) -> Unit = { }
 ) {
     var startDate by remember { mutableStateOf(startDay) }
     var endDate by remember { mutableStateOf(endDay) }
     val days = stringArrayResource(R.array.days_short)
-    val currentDate = LocalDate.now()
-    val cdr: Array<Array<LocalDate?>> = Array(6) {
+    val currentDate = getCurrentDateTime()
+    val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
     }
-    val fwd = date.minusDays(date.dayOfMonth.toLong())
+    val fwd = date.atStartOfMonth()
     for (w in 0..5) {
         for (d in 0..6) {
             if (w == 0 && d < fwd.dayOfWeek.value) {
-                cdr[w][d] = fwd.minusDays(fwd.dayOfWeek.value - d.toLong() - 1)
+                cdr[w][d] = fwd.minusDays(fwd.dayOfWeek.ordinal - d)
             } else {
-                cdr[w][d] = fwd.plusDays(w * 7L + d - fwd.dayOfWeek.value + 1)
+                cdr[w][d] = fwd.plusDays(w * 7 + d - fwd.dayOfWeek.ordinal)
             }
         }
     }
@@ -155,13 +172,13 @@ fun CalendarSelector(
                                 isOtherMonth = cdr[w][d]?.month != date.month
                             ) {
                                 if (editStart) {
-                                    startDate = it ?: LocalDate.now()
+                                    startDate = it ?: getCurrentDateTime()
                                     if (startDate >= endDate) startDate = endDate
                                 } else {
-                                    endDate = it ?: LocalDate.now()
+                                    endDate = it ?: getCurrentDateTime()
                                     if (endDate <= startDate) endDate = startDate
                                 }
-                                onSelect(it ?: LocalDate.now())
+                                onSelect(it ?: getCurrentDateTime())
                             }
                         }
                     }
@@ -174,10 +191,10 @@ fun CalendarSelector(
 @Composable
 private fun CalendarDayItem(
     modifier: Modifier = Modifier,
-    date: LocalDate?,
+    date: LocalDateTime?,
     isInRange: Boolean = false,
     isOtherMonth: Boolean = false,
-    onSelect: (LocalDate?) -> Unit = {}
+    onSelect: (LocalDateTime?) -> Unit = {}
 ) {
     val outlineColor = MaterialTheme.colorScheme.primary
     Box(

@@ -5,6 +5,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.repos.CoursesNetworkRepo
 import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
@@ -14,8 +15,7 @@ import app.mybad.network.models.UserModel
 import app.mybad.network.models.mapToDomain
 import app.mybad.network.models.mapToNet
 import app.mybad.network.models.response.Remedies
-import app.mybad.network.repos.repo.CoursesNetworkRepo
-import app.mybad.network.utils.ApiHandler.handleApi
+import app.mybad.network.utils.ApiHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +39,8 @@ class CoursesNetworkRepoImpl @Inject constructor(
             try {
                 // TODO("проверить логику с userId")
                 if (AuthToken.userId != -1L) {
-                    val r = handleApi { coursesApi.getUserModel(AuthToken.userId).execute() }
+                    val r =
+                        ApiHandler.handleApi { coursesApi.getUserModel(AuthToken.userId).execute() }
                     if (r is ApiResult.ApiSuccess && r.data is UserModel) {
                         (r.data as UserModel).remedies?.forEach { remedies ->
                             medsRepo.add(remedies.mapToDomain())
@@ -67,7 +68,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
             try {
                 // TODO("проверить логику с userId")
                 if (AuthToken.userId != -1L) {
-                    val r = handleApi { coursesApi.getAll().execute() }
+                    val r = ApiHandler.handleApi { coursesApi.getAll().execute() }
                     Log.w("CNRI", "api result: $r")
                     if (
                         r is ApiResult.ApiSuccess &&
@@ -145,7 +146,7 @@ class CoursesNetworkRepoImpl @Inject constructor(
     }
 
     private suspend fun execute(request: () -> Call<*>): ApiResult = withContext(dispatcher) {
-        when (val response = handleApi { request.invoke().execute() }) {
+        when (val response = ApiHandler.handleApi { request.invoke().execute() }) {
             is ApiResult.ApiSuccess -> ApiResult.ApiSuccess(data = response.data)
             is ApiResult.ApiError -> ApiResult.ApiError(
                 code = response.code,

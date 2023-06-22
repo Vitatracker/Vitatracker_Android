@@ -6,7 +6,6 @@ import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
@@ -18,7 +17,6 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val loadCourses: LoadCoursesUseCase,
     private val updateUsage: UpdateUsageUseCase,
-    private val coursesNetworkRepo: CoursesNetworkRepo,
 ) : ViewModel() {
 
     val state = loadCourses(AuthToken.userId)
@@ -35,7 +33,6 @@ class CalendarViewModel @Inject constructor(
             is CalendarIntent.SetUsage -> {
                 viewModelScope.launch {
                     updateUsage.execute(intent.usage)
-                    coursesNetworkRepo.updateUsage(intent.usage)
                 }
             }
         }

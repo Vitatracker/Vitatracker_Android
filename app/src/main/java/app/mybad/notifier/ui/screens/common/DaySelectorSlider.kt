@@ -22,8 +22,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import app.mybad.notifier.R
+import app.mybad.notifier.utils.changeDayOfMonth
+import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,8 +46,8 @@ fun DaySelectorSlider(
         pageSize = PageSize.Fixed(40.dp),
         modifier = modifier.fillMaxWidth()
     ) {
-        val itsDate = date?.withDayOfMonth(it + 1)
-        val isSelected = itsDate?.isEqual(date) ?: false
+        val itsDate = date?.changeDayOfMonth(it + 1)
+        val isSelected = itsDate?.equals(date) ?: false
         Surface(
             shape = RoundedCornerShape(10.dp),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = if (isSelected) 1f else 0.5f)),

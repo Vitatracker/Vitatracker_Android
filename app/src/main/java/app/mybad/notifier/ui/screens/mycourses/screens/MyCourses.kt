@@ -41,11 +41,12 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.plusDay
 import app.mybad.notifier.utils.plusThreeDay
 import app.mybad.notifier.utils.secondsToDay
 import app.mybad.notifier.utils.toDateDisplay
-import java.time.Instant
+import app.mybad.notifier.utils.toEpochSecond
 
 @Composable
 fun MyCourses(
@@ -61,7 +62,7 @@ fun MyCourses(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        val now = Instant.now().epochSecond
+        val now = getCurrentDateTime().toEpochSecond()
         courses.forEach {
             Log.w("MC_courses", "$it")
         }
@@ -98,7 +99,8 @@ fun MyCourses(
                                     it.medId == nCourse.medId && it.useTime >= nCourse.startDate
                                             && it.useTime < nCourse.startDate.plusDay()
                                 }.take(10),
-                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay(),
+                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay()
+                                    .toInt(),
                             )
                         }
                     }
@@ -195,7 +197,10 @@ private fun CourseItem(
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Log.w("VTTAG","CourseItem: itemsCount=$itemsCount usagesCount=$usagesCount")
+                        Log.w(
+                            "VTTAG",
+                            "CourseItem: itemsCount=$itemsCount usagesCount=$usagesCount"
+                        )
                         if (itemsCount != 0 || usagesCount > 0) {
                             Row {
                                 if (itemsCount != 0) {

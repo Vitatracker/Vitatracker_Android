@@ -23,6 +23,7 @@ import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.mycourses.*
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.plusDay
+import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

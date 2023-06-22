@@ -4,6 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.mybad.data.db.entity.CourseDataModel
 import app.mybad.data.db.dao.MedDao
 import app.mybad.data.db.MedDbImpl
+import app.mybad.domain.models.AuthToken
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -14,7 +17,6 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -34,12 +36,13 @@ class CoursesRepoImplTest {
     @Inject
     @Named("test_db")
     lateinit var db: MedDbImpl
-    lateinit var userDao: MedDao
-    private val now = Instant.now().epochSecond
+    private lateinit var medDao: MedDao
+    private val now = getCurrentDateTime().toEpochSecond()
+    private val userId = 0L
     private val testCoursesData = listOf(
         CourseDataModel(
             id = 1L,
-            userId = 0L,
+            userId = userId,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
@@ -49,7 +52,7 @@ class CoursesRepoImplTest {
         ),
         CourseDataModel(
             id = 2L,
-            userId = 0L,
+            userId = userId,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
@@ -59,7 +62,7 @@ class CoursesRepoImplTest {
         ),
         CourseDataModel(
             id = 3L,
-            userId = 0L,
+            userId = userId,
             creationDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
@@ -72,7 +75,7 @@ class CoursesRepoImplTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        userDao = db.dao()
+        medDao = db.getMedDao()
     }
 
     @After
@@ -83,24 +86,24 @@ class CoursesRepoImplTest {
     @Test
     fun getAll_before_inserts_s_b_empty() {
         runTest {
-            val r = userDao.getAllCourses()
+            val r = medDao.getAllCourses(userId)
             Assert.assertEquals(emptyList<CourseDataModel>(), r)
         }
     }
 
     @Test fun getAll_with_inserts() {
         runTest {
-            userDao.addCourse(testCoursesData[0])
-            userDao.addCourse(testCoursesData[1])
-            userDao.addCourse(testCoursesData[2])
-            val r = userDao.getAllCourses()
+            medDao.addCourse(testCoursesData[0])
+            medDao.addCourse(testCoursesData[1])
+            medDao.addCourse(testCoursesData[2])
+            val r = medDao.getAllCourses(userId)
             Assert.assertEquals(testCoursesData, r)
         }
     }
 
     @Test
     fun getAllFlow_before_inserts_s_b_empty() {
-        val r = userDao.getAllCoursesFlow()
+        val r = medDao.getAllCoursesFlow(userId)
         runTest {
             Assert.assertEquals(emptyList<CourseDataModel>(), r.first())
         }
@@ -108,10 +111,10 @@ class CoursesRepoImplTest {
 
     @Test
     fun getAllFlow_with_inserts() {
-        userDao.addCourse(testCoursesData[0])
-        userDao.addCourse(testCoursesData[1])
-        userDao.addCourse(testCoursesData[2])
-        val r = userDao.getAllCoursesFlow()
+        medDao.addCourse(testCoursesData[0])
+        medDao.addCourse(testCoursesData[1])
+        medDao.addCourse(testCoursesData[2])
+        val r = medDao.getAllCoursesFlow(userId)
         runTest {
             Assert.assertEquals(testCoursesData, r.first())
         }
@@ -119,35 +122,35 @@ class CoursesRepoImplTest {
 
     @Test
     fun getSingle_before_inserts_s_b_empty() {
-        val r = userDao.getCourseById(1L)
+        val r = medDao.getCourseById(1L)
         Assert.assertEquals(null, r)
     }
 
     @Test
     fun getSingle_after_insert() {
-        userDao.addCourse(testCoursesData[0])
-        Assert.assertEquals(testCoursesData[0], userDao.getCourseById(testCoursesData[0].id))
+        medDao.addCourse(testCoursesData[0])
+        Assert.assertEquals(testCoursesData[0], medDao.getCourseById(testCoursesData[0].id))
     }
 
     @Test
     fun updateSingle_before_inserts_s_d_nothing() {
-        val r = userDao.getCourseById(testCoursesData[0].id)
+        val r = medDao.getCourseById(testCoursesData[0].id)
         Assert.assertEquals(null, r)
-        userDao.addCourse(testCoursesData[0])
-        Assert.assertEquals(testCoursesData[0], userDao.getCourseById(testCoursesData[0].id))
+        medDao.addCourse(testCoursesData[0])
+        Assert.assertEquals(testCoursesData[0], medDao.getCourseById(testCoursesData[0].id))
     }
 
     @Test
     fun add() {
-        userDao.addCourse(testCoursesData[0])
-        Assert.assertEquals(testCoursesData[0], userDao.getCourseById(testCoursesData[0].id))
+        medDao.addCourse(testCoursesData[0])
+        Assert.assertEquals(testCoursesData[0], medDao.getCourseById(testCoursesData[0].id))
     }
 
     @Test
     fun deleteSingle() {
-        userDao.addCourse(testCoursesData[0])
-        Assert.assertEquals(testCoursesData[0], userDao.getCourseById(testCoursesData[0].id))
-        userDao.deleteCourse(testCoursesData[0].id)
-        Assert.assertEquals(null, userDao.getCourseById(testCoursesData[0].id))
+        medDao.addCourse(testCoursesData[0])
+        Assert.assertEquals(testCoursesData[0], medDao.getCourseById(testCoursesData[0].id))
+        medDao.deleteCourse(testCoursesData[0].id)
+        Assert.assertEquals(null, medDao.getCourseById(testCoursesData[0].id))
     }
 }
