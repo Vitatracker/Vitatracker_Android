@@ -3,7 +3,16 @@ package app.mybad.notifier.ui.screens.newcourse.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -12,8 +21,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.RemoveCircleOutline
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -28,12 +46,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.R
+import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toTimeDisplay
 
 @Composable
 @Preview
@@ -44,9 +63,9 @@ fun AddNotificationsMainScreen(
     onNext: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
-    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<LocalTime, Int>>()) }
+    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
     var dialogIsShown by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf<Pair<LocalTime, Int>?>(null) }
+    var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -63,7 +82,7 @@ fun AddNotificationsMainScreen(
                 forms = forms,
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(LocalTime.now().withSecond(0), 1))
+                        add(Pair(getCurrentDateTime().toEpochSecond(), 1))
                     }
                 }
             )
@@ -102,7 +121,7 @@ fun AddNotificationsMainScreen(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp),
+                .padding(horizontal = 8.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
@@ -143,7 +162,7 @@ fun AddNotificationsMainScreen(
 @Composable
 private fun NotificationItem(
     modifier: Modifier = Modifier,
-    time: LocalTime,
+    time: Long,
     quantity: Int,
     form: Int,
     forms: Array<String>,
@@ -188,7 +207,7 @@ private fun NotificationItem(
                     )
             )
             Text(
-                text = time.format(DateTimeFormatter.ofPattern("HH:mm")),
+                text = time.toTimeDisplay(),
                 style = Typography.bodyLarge,
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },

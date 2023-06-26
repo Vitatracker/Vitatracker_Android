@@ -3,7 +3,15 @@ package app.mybad.notifier.ui.screens.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -21,9 +29,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.R
+import app.mybad.notifier.utils.changeDayOfMonth
+import app.mybad.notifier.utils.isLeapYear
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.YearMonth
+import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -32,12 +41,11 @@ fun DaySelectorSlider(
     date: LocalDateTime? = null,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
-    val selectedDate = date ?: LocalDateTime.now()!!
-    val yearMonth = YearMonth.of(selectedDate.year, selectedDate.month)
-    val monthLength = yearMonth.lengthOfMonth()
-    val pagerState = rememberPagerState(initialPage = selectedDate.dayOfMonth) { monthLength }
+    val pagerState = rememberPagerState(initialPage = date?.dayOfMonth ?: 0)
+    { date?.run { month.length(date.year.isLeapYear) } ?: 0 }
     val scope = rememberCoroutineScope()
-    val padding = PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp / 2 + 20 + 8).dp)
+    val padding =
+        PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp / 2 + 20 + 8).dp)
     val dow = stringArrayResource(R.array.days_short)
 
     HorizontalPager(
@@ -51,11 +59,14 @@ fun DaySelectorSlider(
         pageSize = PageSize.Fixed(40.dp),
         key = null,
         pageContent = {
-            val itsDate = date?.withDayOfMonth(it + 1)
-            val isSelected = itsDate?.isEqual(date) ?: false
+            val itsDate = date?.changeDayOfMonth(it + 1)
+            val isSelected = itsDate?.equals(date) ?: false
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = if (isSelected) 1f else 0.5f)),
+                border = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.primary.copy(alpha = if (isSelected) 1f else 0.5f)
+                ),
                 color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
                 modifier = Modifier
                     .height(50.dp)

@@ -1,7 +1,9 @@
 package app.mybad.notifier.ui.screens.mainscreen
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -42,10 +44,17 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.changeDate
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toDateFullDisplay
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toLocalDateTime
+import app.mybad.notifier.utils.toTimeDisplay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.*
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.LocalDateTime
+import java.time.Month
+import java.time.YearMonth
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +65,7 @@ fun StartMainScreen(
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val dateNow = remember { mutableStateOf(uiState.date) }
-    val sizeUsages = remember { mutableStateOf(uiState.allUsages) }
+    val sizeUsages by remember { mutableStateOf(uiState.allUsages) }
     val usageCommon = remember { mutableStateOf(UsageCommonDomainModel(medId = -1, userId = 0L)) }
 
     Scaffold(
@@ -86,7 +95,7 @@ fun StartMainScreen(
                 navController = navController,
                 uiState = dateNow,
                 changeData = { vm.changeData(dateNow.value) },
-                sizeUsages = sizeUsages.value,
+                sizeUsages = sizeUsages,
                 usages = uiState.usages,
                 meds = uiState.meds,
                 usageCommon = usageCommon,
@@ -142,8 +151,7 @@ private fun MainScreenMonthPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
-    val currentDate = LocalDate.now()
-    val stateMonth = rememberPagerState(currentDate.month.ordinal) { 12 }
+    val stateMonth = rememberPagerState(getCurrentDateTime().month.ordinal) { 12 }
     val scope = rememberCoroutineScope()
     val monthsShortsArray = stringArrayResource(R.array.months_short)
 
@@ -206,10 +214,10 @@ private fun MainScreenWeekPager(
     val paddingStart = 10.dp
     val paddingEnd = 10.dp
 
-    val calendar: Calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance() //TODO("переделать реализацию и убрать Calendar")
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val date by remember { mutableStateOf(LocalDateTime.now()) }
+    val date by remember { mutableStateOf(getCurrentDateTime()) }
     val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1) {
         Month.values()[monthState].length(false)
     }
@@ -218,7 +226,10 @@ private fun MainScreenWeekPager(
 
     LaunchedEffect(stateDay.currentPage, monthState) {
         delay(50)
-        uiState.value = date.withMonth(monthState + 1).withDayOfMonth(stateDay.currentPage + 1)
+        uiState.value = date.changeDate(
+            month = monthState + 1,
+            dayOfMonth = stateDay.currentPage + 1
+        )
         changeData(uiState)
     }
 
@@ -251,7 +262,7 @@ private fun MainScreenWeekPager(
                 verticalArrangement = Arrangement.Center
             ) {
                 countDay = it + 1
-                calendar.time = Date(Year.now().value, monthState, it - 1)
+                calendar.time = Date(date.year, monthState, it - 1)
                 shortNameOfDay = daysShortsArray[calendar.get(Calendar.DAY_OF_WEEK) - 1]
 
                 Text(
@@ -293,17 +304,19 @@ private fun MainScreenLazyMedicines(
     usageCommon: MutableState<UsageCommonDomainModel>,
     setUsageFactTime: (UsageCommonDomainModel) -> Unit,
 ) {
-    if (sizeUsages == 0) {
-        MainScreenMedsClear()
-    } else {
+    Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: sizeUsages=$sizeUsages usages=${usages.size}")
+//    if (sizeUsages == 0) {
+//        MainScreenMedsClear()
+//    } else {
         if (meds.isNotEmpty() && usages.isNotEmpty()) {
             MainScreenTextCategory()
+            Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}")
             LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
                 usages.sortedBy { it.useTime }.forEach { usage ->
                     item {
                         MainScreenCourseItem(
                             usage = usage,
-                            med = meds.filter { it.id == usage.medId }[0],
+                            med = meds.firstOrNull { it.id == usage.medId } ?: MedDomainModel(),
                             usageCommon = usageCommon,
                             setUsageFactTime = setUsageFactTime,
                             uiState = uiState,
@@ -312,8 +325,8 @@ private fun MainScreenLazyMedicines(
                     }
                 }
             }
-        }
-    }
+        } else MainScreenMedsClear()
+//    }
 }
 
 @Composable
@@ -413,7 +426,7 @@ private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
         Text(
             modifier = Modifier
                 .padding(8.dp),
-            text = getTimeFromLong(usageTime),
+            text = usageTime.toTimeDisplay(),
             textAlign = TextAlign.Justify,
             fontSize = 20.sp,
             color = setTextColorTime(usageTime = usageTime, isDone = isDone)
@@ -421,6 +434,7 @@ private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
     }
 }
 
+@SuppressLint("Recycle")
 @Composable
 private fun MainScreenFormCourseHeader(
     med: MedDomainModel,
@@ -491,9 +505,7 @@ private fun MainScreenFormCourseHeader(
                 setUsageFactTime = {
                     usageCommon.value = usages.copy(
                         factUseTime = if (usages.factUseTime.toInt() == -1) {
-                            convertDateToLong(
-                                LocalDateTime.now()
-                            )
+                                getCurrentDateTime().toEpochSecond()
                         } else {
                             -1
                         }
@@ -514,28 +526,34 @@ private fun MainScreenButtonAccept(
     isDone: Boolean,
     setUsageFactTime: () -> Unit
 ) {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
     val tint: Color
     val painter: Painter
 
-    if (isDone) {
-        painter = painterResource(R.drawable.done)
-        tint = MaterialTheme.colorScheme.primary
-    } else if (nowDate > usageDate) {
-        painter = painterResource(R.drawable.undone)
-        tint = MaterialTheme.colorScheme.error
-    } else if (nowDate < usageDate) {
-        painter = painterResource(R.drawable.undone)
-        tint = MaterialTheme.colorScheme.primary
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        painter = painterResource(R.drawable.undone)
-        tint = MaterialTheme.colorScheme.error
-    } else {
-        painter = painterResource(R.drawable.undone)
-        tint = MaterialTheme.colorScheme.primary
+    when {
+        isDone -> {
+            painter = painterResource(R.drawable.done)
+            tint = MaterialTheme.colorScheme.primary
+        }
+        nowDate > usageDate ->{
+            painter = painterResource(R.drawable.undone)
+            tint = MaterialTheme.colorScheme.error
+        }
+        nowDate < usageDate -> {
+            painter = painterResource(R.drawable.undone)
+            tint = MaterialTheme.colorScheme.primary
+        }
+        nowTime > usageTime+3600->{
+            painter = painterResource(R.drawable.undone)
+            tint = MaterialTheme.colorScheme.error
+        }
+        else ->{
+            painter = painterResource(R.drawable.undone)
+            tint = MaterialTheme.colorScheme.primary
+        }
     }
 
     return Icon(
@@ -554,118 +572,75 @@ private fun MainScreenButtonAccept(
 
 @Composable
 private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
-    return if (isDone) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-    } else if (nowDate > usageDate) {
-        BorderStroke(
-            1.dp,
-            color = MaterialTheme.colorScheme.error
-        )
-    } else if (nowDate < usageDate) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.error)
-    } else {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+    return when {
+        isDone ->BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowDate > usageDate ->BorderStroke(1.dp,color = MaterialTheme.colorScheme.error)
+        nowDate < usageDate -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowTime > usageTime+3600->BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        else ->BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
 }
 
 @Composable
 private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
-    return if (isDone) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-    } else if (nowDate > usageDate) {
-        BorderStroke(
-            1.dp,
-            color = MaterialTheme.colorScheme.error
-        )
-    } else if (nowDate < usageDate) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.error)
-    } else {
-        BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+    return when {
+        isDone ->BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowDate > usageDate ->BorderStroke(1.dp,color = MaterialTheme.colorScheme.error)
+        nowDate < usageDate -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowTime > usageTime+3600->BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        else ->BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
 }
 
 @Composable
 private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
-    return if (isDone) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else if (nowDate > usageDate) {
-        MaterialTheme.colorScheme.errorContainer
-    } else if (nowDate < usageDate) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        MaterialTheme.colorScheme.errorContainer
-    } else {
-        MaterialTheme.colorScheme.primaryContainer
+    return when {
+        isDone ->MaterialTheme.colorScheme.primaryContainer
+        nowDate > usageDate ->MaterialTheme.colorScheme.errorContainer
+        nowDate < usageDate -> MaterialTheme.colorScheme.primaryContainer
+        nowTime > usageTime+3600->MaterialTheme.colorScheme.errorContainer
+        else ->MaterialTheme.colorScheme.primaryContainer
     }
 }
 
 @Composable
 private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
-    return if (isDone) {
-        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
-    } else if (nowDate > usageDate) {
-        Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
-    } else if (nowDate < usageDate) {
-        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
-    } else {
-        Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
+    return when {
+        isDone ->Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
+        nowDate > usageDate ->Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
+        nowDate < usageDate -> Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
+        nowTime > usageTime+3600->Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
+        else ->Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
     }
 }
 
 @Composable
 private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowTime = convertDateToLong(LocalDateTime.now())
-    val nowDate = getDateFromLong(date = nowTime)
-    val usageDate = getDateFromLong(date = usageTime)
+    val nowDate = getCurrentDateTime()
+    val nowTime = nowDate.toEpochSecond()
+    val usageDate = usageTime.toLocalDateTime()
 
-    return if (isDone) {
-        MaterialTheme.colorScheme.primary
-    } else if (nowDate > usageDate) {
-        MaterialTheme.colorScheme.error
-    } else if (nowDate < usageDate) {
-        MaterialTheme.colorScheme.primary
-    } else if (getTimeFromLong(time = nowTime) > getTimeFromLong(time = usageTime.plus(3600))) {
-        MaterialTheme.colorScheme.error
-    } else {
-        MaterialTheme.colorScheme.primary
+    return when {
+        isDone ->MaterialTheme.colorScheme.primary
+        nowDate > usageDate ->MaterialTheme.colorScheme.error
+        nowDate < usageDate -> MaterialTheme.colorScheme.primary
+        nowTime > usageTime+3600->MaterialTheme.colorScheme.error
+        else ->MaterialTheme.colorScheme.primary
     }
-}
-
-private fun getTimeFromLong(time: Long): String {
-    return LocalDateTime
-        .ofInstant(Instant.ofEpochSecond(time), ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("HH:mm"))
-}
-
-private fun getDateFromLong(date: Long): String {
-    return LocalDateTime
-        .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-}
-
-private fun convertDateToLong(date: LocalDateTime): Long {
-    val zdt: ZonedDateTime = ZonedDateTime.of(date, ZoneId.systemDefault())
-    return zdt.toInstant().toEpochMilli() / 1000
 }

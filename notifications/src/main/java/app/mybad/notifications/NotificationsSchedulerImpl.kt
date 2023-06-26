@@ -14,12 +14,12 @@ import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @SuppressLint("UnspecifiedImmutableFlag")
-class NotificationsSchedulerImpl
-@Inject constructor(
-    private val context: Context,
+class NotificationsSchedulerImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val medsRepo: MedsRepo,
     private val usagesRepo: UsagesRepo,
     private val coursesRepo: CoursesRepo,

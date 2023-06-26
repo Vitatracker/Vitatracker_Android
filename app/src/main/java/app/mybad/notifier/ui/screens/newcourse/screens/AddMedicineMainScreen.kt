@@ -50,8 +50,13 @@ fun AddMedicineMainScreen(
     ) {
         Column {
             MultiBox(
-                { BasicKeyboardInput(label = name, init = med.name,
-                    onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name  = it))) }) },
+                {
+                    BasicKeyboardInput(
+                        label = name,
+                        init = med.name,
+                        onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(name = it))) }
+                    )
+                },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
@@ -61,10 +66,14 @@ fun AddMedicineMainScreen(
                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
             )
             MultiBox(
-                { IconSelector(selected = med.icon, color = med.color,
-                    onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }) },
-                { ColorSelector(selected = med.color,
-                    onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) }) },
+                {
+                    IconSelector(selected = med.icon, color = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) })
+                },
+                {
+                    ColorSelector(selected = med.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) })
+                },
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
             )
@@ -74,13 +83,46 @@ fun AddMedicineMainScreen(
                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
             )
             MultiBox(
-                { ParameterIndicator(name = form, value = types[med.type], onClick = { selectedInput = 1 }) },
-                { BasicKeyboardInput(label = dose, init = if(med.dose == 0) "" else med.dose.toString(), hideOnGo = true,
-                    keyboardType = KeyboardType.Number, alignRight = true,
-                    prefix = { Text(text = dose, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)) },
-                    onChange = { reducer(NewCourseIntent.UpdateMed(med.copy(dose = it.toIntOrNull() ?: 0))) }) },
-                { ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = { selectedInput = 2 }) },
-                { ParameterIndicator(name = rel, value = rels[med.beforeFood], onClick = { selectedInput = 3})},
+                {
+                    ParameterIndicator(
+                        name = form,
+                        value = types[med.type],
+                        onClick = { selectedInput = 1 })
+                },
+                {
+                    BasicKeyboardInput(label = dose,
+                        init = if (med.dose == 0) "" else med.dose.toString(),
+                        hideOnGo = true,
+                        keyboardType = KeyboardType.Number,
+                        alignRight = true,
+                        prefix = {
+                            Text(
+                                text = dose,
+                                style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                            )
+                        },
+                        onChange = {
+                            reducer(
+                                NewCourseIntent.UpdateMed(
+                                    med.copy(
+                                        dose = it.toIntOrNull() ?: 0
+                                    )
+                                )
+                            )
+                        })
+                },
+                {
+                    ParameterIndicator(
+                        name = unit,
+                        value = units[med.measureUnit],
+                        onClick = { selectedInput = 2 })
+                },
+                {
+                    ParameterIndicator(
+                        name = rel,
+                        value = rels[med.beforeFood],
+                        onClick = { selectedInput = 3 })
+                },
                 modifier = Modifier,
                 itemsPadding = PaddingValues(16.dp),
                 outlineColor = MaterialTheme.colorScheme.primary,
@@ -90,39 +132,46 @@ fun AddMedicineMainScreen(
         NavigationRow(
             onBack = onBack::invoke,
             onNext = {
-                if(med.name.isNullOrBlank() || med.dose == 0) Toast.makeText(context, fieldsError, Toast.LENGTH_SHORT).show()
+                if (med.name.isNullOrBlank() || med.dose == 0) Toast.makeText(
+                    context,
+                    fieldsError,
+                    Toast.LENGTH_SHORT
+                ).show()
                 else onNext()
             },
         )
     }
-    if(selectedInput != -1) {
-        Dialog(onDismissRequest = { selectedInput = -1 } ) {
+    if (selectedInput != -1) {
+        Dialog(onDismissRequest = { selectedInput = -1 }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background
             ) {
-                when(selectedInput) {
+                when (selectedInput) {
                     1 -> RollSelector(
-                            list = types.toList(),
-                            onSelect = {
-                                reducer(NewCourseIntent.UpdateMed(med.copy(type = it)))
-                                selectedInput = -1
-                            }
-                        )
+                        list = types.toList(),
+                        onSelect = {
+                            reducer(NewCourseIntent.UpdateMed(med.copy(type = it)))
+                            selectedInput = -1
+                        }
+                    )
+
                     2 -> RollSelector(
-                            list = units.toList(),
-                            onSelect = {
-                                reducer(NewCourseIntent.UpdateMed(med.copy(measureUnit = it)))
-                                selectedInput = -1
-                            }
-                        )
+                        list = units.toList(),
+                        onSelect = {
+                            reducer(NewCourseIntent.UpdateMed(med.copy(measureUnit = it)))
+                            selectedInput = -1
+                        }
+                    )
+
                     3 -> RollSelector(
-                            list = rels.toList(),
-                            onSelect = {
-                                reducer(NewCourseIntent.UpdateMed(med.copy(beforeFood = it)))
-                                selectedInput = -1
-                            }
-                        )
+                        list = rels.toList(),
+                        onSelect = {
+                            reducer(NewCourseIntent.UpdateMed(med.copy(beforeFood = it)))
+                            selectedInput = -1
+                        }
+                    )
+
                     else -> {}
                 }
             }

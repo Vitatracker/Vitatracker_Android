@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,10 +31,11 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toDayDisplay
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toTimeDisplay
+import kotlinx.datetime.LocalDateTime
 import kotlin.math.absoluteValue
 
 @SuppressLint("Recycle")
@@ -49,20 +50,20 @@ private fun SingleUsageItem(
 ) {
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
-    val now = Instant.now().epochSecond
-    val outlineColor = if (now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+    val now = getCurrentDateTime().toEpochSecond()
+    val outlineColor =
+        if (now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     val alpha = if ((now - date).absoluteValue > 3600) 0.6f else 1f
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val colors = integerArrayResource(R.array.colors)
     Row(
         verticalAlignment = Alignment.Top,
-        modifier = modifier.fillMaxWidth().alpha(alpha)
+        modifier = modifier
+            .fillMaxWidth()
+            .alpha(alpha)
     ) {
-        val time = LocalDateTime
-            .ofInstant(Instant.ofEpochSecond(date), ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern("HH:mm"))
         Text(
-            text = time,
+            text = date.toTimeDisplay(),
             modifier = Modifier.padding(end = 8.dp),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
         )
@@ -74,7 +75,9 @@ private fun SingleUsageItem(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Surface(
                     shape = CircleShape,
@@ -95,14 +98,25 @@ private fun SingleUsageItem(
                         )
                     }
                 }
-                Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
                     Text(text = "${med.name}", style = Typography.bodyLarge)
-                    Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
+                    ) {
                         Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                         Divider(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                            modifier = Modifier.height(16.dp).padding(horizontal = 8.dp).width(1.dp)
+                            modifier = Modifier
+                                .height(16.dp)
+                                .padding(horizontal = 8.dp)
+                                .width(1.dp)
                         )
                         Text(text = "$quantity ${types[med.type]}", style = Typography.labelMedium)
                     }
@@ -119,6 +133,7 @@ private fun SingleUsageItem(
                                 .clip(CircleShape)
                         )
                     }
+
                     in -3600..3600 -> {
                         Icon(
                             painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
@@ -129,11 +144,13 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) Instant.now().epochSecond else -1L
+                                    val n =
+                                        if (!isTaken) getCurrentDateTime().toEpochSecond() else -1L
                                     onTake(n)
                                 }
                         )
                     }
+
                     in 3600..Long.MAX_VALUE -> {
                         Icon(
                             painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
@@ -144,7 +161,8 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) Instant.now().epochSecond else -1L
+                                    val n =
+                                        if (!isTaken) getCurrentDateTime().toEpochSecond() else -1L
                                     onTake(n)
                                 }
                         )
@@ -185,7 +203,7 @@ fun DailyUsages(
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
                 Text(
-                    text = date?.format(DateTimeFormatter.ofPattern("dd MMMM")) ?: "no date",
+                    text = date?.toDayDisplay() ?: "no date",
                     style = Typography.titleLarge,
                 )
                 Icon(
@@ -214,7 +232,9 @@ fun DailyUsages(
                             Divider(
                                 thickness = 1.dp,
                                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                modifier = Modifier.width(40.dp).padding(vertical = 8.dp)
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .padding(vertical = 8.dp)
                             )
                             SingleUsageItem(
                                 modifier = Modifier.padding(horizontal = 16.dp),

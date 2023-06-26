@@ -1,15 +1,31 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -25,12 +41,12 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.atEndOfDay
+import app.mybad.notifier.utils.atStartOfDay
+import app.mybad.notifier.utils.toDateFullDisplay
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toLocalDateTime
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -44,14 +60,8 @@ fun AddCourseMainScreen(
     val endLabel = stringResource(R.string.add_course_end_time)
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
-    val startDate = LocalDateTime.ofEpochSecond(
-        course.startDate,
-        0,
-        ZoneId.systemDefault().rules.getOffset(Instant.now())
-    )
-        .withHour(0).withMinute(0)
-    val endDate = LocalDateTime.ofEpochSecond(course.endDate, 0, ZoneId.systemDefault().rules.getOffset(Instant.now()))
-        .withHour(23).withMinute(59)
+    val startDate = course.startDate.toLocalDateTime().atStartOfDay()
+    val endDate = course.endDate.toLocalDateTime().atEndOfDay()
     var selectedInput by remember { mutableStateOf(-1) }
     val sState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
@@ -75,30 +85,18 @@ fun AddCourseMainScreen(
             modifier = modifier.fillMaxSize()
         ) {
             Column {
-                val monthStart = if (Locale.getDefault().language == "ru") {
-                    stringArrayResource(R.array.months_full_more)[startDate.monthValue - 1]
-                } else {
-                    stringArrayResource(R.array.months_full)[startDate.monthValue - 1]
-                }
-                val monthEnd = if (Locale.getDefault().language == "ru") {
-                    stringArrayResource(R.array.months_full_more)[endDate.monthValue - 1]
-                } else {
-                    stringArrayResource(R.array.months_full)[endDate.monthValue - 1]
-                }
-                val sd = "${startDate.dayOfMonth} $monthStart ${startDate.year}"
-                val ed = "${endDate.dayOfMonth} $monthEnd ${endDate.year}"
                 MultiBox(
                     {
                         ParameterIndicator(
                             name = startLabel,
-                            value = sd,
+                            value = startDate.toDateFullDisplay(),
                             onClick = { selectedInput = 1 }
                         )
                     },
                     {
                         ParameterIndicator(
                             name = endLabel,
-                            value = ed,
+                            value = endDate.toDateFullDisplay(),
                             onClick = { selectedInput = 2 }
                         )
                     },
@@ -132,7 +130,9 @@ fun AddCourseMainScreen(
                 }
             }
             androidx.compose.material3.Button(
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp),
                 shape = RoundedCornerShape(10.dp),
                 onClick = onNext::invoke
             ) {
@@ -155,13 +155,13 @@ fun AddCourseMainScreen(
             ) {
                 when (selectedInput) {
                     1 -> CalendarSelectorScreen(
-                        startDay = startDate.toLocalDate(),
-                        endDay = endDate.toLocalDate(),
+                        startDay = startDate,
+                        endDay = endDate,
                         onSelect = { sd ->
                             reducer(
                                 NewCourseIntent.UpdateCourse(
                                     course.copy(
-                                        startDate = sd?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                                        startDate = sd?.atStartOfDay()?.toEpochSecond() ?: 0L,
                                     )
                                 )
                             )
@@ -170,14 +170,15 @@ fun AddCourseMainScreen(
                         onDismiss = { selectedInput = -1 },
                         editStart = true
                     )
+
                     2 -> CalendarSelectorScreen(
-                        startDay = startDate.toLocalDate(),
-                        endDay = endDate.toLocalDate(),
+                        startDay = startDate,
+                        endDay = endDate,
                         onSelect = { ed ->
                             reducer(
                                 NewCourseIntent.UpdateCourse(
                                     course.copy(
-                                        endDate = ed?.atStartOfDay()?.toEpochSecond(ZoneOffset.UTC) ?: 0L,
+                                        endDate = ed?.atStartOfDay()?.toEpochSecond() ?: 0L,
                                     )
                                 )
                             )
@@ -186,6 +187,7 @@ fun AddCourseMainScreen(
                         onDismiss = { selectedInput = -1 },
                         editStart = false
                     )
+
                     3 -> RollSelector(
                         list = regimeList.toList(),
                         startOffset = course.regime,

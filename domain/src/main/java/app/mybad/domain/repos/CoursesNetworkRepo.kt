@@ -1,4 +1,4 @@
-package app.mybad.network.repos.repo
+package app.mybad.domain.repos
 
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel

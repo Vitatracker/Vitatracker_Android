@@ -3,6 +3,7 @@ package app.mybad.network.models.response
 import com.google.gson.annotations.SerializedName
 
 data class Authorization(
-    @SerializedName("token") val token: String,
-    @SerializedName("id") val userId: String
+    @SerializedName("accessToken") val token: String,
+    @SerializedName("refreshToken") val refreshToken: String,
+//    @SerializedName("id") val userId: String,
 )

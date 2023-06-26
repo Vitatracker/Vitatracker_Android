@@ -4,8 +4,6 @@ import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.scheduler.NotificationsScheduler
-import java.time.LocalDateTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 class DeleteCourseUseCase @Inject constructor(
@@ -15,11 +13,10 @@ class DeleteCourseUseCase @Inject constructor(
     private val notificationsScheduler: NotificationsScheduler,
 ) {
 
-    suspend fun execute(courseId: Long) {
+    suspend fun execute(courseId: Long, time: Long) {
         val medId = coursesRepo.getSingle(courseId).medId
-        val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
         notificationsScheduler.cancelByMedId(medId) {
-            usagesRepo.deleteUsagesByInterval(medId, now, now + 157766400)
+            usagesRepo.deleteUsagesAfter(medId, time)
             coursesRepo.deleteSingle(courseId)
             medsRepo.deleteSingle(medId)
         }

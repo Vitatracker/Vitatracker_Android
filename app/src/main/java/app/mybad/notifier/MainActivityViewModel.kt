@@ -3,19 +3,18 @@ package app.mybad.notifier
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
-import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.usecases.DataStoreUseCase
+import app.mybad.domain.usecases.courses.GetCoursesAllUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.UserModel
-import app.mybad.network.repos.repo.CoursesNetworkRepo
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -24,51 +23,79 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStoreRepo: DataStoreRepo,
-    private val coursesNetworkRepo: CoursesNetworkRepo,
+    private val dataStore: DataStoreUseCase,
+    private val getCoursesAll: GetCoursesAllUseCase,
+
     private val settingsNetworkRepo: SettingsNetworkRepo,
     private val userDataRepo: UserDataRepo
 ) : ViewModel() {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-    private val _uiState = MutableStateFlow(MainActivityContract())
-    val uiState = _uiState.asStateFlow()
+    private val _isAuthorize = MutableStateFlow(false)
+    val isAuthorize = _isAuthorize.asStateFlow()
 
     init {
-        updateToken()
+        Log.w("VTTAG", "MainActivityViewModel::init: app start")
+        readDataStore()
+        observeDataStore()
     }
 
-    fun updateToken() {
-        scope.launch {
-            _uiState.emit(
-                _uiState.value.copy(
-                    token = dataStoreRepo.getToken().first()
-                )
-            )
-        }
+    private fun readDataStore() {
         viewModelScope.launch {
-            dataStoreRepo.getToken().collect {
-                Log.w("MainActivity", "token: $it")
-                if (it.isNotBlank()) {
-                    scope.launch {
-                        coursesNetworkRepo.getAll()
-                        getAll()
-                    }
+            AuthToken.token = dataStore.token.first()
+            AuthToken.userId = dataStore.userId.first()
+            AuthToken.email = dataStore.email.first()
+            Log.w("VTTAG", "MainActivityViewModel::readDataStore: userId=${AuthToken.userId}")
+        }
+    }
+
+    private fun observeDataStore() {
+        viewModelScope.launch {
+            launch {
+                dataStore.token.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: token=$it")
+                    AuthToken.token = it
+                    _isAuthorize.value = it.isNotBlank()
+                    if (_isAuthorize.value) readData()
+                }
+            }
+            launch {
+                dataStore.userId.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: userId=$it")
+                    AuthToken.userId = it
+                }
+            }
+            launch {
+                dataStore.email.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: email=$it")
+                    AuthToken.email = it
                 }
             }
         }
     }
 
+    fun clearDataStore() {
+        viewModelScope.launch {
+            dataStore.clear()
+        }
+    }
+
+    private suspend fun readData() {
+        getCoursesAll()
+        getAll()
+    }
+
     private suspend fun getAll() {
-        val settingsResult = settingsNetworkRepo.getUserModel()
-        when (settingsResult) {
+        when (val settingsResult = settingsNetworkRepo.getUserModel()) {
             is ApiResult.ApiSuccess -> setUserModelFromBack(settingsResult.data as UserModel)
             is ApiResult.ApiError -> Log.d(
-                "TAG",
-                "error: ${settingsResult.code} ${settingsResult.message}"
+                "VTTAG",
+                "MainActivityViewModel::getAll: error=${settingsResult.code} ${settingsResult.message}"
             )
 
-            is ApiResult.ApiException -> Log.d("TAG", "exception: ${settingsResult.e}")
+            is ApiResult.ApiException -> Log.d(
+                "VTTAG",
+                "MainActivityViewModel::getAll: exception=${settingsResult.e}"
+            )
         }
     }
 
@@ -94,14 +121,6 @@ class MainActivityViewModel @Inject constructor(
         userDataRepo.updateUserNotification(notification = model.settings.notifications)
         userDataRepo.updateUserPersonal(personal = model.personal)
         userDataRepo.updateUserRules(rules = model.settings.rules)
-    }
-
-    fun clearDataStore() {
-        scope.launch {
-            dataStoreRepo.updateToken("")
-            dataStoreRepo.updateUserId("")
-            updateToken()
-        }
     }
 
 }

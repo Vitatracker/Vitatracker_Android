@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace 'app.mybad.notifications'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 26
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -40,10 +40,11 @@ kapt {
 dependencies {
     implementation project(path: ":domain")
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
     //Hilt
-    implementation("com.google.dagger:hilt-android:2.45")
-    implementation 'androidx.lifecycle:lifecycle-service:2.5.1'
-    implementation project(path: ':network')
-    kapt("com.google.dagger:hilt-android-compiler:2.45")
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+    // Date Time
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }

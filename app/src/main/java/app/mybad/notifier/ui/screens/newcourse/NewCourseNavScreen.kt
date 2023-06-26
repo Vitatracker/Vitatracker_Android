@@ -29,7 +29,7 @@ fun NewCourseNavScreen(
     onCancel: () -> Unit,
     onFinish: () -> Unit
 ) {
-    val state = vm.state.collectAsState()
+    val state by vm.state.collectAsState()
     val dest = navHostController.currentBackStackEntryAsState()
     val h = stringResource(R.string.add_med_h)
     var title by remember { mutableStateOf(h) }
@@ -74,7 +74,7 @@ fun NewCourseNavScreen(
                 title = stringResource(R.string.add_med_h)
                 AddMedicineFirstScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.value.med,
+                    med = state.med,
                     reducer = vm::reduce,
                     onNext = {
                         navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route)
@@ -82,19 +82,21 @@ fun NewCourseNavScreen(
                 )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
-                title = state.value.med.name ?: throw IllegalStateException("Med has empty name")
+                title = state.med.name ?: throw IllegalStateException("Med has empty name")
                 AddMedicineSecondScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.value.med,
+                    med = state.med,
                     reducer = vm::reduce,
-                    onNext = { navHostController.navigate(NewCourseNavItem.AddCourse.route) },
+                    onNext = {
+                        navHostController.navigate(NewCourseNavItem.AddCourse.route)
+                    },
                 )
             }
             composable(NewCourseNavItem.AddCourse.route) {
                 title = stringResource(R.string.add_course_h)
                 AddCourseMainScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    course = state.value.course,
+                    course = state.course,
                     reducer = vm::reduce,
                     onNext = {
                         navHostController.navigate(NewCourseNavItem.AddNotifications.route)
@@ -105,7 +107,7 @@ fun NewCourseNavScreen(
                 title = stringResource(R.string.add_course_notifications_time)
                 AddNotificationsMainScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.value.med,
+                    med = state.med,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.Success.route) }
                 )

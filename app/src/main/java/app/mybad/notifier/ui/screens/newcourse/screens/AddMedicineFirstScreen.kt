@@ -74,13 +74,18 @@ fun AddMedicineFirstScreen(
                             }
                         )
                         if (isError) {
-                            Icon(imageVector = Icons.Rounded.Error, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                            Icon(
+                                imageVector = Icons.Rounded.Error,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
                         }
                     }
 
                 },
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = if (isError) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primary,
+                outlineColor = if (isError) MaterialTheme.colorScheme.errorContainer
+                else MaterialTheme.colorScheme.primary,
             )
             if (isError) {
                 Text(

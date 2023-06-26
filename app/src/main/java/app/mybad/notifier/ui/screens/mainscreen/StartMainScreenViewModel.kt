@@ -2,41 +2,36 @@ package app.mybad.notifier.ui.screens.mainscreen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.repos.DataStoreRepo
-import app.mybad.domain.usecases.meds.LoadMedsFromList
+import app.mybad.domain.usecases.meds.LoadMedsFromListUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
 import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
-import app.mybad.network.repos.repo.CoursesNetworkRepo
+import app.mybad.notifier.utils.atEndOfDay
+import app.mybad.notifier.utils.atStartOfDay
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import kotlinx.datetime.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class StartMainScreenViewModel @Inject constructor(
-    private val loadUsagesByIntervalUseCase: LoadUsagesByIntervalUseCase,
-    private val loadUsagesAllUseCase: LoadUsagesAllUseCase,
-    private val loadMedsFromList: LoadMedsFromList,
-    private val updateUsageUseCase: UpdateUsageUseCase,
-    private val coursesNetworkRepo: CoursesNetworkRepo,
-    private val dataStoreRepo: DataStoreRepo
+    private val loadUsagesByInterval: LoadUsagesByIntervalUseCase,
+    private val loadUsagesAll: LoadUsagesAllUseCase,
+    private val loadMedsFromList:  LoadMedsFromListUseCase,
+    private val updateUsage: UpdateUsageUseCase,
 ) : ViewModel() {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
     private val _uiState = MutableStateFlow(MainScreenContract())
     val uiState = _uiState.asStateFlow()
 
     init {
-        scope.launch {
+        viewModelScope.launch {
             setDataNow()
             updateUsages()
             getAllUsages()
@@ -44,9 +39,8 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     fun setUsagesFactTime(usage: UsageCommonDomainModel) {
-        scope.launch {
-            updateUsageUseCase.execute(usage = usage)
-            coursesNetworkRepo.updateUsage(usage)
+        viewModelScope.launch {
+            updateUsage.execute(usage = usage)
 //                medId = usage.medId,
 //                usageTime = usage.useTime,
 //                factTime = convertDateToLong(LocalDateTime.now())
@@ -56,33 +50,28 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     fun changeData(date: LocalDateTime) {
-        scope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
+        viewModelScope.launch { _uiState.emit(_uiState.value.copy(date = date)) }
         Log.d("MainScreen", "changeData: $date")
         updateUsages()
     }
 
     private fun setDataNow() {
-        scope.launch { _uiState.emit(_uiState.value.copy(date = LocalDateTime.now())) }
+        viewModelScope.launch { _uiState.emit(_uiState.value.copy(date = getCurrentDateTime())) }
     }
 
     private fun getAllUsages() {
-        scope.launch {
-            val userId = dataStoreRepo.getUserId().first().toLong()
-            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAllUseCase.execute(userId).size))
+        viewModelScope.launch {
+            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAll().size))
         }
     }
 
     private fun updateUsages() {
-        scope.launch {
+        viewModelScope.launch {
             _uiState.emit(
                 _uiState.value.copy(
-                    usages = loadUsagesByIntervalUseCase.execute(
-                        convertDateToLong(
-                            _uiState.value.date.withHour(0).withMinute(0).withSecond(0)
-                        ),
-                        convertDateToLong(
-                            _uiState.value.date.withHour(23).withMinute(59).withSecond(59)
-                        )
+                    usages = loadUsagesByInterval(
+                        _uiState.value.date.atStartOfDay().toEpochSecond(),
+                        _uiState.value.date.atEndOfDay().toEpochSecond(),
                     )
                 )
             )
@@ -91,9 +80,8 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     private fun updateMeds() {
-        val listMeds: List<Long> = _uiState.value.usages.map { it.medId }.toSet().toList()
-
-        scope.launch {
+        viewModelScope.launch {
+            val listMeds: List<Long> = _uiState.value.usages.map { it.medId }.toSet().toList()
             _uiState.emit(
                 _uiState.value.copy(
                     meds = loadMedsFromList.execute(listMedsId = listMeds)
@@ -102,8 +90,4 @@ class StartMainScreenViewModel @Inject constructor(
         }
     }
 
-    private fun convertDateToLong(date: LocalDateTime): Long {
-        val zdt: ZonedDateTime = ZonedDateTime.of(date, ZoneId.systemDefault())
-        return zdt.toInstant().toEpochMilli() / 1000
-    }
 }

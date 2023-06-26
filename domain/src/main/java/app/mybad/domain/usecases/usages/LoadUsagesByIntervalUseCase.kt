@@ -7,6 +7,6 @@ class LoadUsagesByIntervalUseCase @Inject constructor(
     private val usagesRepo: UsagesRepo
 ) {
 
-    suspend fun execute(startTime: Long, endTime: Long) =
+    suspend operator fun invoke(startTime: Long, endTime: Long) =
         usagesRepo.getUsagesByInterval(startTime = startTime, endTime = endTime)
 }

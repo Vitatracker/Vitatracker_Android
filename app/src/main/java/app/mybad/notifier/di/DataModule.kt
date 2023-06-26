@@ -1,88 +1,49 @@
 package app.mybad.notifier.di
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import app.mybad.data.datastore.serialize.*
-import app.mybad.data.repos.*
-import app.mybad.data.room.MedDAO
+import app.mybad.data.repos.AuthorizationRepoImpl
+import app.mybad.data.repos.CoursesRepoImpl
+import app.mybad.data.repos.MedsRepoImpl
+import app.mybad.data.repos.UsagesRepoImpl
+import app.mybad.data.repos.UserDataRepoImpl
+import app.mybad.data.repos.UsersRepositoryImpl
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.DataStoreRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
-import app.mybad.network.repos.repo.AuthorizationNetworkRepo
-import app.mybad.network.repos.repo.SettingsNetworkRepo
-import app.vitatracker.data.UserNotificationsDataModel
-import app.vitatracker.data.UserPersonalDataModel
-import app.vitatracker.data.UserRulesDataModel
+import app.mybad.domain.repos.UsersRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataModule {
+interface DataModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesUserRepo(
-        dataStore_userNotification: DataStore<UserNotificationsDataModel>,
-        dataStore_userPersonal: DataStore<UserPersonalDataModel>,
-        dataStore_userRules: DataStore<UserRulesDataModel>,
-        settingsNetworkRepo: SettingsNetworkRepo
-    ): UserDataRepo {
-        return UserDataRepoImpl(
-            dataStore_userNotification = dataStore_userNotification,
-            dataStore_userPersonal = dataStore_userPersonal,
-            dataStore_userRules = dataStore_userRules,
-            settingsNetworkRepo = settingsNetworkRepo
-        )
-    }
+    fun provideUserRepo(impl: UserDataRepoImpl): UserDataRepo
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesCoursesRepo(
-        db: MedDAO,
-    ): CoursesRepo {
-        return CoursesRepoImpl(db = db)
-    }
+    fun provideCoursesRepo(impl: CoursesRepoImpl): CoursesRepo
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesMedsRepo(
-        db: MedDAO
-    ): MedsRepo {
-        return MedsRepoImpl(db = db)
-    }
+    fun provideMedsRepo(impl: MedsRepoImpl): MedsRepo
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesUsagesRepo(
-        db: MedDAO
-    ): UsagesRepo {
-        return UsagesRepoImpl(db)
-    }
+    fun provideUsagesRepo(impl: UsagesRepoImpl): UsagesRepo
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesAuthorizationRepo(
-        dataStore: DataStore<Preferences>,
-        authorizationNetworkRepo: AuthorizationNetworkRepo
-    ): AuthorizationRepo {
-        return AuthorizationRepoImpl(
-            dataStore = dataStore,
-            authorizationNetworkRepo = authorizationNetworkRepo
-        )
-    }
+    fun provideAuthorizationRepo(impl: AuthorizationRepoImpl): AuthorizationRepo
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesDataStoreRepo(
-        dataStore: DataStore<Preferences>
-    ): DataStoreRepo {
-        return DataStoreRepoImpl(dataStore = dataStore)
-    }
+    fun provideUsersRepository(impl: UsersRepositoryImpl): UsersRepository
+
 }

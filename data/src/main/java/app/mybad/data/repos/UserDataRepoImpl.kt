@@ -3,32 +3,32 @@ package app.mybad.data.repos
 import androidx.datastore.core.DataStore
 import app.mybad.data.mapToDomain
 import app.mybad.data.mapToNetwork
-import app.mybad.domain.models.user.*
+import app.mybad.domain.models.user.NotificationsUserDomainModel
+import app.mybad.domain.models.user.PersonalDomainModel
+import app.mybad.domain.models.user.RulesUserDomainModel
+import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.Named
 
-@Singleton
 class UserDataRepoImpl @Inject constructor(
     private val dataStore_userNotification: DataStore<UserNotificationsDataModel>,
     private val dataStore_userPersonal: DataStore<UserPersonalDataModel>,
     private val dataStore_userRules: DataStore<UserRulesDataModel>,
-    private val settingsNetworkRepo: SettingsNetworkRepo
+    private val settingsNetworkRepo: SettingsNetworkRepo,
+    @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UserDataRepo {
 
-    val scope = CoroutineScope(Dispatchers.IO)
-
     override suspend fun updateUserNotification(notification: NotificationsUserDomainModel) {
-        scope.launch {
+        withContext(dispatcher) {
             dataStore_userNotification.updateData { userNotification ->
                 userNotification.toBuilder()
                     .setIsEnabled(notification.isEnabled)
@@ -41,12 +41,13 @@ class UserDataRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserNotification(): NotificationsUserDomainModel {
-        return dataStore_userNotification.data.first().mapToDomain()
-    }
+    override suspend fun getUserNotification(): NotificationsUserDomainModel =
+        withContext(dispatcher) {
+            dataStore_userNotification.data.first().mapToDomain()
+        }
 
     override suspend fun updateUserPersonal(personal: PersonalDomainModel) {
-        scope.launch {
+        withContext(dispatcher) {
             dataStore_userPersonal.updateData { userPersonal ->
                 userPersonal.toBuilder()
                     .setAge(if (personal.age == null) "" else personal.age)
@@ -58,12 +59,12 @@ class UserDataRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserPersonal(): PersonalDomainModel {
-        return dataStore_userPersonal.data.first().mapToDomain()
+    override suspend fun getUserPersonal(): PersonalDomainModel = withContext(dispatcher) {
+        dataStore_userPersonal.data.first().mapToDomain()
     }
 
     override suspend fun updateUserRules(rules: RulesUserDomainModel) {
-        scope.launch {
+        withContext(dispatcher) {
             dataStore_userRules.updateData { userRules ->
                 userRules.toBuilder()
                     .setCanAdd(rules.canAdd)
@@ -75,13 +76,13 @@ class UserDataRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserRules(): RulesUserDomainModel {
-        return dataStore_userRules.data.first().mapToDomain()
+    override suspend fun getUserRules(): RulesUserDomainModel = withContext(dispatcher) {
+        dataStore_userRules.data.first().mapToDomain()
     }
 
     // api
-    override suspend fun getUserModel(): ApiResult {
-        return settingsNetworkRepo.getUserModel()
+    override suspend fun getUserModel(): ApiResult = withContext(dispatcher) {
+        settingsNetworkRepo.getUserModel()
     }
 
 //    override suspend fun postUserModel(userDomainModel: UserDomainModel) {
@@ -89,10 +90,14 @@ class UserDataRepoImpl @Inject constructor(
 //    }
 
     override suspend fun deleteUserModel(id: String) {
-        settingsNetworkRepo.deleteUserModel(id = id)
+        withContext(dispatcher) {
+            settingsNetworkRepo.deleteUserModel(id = id)
+        }
     }
 
     override suspend fun putUserModel(userDomainModel: UserDomainModel) {
-        settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
+        withContext(dispatcher) {
+            settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
+        }
     }
 }

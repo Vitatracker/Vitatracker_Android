@@ -1,7 +1,9 @@
-package app.mybad.data.room
+package app.mybad.data.di
 
 import android.content.Context
 import androidx.room.Room
+import app.mybad.data.db.MedDb
+import app.mybad.data.db.MedDbImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,17 +13,23 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RoomModule {
+class DatabaseModule {
     @Provides
     @Singleton
-    fun providesMedDB(@ApplicationContext app: Context) = Room
+    fun provideMedDB(@ApplicationContext app: Context): MedDb = Room
         .databaseBuilder(
             app,
-            MedDB::class.java,
+            MedDbImpl::class.java,
             "meds.db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton
-    fun providesDao(db: MedDB) = db.dao()
+    fun provideMedDao(db: MedDb) = db.getMedDao()
+
+    @Provides
+    @Singleton
+    fun provideUsersDao(db: MedDb) = db.getUsersDao()
 }

@@ -6,22 +6,26 @@ import android.content.Intent
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import app.mybad.domain.repos.DataStoreRepo
+import app.mybad.domain.models.AuthToken
+import app.mybad.domain.scheduler.NotificationsScheduler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RescheduleAlarmService : Service() {
 
-    @Inject lateinit var notificationsSchedulerImpl: NotificationsSchedulerImpl
-    @Inject lateinit var dataStoreRepo: DataStoreRepo
-    private val scope = CoroutineScope(Dispatchers.IO)
+    @Inject lateinit var notificationsScheduler: NotificationsScheduler
+    // TODO("проверить тут диспатчер")
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     companion object {
+        private const val NOTIFICATION_ID = 145101
         const val CHANNEL_ID = "my_service"
         const val CHANNEL_NAME = "Notifications from Vitatracker reminder"
     }
@@ -46,11 +50,17 @@ class RescheduleAlarmService : Service() {
             .setContentText("Wait until rescheduling will be finished")
             .setCategory(Notification.CATEGORY_CALL)
             .build()
-        startForeground(101, notification)
+
+        startForeground(NOTIFICATION_ID, notification)
         scope.launch {
-            notificationsSchedulerImpl.rescheduleAll(dataStoreRepo.getUserId().first().toLong())
+            notificationsScheduler.rescheduleAll(AuthToken.userId)
             stopForeground(STOP_FOREGROUND_DETACH)
         }
         return START_STICKY
     }
+
+    override fun onDestroy() {
+        if (scope.isActive) scope.cancel()
+    }
+
 }

@@ -18,8 +18,15 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
-import java.time.*
-import java.time.format.DateTimeFormatter
+import app.mybad.notifier.utils.changeTime
+import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.minus
+import app.mybad.notifier.utils.plus
+import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.utils.toLocalDateTime
+import app.mybad.notifier.utils.toTimeDisplay
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.LocalTime
 
 @Composable
 @Preview
@@ -33,12 +40,14 @@ fun RemindNewCourseBottomSheet(
     val interval = stringResource(R.string.add_next_course_interval)
     val remindBefore = stringResource(R.string.add_next_course_remind_before)
     val remindTimeLabel = stringResource(R.string.add_next_course_remind_time)
-    val courseStartDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(course.startDate), ZoneId.systemDefault())
+    val courseStartDate = course.startDate.toLocalDateTime()
 
     var selectedInput by remember { mutableStateOf(-1) }
-    var coursesInterval by remember { mutableStateOf(Period.ofDays(3)) }
-    var remindTime by remember { mutableStateOf(LocalTime.of(14, 0)) }
-    var remindBeforePeriod by remember { mutableStateOf(Period.ofDays(3)) }
+    var coursesInterval by remember { mutableStateOf(DateTimePeriod(days = 3)) }
+    var remindTime by remember {
+        mutableStateOf(getCurrentDateTime().changeTime(14, 0))
+    }
+    var remindBeforePeriod by remember { mutableStateOf(DateTimePeriod(days = 3)) }
 
     Column(
         modifier = modifier
@@ -65,7 +74,7 @@ fun RemindNewCourseBottomSheet(
                 {
                     ParameterIndicator(
                         name = remindTimeLabel,
-                        value = remindTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        value = remindTime.toTimeDisplay(),
                         onClick = { selectedInput = 3 }
                     )
                 },
@@ -76,15 +85,14 @@ fun RemindNewCourseBottomSheet(
             backLabel = stringResource(R.string.settings_cancel),
             nextLabel = stringResource(R.string.settings_save),
             onNext = {
-                val nextCourseStart = courseStartDate + coursesInterval
-                val reminder = (nextCourseStart - remindBeforePeriod).withSecond(0)
-                    .withHour(remindTime.hour).withMinute(remindTime.minute)
+                val nextCourseStart = courseStartDate.plus(coursesInterval)
+                val reminder = nextCourseStart.minus(remindBeforePeriod).changeTime(remindTime)
                 onSave()
                 reducer(
                     NewCourseIntent.UpdateCourse(
                         course.copy(
-                            remindDate = reminder.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                            interval = nextCourseStart.atZone(ZoneId.systemDefault()).toEpochSecond() - course.startDate,
+                            remindDate = reminder.toEpochSecond(), //TODO("проверить какую TimeZone тут нужно")
+                            interval = nextCourseStart.toEpochSecond() - course.startDate,
                         )
                     )
                 )
@@ -104,13 +112,15 @@ fun RemindNewCourseBottomSheet(
                         initValue = coursesInterval,
                         onSelect = { coursesInterval = it; selectedInput = -1 }
                     )
+
                     2 -> DateDelaySelector(
                         initValue = remindBeforePeriod,
                         onSelect = { remindBeforePeriod = it; selectedInput = -1 }
                     )
+
                     3 -> TimeSelector(
-                        initTime = remindTime,
-                        onSelect = { remindTime = it; selectedInput = -1 }
+                        initTime = remindTime.toEpochSecond(),
+                        onSelect = { remindTime = it.toLocalDateTime(); selectedInput = -1 }
                     )
                 }
             }

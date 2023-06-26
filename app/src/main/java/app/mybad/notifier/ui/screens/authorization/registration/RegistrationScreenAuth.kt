@@ -1,20 +1,43 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -22,11 +45,9 @@ import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
-import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,19 +114,25 @@ private fun MainRegistrationScreen(
                 userNameState = userNameState,
                 confirmPasswordState = confirmPasswordState
             )
-            RegistrationScreenButtonRegistration(onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
+            RegistrationScreenButtonRegistration(
+                onClick = {
                     authVM.registration(
                         login = loginState.value,
                         password = passwordState.value,
                         userName = userNameState.value
                     )
-                    delay(1200)
-                    mainVM.updateToken()
+                    // TODO("Проверить зачем тут updateToken, если он Flow, при изменении обновиться автоматически")
+//                    delay(1200)
+//                    mainVM.updateToken()
                 }
-            })
+            )
             Spacer(modifier = Modifier.height(30.dp))
-            SurfaceSignInWith(onClick = { mainVM.updateToken() })
+            SurfaceSignInWith(
+                onClick = {
+                    // TODO("Проверить зачем тут updateToken, если он Flow")
+//                mainVM.updateToken()
+                }
+            )
         }
     }
 }

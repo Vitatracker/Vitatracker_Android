@@ -41,11 +41,12 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.plusDay
 import app.mybad.notifier.utils.plusThreeDay
 import app.mybad.notifier.utils.secondsToDay
 import app.mybad.notifier.utils.toDateDisplay
-import java.time.Instant
+import app.mybad.notifier.utils.toEpochSecond
 
 @Composable
 fun MyCourses(
@@ -61,7 +62,7 @@ fun MyCourses(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        val now = Instant.now().epochSecond
+        val now = getCurrentDateTime().toEpochSecond()
         courses.forEach {
             Log.w("MC_courses", "$it")
         }
@@ -73,8 +74,9 @@ fun MyCourses(
                             course = course,
                             med = meds.first { it.id == course.medId },
                             usages = usages.filter {
-                                it.medId == course.medId && it.useTime >= course.startDate
-                                        && it.useTime < course.endDate.plusDay()
+                                it.medId == course.medId &&
+                                        it.useTime >= course.startDate &&
+                                        it.useTime < course.endDate.plusDay()
                             },
                             onSelect = onSelect::invoke,
                         )
@@ -88,6 +90,7 @@ fun MyCourses(
                         nCourse.startDate + nCourse.interval < now.plusThreeDay()
                     ) {
                         item {
+                            var n = 0
                             CourseItem(
                                 course = nCourse.copy(
                                     startDate = nCourse.startDate + nCourse.interval,
@@ -95,10 +98,12 @@ fun MyCourses(
                                 ),
                                 med = meds.first { it.id == nCourse.medId },
                                 usages = usages.filter {
-                                    it.medId == nCourse.medId && it.useTime >= nCourse.startDate
-                                            && it.useTime < nCourse.startDate.plusDay()
+                                    it.medId == nCourse.medId &&
+                                            it.useTime >= nCourse.startDate &&
+                                            it.useTime < nCourse.startDate.plusDay()
                                 }.take(10),
-                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay(),
+                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay()
+                                    .toInt(),
                             )
                         }
                     }
@@ -110,14 +115,8 @@ fun MyCourses(
 
 private fun validate(
     meds: List<MedDomainModel>,
-    courses: List<CourseDomainModel>
-): Boolean {
-    var isValid = true
-    courses.forEach { course ->
-        if (meds.find { it.id == course.medId } == null) isValid = false
-    }
-    return isValid
-}
+    courses: List<CourseDomainModel>,
+) = courses.all { course -> meds.any { it.id == course.medId } }
 
 @SuppressLint("Recycle")
 @Composable
@@ -136,15 +135,12 @@ private fun CourseItem(
     val itemsCount = if (usages.isNotEmpty()) {
         val firstCount = usages.first().quantity
         val firstTime = usages.first().useTime
-        var correct = true
-        usages.filter { it.useTime <= (firstTime + 86400) }.forEach {
-            if (it.quantity != firstCount) correct = false
-        }
-        if (correct) firstCount else 0
+        if (usages.filter { it.useTime <= (firstTime.plusDay()) }
+                .all { it.quantity == firstCount }) firstCount else 0
     } else {
         0
     }
-    val usagesCount = usages.filter { it.useTime <= (usages.first().useTime + 86400) }.size
+    val usagesCount = usages.count { it.useTime < (usages.first().useTime.plusDay()) }
 
     Surface(
         shape = RoundedCornerShape(10.dp),
@@ -194,6 +190,10 @@ private fun CourseItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        Log.w(
+                            "VTTAG",
+                            "CourseItem: itemsCount=$itemsCount usagesCount=$usagesCount"
                         )
                         if (itemsCount != 0 || usagesCount > 0) {
                             Row {
