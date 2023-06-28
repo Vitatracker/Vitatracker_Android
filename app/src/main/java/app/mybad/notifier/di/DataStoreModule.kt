@@ -41,7 +41,9 @@ class DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStoreUserPersonal(@ApplicationContext appContext: Context): DataStore<UserPersonalDataModel> {
+    fun provideProtoDataStoreUserPersonal(
+        @ApplicationContext appContext: Context
+    ): DataStore<UserPersonalDataModel> {
         return DataStoreFactory.create(
             serializer = UserPersonalDataModelSerializer,
             produceFile = { appContext.dataStoreFile(PERSONAL_STORE_FILE_NAME) },
@@ -53,7 +55,9 @@ class DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideProtoDataStoreUserRules(@ApplicationContext appContext: Context): DataStore<UserRulesDataModel> {
+    fun provideProtoDataStoreUserRules(
+        @ApplicationContext appContext: Context
+    ): DataStore<UserRulesDataModel> {
         return DataStoreFactory.create(
             serializer = UserRulesDataModelSerializer,
             produceFile = { appContext.dataStoreFile(RULES_STORE_FILE_NAME) },

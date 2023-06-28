@@ -13,7 +13,6 @@ import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.repos.UserDataRepo
-import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.mybad.notifier.di.DataModule
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel

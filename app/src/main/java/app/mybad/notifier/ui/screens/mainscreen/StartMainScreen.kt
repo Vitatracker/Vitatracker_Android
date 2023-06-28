@@ -620,7 +620,7 @@ private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
     val nowDate = getCurrentDateTime()
     val nowTime = nowDate.toEpochSecond()
     val usageDate = usageTime.toLocalDateTime()
-
+//TODO("поменять цвета из темы")
     return when {
         isDone ->Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
         nowDate > usageDate ->Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer

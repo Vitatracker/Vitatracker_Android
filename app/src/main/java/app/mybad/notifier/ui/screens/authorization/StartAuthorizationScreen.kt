@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartAuthorizationScreen(navController: NavHostController) {
 

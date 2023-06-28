@@ -2,14 +2,13 @@ package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
 import app.mybad.data.mapToDomain
-import app.mybad.data.mapToNetwork
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.RulesUserDomainModel
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.repos.SettingsNetworkRepository
 import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.utils.ApiResult
-import app.mybad.network.repos.repo.SettingsNetworkRepo
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -20,20 +19,20 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class UserDataRepoImpl @Inject constructor(
-    private val dataStore_userNotification: DataStore<UserNotificationsDataModel>,
-    private val dataStore_userPersonal: DataStore<UserPersonalDataModel>,
-    private val dataStore_userRules: DataStore<UserRulesDataModel>,
-    private val settingsNetworkRepo: SettingsNetworkRepo,
+    private val userNotification: DataStore<UserNotificationsDataModel>,
+    private val userPersonal: DataStore<UserPersonalDataModel>,
+    private val userRules: DataStore<UserRulesDataModel>,
+    private val settingsNetworkRepo: SettingsNetworkRepository,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UserDataRepo {
 
     override suspend fun updateUserNotification(notification: NotificationsUserDomainModel) {
         withContext(dispatcher) {
-            dataStore_userNotification.updateData { userNotification ->
-                userNotification.toBuilder()
+            userNotification.updateData { notification ->
+                notification.toBuilder()
                     .setIsEnabled(notification.isEnabled)
                     .setIsFloat(notification.isFloat)
-                    .setMedicalControl(notification.medicationControl)
+                    .setMedicationControl(notification.medicationControl)
                     .setNextCourseStart(notification.nextCourseStart)
 //                    .setListOfMedId()
                     .build()
@@ -43,29 +42,29 @@ class UserDataRepoImpl @Inject constructor(
 
     override suspend fun getUserNotification(): NotificationsUserDomainModel =
         withContext(dispatcher) {
-            dataStore_userNotification.data.first().mapToDomain()
+            userNotification.data.first().mapToDomain()
         }
 
     override suspend fun updateUserPersonal(personal: PersonalDomainModel) {
         withContext(dispatcher) {
-            dataStore_userPersonal.updateData { userPersonal ->
-                userPersonal.toBuilder()
-                    .setAge(if (personal.age == null) "" else personal.age)
-                    .setAvatar(if (personal.avatar == null) "" else personal.avatar)
-                    .setName(if (personal.name == null) "" else personal.name)
-                    .setEmail(if (personal.email == null) "" else personal.email)
+            userPersonal.updateData { personal ->
+                personal.toBuilder()
+                    .setAge(personal.age ?: "")
+                    .setAvatar(personal.avatar ?: "")
+                    .setName(personal.name ?: "")
+                    .setEmail(personal.email ?: "")
                     .build()
             }
         }
     }
 
     override suspend fun getUserPersonal(): PersonalDomainModel = withContext(dispatcher) {
-        dataStore_userPersonal.data.first().mapToDomain()
+        userPersonal.data.first().mapToDomain()
     }
 
     override suspend fun updateUserRules(rules: RulesUserDomainModel) {
         withContext(dispatcher) {
-            dataStore_userRules.updateData { userRules ->
+            userRules.updateData { userRules ->
                 userRules.toBuilder()
                     .setCanAdd(rules.canAdd)
                     .setCanEdit(rules.canEdit)
@@ -77,7 +76,7 @@ class UserDataRepoImpl @Inject constructor(
     }
 
     override suspend fun getUserRules(): RulesUserDomainModel = withContext(dispatcher) {
-        dataStore_userRules.data.first().mapToDomain()
+        userRules.data.first().mapToDomain()
     }
 
     // api
@@ -97,7 +96,7 @@ class UserDataRepoImpl @Inject constructor(
 
     override suspend fun putUserModel(userDomainModel: UserDomainModel) {
         withContext(dispatcher) {
-            settingsNetworkRepo.putUserModel(userModel = userDomainModel.mapToNetwork())
+            settingsNetworkRepo.putUserModel(userDomainModel)
         }
     }
 }

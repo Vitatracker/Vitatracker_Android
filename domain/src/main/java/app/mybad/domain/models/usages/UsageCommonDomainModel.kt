@@ -1,7 +1,7 @@
 package app.mybad.domain.models.usages
 
 data class UsageCommonDomainModel(
-    val id: Int = 0,
+    val id: Long = 0,
     val medId: Long,
     val userId: Long,
     val creationTime: Long = 0L,

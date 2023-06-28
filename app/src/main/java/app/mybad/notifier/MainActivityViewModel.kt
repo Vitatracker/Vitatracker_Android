@@ -8,12 +8,14 @@ import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
-import app.mybad.domain.repos.UserDataRepo
 import app.mybad.domain.usecases.DataStoreUseCase
 import app.mybad.domain.usecases.courses.GetCoursesAllUseCase
+import app.mybad.domain.usecases.settings.GetUserSettingsUseCase
+import app.mybad.domain.usecases.user.UpdateUserNotificationUseCase
+import app.mybad.domain.usecases.user.UpdateUserPersonalUseCase
+import app.mybad.domain.usecases.user.UpdateUserRulesUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.UserModel
-import app.mybad.network.repos.repo.SettingsNetworkRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,11 +25,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStore: DataStoreUseCase,
-    private val getCoursesAll: GetCoursesAllUseCase,
-
-    private val settingsNetworkRepo: SettingsNetworkRepo,
-    private val userDataRepo: UserDataRepo
+    private val dataStoreUseCase: DataStoreUseCase,
+    private val getCoursesAllUseCase: GetCoursesAllUseCase,
+    private val userRulesUseCase: UpdateUserRulesUseCase,
+    private val userPersonalUseCase: UpdateUserPersonalUseCase,
+    private val userNotificationUseCase: UpdateUserNotificationUseCase,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase,
 ) : ViewModel() {
 
     private val _isAuthorize = MutableStateFlow(false)
@@ -41,9 +44,10 @@ class MainActivityViewModel @Inject constructor(
 
     private fun readDataStore() {
         viewModelScope.launch {
-            AuthToken.token = dataStore.token.first()
-            AuthToken.userId = dataStore.userId.first()
-            AuthToken.email = dataStore.email.first()
+            AuthToken.token = dataStoreUseCase.token.first()
+            AuthToken.refreshToken = dataStoreUseCase.refreshToken.first()
+            AuthToken.userId = dataStoreUseCase.userId.first()
+            AuthToken.email = dataStoreUseCase.email.first()
             Log.w("VTTAG", "MainActivityViewModel::readDataStore: userId=${AuthToken.userId}")
         }
     }
@@ -51,7 +55,7 @@ class MainActivityViewModel @Inject constructor(
     private fun observeDataStore() {
         viewModelScope.launch {
             launch {
-                dataStore.token.collect {
+                dataStoreUseCase.token.collect {
                     Log.w("VTTAG", "MainActivityViewModel::observeDataStore: token=$it")
                     AuthToken.token = it
                     _isAuthorize.value = it.isNotBlank()
@@ -59,13 +63,19 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
             launch {
-                dataStore.userId.collect {
+                dataStoreUseCase.refreshToken.collect {
+                    Log.w("VTTAG", "MainActivityViewModel::observeDataStore: refreshToken=$it")
+                    AuthToken.refreshToken = it
+                }
+            }
+            launch {
+                dataStoreUseCase.userId.collect {
                     Log.w("VTTAG", "MainActivityViewModel::observeDataStore: userId=$it")
                     AuthToken.userId = it
                 }
             }
             launch {
-                dataStore.email.collect {
+                dataStoreUseCase.email.collect {
                     Log.w("VTTAG", "MainActivityViewModel::observeDataStore: email=$it")
                     AuthToken.email = it
                 }
@@ -75,17 +85,17 @@ class MainActivityViewModel @Inject constructor(
 
     fun clearDataStore() {
         viewModelScope.launch {
-            dataStore.clear()
+            dataStoreUseCase.clear()
         }
     }
 
     private suspend fun readData() {
-        getCoursesAll()
+        getCoursesAllUseCase()
         getAll()
     }
 
     private suspend fun getAll() {
-        when (val settingsResult = settingsNetworkRepo.getUserModel()) {
+        when (val settingsResult = getUserSettingsUseCase()) {
             is ApiResult.ApiSuccess -> setUserModelFromBack(settingsResult.data as UserModel)
             is ApiResult.ApiError -> Log.d(
                 "VTTAG",
@@ -109,18 +119,24 @@ class MainActivityViewModel @Inject constructor(
             ),
             settings = UserSettingsDomainModel(
                 notifications = NotificationsUserDomainModel(
-                    isEnabled = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.isEnabled,
-                    isFloat = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.isFloat,
-                    medicationControl = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.medicalControl,
-                    nextCourseStart = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.nextCourseStart,
-                    medsId = if (userModel.notificationSettings == null) emptyList() else userModel.notificationSettings!!.id
+                    isEnabled = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.isEnabled,
+                    isFloat = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.isFloat,
+                    medicationControl = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.medicationControl,
+                    nextCourseStart = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.nextCourseStart,
+                    medsId = if (userModel.notificationSettings == null) emptyList()
+                    else userModel.notificationSettings!!.id
                 )
             )
         )
 
-        userDataRepo.updateUserNotification(notification = model.settings.notifications)
-        userDataRepo.updateUserPersonal(personal = model.personal)
-        userDataRepo.updateUserRules(rules = model.settings.rules)
+        userNotificationUseCase.execute(model.settings.notifications)
+        userPersonalUseCase.execute(model.personal)
+        userRulesUseCase.execute(model.settings.rules)
+
     }
 
 }

@@ -15,7 +15,7 @@ message UserPersonalDataModel {
 message UserNotificationsDataModel {
   bool isEnabled = 1;
   bool isFloat = 2;
-  bool medicalControl = 3;
+  bool medicationControl = 3;
   bool nextCourseStart = 4;
   repeated ListOfMedId listOfMedId = 5; // repeated => list
 

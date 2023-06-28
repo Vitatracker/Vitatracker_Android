@@ -1,10 +1,12 @@
 package app.mybad.data.repos
 
+import app.mybad.domain.models.authorization.AuthorizationUserLoginDomainModel
+import app.mybad.domain.models.authorization.AuthorizationUserRegistrationDomainModel
+import app.mybad.domain.repos.AuthorizationNetworkRepository
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.request.AuthorizationUserLogin
 import app.mybad.network.models.request.AuthorizationUserRegistration
-import app.mybad.network.repos.repo.AuthorizationNetworkRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -13,7 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthorizationRepoImpl @Inject constructor(
-    private val authorizationNetworkRepo: AuthorizationNetworkRepo,
+    private val authorizationNetworkRepo: AuthorizationNetworkRepository,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : AuthorizationRepo {
 
@@ -30,7 +32,7 @@ class AuthorizationRepoImpl @Inject constructor(
         password: String
     ): ApiResult = withContext(dispatcher) {
         authorizationNetworkRepo.loginUser(
-            authorizationUserLogin = AuthorizationUserLogin(
+            authorizationUserLogin = AuthorizationUserLoginDomainModel(
                 email = login,
                 password = password
             )
@@ -43,7 +45,7 @@ class AuthorizationRepoImpl @Inject constructor(
         userName: String
     ): ApiResult = withContext(dispatcher) {
         authorizationNetworkRepo.registrationUser(
-            authorizationUserRegistration = AuthorizationUserRegistration(
+            authorizationUserRegistration = AuthorizationUserRegistrationDomainModel(
                 email = login,
                 password = password,
                 name = userName

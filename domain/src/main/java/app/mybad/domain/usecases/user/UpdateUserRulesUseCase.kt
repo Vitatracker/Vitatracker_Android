@@ -4,7 +4,7 @@ import app.mybad.domain.models.user.RulesUserDomainModel
 import app.mybad.domain.repos.UserDataRepo
 import javax.inject.Inject
 
-class UpdateUserRulesDomainModelUseCase @Inject constructor(
+class UpdateUserRulesUseCase @Inject constructor(
     private val userDataRepo: UserDataRepo
 ) {
 

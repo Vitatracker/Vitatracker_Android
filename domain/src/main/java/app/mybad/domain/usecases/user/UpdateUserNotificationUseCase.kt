@@ -4,7 +4,7 @@ import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.repos.UserDataRepo
 import javax.inject.Inject
 
-class UpdateUserNotificationDomainModelUseCase @Inject constructor(
+class UpdateUserNotificationUseCase @Inject constructor(
     private val userDataRepo: UserDataRepo
 ) {
 

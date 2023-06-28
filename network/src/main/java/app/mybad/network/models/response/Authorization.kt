@@ -5,5 +5,4 @@ import com.google.gson.annotations.SerializedName
 data class Authorization(
     @SerializedName("accessToken") val token: String,
     @SerializedName("refreshToken") val refreshToken: String,
-//    @SerializedName("id") val userId: String,
 )

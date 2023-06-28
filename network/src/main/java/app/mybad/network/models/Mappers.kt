@@ -1,15 +1,25 @@
 package app.mybad.network.models
 
+import app.mybad.domain.models.authorization.AuthorizationUserLoginDomainModel
+import app.mybad.domain.models.authorization.AuthorizationUserRegistrationDomainModel
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.models.user.NotificationsUserDomainModel
+import app.mybad.domain.models.user.PersonalDomainModel
+import app.mybad.domain.models.user.RulesUserDomainModel
+import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.UserSettingsDomainModel
+import app.mybad.network.models.request.AuthorizationUserLogin
+import app.mybad.network.models.request.AuthorizationUserRegistration
 import app.mybad.network.models.response.Courses
+import app.mybad.network.models.response.NotificationSetting
 import app.mybad.network.models.response.Remedies
 import app.mybad.network.models.response.Usages
 
 fun Usages.mapToDomain(medId: Long, userId: Long): UsageCommonDomainModel {
     return UsageCommonDomainModel(
-        id = id.toInt(),
+        id = id,
         medId = medId,
         userId = userId,
         useTime = useTime,
@@ -102,3 +112,58 @@ fun List<UsageCommonDomainModel>.mapToNet(courseId: Long): List<Usages> {
         }
     }
 }
+
+fun UserDomainModel.mapToNet() = UserModel(
+    id = id,
+    name = personal.name.toString(),
+    email = personal.email.toString(),
+    password = "123456",    //все дело в бэке, не сочтите за Альцгеймер //TODO("проверить что это")
+    avatar = personal.avatar.toString(),
+    notificationSettings = NotificationSetting(
+        id = settings.notifications.medsId,
+        userId = id,
+        isEnabled = settings.notifications.isEnabled,
+        isFloat = settings.notifications.isFloat,
+        medicationControl = settings.notifications.medicationControl,
+        nextCourseStart = settings.notifications.nextCourseStart,
+    ),
+    notUsed = null,
+    remedies = emptyList(),
+)
+
+fun UserModel.mapToDomain() = UserDomainModel(
+    id = id,
+    personal = PersonalDomainModel(name = name, avatar = avatar, email = email),
+    settings = UserSettingsDomainModel(
+        notifications = NotificationsUserDomainModel(
+            isEnabled = notificationSettings!!.isEnabled,
+            isFloat = notificationSettings.isFloat,
+            medicationControl = notificationSettings.medicationControl,
+            nextCourseStart = notificationSettings.nextCourseStart,
+            medsId = notificationSettings.id,
+        ),
+        rules = RulesUserDomainModel(),
+    )
+)
+
+fun AuthorizationUserLoginDomainModel.mapToNet() = AuthorizationUserLogin(
+    email = email,
+    password = password,
+)
+
+fun AuthorizationUserLogin.mapToDomain() = AuthorizationUserLoginDomainModel(
+    email = email,
+    password = password,
+)
+
+fun AuthorizationUserRegistrationDomainModel.mapToNet() = AuthorizationUserRegistration(
+    email = email,
+    password = password,
+    name = name,
+)
+
+fun AuthorizationUserRegistration.mapToDomain() = AuthorizationUserRegistrationDomainModel(
+    email = email,
+    password = password,
+    name = name,
+)

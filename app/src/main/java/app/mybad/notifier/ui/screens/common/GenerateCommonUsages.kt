@@ -8,7 +8,6 @@ import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.plusDays
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toLocalDateTime
-import kotlinx.datetime.LocalTime
 
 fun generateCommonUsages(
     usagesByDay: List<Pair<Long, Int>>,
@@ -20,7 +19,10 @@ fun generateCommonUsages(
 ): List<UsageCommonDomainModel> {
     val now = getCurrentDateTime().toEpochSecond()
     val interval = endDate.daysBetween(startDate).toInt()
-    Log.w("VTTAG", "generateCommonUsages: interval=$interval startDate=${startDate.toLocalDateTime()} endDate=${endDate.toLocalDateTime()}")
+    Log.w(
+        "VTTAG",
+        "generateCommonUsages: interval=$interval startDate=${startDate.toLocalDateTime()} endDate=${endDate.toLocalDateTime()}"
+    )
     val usage = mutableListOf<UsageCommonDomainModel>()
     Log.w(
         "VTTAG",
@@ -34,7 +36,10 @@ fun generateCommonUsages(
                     .changeTime(time)
                     .plusDays(position)
                     .toEpochSecond()
-                Log.w("VTTAG", "generateCommonUsages: useTime=${useTime.toLocalDateTime()} usage=${now.toLocalDateTime()}")
+                Log.w(
+                    "VTTAG",
+                    "generateCommonUsages: useTime=${useTime.toLocalDateTime()} usage=${now.toLocalDateTime()}"
+                )
                 if (useTime > now) {
                     usage.add(
                         UsageCommonDomainModel(

@@ -5,15 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.repos.CoursesNetworkRepo
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.usecases.courses.DeleteCourseUseCase
+import app.mybad.domain.usecases.courses.GetCourseSingleUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.meds.DeleteMedUseCase
 import app.mybad.domain.usecases.meds.UpdateMedUseCase
+import app.mybad.domain.usecases.usages.GetUsagesByMedIdUseCase
 import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
 import app.mybad.notifier.ui.screens.common.generateCommonUsages
 import app.mybad.notifier.utils.getCurrentDateTime
@@ -38,8 +37,8 @@ class MyCoursesViewModel @Inject constructor(
 
     private val updateUsagesInCourse: UpdateUsagesInCourseUseCase,
 
-    private val coursesRepo: CoursesRepo,
-    private val usagesRepo: UsagesRepo,
+    private val getCourseSingleUseCase: GetCourseSingleUseCase,
+    private val getUsagesByMedIdUseCase: GetUsagesByMedIdUseCase,
 ) : ViewModel() {
 
     val state = loadCourses(AuthToken.userId)
@@ -56,7 +55,7 @@ class MyCoursesViewModel @Inject constructor(
         when (intent) {
             is MyCoursesIntent.Delete -> {
                 viewModelScope.launch {
-                    val mId = coursesRepo.getSingle(intent.courseId).medId
+                    val mId = getCourseSingleUseCase(intent.courseId).medId
                     deleteCourse.execute(intent.courseId, getCurrentDateTime().toEpochSecond())
                     deleteMed(mId)
                 }
@@ -66,7 +65,10 @@ class MyCoursesViewModel @Inject constructor(
                 viewModelScope.launch {
                     updateMed(intent.med)
                     updateCourse.execute(intent.course.id, intent.course)
-                    Log.w("VTTAG", "MyCoursesViewModel::Update: userId=${intent.med.userId} pattern=${intent.usagesPattern} ")
+                    Log.w(
+                        "VTTAG",
+                        "MyCoursesViewModel::Update: userId=${intent.med.userId} pattern=${intent.usagesPattern} "
+                    )
                     updateUsagesInCourse(
                         usages = generateCommonUsages(
                             usagesByDay = intent.usagesPattern,
@@ -80,7 +82,7 @@ class MyCoursesViewModel @Inject constructor(
                     updateCourseAll(
                         med = intent.med,
                         course = intent.course,
-                        usages = usagesRepo.getUsagesByMedId(intent.med.id)
+                        usages = getUsagesByMedIdUseCase(intent.med.id)
                     )
                 }
             }

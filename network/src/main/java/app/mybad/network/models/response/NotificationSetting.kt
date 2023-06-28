@@ -7,6 +7,6 @@ data class NotificationSetting(
     @SerializedName("userId") val userId: Long,
     @SerializedName("isEnabled") val isEnabled: Boolean,
     @SerializedName("isFloat") val isFloat: Boolean,
-    @SerializedName("medicalControl") val medicalControl: Boolean,
+    @SerializedName("medicationControl") val medicationControl: Boolean,
     @SerializedName("nextCourseStart") val nextCourseStart: Boolean
 )

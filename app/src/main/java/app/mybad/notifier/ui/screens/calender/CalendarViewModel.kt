@@ -15,11 +15,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val loadCourses: LoadCoursesUseCase,
-    private val updateUsage: UpdateUsageUseCase,
+    private val loadCoursesUseCase: LoadCoursesUseCase,
+    private val updateUsageUseCase: UpdateUsageUseCase,
 ) : ViewModel() {
 
-    val state = loadCourses(AuthToken.userId)
+    val state = loadCoursesUseCase(AuthToken.userId)
         .mapLatest { (courses, meds, usages) ->
             MyCoursesState(courses = courses, meds = meds, usages = usages)
         }.stateIn(
@@ -32,7 +32,7 @@ class CalendarViewModel @Inject constructor(
         when (intent) {
             is CalendarIntent.SetUsage -> {
                 viewModelScope.launch {
-                    updateUsage.execute(intent.usage)
+                    updateUsageUseCase.execute(intent.usage)
                 }
             }
         }

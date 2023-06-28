@@ -1,27 +1,28 @@
 package app.mybad.network.repos.impl
 
 import android.util.Log
+import app.mybad.domain.models.authorization.AuthorizationUserLoginDomainModel
+import app.mybad.domain.models.authorization.AuthorizationUserRegistrationDomainModel
+import app.mybad.domain.repos.AuthorizationNetworkRepository
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.api.AuthorizationApi
-import app.mybad.network.models.request.AuthorizationUserLogin
-import app.mybad.network.models.request.AuthorizationUserRegistration
-import app.mybad.network.repos.repo.AuthorizationNetworkRepo
+import app.mybad.network.models.mapToNet
 import app.mybad.network.utils.ApiHandler.handleApi
 import retrofit2.Call
 import javax.inject.Inject
 
 class AuthorizationNetworkRepoImpl @Inject constructor(
     private val authorizationApiRepo: AuthorizationApi
-) : AuthorizationNetworkRepo {
+) : AuthorizationNetworkRepository {
 
-    override suspend fun loginUser(authorizationUserLogin: AuthorizationUserLogin): ApiResult =
-        execute { authorizationApiRepo.loginUser(authorizationUserLogin) }
+    override suspend fun loginUser(authorizationUserLogin: AuthorizationUserLoginDomainModel): ApiResult =
+        execute { authorizationApiRepo.loginUser(authorizationUserLogin.mapToNet()) }
 
     override suspend fun registrationUser(
-        authorizationUserRegistration: AuthorizationUserRegistration
+        authorizationUserRegistration: AuthorizationUserRegistrationDomainModel
     ): ApiResult = execute {
         Log.w("VTTAG", "[AuthorizationNetworkRepoImpl:registrationUser]: in")
-        authorizationApiRepo.registrationUser(authorizationUserRegistration)
+        authorizationApiRepo.registrationUser(authorizationUserRegistration.mapToNet())
     }
 
     private suspend fun execute(request: () -> Call<*>): ApiResult {

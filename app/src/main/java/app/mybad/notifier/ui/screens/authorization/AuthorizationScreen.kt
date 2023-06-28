@@ -2,7 +2,13 @@ package app.mybad.notifier.ui.screens.authorization
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -11,25 +17,44 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import app.mybad.notifier.ui.screens.common.showToast
 
 @Composable
 fun StartAuthorizationScreen(
     navController: NavHostController,
     authVM: AuthorizationScreenViewModel
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val uiEventFlow = authVM.uiEvent
+    val uiEventFlowLifecycleAware = remember(uiEventFlow, lifecycleOwner) {
+        uiEventFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
+    }
+
+    LaunchedEffect(key1 = "StartAuthorizationScreenKey") {
+        uiEventFlowLifecycleAware.collect { message ->
+            showToast(context, message)
+        }
+    }
+
     Scaffold(
         content = { contentPadding ->
             Surface(

@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
     indices = [Index("userId")],
 )
 data class UsageCommonDataModel(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val medId: Long,
     val userId: Long,
     val creationTime: Long = 0,

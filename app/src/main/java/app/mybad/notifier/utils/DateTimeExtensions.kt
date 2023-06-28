@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 private const val SECONDS_IN_DAY = 86400L
-private val workTimeZone = TimeZone.UTC
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter

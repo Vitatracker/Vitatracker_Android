@@ -1,7 +1,9 @@
 package app.mybad.notifier.ui.screens.settings.about
 
-import android.os.Build
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,11 +39,26 @@ fun SettingsAbout(
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
         Text(text = stringResource(R.string.settings_current_build_year))
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
         SettingsAboutItem(text = stringResource(R.string.settings_user_agreement), onSelected = {})
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
         SettingsAboutItem(text = stringResource(R.string.settings_privacy_policy), onSelected = {})
-        Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-        SettingsAboutItem(text = stringResource(R.string.settings_our_contacts), onSelected = onContacts)
+        Divider(
+            modifier = Modifier.padding(vertical = 16.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+        SettingsAboutItem(
+            text = stringResource(R.string.settings_our_contacts),
+            onSelected = onContacts
+        )
     }
 }

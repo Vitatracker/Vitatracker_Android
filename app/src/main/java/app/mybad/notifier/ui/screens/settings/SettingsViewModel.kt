@@ -13,9 +13,9 @@ import app.mybad.domain.usecases.DataStoreUseCase
 import app.mybad.domain.usecases.user.DeleteUserModelUseCase
 import app.mybad.domain.usecases.user.LoadUserSettingsUseCase
 import app.mybad.domain.usecases.user.UpdateUserModelUseCase
-import app.mybad.domain.usecases.user.UpdateUserNotificationDomainModelUseCase
-import app.mybad.domain.usecases.user.UpdateUserPersonalDomainModelUseCase
-import app.mybad.domain.usecases.user.UpdateUserRulesDomainModelUseCase
+import app.mybad.domain.usecases.user.UpdateUserNotificationUseCase
+import app.mybad.domain.usecases.user.UpdateUserPersonalUseCase
+import app.mybad.domain.usecases.user.UpdateUserRulesUseCase
 import app.mybad.domain.utils.ApiResult
 import app.mybad.network.models.UserModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,9 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userSettingsUseCase: LoadUserSettingsUseCase,
-    private val userRulesDomainModelUseCase: UpdateUserRulesDomainModelUseCase,
-    private val userPersonalDomainModelUseCase: UpdateUserPersonalDomainModelUseCase,
-    private val userNotificationDomainModelUseCase: UpdateUserNotificationDomainModelUseCase,
+    private val userRulesUseCase: UpdateUserRulesUseCase,
+    private val userPersonalUseCase: UpdateUserPersonalUseCase,
+    private val userNotificationUseCase: UpdateUserNotificationUseCase,
     private val deleteUserModelUseCase: DeleteUserModelUseCase,
     private val updateUserModelUseCase: UpdateUserModelUseCase,
 //    private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
@@ -75,11 +75,16 @@ class SettingsViewModel @Inject constructor(
             ),
             settings = UserSettingsDomainModel(
                 notifications = NotificationsUserDomainModel(
-                    isEnabled = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.isEnabled,
-                    isFloat = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.isFloat,
-                    medicationControl = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.medicalControl,
-                    nextCourseStart = if (userModel.notificationSettings == null) false else userModel.notificationSettings!!.nextCourseStart,
-                    medsId = if (userModel.notificationSettings == null) emptyList() else userModel.notificationSettings!!.id
+                    isEnabled = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.isEnabled,
+                    isFloat = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.isFloat,
+                    medicationControl = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.medicationControl,
+                    nextCourseStart = if (userModel.notificationSettings == null) false
+                    else userModel.notificationSettings!!.nextCourseStart,
+                    medsId = if (userModel.notificationSettings == null) emptyList()
+                    else userModel.notificationSettings!!.id
                 )
             )
         )
@@ -108,7 +113,7 @@ class SettingsViewModel @Inject constructor(
 
                 is SettingsIntent.Exit -> {}
                 is SettingsIntent.SetNotifications -> {
-                    userNotificationDomainModelUseCase.execute(notificationsUserDomainModel = intent.notifications)
+                    userNotificationUseCase.execute(notificationsUserDomainModel = intent.notifications)
                     _state.emit(_state.value.copy(notificationsUserDomainModel = intent.notifications))
                     _state.emit(_state.value.copy(userModel = setUserModelForRequest()))
                     delay(100)
@@ -119,7 +124,7 @@ class SettingsViewModel @Inject constructor(
                 }
 
                 is SettingsIntent.SetPersonal -> {
-                    userPersonalDomainModelUseCase.execute(personalDomainModel = intent.personal)
+                    userPersonalUseCase.execute(personalDomainModel = intent.personal)
                     _state.emit(_state.value.copy(personalDomainModel = intent.personal))
                     _state.emit(_state.value.copy(userModel = setUserModelForRequest()))
                     delay(100)
@@ -130,7 +135,7 @@ class SettingsViewModel @Inject constructor(
                 }
 
                 is SettingsIntent.SetRules -> {
-                    userRulesDomainModelUseCase.execute(rulesUserDomainModel = intent.rules)
+                    userRulesUseCase.execute(rulesUserDomainModel = intent.rules)
                     _state.emit(_state.value.copy(rulesUserDomainModel = intent.rules))
                     _state.emit(_state.value.copy(userModel = setUserModelForRequest()))
                     delay(100)
