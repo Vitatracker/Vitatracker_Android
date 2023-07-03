@@ -10,7 +10,7 @@ interface CoursesNetworkRepo {
 
     val result: StateFlow<ApiResult>
     suspend fun getUserModel()
-    suspend fun getAll()
+    suspend fun getAll(): ApiResult
     suspend fun updateUsage(usage: UsageCommonDomainModel)
     suspend fun updateAll(
         med: MedDomainModel,

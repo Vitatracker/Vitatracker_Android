@@ -10,6 +10,7 @@ import app.mybad.domain.repos.CoursesRepo
 import app.mybad.domain.repos.MedsRepo
 import app.mybad.domain.repos.UsagesRepo
 import app.mybad.domain.utils.ApiResult
+import app.mybad.domain.utils.ERROR_NETWORK
 import app.mybad.network.api.CoursesApi
 import app.mybad.network.models.UserModel
 import app.mybad.network.models.mapToDomain
@@ -64,44 +65,35 @@ class CoursesNetworkRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAll() {
-        withContext(dispatcher) {
-            try {
-                // TODO("проверить логику с userId")
-                if (AuthToken.userId != -1L) {
-                    val r = ApiHandler.handleApi { coursesApi.getAll().execute() }
-                    Log.w("CNRI", "api result: $r")
-                    if (
-                        r is ApiResult.ApiSuccess &&
-                        r.data is List<*> &&
-                        (r.data as List<*>).isNotEmpty() &&
-                        (r.data as List<*>).first() is Remedies
-                    ) {
-                        @Suppress("UNCHECKED_CAST")
-                        (r.data as List<Remedies>).forEach { remedies ->
-                            Log.w("CNRI", "remedy: $remedies")
-                            medsRepo.add(remedies.mapToDomain())
-                            remedies.courses?.forEach { courses ->
-                                Log.w("CNRI", "course: $courses")
-                                // TODO("проверить логику с userId")
-                                coursesRepo.add(courses.mapToDomain(userId = AuthToken.userId))
-                                courses.usages?.mapToDomain(
-                                    medId = courses.remedyId,
-                                    userId = AuthToken.userId
-                                )
-                                    ?.let {
-                                        usagesRepo.addUsages(it)
-                                    }
+    override suspend fun getAll(): ApiResult = withContext(dispatcher) {
+        try {
+            // TODO("проверить логику с userId")
+            if (AuthToken.userId != -1L) {
+                val r = ApiHandler.handleApi { coursesApi.getAll().execute() }
+                Log.w("CNRI", "api result: $r")
+                if (r is ApiResult.ApiSuccess && r.data is List<*>) {
+                    val list = r.data as? List<Remedies> ?: error("")
+                    list.forEach { remedies ->
+                        Log.w("CNRI", "remedy: $remedies")
+                        medsRepo.add(remedies.mapToDomain())
+                        remedies.courses?.forEach { courses ->
+                            Log.w("CNRI", "course: $courses")
+                            // TODO("проверить логику с userId")
+                            coursesRepo.add(courses.mapToDomain(userId = AuthToken.userId))
+                            courses.usages?.mapToDomain(
+                                medId = courses.remedyId,
+                                userId = AuthToken.userId
+                            )?.let {
+                                usagesRepo.addUsages(it)
                             }
                         }
-                    } else {
                     }
-                } else {
-                    ApiResult.ApiError(777, "null user id")
-                }
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
+                    ApiResult.ApiSuccess(data = 0)
+                } else error("")
+            } else ApiResult.ApiError(ERROR_NETWORK, "null user id")
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            ApiResult.ApiError(ERROR_NETWORK, "Error: online update failed!")
         }
     }
 
