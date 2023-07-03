@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import app.mybad.theme.R
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.scheduler.NotificationsScheduler
 import dagger.hilt.android.AndroidEntryPoint

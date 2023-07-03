@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.R
+import app.mybad.theme.R
 
 @Composable
 fun SettingsItem(

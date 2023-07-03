@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.notifier.ui.screens.common.showToast
 

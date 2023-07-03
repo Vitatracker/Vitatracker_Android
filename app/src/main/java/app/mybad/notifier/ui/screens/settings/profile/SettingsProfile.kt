@@ -25,7 +25,7 @@ import app.mybad.domain.models.user.PersonalDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.common.UserImage
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 

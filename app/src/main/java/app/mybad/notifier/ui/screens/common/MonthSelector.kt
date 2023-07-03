@@ -26,12 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.minusMonths
+import app.mybad.notifier.utils.monthFullDisplay
 import app.mybad.notifier.utils.plusMonths
+import app.mybad.theme.R
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -41,7 +41,6 @@ fun MonthSelector(
     date: LocalDateTime,
     onSwitch: (LocalDateTime) -> Unit
 ) {
-    val months = stringArrayResource(R.array.months_full)
     var newDate by remember { mutableStateOf(date) }
 
     Row(
@@ -78,7 +77,7 @@ fun MonthSelector(
                         enter = scaleIn(),
                         exit = scaleOut()
                     ),
-                    text = months[targetCount - 1],
+                    text = (targetCount - 1).monthFullDisplay(),
                     style = Typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

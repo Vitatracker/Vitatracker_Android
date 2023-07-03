@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="units">
+        <item>@string/units_ug</item>
+        <item>@string/units_mg</item>
+        <item>@string/units_g</item>
+        <item>@string/units_ml</item>
+        <item>@string/units_percent</item>
+    </string-array>
+    <string-array name="food_relations">
+        <item>@string/food_relations_before_meals</item>
+        <item>@string/food_relations_not_related</item>
+        <item>@string/food_relations_during_meals</item>
+        <item>@string/food_relations_after_meals</item>
+    </string-array>
+    <string-array name="regime">
+        <item>@string/regime_every_day</item>
+        <item>@string/regime_every_other_day</item>
+        <item>@string/regime_every_two_days</item>
+        <item>@string/regime_every_three_days</item>
+    </string-array>
+    <string-array name="types">
+        <item>@string/types_tablet</item>
+        <item>@string/types_pill</item>
+        <item>@string/types_inhalator</item>
+        <item>@string/types_injection</item>
+        <item>@string/types_drops</item>
+        <item>@string/types_solution</item>
+        <item>@string/types_suppository</item>
+        <item>@string/types_syrup</item>
+        <item>@string/types_spray</item>
+        <item>@string/types_suspension</item>
+    </string-array>
+    <integer-array name="icons">
+        <item>@drawable/pill</item>
+        <item>@drawable/blister</item>
+        <item>@drawable/pills_jar</item>
+        <item>@drawable/drops</item>
+        <item>@drawable/syrup</item>
+        <item>@drawable/jar</item>
+    </integer-array>
+</resources>

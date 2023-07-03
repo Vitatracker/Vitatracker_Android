@@ -54,3 +54,10 @@ val neutralVariant80 = Color(0xFFBEC8CA)
 val neutralVariant60 = Color(0xFF899294)
 val neutralVariant50 = Color(0xFF6F797A)
 val neutralVariant30 = Color(0xFF3F484A)
+
+val selectColorTurquoise = Color(0xFFDDF7FB) //0
+val selectColorViolet = Color(0xFFE6E8FC) //1
+val selectColorOrange = Color(0xFFFBEDDA) //2
+val selectColorGreen = Color(0xFFBCF8DD) //3
+val selectColorYellow = Color(0xFFFBF6DA) //4
+val selectColorRed = Color(0xFFFBE4DA) //5

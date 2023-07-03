@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.BuildConfig
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.settings.common.SettingsAboutItem
 
 @Composable

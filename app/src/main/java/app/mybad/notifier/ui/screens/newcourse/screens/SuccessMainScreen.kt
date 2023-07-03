@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.ScreenBackgroundImage
 import app.mybad.notifier.ui.theme.Typography
 

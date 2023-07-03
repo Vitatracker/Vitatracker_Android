@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.NotificationSettingItem
-import app.mybad.notifier.R
+import app.mybad.theme.R
 
 @Composable
 fun SettingsNotifications(

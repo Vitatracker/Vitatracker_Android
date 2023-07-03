@@ -41,10 +41,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.mybad.notifier.MainActivityViewModel
-import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
+import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

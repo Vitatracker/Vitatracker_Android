@@ -7,7 +7,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,11 +25,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.notifier.R
-import app.mybad.notifier.ui.screens.mycourses.*
+import app.mybad.notifier.ui.screens.mycourses.CourseInfoScreen
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesIntent
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.plusDay
-import kotlinx.datetime.LocalTime
+import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +90,8 @@ fun MyCoursesMainScreen(
                     selectedCourse?.let { selected ->
                         CourseInfoScreen(
                             course = selected,
-                            med = state.value.meds.firstOrNull { it.id == selected.medId } ?: MedDomainModel(),
+                            med = state.value.meds.firstOrNull { it.id == selected.medId }
+                                ?: MedDomainModel(),
                             usagePattern = generatePattern(selected.medId, state.value.usages),
                             reducer = {
                                 when (it) {

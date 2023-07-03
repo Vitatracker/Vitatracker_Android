@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.reuse.HyperLinkText
 import app.mybad.notifier.ui.screens.settings.common.BaseDivider
 

@@ -26,14 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.atStartOfDaySystemToUTC
 import app.mybad.notifier.utils.atStartOfMonth
+import app.mybad.notifier.utils.dayShortDisplay
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.minusDays
 import app.mybad.notifier.utils.plusDays
@@ -103,7 +103,6 @@ fun CalendarSelector(
 ) {
     var startDate by remember { mutableStateOf(startDay) }
     var endDate by remember { mutableStateOf(endDay) }
-    val days = stringArrayResource(R.array.days_short)
     val currentDate = getCurrentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
@@ -138,7 +137,7 @@ fun CalendarSelector(
             ) {
                 repeat(7) {
                     Text(
-                        text = days[it],
+                        text = it.dayShortDisplay(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()

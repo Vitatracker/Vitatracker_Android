@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import app.mybad.notifier.R
+import app.mybad.theme.R
 
 @Composable
 @Preview(showBackground = true)

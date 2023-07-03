@@ -26,10 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
 import app.mybad.notifier.utils.changeDayOfMonth
+import app.mybad.notifier.utils.dayShortDisplay
 import app.mybad.notifier.utils.isLeapYear
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -46,7 +45,6 @@ fun DaySelectorSlider(
     val scope = rememberCoroutineScope()
     val padding =
         PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp / 2 + 20 + 8).dp)
-    val dow = stringArrayResource(R.array.days_short)
 
     HorizontalPager(
         modifier = modifier.fillMaxWidth(),
@@ -88,7 +86,7 @@ fun DaySelectorSlider(
                             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                         )
                         Text(
-                            text = dow[(itsDate?.dayOfWeek?.value ?: 1) - 1],
+                            text = itsDate?.dayShortDisplay() ?: 0.dayShortDisplay(),
                             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                         )
                     }

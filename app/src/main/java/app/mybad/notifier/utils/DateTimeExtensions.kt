@@ -3,6 +3,7 @@ package app.mybad.notifier.utils
 import kotlinx.datetime.Clock.System.now
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -11,8 +12,10 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.Month
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 
 private const val SECONDS_IN_DAY = 86400L
@@ -63,6 +66,32 @@ fun LocalDateTime.toDayDisplay(): String = this.toInstant(TimeZone.UTC).formatDa
 
 fun Instant.formatDay(): String = dayDisplayFormatter.format(this.toJavaInstant())
 
+fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
+    TextStyle.SHORT_STANDALONE,
+    Locale.getDefault()
+).replaceFirstChar { it.uppercase() }.replace(".", "")
+
+fun Int.monthFullDisplay(): String = Month(this).getDisplayName(
+    TextStyle.FULL,
+    Locale.getDefault()
+).replaceFirstChar { it.uppercase() }
+
+fun Int.dayShortDisplay(): String = DayOfWeek(this).getDisplayName(
+    TextStyle.SHORT_STANDALONE,
+    Locale.getDefault()
+)//.replaceFirstChar { it.uppercase() }.replace(".", "")
+
+fun LocalDateTime.dayShortDisplay(): String = this.dayOfWeek.getDisplayName(
+    TextStyle.SHORT_STANDALONE,
+    Locale.getDefault()
+)//.replaceFirstChar { it.uppercase() }.replace(".", "")
+
+fun Int.dayFullDisplay(): String = Month(this).getDisplayName(
+    TextStyle.FULL,
+    Locale.getDefault()
+).replaceFirstChar { it.uppercase() }
+
+// Прибавление
 fun Long.plusDay(): Long = this + SECONDS_IN_DAY
 
 fun Long.plusThreeDay(): Long = this + SECONDS_IN_DAY * 3 + 1
@@ -120,6 +149,7 @@ fun LocalDateTime.changeTime(time: Long) = time.toLocalDateTime().let {
     )
 }
 
+// month: 1..12, days: 1..31
 fun LocalDateTime.changeDayOfMonth(dayOfMonth: Int) = LocalDateTime(
     year = this.year,
     monthNumber = this.monthNumber,
@@ -130,10 +160,22 @@ fun LocalDateTime.changeDayOfMonth(dayOfMonth: Int) = LocalDateTime(
     nanosecond = this.nanosecond,
 )
 
+// month: 1..12
 fun LocalDateTime.changeMonth(month: Int) = LocalDateTime(
     year = this.year,
     monthNumber = month,
     dayOfMonth = this.dayOfMonth,
+    hour = this.hour,
+    minute = this.minute,
+    second = this.second,
+    nanosecond = this.nanosecond,
+)
+
+// month: 1..12, days: 1..31
+fun LocalDateTime.changeMonthAndDay(month: Int, dayOfMonth: Int) = LocalDateTime(
+    year = this.year,
+    monthNumber = month,
+    dayOfMonth = dayOfMonth,
     hour = this.hour,
     minute = this.minute,
     second = this.second,
@@ -252,3 +294,5 @@ val Int.isLeapYear
 
         else -> false
     }
+
+fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)

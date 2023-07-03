@@ -1,6 +1,10 @@
 package app.mybad.notifier.ui.screens.settings.common
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Icon
@@ -11,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 
 @Composable
 fun SettingsQuit(
@@ -28,7 +32,8 @@ fun SettingsQuit(
             imageVector = Icons.Default.ExitToApp,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.outline,
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier
+                .padding(end = 16.dp)
                 .size(24.dp)
         )
         Text(

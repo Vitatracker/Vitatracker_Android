@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.changeTime
 import app.mybad.notifier.utils.toEpochSecond

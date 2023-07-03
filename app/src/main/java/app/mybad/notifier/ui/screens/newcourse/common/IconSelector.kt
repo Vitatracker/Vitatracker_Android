@@ -12,12 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.R
+import app.mybad.notifier.ui.PickColor
+import app.mybad.theme.R
 
 @SuppressLint("Recycle")
 @Composable
@@ -28,8 +28,8 @@ fun IconSelector(
     onSelect: (Int) -> Unit
 ) {
     val icons = integerArrayResource(R.array.icons)
-    val colors = integerArrayResource(R.array.colors)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -38,10 +38,10 @@ fun IconSelector(
         icons.forEachIndexed { index, _ ->
             Surface(
                 shape = CircleShape,
-                color = if (index == selected) Color(colors[color]) else MaterialTheme.colorScheme.background,
+                color = if (index == selected) PickColor.getColor(color) else MaterialTheme.colorScheme.background,
                 border = BorderStroke(
                     1.dp,
-                    if (index == selected) Color(colors[color]) else MaterialTheme.colorScheme.outline
+                    if (index == selected) PickColor.getColor(color) else MaterialTheme.colorScheme.outline
                 ),
                 modifier = Modifier
                     .size(40.dp)

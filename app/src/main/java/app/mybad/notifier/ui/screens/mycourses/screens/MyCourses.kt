@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -27,10 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -39,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.notifier.R
+import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.plusDay
@@ -47,6 +46,7 @@ import app.mybad.notifier.utils.plusThreeDay
 import app.mybad.notifier.utils.secondsToDay
 import app.mybad.notifier.utils.toDateDisplay
 import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.theme.R
 
 @Composable
 fun MyCourses(
@@ -68,21 +68,21 @@ fun MyCourses(
         }
         if (courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
             LazyColumn(Modifier.heightIn(max = height.dp)) {
-                courses.forEach { course ->
-                    item {
-                        CourseItem(
-                            course = course,
-                            med = meds.first { it.id == course.medId },
-                            usages = usages.filter {
-                                it.medId == course.medId &&
-                                        it.useTime >= course.startDate &&
-                                        it.useTime < course.endDate.plusDay()
-                            },
-                            onSelect = onSelect::invoke,
-                        )
-                        Spacer(Modifier.height(16.dp))
-                    }
+                // Отображение текущих курсов таблеток
+                items(courses) { course ->
+                    CourseItem(
+                        course = course,
+                        med = meds.first { it.id == course.medId },
+                        usages = usages.filter { usage ->
+                            usage.medId == course.medId &&
+                                    usage.useTime >= course.startDate &&
+                                    usage.useTime < course.endDate.plusDay()
+                        },
+                        onSelect = onSelect::invoke,
+                    )
+                    Spacer(Modifier.height(16.dp))
                 }
+                // Отображение нового курса
                 courses.forEach { nCourse ->
                     if (
                         nCourse.interval > 0 &&
@@ -90,17 +90,16 @@ fun MyCourses(
                         nCourse.startDate + nCourse.interval < now.plusThreeDay()
                     ) {
                         item {
-                            var n = 0
                             CourseItem(
                                 course = nCourse.copy(
                                     startDate = nCourse.startDate + nCourse.interval,
                                     endDate = nCourse.endDate + nCourse.interval,
                                 ),
                                 med = meds.first { it.id == nCourse.medId },
-                                usages = usages.filter {
-                                    it.medId == nCourse.medId &&
-                                            it.useTime >= nCourse.startDate &&
-                                            it.useTime < nCourse.startDate.plusDay()
+                                usages = usages.filter { usage ->
+                                    usage.medId == nCourse.medId &&
+                                            usage.useTime >= nCourse.startDate &&
+                                            usage.useTime < nCourse.startDate.plusDay()
                                 }.take(10),
                                 startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay()
                                     .toInt(),
@@ -131,7 +130,6 @@ private fun CourseItem(
     Log.w("MC_usages_in_item", "$usages")
     val types = stringArrayResource(R.array.types)
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
-    val colors = integerArrayResource(R.array.colors)
     val itemsCount = if (usages.isNotEmpty()) {
         val firstCount = usages.first().quantity
         val firstTime = usages.first().useTime
@@ -161,7 +159,7 @@ private fun CourseItem(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = Color(colors[med.color]),
+                    color = PickColor.getColor(med.color),
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -214,7 +212,10 @@ private fun CourseItem(
                                 if (usagesCount > 0) {
 //                                Text(text = relations[med.beforeFood], style = Typography.labelMedium)
                                     Text(
-                                        text = "$usagesCount ${stringResource(R.string.mycourse_per_day_listitem)}",
+                                        text = stringResource(
+                                            R.string.mycourse_per_day_listitem,
+                                            usagesCount,
+                                        ),
                                         style = Typography.labelMedium
                                     )
                                 }

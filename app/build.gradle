@@ -16,7 +16,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.80"
 //        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner "app.mybad.data.test.HiltTestRunner"
     }
@@ -41,7 +41,7 @@ android {
 //                    def formattedDate = date.format('yyyy-MM-dd_HH.mm')
 //                    outputFileName = "${variant.name}_${formattedDate}.apk"
 
-                    outputFileName = "debug-apk.apk"
+                    outputFileName = "release-apk.apk"
                 }
             }
 
@@ -75,10 +75,11 @@ kapt {
 
 dependencies {
 
-    implementation project(path: ':data')
-    implementation project(path: ':domain')
-    implementation project(path: ':network')
-    implementation project(path: ':notifications')
+    implementation project(path: ":core:theme")
+    implementation project(path: ":data")
+    implementation project(path: ":domain")
+    implementation project(path: ":network")
+    implementation project(path: ":notifications")
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.activity:activity-compose:1.7.2'
@@ -131,7 +132,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
 
     //sign in with google
-    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    implementation 'com.google.android.gms:play-services-auth:20.6.0'
 
     //sign in with facebook
     implementation 'com.facebook.android:facebook-login:latest.release'
@@ -139,6 +140,9 @@ dependencies {
 
     // Date Time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+    // SplashScreen on devices prior Android 12
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }
 

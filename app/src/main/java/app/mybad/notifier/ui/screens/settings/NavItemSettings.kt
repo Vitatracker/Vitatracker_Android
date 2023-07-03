@@ -1,7 +1,7 @@
 package app.mybad.notifier.ui.screens.settings
 
 import androidx.annotation.StringRes
-import app.mybad.notifier.R
+import app.mybad.theme.R
 
 sealed class NavItemSettings(
     val route: String,

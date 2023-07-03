@@ -2,7 +2,7 @@ package app.mybad.notifier.ui.screens.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import app.mybad.notifier.R
+import app.mybad.theme.R
 
 sealed class NavItemMain(
     val route: String,

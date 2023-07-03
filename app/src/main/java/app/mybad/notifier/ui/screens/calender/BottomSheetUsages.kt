@@ -20,21 +20,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.notifier.R
+import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.toDayDisplay
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
+import app.mybad.theme.R
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.absoluteValue
 
@@ -55,7 +54,7 @@ private fun SingleUsageItem(
         if (now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     val alpha = if ((now - date).absoluteValue > 3600) 0.6f else 1f
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
-    val colors = integerArrayResource(R.array.colors)
+
     Row(
         verticalAlignment = Alignment.Top,
         modifier = modifier
@@ -81,7 +80,7 @@ private fun SingleUsageItem(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = Color(colors[med.color]),
+                    color = PickColor.getColor(med.color),
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -144,8 +143,8 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n =
-                                        if (!isTaken) getCurrentDateTime().toEpochSecond() else -1L
+                                    val n = if (!isTaken) getCurrentDateTime().toEpochSecond()
+                                    else -1L
                                     onTake(n)
                                 }
                         )
@@ -161,8 +160,8 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n =
-                                        if (!isTaken) getCurrentDateTime().toEpochSecond() else -1L
+                                    val n = if (!isTaken) getCurrentDateTime().toEpochSecond()
+                                    else -1L
                                     onTake(n)
                                 }
                         )

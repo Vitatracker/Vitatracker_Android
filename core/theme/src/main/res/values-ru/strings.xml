@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_med_h">Добавить лекарство</string>
+    <string name="add_med_name">Наименование лекарства *</string>
+    <string name="add_med_dose">Дозировка</string>
+    <string name="add_med_unit">Единица измерения</string>
+    <string name="add_med_food_relation">Связь с едой</string>
+    <string name="add_med_settings">Настройки</string>
+    <string name="add_med_form">Форма выпуска</string>
+    <string name="add_notifications_time">Добавить напоминание</string>
+    <string name="add_med_details">Описание препарата</string>
+    <string name="add_med_icon_color">Выберите цвет иконки</string>
+    <string name="add_med_icon">Выберите иконку</string>
+    <string name="enter_med_name">Введите наименование лекарства</string>
+    <string name="navigation_back">Назад</string>
+    <string name="navigation_next">Далее</string>
+
+    <string name="add_course_h">Выбрать время</string>
+    <string name="add_course_notifications_time">Добавить время</string>
+    <string name="add_course_date_from">C </string>
+    <string name="add_course_start_time">Начало приема</string>
+    <string name="add_course_comment">Комментарий</string>
+    <string name="add_next_course_remind_before">Напомнить за, дней</string>
+    <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
+    <string name="add_course_congratulations">Поздравляем! Теперь вы не пропустите прием</string>
+    <string name="add_course_months">Месяцы</string>
+    <string name="add_course_days">Дни</string>
+    <string name="add_next_course_interval">Начать следующий курс через</string>
+    <string name="add_course_repeatable">Повторяющийся курс</string>
+    <string name="add_course_end_time">Окончание приема</string>
+    <string name="medication_regime">График приема</string>
+    <string name="add_course_reminder">Напомнить о новом курсе</string>
+    <string name="add_next_course_remind_time">Время напоминания</string>
+
+    <!--START SCREEN-->
+    <string name="start_screen_welcome">Добро пожаловать</string>
+    <string name="start_screen_to">в </string>
+    <string name="start_screen_recomendation_1">Перед использованием приложения, </string>
+    <string name="start_screen_recomendation_2">Вам нужно авторизоваться</string>
+    <string name="start_screen_go">Продолжить</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Логин</string>
+    <string name="authorization_screen_registration">Регистрация</string>
+    <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Профиль</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_quit">Выйти</string>
+    <string name="settings_delete_account">Удалить учетную запись</string>
+    <string name="settings_change_password">Изменить пароль</string>
+    <string name="settings_cancel">Отменить</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_current_password">Текущий пароль</string>
+    <string name="settings_new_password">Новый пароль</string>
+    <string name="settings_repeat_new_password">Повторите новый пароль</string>
+    <string name="navigation_settings_main">Настройки</string>
+    <string name="navigation_settings_profile">Профиль</string>
+    <string name="settings_enable_notifications">Уведомления</string>
+    <string name="settings_enable_notifications_description">Включает и выключает все уведомления от приложения. Не влияет на индивидуальные настройки курсов.</string>
+    <string name="settings_enable_float_notifications">Плавающие уведомления</string>
+    <string name="settings_enable_float_notifications_description">Уведомления будут всплывать в верхней части экрана поверх всех открытых приложений и оставаться там, пока вы не отреагируете.</string>
+    <string name="settings_enable_medication_control">Контроль приёма</string>
+    <string name="settings_enable_medication_control_description">Включает контроль приема медикаметов в конце дня - вы будете должны повторно отметить все приёмы выших медикаментов.</string>
+    <string name="settings_enable_next_course_start">Начала следующих курсов</string>
+    <string name="settings_enable_next_course_start_description">Включает уведомления о началах следующих курсов. Не влияет на индивидуальные настройки курсов.</string>
+    <string name="settings_user_name">Имя</string>
+    <string name="settings_user_email">Электронная почта</string>
+    <string name="settings_leave_your_wishes">Оставить свои пожелания</string>
+    <string name="settings_current_build_year">Vitatracker 2023</string>
+    <string name="settings_user_agreement">Пользовательское соглашение</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_our_contacts">Наши контакты</string>
+    <string name="settings_contacts_back_end_team">Back-end команда:</string>
+    <string name="settings_contacts_front_end_team">Front-end команда:</string>
+    <string name="settings_contacts_android_team">Android команда:</string>
+    <string name="version_code">"Версия "</string>1
+    <string name="text_continue">Продолжить</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Вход</string>
+    <string name="login_email">Электронная почта</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_password_confirm">Подверждение пароля</string>
+    <string name="login_forgot_password">Забыли пароль?</string>
+    <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
+    <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Не беспокойтесь. Такое случается.</string>
+    <string name="recovery_text_2">пожалуйста введите ваш E-mail,</string>
+    <string name="recovery_text_3">связанный с вашей учетной записью</string>
+
+    <!--NEW PASSWORD-->
+
+    <!--NAVIGATION MAIN-->
+    <string name="navigation_courses">Курсы</string>
+    <string name="navigation_add">Добавить</string>
+    <string name="navigation_notifications">Уведомления</string>
+    <string name="navigation_calendar">Календарь</string>
+
+    <string name="my_course_h">Мои лекарства</string>
+    <string name="mycourse_duration">Продолжительность</string>
+    <string name="mycourse_dosage_and_usage">Дозировка и приём</string>
+    <string name="mycourse_per_day">Приёмов в день</string>
+    <string name="mycourse_delete">Удалить</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">Мой календарь</string>
+    <string name="main_screen_text_category">Лекарства</string>
+    <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
+    <string name="add_notifications_time_set">Настроить напоминание *</string>
+    <string name="mycourse_remaining">Старт через %s д.</string>
+    <string name="mycourse_per_day_listitem">%1$d в день</string>
+    <string name="mycourse_reminders">Напоминания *</string>
+    <string name="mycourse_edit_icon">Edit icon</string>
+    <string name="mycourse_edit_icon_color">Edit icon color</string>
+
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Дневник напоминаний</string>
+    <string name="main_screen_meds_clear_start">Давайте начнем!</string>
+    <string name="main_screen_meds_clear_add">Добавьте первое лекарство</string>
+    <string name="add_notifications_choose_time">Выберите время</string>
+    <string name="add_med_error_empty_name">Наименование не заполнено</string>
+
+    <!--LEAVE YOUR WISHES-->
+    <string name="wishes_text_header">Оставьте свои пожелания</string>
+    <string name="wishes_text_main">Если у вас есть пожелания по улучшению приложения или вы хотите оставить отзыв, пожалуйста, свяжитесь с нами по указанному емейлу:</string>
+    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
+
+    <!--notifications-->
+    <string name="notifications_channel_description">Уведомления о приемах лекарств</string>
+    <string name="notifications_time_to_use">Время приема лекарства!</string>
+    <string name="notifications_text_template">Примите %1$s!\n%2$d, %3$s</string>
+    <string name="notifications_action_take">Take</string>
+    <string name="notifications_action_delay">Delay</string>
+    <string name="notifications_new_course_start">New course starts!</string>
+    <string name="notifications_new_course_start_text_template">Новый курс начинается %s!\n Препарат: %s, %d %s, %s</string>
+
+    <!-- units-единицы   -->
+    <string name="units_ug">мкг</string>
+    <string name="units_mg">мг</string>
+    <string name="units_g">г</string>
+    <string name="units_ml">мл</string>
+    <string name="units_percent">%</string>
+
+    <!-- food_relations-пищевые отношения   -->
+    <string name="food_relations_before_meals">Перед едой</string>
+    <string name="food_relations_not_related">Неважно</string>
+    <string name="food_relations_during_meals">Во время еды</string>
+    <string name="food_relations_after_meals">После еды</string>
+
+    <!-- regime-режим   -->
+    <string name="regime_every_day">Каждый день</string>
+    <string name="regime_every_other_day">Через день</string>
+    <string name="regime_every_two_days">Каждые 2 дня</string>
+    <string name="regime_every_three_days">Каждые 3 дня</string>
+
+    <!-- types   -->
+    <string name="types_tablet">Таблетка</string>
+    <string name="types_pill">Капсула</string>
+    <string name="types_inhalator">Ингалятор</string>
+    <string name="types_injection">Инъекция</string>
+    <string name="types_drops">Капли</string>
+    <string name="types_solution">Раствор</string>
+    <string name="types_suppository">Свеча</string>
+    <string name="types_syrup">Сироп</string>
+    <string name="types_spray">Спрей</string>
+    <string name="types_suspension">Суспензия</string>
+
+</resources>

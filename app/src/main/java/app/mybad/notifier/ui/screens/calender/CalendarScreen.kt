@@ -31,20 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.atStartOfMonth
+import app.mybad.notifier.utils.dayShortDisplay
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.minusDays
 import app.mybad.notifier.utils.plusDays
@@ -131,7 +131,6 @@ private fun CalendarScreenItem(
     usages: List<UsageCommonDomainModel>,
     onSelect: (LocalDateTime?) -> Unit
 ) {
-    val days = stringArrayResource(R.array.days_short)
     val currentDate = getCurrentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(7) { null }
@@ -179,7 +178,7 @@ private fun CalendarScreenItem(
             ) {
                 repeat(7) {
                     Text(
-                        text = days[it].uppercase(),
+                        text = it.dayShortDisplay().uppercase(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(40.dp)
                     )
@@ -270,13 +269,19 @@ private fun collectUsagesToday(
     date: LocalDateTime?,
     usages: List<UsageCommonDomainModel>,
 ): List<UsageCommonDomainModel> {
-    Log.w("VTTAG", "CalendarScreen::collectUsagesToday: date=${date?.toDateFullDisplay()} usages=${usages.size}")
+    Log.w(
+        "VTTAG",
+        "CalendarScreen::collectUsagesToday: date=${date?.toDateFullDisplay()} usages=${usages.size}"
+    )
 
     if (date == null) return usages
     val fromTime = date.atStartOfDay().toEpochSecond(isUTC = false)
     val toTime = date.atEndOfDay().toEpochSecond(isUTC = false)
     return usages.filter { it.useTime in fromTime..toTime }.also {
-        Log.w("VTTAG", "CalendarScreen::collectUsagesToday: date=${date.toDateFullDisplay()} usages=${it.size}")
+        Log.w(
+            "VTTAG",
+            "CalendarScreen::collectUsagesToday: date=${date.toDateFullDisplay()} usages=${it.size}"
+        )
 
     }
 }

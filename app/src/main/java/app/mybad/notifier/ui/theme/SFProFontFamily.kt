@@ -3,7 +3,7 @@ package app.mybad.notifier.ui.theme
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import app.mybad.notifier.R.*
+import app.mybad.theme.R.font
 
 val SFProFontFamily = FontFamily(
 //    Font(font.sfpro_ultralight_italic, FontWeight.ExtraLight),

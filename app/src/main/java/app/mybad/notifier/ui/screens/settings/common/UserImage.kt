@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest

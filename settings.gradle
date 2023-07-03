@@ -15,6 +15,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Vitatracker"
 include ':app'
+include ':core:theme'
 include ':data'
 include ':domain'
 include ':notifications'

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.notifier.ui.screens.settings.common.DecoratedTextInput
 import app.mybad.notifier.ui.screens.settings.common.UserImage
-import app.mybad.notifier.R
+import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.NavigationRow
 
 @Composable

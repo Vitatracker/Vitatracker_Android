@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MyBAD" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.AppSplashScreen" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_screen_icon_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.MyBAD</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+    </style>
+
+</resources>

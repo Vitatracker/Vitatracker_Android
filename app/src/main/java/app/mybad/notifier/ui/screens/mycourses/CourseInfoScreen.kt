@@ -40,7 +40,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.mybad.domain.models.course.CourseDomainModel
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.notifier.R
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
@@ -55,6 +54,7 @@ import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.atStartOfDaySystemToUTC
 import app.mybad.notifier.utils.toDateFullDisplay
 import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.theme.R
 
 private val usagesPattern = listOf<Pair<Long, Int>>(
     Pair(1678190400L, 1),
@@ -80,7 +80,7 @@ fun CourseInfoScreen(
     val rel = stringResource(R.string.add_med_food_relation)
     var medInternal by remember { mutableStateOf(med) }
     var courseInternal by remember { mutableStateOf(course) }
-    var patternInternal by remember { mutableStateOf(usagePattern) }
+    val patternInternal by remember { mutableStateOf(usagePattern) }
 
     val startLabel = stringResource(R.string.add_course_start_time)
     val endLabel = stringResource(R.string.add_course_end_time)
