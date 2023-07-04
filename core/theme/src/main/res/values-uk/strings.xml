@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_med_h">Додайте новий препарат</string>
+    <string name="add_med_name">Найменування препаратів *</string>
+    <string name="add_med_dose">Дозування</string>
+    <string name="add_med_unit">Одиниця виміру</string>
+    <string name="add_med_food_relation">Зв\'язок із їжею</string>
+    <string name="add_med_settings">Налаштування</string>
+    <string name="add_med_form">Форма випуску</string>
+    <string name="add_notifications_time">Додати нагадування</string>
+    <string name="add_med_details">Опис препарату</string>
+    <string name="add_med_icon_color">Виберіть колір іконки</string>
+    <string name="add_med_icon">Виберіть іконку</string>
+    <string name="enter_med_name">Введіть найменування препарату</string>
+    <string name="navigation_back">Назад</string>
+    <string name="navigation_next">Далі</string>
+
+    <string name="add_course_h">Вибрати час</string>
+    <string name="add_course_notifications_time">Додати час</string>
+    <string name="add_course_date_from">З </string>
+    <string name="add_course_start_time">Початок прийому</string>
+    <string name="add_course_comment">Коментар</string>
+    <string name="add_next_course_remind_before">Нагадати за, днів</string>
+    <string name="add_med_error_unfilled_fields">Потрібно заповнити усі поля</string>
+    <string name="add_course_congratulations">Вітаємо! Тепер ви не пропустите прийом</string>
+    <string name="add_course_months">Місяці</string>
+    <string name="add_course_days">Дні</string>
+    <string name="add_next_course_interval">Почати наступний курс через</string>
+    <string name="add_course_repeatable">Курс який повторюється</string>
+    <string name="add_course_end_time">Закінчення прийому</string>
+    <string name="medication_regime">Графік прийому</string>
+    <string name="add_course_reminder">Нагадати про новий курс</string>
+    <string name="add_next_course_remind_time">Час нагадування</string>
+
+    <!--START SCREEN-->
+    <string name="start_screen_welcome">Ласкаво просимо</string>
+    <string name="start_screen_to">у </string>
+    <string name="start_screen_recomendation_1">Перед використанням програми, </string>
+    <string name="start_screen_recomendation_2">Вам потрібно авторизуватись</string>
+    <string name="start_screen_go">Продовжити</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Логін</string>
+    <string name="authorization_screen_registration">Реєстрація</string>
+    <string name="authorization_screen_text_recomendation">Увійдіть за допомогою</string>
+
+    <!--SETTINGS-->
+    <string name="settings_profile">Профіль</string>
+    <string name="settings_notifications">Повідомлення</string>
+    <string name="settings_about">Про додаток</string>
+    <string name="settings_quit">Вийти</string>
+    <string name="settings_delete_account">Видалити обліковий запис</string>
+    <string name="settings_change_password">Змінити пароль</string>
+    <string name="settings_cancel">Скасувати</string>
+    <string name="settings_save">Зберегти</string>
+    <string name="settings_current_password">Поточний пароль</string>
+    <string name="settings_new_password">Новий пароль</string>
+    <string name="settings_repeat_new_password">Повторіть новий пароль</string>
+    <string name="navigation_settings_main">Налаштування</string>
+    <string name="navigation_settings_profile">Профіль</string>
+    <string name="settings_enable_notifications">Глобальні сповіщення</string>
+    <string name="settings_enable_notifications_description">Вмикає та вимикає всі повідомлення від додатку. Не впливає на індивідуальні налаштування курсів.</string>
+    <string name="settings_enable_float_notifications">Плаваючі повідомлення</string>
+    <string name="settings_enable_float_notifications_description">Повідомлення будуть спливати у верхній частині екрана поверх усіх відкритих додатків та залишатися там, доки ви не відреагуєте.</string>
+    <string name="settings_enable_medication_control">Контроль прийому</string>
+    <string name="settings_enable_medication_control_description">Вмикає контроль прийому медикаметів наприкінці дня - ви повинні повторно відзначити усі прийоми наведених медикаментів.</string>
+    <string name="settings_enable_next_course_start">Початок наступного курсу</string>
+    <string name="settings_enable_next_course_start_description">Це сповіщення інформуватиме вас, коли один із ваших курсів наближається до дати початку.</string>
+    <string name="settings_user_name">Ім\'я</string>
+    <string name="settings_user_email">Електронна пошта</string>
+    <string name="settings_leave_your_wishes">Залишити свої побажання</string>
+    <string name="settings_user_agreement">Угода користувача</string>
+    <string name="settings_privacy_policy">Політика конфіденційності</string>
+    <string name="settings_our_contacts">Наші контакти</string>
+    <string name="settings_contacts_back_end_team">Команда розробників Back-end:</string>
+    <string name="settings_contacts_front_end_team">Команда розробників Front-end:</string>
+    <string name="settings_contacts_android_team">Команда розробників Android:</string>
+    <string name="version_code">"Версія "</string>1
+    <string name="text_continue">Продовжити</string>
+
+    <!--LOGIN-->
+    <string name="sign_in">Вхід</string>
+    <string name="login_email">Електронна пошта</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_password_confirm">Підтвердження паролю</string>
+    <string name="login_forgot_password">Забули пароль?</string>
+    <string name="login_agree_policy_text">Натискаючи кнопку "Увійти", ви погоджуєтесь з</string>
+    <string name="login_text_privacy_policy">Політикою конфіденційності</string>
+
+    <!--RECOVERY PASSWORD-->
+    <string name="recovery_text_1">Не турбуйтесь. Таке трапляється.</string>
+    <string name="recovery_text_2">будь ласка, введіть ваш E-mail,</string>
+    <string name="recovery_text_3">пов\'язаний з вашим обліковим записом</string>
+
+    <!--NEW PASSWORD-->
+
+    <!--NAVIGATION MAIN-->
+    <string name="navigation_courses">Курси</string>
+    <string name="navigation_add">Додати</string>
+    <string name="navigation_notifications">Повідомлення</string>
+    <string name="navigation_calendar">Календар</string>
+
+    <string name="my_course_h">Мої препарати</string>
+    <string name="mycourse_duration">Тривалість</string>
+    <string name="mycourse_dosage_and_usage">Дозування та прийом</string>
+    <string name="mycourse_per_day">Прийомів на день</string>
+    <string name="mycourse_delete">Видалити</string>
+
+    <!--CALENDAR -->
+    <string name="calendar_h">Мій календар</string>
+    <string name="main_screen_text_category">Препарати</string>
+    <string name="add_notifications_already_exist">Нагадування на цей час вже існує!</string>
+    <string name="add_notifications_time_set">Налаштувати нагадування *</string>
+    <string name="mycourse_remaining">Старт через %s д.</string>
+    <string name="mycourse_per_day_listitem">%1$d на день</string>
+    <string name="mycourse_reminders">Нагадування *</string>
+
+    <!--MAIN SCREEN-->
+    <string name="main_screen_top_bar_name">Щоденник нагадувань</string>
+    <string name="main_screen_meds_clear_start">Починаємо!</string>
+    <string name="main_screen_meds_clear_add">Додайте перший препарат</string>
+    <string name="add_notifications_choose_time">Виберіть час</string>
+    <string name="add_med_error_empty_name">Назва не заповнена</string>
+
+    <!--LEAVE YOUR WISHES-->
+    <string name="wishes_text_header">Залишайте свої побажання</string>
+    <string name="wishes_text_main">Якщо у вас є побажання щодо покращення нашого додатку або залишити відгук, будь ласка, зв\'яжіться з нами за вказаним e-mail:</string>
+
+    <!--notifications-->
+    <string name="notifications_channel_description">Повідомлення про прийом препарату</string>
+    <string name="notifications_time_to_use">Час прийому препарату!</string>
+    <string name="notifications_text_template">Прийміть %1$s!\n%2$d, %3$s</string>
+    <string name="notifications_action_take">Брати</string>
+    <string name="notifications_action_delay">Затримка</string>
+    <string name="notifications_new_course_start">Починається новий курс!</string>
+    <string name="notifications_new_course_start_text_template">Новий курс починається %s!\n Препарат: %s, %d %s, %s</string>
+
+    <!-- units-единицы   -->
+    <string name="units_ug">мкг</string>
+    <string name="units_mg">мг</string>
+    <string name="units_g">г</string>
+    <string name="units_ml">мл</string>
+    <string name="units_percent">%</string>
+
+    <!-- food_relations-пищевые отношения   -->
+    <string name="food_relations_before_meals">Перед їжею</string>
+    <string name="food_relations_not_related">Неважливо</string>
+    <string name="food_relations_during_meals">Під час їжі</string>
+    <string name="food_relations_after_meals">Після їжі</string>
+
+    <!-- regime-режим   -->
+    <string name="regime_every_day">Кожен день</string>
+    <string name="regime_every_other_day">Через день</string>
+    <string name="regime_every_two_days">Кожні 2 дні</string>
+    <string name="regime_every_three_days">Кожні 3 дні</string>
+
+    <!-- types   -->
+    <string name="types_tablet">Таблетка</string>
+    <string name="types_pill">Капсула</string>
+    <string name="types_inhalator">Інгалятор</string>
+    <string name="types_injection">Ін\'єкція</string>
+    <string name="types_drops">Краплі</string>
+    <string name="types_solution">Розчин</string>
+    <string name="types_suppository">Свічка</string>
+    <string name="types_syrup">Сироп</string>
+    <string name="types_spray">Спрей</string>
+    <string name="types_suspension">Суспензія</string>
+
+</resources>

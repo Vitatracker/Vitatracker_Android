@@ -69,7 +69,6 @@
     <string name="settings_user_name">Имя</string>
     <string name="settings_user_email">Электронная почта</string>
     <string name="settings_leave_your_wishes">Оставить свои пожелания</string>
-    <string name="settings_current_build_year">Vitatracker 2023</string>
     <string name="settings_user_agreement">Пользовательское соглашение</string>
     <string name="settings_privacy_policy">Политика конфиденциальности</string>
     <string name="settings_our_contacts">Наши контакты</string>
@@ -115,8 +114,6 @@
     <string name="mycourse_remaining">Старт через %s д.</string>
     <string name="mycourse_per_day_listitem">%1$d в день</string>
     <string name="mycourse_reminders">Напоминания *</string>
-    <string name="mycourse_edit_icon">Edit icon</string>
-    <string name="mycourse_edit_icon_color">Edit icon color</string>
 
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
@@ -128,15 +125,14 @@
     <!--LEAVE YOUR WISHES-->
     <string name="wishes_text_header">Оставьте свои пожелания</string>
     <string name="wishes_text_main">Если у вас есть пожелания по улучшению приложения или вы хотите оставить отзыв, пожалуйста, свяжитесь с нами по указанному емейлу:</string>
-    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
 
     <!--notifications-->
     <string name="notifications_channel_description">Уведомления о приемах лекарств</string>
     <string name="notifications_time_to_use">Время приема лекарства!</string>
     <string name="notifications_text_template">Примите %1$s!\n%2$d, %3$s</string>
-    <string name="notifications_action_take">Take</string>
-    <string name="notifications_action_delay">Delay</string>
-    <string name="notifications_new_course_start">New course starts!</string>
+    <string name="notifications_action_take">Брать</string>
+    <string name="notifications_action_delay">Отсрочка</string>
+    <string name="notifications_new_course_start">Старт нового курса!</string>
     <string name="notifications_new_course_start_text_template">Новый курс начинается %s!\n Препарат: %s, %d %s, %s</string>
 
     <!-- units-единицы   -->

@@ -90,10 +90,10 @@
     <string name="settings_user_name">Name</string>
     <string name="settings_user_email">Email</string>
     <string name="settings_leave_your_wishes">Leave your wishes</string>
-    <string name="settings_privacy_policy">Privacy policy</string>
     <string name="settings_user_agreement">User agreement</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
     <string name="settings_our_contacts">Our contacts</string>
-    <string name="settings_current_build_year">Vitatracker 2023</string>
+    <string name="settings_current_build_year" translatable="false">Vitatracker 2023</string>
     <string name="settings_contacts_back_end_team">Back-end team:</string>
     <string name="settings_contacts_front_end_team">Front-end team:</string>
     <string name="settings_contacts_android_team">Android team:</string>
@@ -124,8 +124,8 @@
     <string name="mycourse_remaining">Remains days: %s</string>
     <string name="mycourse_per_day_listitem">%1$d per day</string>
     <string name="mycourse_reminders">Reminders *</string>
-    <string name="mycourse_edit_icon">Edit icon</string>
-    <string name="mycourse_edit_icon_color">Edit icon color</string>
+    <string name="mycourse_edit_icon" translatable="false">Edit icon</string>
+    <string name="mycourse_edit_icon_color" translatable="false">Edit icon color</string>
     <string name="main_screen_meds_clear_start">Lets start!</string>
     <string name="main_screen_meds_clear_add">Add the first medicines</string>
     <string name="add_notifications_choose_time">Choose time</string>
@@ -134,7 +134,7 @@
     <!--LEAVE YOUR WISHES-->
     <string name="wishes_text_header">Leave your wishes</string>
     <string name="wishes_text_main">If you have any suggestions for improving the application or want to leave feedback, please contact us at the email address provided:</string>
-    <string name="wishes_text_email">support_vitatracker@gmail.com</string>
+    <string name="wishes_text_email" translatable="false">support_vitatracker@gmail.com</string>
 
     <!--notifications-->
     <string name="notifications_channel_description">Notifications from Vitatracker med reminder</string>
