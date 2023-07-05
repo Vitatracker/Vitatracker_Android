@@ -212,7 +212,7 @@ fun DailyUsages(
                         .size(20.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = MutableInteractionSource(),
+                            interactionSource = remember { MutableInteractionSource() },
                             onClick = onDismiss::invoke
                         )
                 )

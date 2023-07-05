@@ -51,6 +51,7 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
 
@@ -82,7 +83,7 @@ fun AddNotificationsMainScreen(
                 forms = forms,
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(getCurrentDateTime().toEpochSecond(), 1))
+                        add(Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1))
                     }
                 }
             )

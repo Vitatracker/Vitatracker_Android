@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -42,15 +43,16 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.theme.textColorFirst
+import app.mybad.notifier.ui.theme.textColorSecond
+import app.mybad.notifier.ui.theme.textColorThird
+import app.mybad.notifier.utils.TIME_IS_UP
 import app.mybad.notifier.utils.changeDate
-import app.mybad.notifier.utils.changeMonth
-import app.mybad.notifier.utils.changeMonthAndDay
 import app.mybad.notifier.utils.dayShortDisplay
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.getDaysOfMonth
 import app.mybad.notifier.utils.monthShortDisplay
 import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toLocalDateTime
 import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
 import kotlinx.coroutines.delay
@@ -178,7 +180,7 @@ private fun MainScreenMonthPager(
                     .clickable {
                         scope.launch { stateMonth.animateScrollToPage(month) }
                     },
-                fontWeight = getFontStyle(stateMonth.currentPage, month),
+                fontWeight = getFontWeight(stateMonth.currentPage, month),
                 maxLines = 1,
                 textAlign = TextAlign.Center
             )
@@ -207,7 +209,7 @@ private fun MainScreenWeekPager(
     val date by remember { mutableStateOf(currentDate) }
     val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1) {
         // количество дней в месяце с учетом высокосного года
-        date.changeMonth(monthState + 1).getDaysOfMonth()
+        date.changeDate(month = monthState + 1).getDaysOfMonth()
     }
     val scope = rememberCoroutineScope()
 
@@ -249,8 +251,9 @@ private fun MainScreenWeekPager(
                 verticalArrangement = Arrangement.Center
             ) {
                 countDay = page + 1
-                shortNameOfDay = currentDate.changeMonthAndDay(monthState + 1, page + 1)
-                    .dayShortDisplay()
+                shortNameOfDay =
+                    currentDate.changeDate(month = monthState + 1, dayOfMonth = page + 1)
+                        .dayShortDisplay()
 
                 Text(
                     text = AnnotatedString(countDay.toString()),
@@ -295,28 +298,22 @@ private fun MainScreenLazyMedicines(
         "VTTAG",
         "StartMainScreen::MainScreenLazyMedicines: sizeUsages=$sizeUsages usages=${usages.size}"
     )
-//    if (sizeUsages == 0) {
-//        MainScreenMedsClear()
-//    } else {
     if (meds.isNotEmpty() && usages.isNotEmpty()) {
         MainScreenTextCategory()
         Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}")
         LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
-            usages.sortedBy { it.useTime }.forEach { usage ->
-                item {
-                    MainScreenCourseItem(
-                        usage = usage,
-                        med = meds.firstOrNull { it.id == usage.medId } ?: MedDomainModel(),
-                        usageCommon = usageCommon,
-                        setUsageFactTime = setUsageFactTime,
-                        uiState = uiState,
-                        changeData = changeData
-                    )
-                }
+            items(usages.sortedBy { it.useTime }) { usage ->
+                MainScreenCourseItem(
+                    usage = usage,
+                    med = meds.firstOrNull { it.id == usage.medId } ?: MedDomainModel(),
+                    usageCommon = usageCommon,
+                    setUsageFactTime = setUsageFactTime,
+                    uiState = uiState,
+                    changeData = changeData
+                )
             }
         }
     } else MainScreenMedsClear()
-//    }
 }
 
 @Composable
@@ -381,18 +378,21 @@ private fun MainScreenCourseItem(
         shape = RoundedCornerShape(10.dp),
         border = setBorderColorCard(
             usageTime = usage.useTime,
-            usage.factUseTime.toInt() != -1
+            isDone = usage.factUseTime != -1L
         ),
         color = setBackgroundColorCard(
             usageTime = usage.useTime,
-            usage.factUseTime.toInt() != -1
+            isDone = usage.factUseTime != -1L
         ),
     ) {
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MainScreenTimeCourse(usageTime = usage.useTime, usage.factUseTime.toInt() != -1)
+            MainScreenTimeCourse(
+                usageTime = usage.useTime,
+                isDone = usage.factUseTime != -1L
+            )
             MainScreenFormCourseHeader(
                 med = med,
                 usages = usage,
@@ -414,12 +414,13 @@ private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
         color = setBackgroundColorTime(usageTime = usageTime, isDone = isDone)
     ) {
         Text(
+            text = usageTime.toTimeDisplay(),
             modifier = Modifier
                 .padding(8.dp),
-            text = usageTime.toTimeDisplay(),
-            textAlign = TextAlign.Justify,
+            color = setTextColorTime(usageTime = usageTime, isDone = isDone),
             fontSize = 20.sp,
-            color = setTextColorTime(usageTime = usageTime, isDone = isDone)
+            textAlign = TextAlign.Justify,
+            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -439,73 +440,68 @@ private fun MainScreenFormCourseHeader(
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
 
-    Surface(
+    Row(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(10.dp),
-        color = setBackgroundColorCard(
-            usageTime = usageTime,
-            isDone = usages.factUseTime.toInt() != -1
-        )
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.padding(start = 8.dp)) {
-                Row(modifier = Modifier) {
-                    Text(
-                        text = "${med.name}",
-                        style = Typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Icon(
-                        painter = painterResource(r.getResourceId(med.icon, 0)),
-                        contentDescription = null,
-                        modifier = Modifier.size(25.dp),
-                        tint = PickColor.getColor(med.color)
-                    )
-                }
-                Row(
-                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-                ) {
-                    Text(
-                        text = "${med.dose} ${types[med.type]}",
-                        style = Typography.labelMedium
-                    )
-                    Text(
-                        text = "|",
-                        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                        style = Typography.labelMedium,
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
-                    Text(
-                        text = relations[med.beforeFood],
-                        style = Typography.labelMedium,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                }
+        Column(modifier = Modifier.padding(start = 8.dp)) {
+            Row(modifier = Modifier) {
+                // название препарата
+                Text(
+                    text = "${med.name}",
+                    style = Typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                // иконка препарата
+                Icon(
+                    painter = painterResource(r.getResourceId(med.icon, 0)),
+                    contentDescription = null,
+                    modifier = Modifier.size(25.dp),
+                    tint = PickColor.getColor(med.color)
+                )
             }
-            MainScreenButtonAccept(
-                usageTime = usageTime,
-                isDone = usages.factUseTime.toInt() != -1,
-                setUsageFactTime = {
-                    usageCommon.value = usages.copy(
-                        factUseTime = if (usages.factUseTime.toInt() == -1) {
-                            getCurrentDateTime().toEpochSecond()
-                        } else {
-                            -1
-                        }
-                    )
-                    setUsageFactTime(
-                        usageCommon.value
-                    )
-                    changeData(uiState)
-                }
-            )
+            Row(
+                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+            ) {
+                Text(
+                    text = "${med.dose} ${types[med.type]}",
+                    style = Typography.labelMedium
+                )
+                Text(
+                    text = "|",
+                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                    style = Typography.labelMedium,
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
+                Text(
+                    text = relations[med.beforeFood],
+                    style = Typography.labelMedium,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
         }
+        MainScreenButtonAccept(
+            usageTime = usageTime,
+            isDone = usages.factUseTime.toInt() != -1,
+            setUsageFactTime = {
+                usageCommon.value = usages.copy(
+                    factUseTime = if (usages.factUseTime == -1L) {
+                        getCurrentDateTime().toEpochSecond()
+                    } else {
+                        -1
+                    }
+                )
+                setUsageFactTime(
+                    usageCommon.value
+                )
+                changeData(uiState)
+            }
+        )
     }
 }
 
@@ -515,9 +511,7 @@ private fun MainScreenButtonAccept(
     isDone: Boolean,
     setUsageFactTime: () -> Unit
 ) {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
+    val nowDate = getCurrentDateTime().toEpochSecond()
 
     val tint: Color
     val painter: Painter
@@ -528,17 +522,17 @@ private fun MainScreenButtonAccept(
             tint = MaterialTheme.colorScheme.primary
         }
 
-        nowDate > usageDate -> {
-            painter = painterResource(R.drawable.undone)
-            tint = MaterialTheme.colorScheme.error
-        }
-
-        nowDate < usageDate -> {
+        nowDate < usageTime -> {
             painter = painterResource(R.drawable.undone)
             tint = MaterialTheme.colorScheme.primary
         }
 
-        nowTime > usageTime + 3600 -> {
+        nowDate > usageTime + TIME_IS_UP -> {
+            painter = painterResource(R.drawable.undone)
+            tint = MaterialTheme.colorScheme.error
+        }
+
+        nowDate > usageTime -> {
             painter = painterResource(R.drawable.undone)
             tint = MaterialTheme.colorScheme.error
         }
@@ -563,94 +557,86 @@ private fun MainScreenButtonAccept(
     )
 }
 
-@Composable
-private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
-
-    return when {
-        isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowDate > usageDate -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
-        nowDate < usageDate -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowTime > usageTime + 3600 -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
-        else -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-    }
-}
-
-private fun getFontStyle(page: Int, month: Int) = when (page) {
+private fun getFontWeight(page: Int, month: Int) = when (page) {
     month -> FontWeight.Bold
-    month + 1 -> FontWeight.Normal
-    month - 1 -> FontWeight.Normal
+    (month + 1), (month - 1) -> FontWeight.Normal
     else -> FontWeight.Normal
 }
 
 @Composable
 private fun getMonthColor(page: Int, month: Int) = when (page) {
     month -> MaterialTheme.colorScheme.primary
-    month + 1 -> Color.Black
-    month - 1 -> Color.Black
-    month + 2 -> Color.Gray
-    month - 2 -> Color.Gray
-    else -> Color.LightGray
+    (month + 1), (month - 1) -> textColorFirst
+    (month + 2), (month - 2) -> textColorSecond
+    else -> textColorThird
 }
 
+// цвет рамки вокруг карточки
 @Composable
-private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
-
+private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
+    val nowDate = getCurrentDateTime().toEpochSecond()
+//TODO("проверить тут время, возможно в usageTime подменять дату или нет")
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowDate > usageDate -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
-        nowDate < usageDate -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowTime > usageTime + 3600 -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        nowDate < usageTime -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowDate > usageTime + TIME_IS_UP -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        nowDate > usageTime -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
         else -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
 }
 
+// цвет фона карточки 5%
 @Composable
-private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
+private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
+    val nowDate = getCurrentDateTime().toEpochSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
-        nowDate > usageDate -> MaterialTheme.colorScheme.errorContainer
-        nowDate < usageDate -> MaterialTheme.colorScheme.primaryContainer
-        nowTime > usageTime + 3600 -> MaterialTheme.colorScheme.errorContainer
+        nowDate < usageTime -> MaterialTheme.colorScheme.primaryContainer
+        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.errorContainer
+        nowDate > usageTime -> MaterialTheme.colorScheme.errorContainer
         else -> MaterialTheme.colorScheme.primaryContainer
-    }
+    }.copy(alpha = 0.05f)
 }
 
+// цвет рамки вокруг времени
 @Composable
-private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
-//TODO("поменять цвета из темы")
+private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
+    val nowDate = getCurrentDateTime().toEpochSecond()
+
     return when {
-        isDone -> Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
-        nowDate > usageDate -> Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
-        nowDate < usageDate -> Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
-        nowTime > usageTime + 3600 -> Color(0xFFF2B2B2) // MaterialTheme.colorScheme.errorContainer
-        else -> Color(0xFFF9FAFE) // MaterialTheme.colorScheme.primaryContainer
+        isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowDate < usageTime -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
+        nowDate > usageTime + TIME_IS_UP -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        nowDate > usageTime -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
+        else -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
 }
 
+// цвет фона времени 10% в карточке
+@Composable
+private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
+    val nowDate = getCurrentDateTime().toEpochSecond()
+
+    return when {
+        isDone -> MaterialTheme.colorScheme.primaryContainer
+        nowDate < usageTime -> MaterialTheme.colorScheme.primaryContainer
+        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.errorContainer
+        nowDate > usageTime -> MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.primaryContainer
+    }.copy(alpha = 0.1f)
+}
+
+// цвет времени в карточке
 @Composable
 private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime()
-    val nowTime = nowDate.toEpochSecond()
-    val usageDate = usageTime.toLocalDateTime()
+    val nowDate = getCurrentDateTime().toEpochSecond()
 
     return when {
-        isDone -> MaterialTheme.colorScheme.primary
-        nowDate > usageDate -> MaterialTheme.colorScheme.error
-        nowDate < usageDate -> MaterialTheme.colorScheme.primary
-        nowTime > usageTime + 3600 -> MaterialTheme.colorScheme.error
-        else -> MaterialTheme.colorScheme.primary
+        isDone -> MaterialTheme.colorScheme.onPrimary
+        nowDate < usageTime -> MaterialTheme.colorScheme.onPrimary
+        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.onError
+        nowDate > usageTime -> MaterialTheme.colorScheme.onError
+        else -> MaterialTheme.colorScheme.onPrimary
     }
 }

@@ -41,6 +41,7 @@ import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.DAYS_A_WEEK
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.atStartOfMonth
@@ -133,16 +134,16 @@ private fun CalendarScreenItem(
 ) {
     val currentDate = getCurrentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
-        Array(7) { null }
+        Array(DAYS_A_WEEK) { null }
     }
     val usgs = Array(6) {
-        Array(7) { listOf<UsageCommonDomainModel>() }
+        Array(DAYS_A_WEEK) { listOf<UsageCommonDomainModel>() }
     }
     // не понятно что это, начало месяца или что или последний день предыдущего месяца
     // minusDays(date.dayOfMonth.toLong())
     val fwd = date.atStartOfMonth()
-    for (w in 0..5) {
-        for (d in 0..6) {
+    repeat(6) { w->
+        repeat(DAYS_A_WEEK) {d->
             if (w == 0 && d < fwd.dayOfWeek.value) {
                 val time = fwd.minusDays(fwd.dayOfWeek.ordinal - d)
                 usgs[w][d] = usages.filter {
@@ -150,7 +151,7 @@ private fun CalendarScreenItem(
                 }
                 cdr[w][d] = time
             } else {
-                val time = fwd.plusDays(w * 7 + d - fwd.dayOfWeek.ordinal)
+                val time = fwd.plusDays(w * DAYS_A_WEEK + d - fwd.dayOfWeek.ordinal)
                 usgs[w][d] = usages.filter {
                     it.useTime.toSecondsLeftFromStartOfDay() == time.toSecondsLeftFromStartOfDay()
                 }
@@ -176,9 +177,9 @@ private fun CalendarScreenItem(
                     .fillMaxWidth()
                     .alpha(0.5f)
             ) {
-                repeat(7) {
+                (1..DAYS_A_WEEK).forEach { day ->
                     Text(
-                        text = it.dayShortDisplay().uppercase(),
+                        text = day.dayShortDisplay().uppercase(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(40.dp)
                     )
@@ -199,14 +200,14 @@ private fun CalendarScreenItem(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        repeat(7) { d ->
+                        repeat(DAYS_A_WEEK) { day ->
                             CalendarDayItem(
                                 modifier = Modifier.padding(bottom = 8.dp),
-                                date = cdr[w][d],
-                                usages = usgs[w][d].size,
-                                isSelected = cdr[w][d]?.dayOfYear == currentDate.dayOfYear &&
-                                        cdr[w][d]?.year == currentDate.year,
-                                isOtherMonth = date.month.value != cdr[w][d]?.month?.value
+                                date = cdr[w][day],
+                                usages = usgs[w][day].size,
+                                isSelected = cdr[w][day]?.dayOfYear == currentDate.dayOfYear &&
+                                        cdr[w][day]?.year == currentDate.year,
+                                isOtherMonth = date.month.value != cdr[w][day]?.month?.value
                             ) { onSelect(it) }
                         }
                     }

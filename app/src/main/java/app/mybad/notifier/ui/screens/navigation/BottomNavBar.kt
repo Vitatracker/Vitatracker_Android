@@ -147,7 +147,7 @@ private fun MainNavigationItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.clickable(
             indication = null,
-            interactionSource = MutableInteractionSource(),
+            interactionSource = remember { MutableInteractionSource() },
             onClick = onSelect::invoke
         )
     ) {

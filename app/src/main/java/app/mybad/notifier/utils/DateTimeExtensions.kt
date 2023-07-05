@@ -19,6 +19,8 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 private const val SECONDS_IN_DAY = 86400L
+const val DAYS_A_WEEK = 7
+const val TIME_IS_UP = 3600
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter
@@ -69,27 +71,26 @@ fun Instant.formatDay(): String = dayDisplayFormatter.format(this.toJavaInstant(
 fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
     TextStyle.SHORT_STANDALONE,
     Locale.getDefault()
-).replaceFirstChar { it.uppercase() }.replace(".", "")
+).uppercase(Locale.getDefault()).replace(".", "")
 
 fun Int.monthFullDisplay(): String = Month(this).getDisplayName(
     TextStyle.FULL,
     Locale.getDefault()
-).replaceFirstChar { it.uppercase() }
+).replaceFirstChar { it.uppercase(Locale.getDefault()) }
 
-fun Int.dayShortDisplay(): String = DayOfWeek(this).getDisplayName(
+fun DayOfWeek.displayName() = this.getDisplayName(
     TextStyle.SHORT_STANDALONE,
     Locale.getDefault()
-)//.replaceFirstChar { it.uppercase() }.replace(".", "")
+).uppercase(Locale.getDefault())//.replaceFirstChar { it.uppercase(Locale.getDefault()) }.replace(".", "")
 
-fun LocalDateTime.dayShortDisplay(): String = this.dayOfWeek.getDisplayName(
-    TextStyle.SHORT_STANDALONE,
-    Locale.getDefault()
-)//.replaceFirstChar { it.uppercase() }.replace(".", "")
+fun Int.dayShortDisplay() = DayOfWeek(this).displayName()
+
+fun LocalDateTime.dayShortDisplay() = this.dayOfWeek.displayName()
 
 fun Int.dayFullDisplay(): String = Month(this).getDisplayName(
     TextStyle.FULL,
     Locale.getDefault()
-).replaceFirstChar { it.uppercase() }
+).replaceFirstChar { it.uppercase(Locale.getDefault()) }
 
 // Прибавление
 fun Long.plusDay(): Long = this + SECONDS_IN_DAY
@@ -117,12 +118,12 @@ fun LocalDateTime.toEpochSecond(isUTC: Boolean = true) = this.toInstant(
 ).epochSeconds
 
 // Преобразование и замена даты и времени
-fun LocalDateTime.changeTime(hour: Int, minute: Int) = LocalDateTime(
+fun LocalDateTime.changeTime(hour: Int? = null, minute: Int? = null) = LocalDateTime(
     year = this.year,
     monthNumber = this.monthNumber,
     dayOfMonth = this.dayOfMonth,
-    hour = hour,
-    minute = minute,
+    hour = hour ?: this.hour,
+    minute = minute ?: this.minute,
     second = 0,
     nanosecond = 0,
 )
@@ -150,38 +151,6 @@ fun LocalDateTime.changeTime(time: Long) = time.toLocalDateTime().let {
 }
 
 // month: 1..12, days: 1..31
-fun LocalDateTime.changeDayOfMonth(dayOfMonth: Int) = LocalDateTime(
-    year = this.year,
-    monthNumber = this.monthNumber,
-    dayOfMonth = dayOfMonth,
-    hour = this.hour,
-    minute = this.minute,
-    second = this.second,
-    nanosecond = this.nanosecond,
-)
-
-// month: 1..12
-fun LocalDateTime.changeMonth(month: Int) = LocalDateTime(
-    year = this.year,
-    monthNumber = month,
-    dayOfMonth = this.dayOfMonth,
-    hour = this.hour,
-    minute = this.minute,
-    second = this.second,
-    nanosecond = this.nanosecond,
-)
-
-// month: 1..12, days: 1..31
-fun LocalDateTime.changeMonthAndDay(month: Int, dayOfMonth: Int) = LocalDateTime(
-    year = this.year,
-    monthNumber = month,
-    dayOfMonth = dayOfMonth,
-    hour = this.hour,
-    minute = this.minute,
-    second = this.second,
-    nanosecond = this.nanosecond,
-)
-
 fun LocalDateTime.changeDate(year: Int? = null, month: Int? = null, dayOfMonth: Int? = null) =
     LocalDateTime(
         year = year ?: this.year,
@@ -241,7 +210,7 @@ fun Long.atEndOfDaySystemToUTC() = Instant.fromEpochSeconds(this)
     .atEndOfDaySystemToUTC()
 //    .toEpochSeconds()
 
-fun LocalDateTime.atStartOfMonth() = this.changeDayOfMonth(1)
+fun LocalDateTime.atStartOfMonth() = this.changeDate(dayOfMonth=1)
 
 // Прибавление и удаление
 fun LocalDateTime.minus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
@@ -282,6 +251,8 @@ fun LocalDateTime.plusMonths(months: Int): LocalDateTime {
 
 // Получение даты + времени
 fun getCurrentDateTime() = now().toLocalDateTime(TimeZone.UTC)
+
+fun getCurrentDateTimeWithoutSecond() =  now().toLocalDateTime(TimeZone.UTC).changeTime()
 
 val Int.isLeapYear
     get() = when {

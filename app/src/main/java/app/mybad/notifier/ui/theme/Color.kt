@@ -6,7 +6,6 @@ val primaryBlue = Color(0xFF10D2D2)
 val primaryContainerBlue = Color(0xFFDDF7FB)
 val secondaryContainerBlue = Color(0xFFF1F7F7)
 val primaryIndication = Color(0xFF203839)
-val errorRed = Color(0xFFF23939)
 val cardBackground = Color(0xFFF4FFFF)
 val errorBackground = Color(0xFFFFF1F1)
 val notAvailableBackground = Color(0xFFEFEFEF)
@@ -43,6 +42,7 @@ val error40 = Color(0xFFC00007)
 val error30 = Color(0xFF930004)
 val error20 = Color(0xFF690002)
 val error10 = Color(0xFF410001)
+val errorRed = Color(0xFFF23939)
 
 val neutral99 = Color(0xFFFAFDFC)
 val neutral90 = Color(0xFFE0E3E2)
@@ -61,3 +61,8 @@ val selectColorOrange = Color(0xFFFBEDDA) //2
 val selectColorGreen = Color(0xFFBCF8DD) //3
 val selectColorYellow = Color(0xFFFBF6DA) //4
 val selectColorRed = Color(0xFFFBE4DA) //5
+
+val textColorFirst = Color.Black
+val textColorSecond = Color.Gray
+val textColorThird = Color.LightGray
+

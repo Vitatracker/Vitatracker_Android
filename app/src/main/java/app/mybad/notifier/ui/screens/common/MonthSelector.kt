@@ -6,6 +6,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -56,7 +57,7 @@ fun MonthSelector(
                 .size(36.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = MutableInteractionSource()
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     newDate = newDate.minusMonths(1)
                     onSwitch(newDate)
@@ -69,7 +70,7 @@ fun MonthSelector(
             AnimatedContent(
                 targetState = newDate.month.value,
                 transitionSpec = {
-                    EnterTransition.None with ExitTransition.None
+                    EnterTransition.None togetherWith ExitTransition.None
                 }
             ) { targetCount ->
                 Text(
@@ -96,7 +97,7 @@ fun MonthSelector(
                 .size(36.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = MutableInteractionSource()
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     newDate = newDate.plusMonths(1)
                     onSwitch(newDate)

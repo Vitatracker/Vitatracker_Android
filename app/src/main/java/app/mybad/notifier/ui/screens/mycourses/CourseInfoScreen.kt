@@ -276,7 +276,7 @@ fun CourseInfoScreen(
                         text = stringResource(R.string.mycourse_reminders),
                         modifier = Modifier.clickable(
                             indication = null,
-                            interactionSource = MutableInteractionSource(),
+                            interactionSource = remember { MutableInteractionSource() },
                             onClick = { }
                         )
                     )
