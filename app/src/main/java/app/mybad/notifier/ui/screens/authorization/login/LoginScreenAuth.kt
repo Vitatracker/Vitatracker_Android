@@ -49,9 +49,9 @@ import app.mybad.theme.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainLoginScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel,
-    mainVM: MainActivityViewModel
+    onBackPressed: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
+    onSignInClicked: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -59,7 +59,7 @@ fun StartMainLoginScreen(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate(route = AuthorizationNavItem.Authorization.route)
+                        onBackPressed()
                     }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
@@ -73,7 +73,10 @@ fun StartMainLoginScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
+                MainLoginScreen(
+                    onForgotPasswordClicked = onForgotPasswordClicked,
+                    onSignInClicked = onSignInClicked
+                )
             }
         }
     )
@@ -81,9 +84,8 @@ fun StartMainLoginScreen(
 
 @Composable
 private fun MainLoginScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel,
-    mainVM: MainActivityViewModel
+    onForgotPasswordClicked: () -> Unit,
+    onSignInClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -97,17 +99,8 @@ private fun MainLoginScreen(
             val passwordState = remember { mutableStateOf("") } //{ mutableStateOf("12345678") }
 
             LoginScreenBaseForSignIn(loginState = loginState, passwordState = passwordState)
-            LoginScreenForgotPassword(navController = navController)
-            LoginScreenButtonSignIn(
-                onClick = {
-                    authVM.logIn(
-                        login = loginState.value,
-                        password = passwordState.value
-                    )
-                    //TODO("проверить для чего updateToken если тут Flow")
-//                        mainVM.updateToken()
-                }
-            )
+            LoginScreenForgotPassword(onForgotPasswordClicked)
+            LoginScreenButtonSignIn(onSignInClicked)
             LoginScreenTextPolicy()
             SurfaceSignInWith(
                 onClick = {
@@ -200,12 +193,12 @@ private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
 }
 
 @Composable
-private fun LoginScreenForgotPassword(navController: NavHostController) {
+private fun LoginScreenForgotPassword(onForgotPasswordClicked: () -> Unit) {
     ClickableText(
         text = AnnotatedString(stringResource(id = R.string.login_forgot_password)),
         modifier = Modifier
             .padding(start = 30.dp, top = 16.dp),
-        onClick = { navController.navigate(route = AuthorizationNavItem.RecoveryPassword.route) }
+        onClick = { onForgotPasswordClicked() }
     )
 }
 

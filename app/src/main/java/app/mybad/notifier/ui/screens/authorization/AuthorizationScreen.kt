@@ -31,6 +31,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavHostController
 import app.mybad.theme.R
@@ -39,21 +40,22 @@ import app.mybad.notifier.ui.screens.common.showToast
 
 @Composable
 fun StartAuthorizationScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel
+    onLoginButtonClicked: () -> Unit,
+    onRegistrationButtonClicked: () -> Unit
 ) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val uiEventFlow = authVM.uiEvent
-    val uiEventFlowLifecycleAware = remember(uiEventFlow, lifecycleOwner) {
-        uiEventFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
-    }
+//    val context = LocalContext.current
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    val viewModel: AuthorizationScreenViewModel = hiltViewModel()
+//    val uiEventFlow = viewModel.uiEvent
+//    val uiEventFlowLifecycleAware = remember(uiEventFlow, lifecycleOwner) {
+//        uiEventFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
+//    }
 
-    LaunchedEffect(key1 = "StartAuthorizationScreenKey") {
-        uiEventFlowLifecycleAware.collect { message ->
-            showToast(context, message)
-        }
-    }
+//    LaunchedEffect(key1 = "StartAuthorizationScreenKey") {
+//        uiEventFlowLifecycleAware.collect { message ->
+//            showToast(context, message)
+//        }
+//    }
 
     Scaffold(
         content = { contentPadding ->
@@ -62,7 +64,10 @@ fun StartAuthorizationScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainAuthorizationScreen(navController = navController, authVM = authVM)
+                MainAuthorizationScreen(
+                    onLoginButtonClicked = onLoginButtonClicked,
+                    onRegistrationButtonClicked = onRegistrationButtonClicked
+                )
             }
         }
     )
@@ -70,8 +75,8 @@ fun StartAuthorizationScreen(
 
 @Composable
 fun MainAuthorizationScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel
+    onLoginButtonClicked: () -> Unit,
+    onRegistrationButtonClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier,
@@ -84,7 +89,10 @@ fun MainAuthorizationScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             AuthorizationScreenImage()
-            AuthorizationScreenButtonEntry(navController = navController, authVM = authVM)
+            AuthorizationScreenButtonEntry(
+                onLoginButtonClicked = onLoginButtonClicked,
+                onRegistrationButtonClicked = onRegistrationButtonClicked
+            )
             SurfaceSignInWith(onClick = { /*TODO*/ })
         }
     }
@@ -104,26 +112,26 @@ private fun AuthorizationScreenImage() {
 
 @Composable
 private fun AuthorizationScreenButtonEntry(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel
+    onLoginButtonClicked: () -> Unit,
+    onRegistrationButtonClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AuthorizationScreenButtonLogin(navController = navController)
-        AuthorizationScreenButtonRegistration(navController = navController)
+        AuthorizationScreenButtonLogin(onLoginButtonClicked)
+        AuthorizationScreenButtonRegistration(onRegistrationButtonClicked)
     }
 }
 
 @Composable
-private fun AuthorizationScreenButtonLogin(navController: NavHostController) {
+private fun AuthorizationScreenButtonLogin(onLoginButtonClicked: () -> Unit) {
     Button(
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp)
             .fillMaxWidth(),
-        onClick = { navController.navigate(route = AuthorizationNavItem.Login.route) },
+        onClick = { onLoginButtonClicked() },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
     ) {
@@ -137,12 +145,12 @@ private fun AuthorizationScreenButtonLogin(navController: NavHostController) {
 }
 
 @Composable
-private fun AuthorizationScreenButtonRegistration(navController: NavHostController) {
+private fun AuthorizationScreenButtonRegistration(onRegistrationButtonClicked: () -> Unit) {
     OutlinedButton(
         modifier = Modifier
             .padding(top = 8.dp, start = 15.dp, end = 15.dp, bottom = 16.dp)
             .fillMaxWidth(),
-        onClick = { navController.navigate(route = AuthorizationNavItem.Registration.route) },
+        onClick = { onRegistrationButtonClicked() },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp),
         colors = ButtonDefaults.buttonColors(

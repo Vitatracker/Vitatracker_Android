@@ -175,4 +175,8 @@
     <string name="types_syrup">Syrup</string>
     <string name="types_spray">Spray</string>
     <string name="types_suspension">Suspension</string>
+
+    <string name="action_begin">Begin</string>
+    <string name="splash_welcome_text">We help you take care\nof your health</string>
+    <string name="splash_welcome_in">Welcome to\n</string>
 </resources>

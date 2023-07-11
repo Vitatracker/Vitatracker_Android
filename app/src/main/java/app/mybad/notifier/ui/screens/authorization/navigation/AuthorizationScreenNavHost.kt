@@ -28,10 +28,10 @@ fun AuthorizationScreenNavHost(
             StartScreenApp(navController = navController)
         }
         composable(route = AuthorizationNavItem.Authorization.route) {
-            StartAuthorizationScreen(navController = navController, authVM = authVM)
+//            StartAuthorizationScreen(navController = navController, authVM = authVM)
         }
         composable(route = AuthorizationNavItem.Login.route) {
-            StartMainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
+//            StartMainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
         }
         composable(route = AuthorizationNavItem.Registration.route) {
             StartMainRegistrationScreen(

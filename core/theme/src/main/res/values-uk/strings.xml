@@ -166,4 +166,7 @@
     <string name="types_spray">Спрей</string>
     <string name="types_suspension">Суспензія</string>
 
+    <string name="action_begin">Почати</string>
+    <string name="splash_welcome_text">Ми допомогаємо вам пiклуватися\nпро ваше здоров\'я</string>
+    <string name="splash_welcome_in">Ласкаво просимо до\n</string>
 </resources>
