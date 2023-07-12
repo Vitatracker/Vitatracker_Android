@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import app.mybad.notifier.ui.screens.authorization.SignInWithGoogle
+import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
