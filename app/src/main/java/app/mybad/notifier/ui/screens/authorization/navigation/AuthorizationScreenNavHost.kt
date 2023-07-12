@@ -25,7 +25,7 @@ fun AuthorizationScreenNavHost(
         startDestination = AuthorizationNavItem.Authorization.route
     ) {
         composable(route = AuthorizationNavItem.Welcome.route) {
-            StartScreenApp(navController = navController)
+//            StartScreenApp(navController = navController)
         }
         composable(route = AuthorizationNavItem.Authorization.route) {
 //            StartAuthorizationScreen(navController = navController, authVM = authVM)
@@ -34,17 +34,17 @@ fun AuthorizationScreenNavHost(
 //            StartMainLoginScreen(navController = navController, authVM = authVM, mainVM = mainVM)
         }
         composable(route = AuthorizationNavItem.Registration.route) {
-            StartMainRegistrationScreen(
-                navController = navController,
-                authVM = authVM,
-                mainVM = mainVM
-            )
+//            StartMainRegistrationScreen(
+//                navController = navController,
+//                authVM = authVM,
+//                mainVM = mainVM
+//            )
         }
         composable(route = AuthorizationNavItem.RecoveryPassword.route) {
-            StartMainRecoveryPasswordScreenAuth(navController = navController)
+//            StartMainRecoveryPasswordScreenAuth()
         }
         composable(route = AuthorizationNavItem.NewPassword.route) {
-            StartMainNewPasswordScreenAuth(navController = navController)
+//            StartMainNewPasswordScreenAuth(navController = navController)
         }
     }
 }

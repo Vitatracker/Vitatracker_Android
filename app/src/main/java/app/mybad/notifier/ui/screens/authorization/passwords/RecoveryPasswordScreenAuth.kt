@@ -13,23 +13,24 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.theme.R
-import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
-import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
+fun StartMainRecoveryPasswordScreenAuth(
+    onBackPressed: () -> Unit,
+    onContinueClicked: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate(route = AuthorizationNavItem.Login.route)
+                        onBackPressed()
                     }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -42,14 +43,14 @@ fun StartMainRecoveryPasswordScreenAuth(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainRecoveryPasswordScreenAuth(navController = navController)
+                MainRecoveryPasswordScreenAuth(onContinueClicked)
             }
         }
     )
 }
 
 @Composable
-private fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
+private fun MainRecoveryPasswordScreenAuth(onContinueClicked: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -62,8 +63,8 @@ private fun MainRecoveryPasswordScreenAuth(navController: NavHostController) {
             RecoveryPasswordScreenTextUser()
             Spacer(modifier = Modifier.height(15.dp))
             RecoveryPasswordScreenTextEmail()
-            ReUseButtonContinue(textId = R.string.text_continue) {
-                navController.navigate(route = AuthorizationNavItem.NewPassword.route)
+            ReUseFilledButton(textId = R.string.text_continue) {
+                onContinueClicked()
             }
         }
     }

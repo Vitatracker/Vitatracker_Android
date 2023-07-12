@@ -137,7 +137,9 @@ dependencies {
 
     //sign in with facebook
     implementation 'com.facebook.android:facebook-login:latest.release'
-    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.31.3-beta'
+    // Accompanist
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.31.5-beta'
+    implementation 'com.google.accompanist:accompanist-navigation-animation:0.31.5-beta'
 
     // Date Time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")

@@ -34,22 +34,22 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
-import app.mybad.notifier.ui.screens.reuse.ReUseButtonContinue
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
+fun StartMainNewPasswordScreenAuth(onBackPressed: () -> Unit = {}) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate(route = AuthorizationNavItem.RecoveryPassword.route)
+                        onBackPressed()
                     }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
                     }
@@ -64,35 +64,30 @@ fun StartMainNewPasswordScreenAuth(navController: NavHostController) {
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainNewPasswordScreenAuth(navController = navController)
+                MainNewPasswordScreenAuth()
             }
         }
     )
 }
 
 @Composable
-private fun MainNewPasswordScreenAuth(navController: NavHostController) {
+private fun MainNewPasswordScreenAuth() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        NewPasswordScreenBackgroundImage()
         Column(
             modifier = Modifier
         ) {
             NewPasswordScreenEnteredPassword(R.string.login_password)
             NewPasswordScreenEnteredPassword(R.string.login_password_confirm)
-            ReUseButtonContinue(textId = R.string.text_continue) {
-                navController.navigate(
-                    route = AuthorizationNavItem.Authorization.route
-                )
+            ReUseFilledButton(textId = R.string.text_continue) {
+//                navController.navigate(
+//                    route = AuthorizationNavItem.Authorization.route
+//                )
             }
         }
     }
-}
-
-@Composable
-private fun NewPasswordScreenBackgroundImage() {
 }
 
 @Composable
@@ -137,4 +132,12 @@ private fun NewPasswordScreenEnteredPassword(textId: Int) {
             }
         }
     )
+}
+
+@Preview()
+@Composable
+fun PreviewNewPassword() {
+    MyBADTheme {
+        StartMainNewPasswordScreenAuth()
+    }
 }

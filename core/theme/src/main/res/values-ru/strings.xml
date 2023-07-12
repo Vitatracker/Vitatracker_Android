@@ -40,7 +40,7 @@
     <string name="start_screen_go">Продолжить</string>
 
     <!--AUTHORIZATION-->
-    <string name="authorization_screen_login">Логин</string>
+    <string name="authorization_screen_login">Войти</string>
     <string name="authorization_screen_registration">Регистрация</string>
     <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
 
@@ -169,4 +169,6 @@
     <string name="action_begin">Начать</string>
     <string name="splash_welcome_text">Мы помогаем Вам заботиться\nо вашем здоровье</string>
     <string name="splash_welcome_in">Добро пожаловать в\n</string>
+
+    <string name="sign_in_with_google" translatable="false">Войти с помощью Google</string>
 </resources>

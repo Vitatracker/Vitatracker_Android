@@ -25,44 +25,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navigationState = rememberNavigationState()
-
             MyBADTheme {
-                AppNavGraph(
-                    navHostController = navigationState.navController,
-                    splashScreenContent = {
-                        SplashScreen(
-                            proceedToMain = {
-                                navigationState.navigateToMain()
-                            },
-                            proceedToAuthorization = {
-                                navigationState.navigateToAuthorization()
-                            }
-                        )
-                    },
-                    authorizationChooseModeScreenContent = {
-                        StartAuthorizationScreen(
-                            onLoginButtonClicked = {
-                                navigationState.navigateSingleTo(Screen.AuthorizationLogin.route)
-                            },
-                            onRegistrationButtonClicked = {
-                                navigationState.navigateSingleTo(Screen.AuthorizationRegistration.route)
-                            }
-                        )
-                    },
-                    authorizationLoginScreenContent = {
-                        StartMainLoginScreen(
-                            onBackPressed = { navigationState.navController.popBackStack() },
-                            onForgotPasswordClicked = { /*TODO*/ },
-                            onSignInClicked = {}
-                        )
-                    },
-                    authorizationRegistrationScreenContent = {
-                        Text(text = "Registration")
-                    },
-                    mainScreenContent = {
-                        Text(text = "MainScreen")
-                    }
-                )
+                AppNavGraph(navigationState = navigationState)
             }
         }
     }

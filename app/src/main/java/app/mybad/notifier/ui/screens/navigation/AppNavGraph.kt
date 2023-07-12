@@ -1,30 +1,37 @@
 package app.mybad.notifier.ui.screens.navigation
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import app.mybad.notifier.ui.screens.splash.SplashScreen
 
 @Composable
-fun AppNavGraph(
-    navHostController: NavHostController,
-    splashScreenContent: @Composable () -> Unit,
-    authorizationChooseModeScreenContent: @Composable () -> Unit,
-    authorizationLoginScreenContent: @Composable () -> Unit,
-    authorizationRegistrationScreenContent: @Composable () -> Unit,
-    mainScreenContent: @Composable () -> Unit
-) {
-    NavHost(navController = navHostController, startDestination = Screen.Splash.route) {
-        composable(Screen.Splash.route) {
-            splashScreenContent()
-        }
-        authorizationNavGraph(
-            authorizationChooseModeScreenContent = authorizationChooseModeScreenContent,
-            authorizationLoginScreenContent = authorizationLoginScreenContent,
-            authorizationRegistrationScreenContent = authorizationRegistrationScreenContent
+fun AppNavGraph(navigationState: NavigationState) {
+    NavHost(navController = navigationState.navController, startDestination = Screen.Splash.route, enterTransition = {
+        slideIntoContainer(
+            AnimatedContentTransitionScope.SlideDirection.Left,
+            animationSpec = tween(500)
         )
+    }) {
+        composable(Screen.Splash.route) {
+            SplashScreen(
+                proceedToMain = {
+                    navigationState.navigateToMain()
+                },
+                proceedToAuthorization = {
+                    navigationState.navigateToAuthorization()
+                }
+            )
+        }
+        authorizationNavGraph(navigationState)
         composable(Screen.Main.route) {
-            mainScreenContent()
+            Text(text = "MainScreen")
         }
     }
 }

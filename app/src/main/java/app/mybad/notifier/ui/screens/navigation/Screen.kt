@@ -4,9 +4,6 @@ sealed class Screen(val route: String) {
 
     object Splash : Screen(ROUTE_SPLASH)
     object Authorization : Screen(ROUTE_AUTHORIZATION)
-    object AuthorizationChooseMode : Screen(ROUTE_AUTHORIZATION_SELECT_AUTHORIZATION_MODE)
-    object AuthorizationLogin : Screen(ROUTE_AUTHORIZATION_LOGIN)
-    object AuthorizationRegistration : Screen(ROUTE_AUTHORIZATION_REGISTRATION)
     object Main : Screen(ROUTE_MAIN)
 
     private companion object {

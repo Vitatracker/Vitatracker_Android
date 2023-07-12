@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,26 +39,14 @@ import androidx.navigation.NavHostController
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.notifier.ui.screens.common.showToast
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.screens.reuse.ReUseOutlinedButton
 
 @Composable
 fun StartAuthorizationScreen(
     onLoginButtonClicked: () -> Unit,
     onRegistrationButtonClicked: () -> Unit
 ) {
-//    val context = LocalContext.current
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//    val viewModel: AuthorizationScreenViewModel = hiltViewModel()
-//    val uiEventFlow = viewModel.uiEvent
-//    val uiEventFlowLifecycleAware = remember(uiEventFlow, lifecycleOwner) {
-//        uiEventFlow.flowWithLifecycle(lifecycleOwner.lifecycle)
-//    }
-
-//    LaunchedEffect(key1 = "StartAuthorizationScreenKey") {
-//        uiEventFlowLifecycleAware.collect { message ->
-//            showToast(context, message)
-//        }
-//    }
-
     Scaffold(
         content = { contentPadding ->
             Surface(
@@ -82,18 +72,17 @@ fun MainAuthorizationScreen(
         modifier = Modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
-        // ScreenBackgroundImage(R.drawable.ic_background_authorization_screen)
         Column(
-            modifier = Modifier,
+            modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
             AuthorizationScreenImage()
-            AuthorizationScreenButtonEntry(
-                onLoginButtonClicked = onLoginButtonClicked,
-                onRegistrationButtonClicked = onRegistrationButtonClicked
-            )
-            SurfaceSignInWith(onClick = { /*TODO*/ })
+            ReUseFilledButton(textId = R.string.authorization_screen_login, onLoginButtonClicked)
+            Spacer(modifier = Modifier.height(16.dp))
+            ReUseOutlinedButton(R.string.authorization_screen_registration, onRegistrationButtonClicked)
+            Spacer(modifier = Modifier.height(32.dp))
+            SignInWithGoogle(onClick = { /*TODO*/ })
         }
     }
 }
@@ -110,60 +99,3 @@ private fun AuthorizationScreenImage() {
     )
 }
 
-@Composable
-private fun AuthorizationScreenButtonEntry(
-    onLoginButtonClicked: () -> Unit,
-    onRegistrationButtonClicked: () -> Unit
-) {
-    Column(
-        modifier = Modifier,
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AuthorizationScreenButtonLogin(onLoginButtonClicked)
-        AuthorizationScreenButtonRegistration(onRegistrationButtonClicked)
-    }
-}
-
-@Composable
-private fun AuthorizationScreenButtonLogin(onLoginButtonClicked: () -> Unit) {
-    Button(
-        modifier = Modifier
-            .padding(start = 15.dp, end = 15.dp)
-            .fillMaxWidth(),
-        onClick = { onLoginButtonClicked() },
-        shape = MaterialTheme.shapes.small,
-        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.authorization_screen_login),
-            modifier = Modifier,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal
-        )
-    }
-}
-
-@Composable
-private fun AuthorizationScreenButtonRegistration(onRegistrationButtonClicked: () -> Unit) {
-    OutlinedButton(
-        modifier = Modifier
-            .padding(top = 8.dp, start = 15.dp, end = 15.dp, bottom = 16.dp)
-            .fillMaxWidth(),
-        onClick = { onRegistrationButtonClicked() },
-        shape = MaterialTheme.shapes.small,
-        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Gray
-        ),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
-    ) {
-        Text(
-            text = stringResource(id = R.string.authorization_screen_registration),
-            modifier = Modifier,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal
-        )
-    }
-}

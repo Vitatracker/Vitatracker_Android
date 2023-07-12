@@ -40,7 +40,7 @@ private val LightColorScheme = lightColorScheme(
 
     surface = neutral99,
     onSurface = neutral10,
-    surfaceVariant = secondaryContainerBlue,
+    surfaceVariant = backgroundCard,
     onSurfaceVariant = neutralVariant30,
 
     background = neutral99,

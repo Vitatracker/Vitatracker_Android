@@ -40,19 +40,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
-import app.mybad.notifier.ui.screens.authorization.SurfaceSignInWith
+import app.mybad.notifier.ui.screens.authorization.SignInWithGoogle
 import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainRegistrationScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel,
-    mainVM: MainActivityViewModel
+    onBackPressed: () -> Unit,
+    viewModel: RegistrationScreenViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -61,10 +61,10 @@ fun StartMainRegistrationScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(route = AuthorizationNavItem.Authorization.route)
+                            onBackPressed()
                         }
                     ) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
                     }
                 }
             )
@@ -76,11 +76,7 @@ fun StartMainRegistrationScreen(
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainRegistrationScreen(
-                    navController = navController,
-                    authVM = authVM,
-                    mainVM = mainVM
-                )
+                MainRegistrationScreen(viewModel::registration)
             }
         }
     )
@@ -88,9 +84,7 @@ fun StartMainRegistrationScreen(
 
 @Composable
 private fun MainRegistrationScreen(
-    navController: NavHostController,
-    authVM: AuthorizationScreenViewModel,
-    mainVM: MainActivityViewModel
+    onRegistrationClicked: (login: String, password: String, userName: String) -> Unit
 ) {
     val userNameState = remember { mutableStateOf("") }
     val loginState = remember { mutableStateOf("") }
@@ -101,7 +95,6 @@ private fun MainRegistrationScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        RegistrationScreenBackgroundImage()
         Column(
             modifier = Modifier
         ) {
@@ -113,29 +106,20 @@ private fun MainRegistrationScreen(
             )
             RegistrationScreenButtonRegistration(
                 onClick = {
-                    authVM.registration(
-                        login = loginState.value,
-                        password = passwordState.value,
-                        userName = userNameState.value
+                    onRegistrationClicked(
+                        loginState.value,
+                        passwordState.value,
+                        userNameState.value
                     )
-                    // TODO("Проверить зачем тут updateToken, если он Flow, при изменении обновиться автоматически")
-//                    delay(1200)
-//                    mainVM.updateToken()
                 }
             )
             Spacer(modifier = Modifier.height(30.dp))
-            SurfaceSignInWith(
+            SignInWithGoogle(
                 onClick = {
-                    // TODO("Проверить зачем тут updateToken, если он Flow")
-//                mainVM.updateToken()
                 }
             )
         }
     }
-}
-
-@Composable
-private fun RegistrationScreenBackgroundImage() {
 }
 
 @Composable

@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,19 +29,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.theme.R
 
 @Composable
-fun SplashScreen(proceedToMain: () -> Unit, proceedToAuthorization: () -> Unit) {
-    val viewModel: SplashScreenViewModel = hiltViewModel()
+fun SplashScreen(
+    proceedToMain: () -> Unit,
+    proceedToAuthorization: () -> Unit,
+    viewModel: SplashScreenViewModel = hiltViewModel()
+) {
+    LaunchedEffect(true) {
+        viewModel.effect.collect {
+            when (it) {
+                SplashScreenEffect.NavigateNext -> {
+                    proceedToAuthorization()
+                }
+            }
+        }
+    }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         val screenState by viewModel.screenState.collectAsStateWithLifecycle(SplashScreenState.Initial)
         Image(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(30.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_man_doctor),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
             contentDescription = null,
             contentScale = ContentScale.FillWidth
         )
@@ -49,18 +68,16 @@ fun SplashScreen(proceedToMain: () -> Unit, proceedToAuthorization: () -> Unit) 
             SplashScreenState.Initial -> {}
             SplashScreenState.NotAuthorized -> {
                 Spacer(modifier = Modifier.height(24.dp))
-                NewUserGreeting(proceedToAuthorization)
+                NewUserGreeting(viewModel::onBeginClicked)
             }
         }
     }
 }
 
 @Composable
-private fun NewUserGreeting(proceedToAuthorization: () -> Unit) {
+private fun NewUserGreeting(onBeginClicked: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -86,18 +103,9 @@ private fun NewUserGreeting(proceedToAuthorization: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            onClick = { proceedToAuthorization() },
-            shape = MaterialTheme.shapes.small
-        ) {
-            Text(
-                text = stringResource(id = R.string.action_begin),
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 16.sp
-            )
-        }
+        ReUseFilledButton(
+            textId = R.string.action_begin,
+            onClick = { onBeginClicked() }
+        )
     }
 }

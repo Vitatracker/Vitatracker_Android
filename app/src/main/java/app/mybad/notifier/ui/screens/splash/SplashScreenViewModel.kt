@@ -20,6 +20,9 @@ class SplashScreenViewModel @Inject constructor(
     private val dataStoreUseCase: DataStoreUseCase
 ) : ViewModel() {
 
+    private val _effect: Channel<SplashScreenEffect> = Channel()
+    val effect = _effect.receiveAsFlow()
+
     private val _screenState: MutableStateFlow<SplashScreenState> = MutableStateFlow(SplashScreenState.Initial)
     val screenState = _screenState.asStateFlow()
 
@@ -38,4 +41,11 @@ class SplashScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun onBeginClicked() {
+        viewModelScope.launch {
+            _effect.send(SplashScreenEffect.NavigateNext)
+        }
+    }
+
 }

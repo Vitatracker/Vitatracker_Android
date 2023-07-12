@@ -66,6 +66,7 @@
     <!--DIFFERENCE-->
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
+    <string name="sign_in_with_google" translatable="false">Sign in with Google</string>
 
     <!--SETTINGS-->
     <string name="settings_profile">Profile</string>

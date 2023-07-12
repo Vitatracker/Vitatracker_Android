@@ -43,6 +43,7 @@ class DataStoreUseCase @Inject constructor(
 
         }
     }
+
     suspend fun clear() {
         try {
             updateToken("")
@@ -51,6 +52,18 @@ class DataStoreUseCase @Inject constructor(
         } catch (ignore: Exception) {
 
         }
+    }
+
+    suspend fun updateAll(
+        token: String,
+        refreshToken: String,
+        userId: Long,
+        email: String
+    ) {
+        updateToken(token)
+        updateRefreshToken(refreshToken)
+        updateEmail(email)
+        updateUserId(userId)
     }
 }
 

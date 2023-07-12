@@ -1,24 +1,53 @@
 package app.mybad.notifier.ui.screens.navigation
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
+import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
+import app.mybad.notifier.ui.screens.authorization.passwords.StartMainNewPasswordScreenAuth
+import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPasswordScreenAuth
+import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistrationScreen
 
-fun NavGraphBuilder.authorizationNavGraph(
-    authorizationChooseModeScreenContent: @Composable () -> Unit,
-    authorizationLoginScreenContent: @Composable () -> Unit,
-    authorizationRegistrationScreenContent: @Composable () -> Unit
-) {
-    navigation(startDestination = Screen.AuthorizationChooseMode.route, route = Screen.Authorization.route) {
-        composable(route = Screen.AuthorizationChooseMode.route) {
-            authorizationChooseModeScreenContent()
+fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
+    navigation(startDestination = AuthorizationScreens.ChooseMode.route, route = Screen.Authorization.route) {
+        composable(route = AuthorizationScreens.ChooseMode.route) {
+            StartAuthorizationScreen(
+                onLoginButtonClicked = {
+                    navigationState.navigateSingleTo(AuthorizationScreens.Login.route)
+                },
+                onRegistrationButtonClicked = {
+                    navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
+                }
+            )
         }
-        composable(route = Screen.AuthorizationLogin.route) {
-            authorizationLoginScreenContent()
+        composable(route = AuthorizationScreens.Login.route) {
+            StartMainLoginScreen(
+                onBackPressed = { navigationState.navController.popBackStack() },
+                onForgotPasswordClicked = { navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route) }
+            )
         }
-        composable(route = Screen.AuthorizationRegistration.route) {
-            authorizationRegistrationScreenContent()
+        composable(route = AuthorizationScreens.Registration.route) {
+            StartMainRegistrationScreen(onBackPressed = {
+                navigationState.navController.popBackStack()
+            })
+        }
+        composable(AuthorizationScreens.PasswordRecovery.route) {
+            StartMainRecoveryPasswordScreenAuth(
+                onBackPressed = {
+                    navigationState.navController.popBackStack()
+                },
+                onContinueClicked = {}
+            )
+        }
+        composable(AuthorizationScreens.NewPassword.route) {
+            StartMainNewPasswordScreenAuth(
+                onBackPressed = {
+                    navigationState.navController.popBackStack()
+                }
+            )
         }
     }
 }
