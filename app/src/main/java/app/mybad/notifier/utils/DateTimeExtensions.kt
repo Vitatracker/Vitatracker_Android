@@ -74,7 +74,7 @@ fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
 ).uppercase(Locale.getDefault()).replace(".", "")
 
 fun Int.monthFullDisplay(): String = Month(this).getDisplayName(
-    TextStyle.FULL,
+    TextStyle.FULL_STANDALONE,
     Locale.getDefault()
 ).replaceFirstChar { it.uppercase(Locale.getDefault()) }
 

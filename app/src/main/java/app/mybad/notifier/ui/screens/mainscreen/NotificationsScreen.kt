@@ -36,12 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.authorization.login.*
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.notifier.ui.theme.textColorSecond
@@ -62,11 +63,10 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartMainScreen(
-    navController: NavHostController,
-    vm: StartMainScreenViewModel
+fun NotificationsScreen(
+    viewModel: StartMainScreenViewModel = hiltViewModel()
 ) {
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val sizeUsages by remember { mutableStateOf(uiState.allUsages) }
     val usageCommon = remember { mutableStateOf(UsageCommonDomainModel()) }
@@ -74,19 +74,7 @@ fun StartMainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = stringResource(id = R.string.main_screen_top_bar_name),
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Justify
-                        )
-                    }
-                }
-            )
+            CenterAlignedTopAppBar(title = { TitleText(textStringRes = R.string.main_screen_top_bar_name) })
         }
     ) { contentPadding ->
         Surface(
@@ -95,14 +83,13 @@ fun StartMainScreen(
                 .padding(contentPadding)
         ) {
             MainScreen(
-                navController = navController,
                 uiState = dateNow,
-                changeData = { vm.changeData(dateNow.value) },
+                changeData = { viewModel.changeData(dateNow.value) },
                 sizeUsages = sizeUsages,
                 usages = uiState.usages,
                 meds = uiState.meds,
                 usageCommon = usageCommon,
-                setUsageFactTime = { vm.setUsagesFactTime(usage = usageCommon.value) }
+                setUsageFactTime = { viewModel.setUsagesFactTime(usage = usageCommon.value) }
             )
         }
     }
@@ -110,7 +97,6 @@ fun StartMainScreen(
 
 @Composable
 private fun MainScreen(
-    navController: NavHostController,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
     sizeUsages: Int,

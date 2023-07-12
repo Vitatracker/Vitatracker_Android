@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.models.AuthToken
+import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -19,6 +21,7 @@ class CalendarViewModel @Inject constructor(
     private val updateUsageUseCase: UpdateUsageUseCase,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state = loadCoursesUseCase(AuthToken.userId)
         .mapLatest { (courses, meds, usages) ->
             MyCoursesState(courses = courses, meds = meds, usages = usages)
@@ -36,5 +39,9 @@ class CalendarViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onUsed(it: UsageCommonDomainModel) {
+
     }
 }

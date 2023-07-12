@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import app.mybad.theme.R
 
 @Composable
@@ -16,6 +17,7 @@ fun TitleText(@StringRes textStringRes: Int) {
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         color = MaterialTheme.colorScheme.primary,
+        fontSize = 24.sp,
         fontWeight = FontWeight.Bold
     )
 }

@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.splash
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,19 +34,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.theme.R
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(
     proceedToMain: () -> Unit,
-    proceedToAuthorization: () -> Unit,
-    viewModel: SplashScreenViewModel = hiltViewModel()
+    proceedToAuthorization: () -> Unit
 ) {
+    val viewModel: SplashScreenViewModel = hiltViewModel()
+//    val screenState by viewModel.screenState.collectAsState(SplashScreenState.Initial)
+    Log.w("VTTAG", "Splash recomposition")
     LaunchedEffect(true) {
         viewModel.effect.collect {
             when (it) {
                 SplashScreenEffect.NavigateNext -> {
                     proceedToAuthorization()
                 }
+
+                SplashScreenEffect.NavigateToMain -> proceedToMain()
             }
         }
     }
@@ -54,7 +61,7 @@ fun SplashScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val screenState by viewModel.screenState.collectAsStateWithLifecycle(SplashScreenState.Initial)
+//        Log.w("VTTAG", "Splash screenState ${screenState}")
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,14 +70,13 @@ fun SplashScreen(
             contentDescription = null,
             contentScale = ContentScale.FillWidth
         )
-        when (screenState) {
-            SplashScreenState.Authorized -> proceedToMain()
-            SplashScreenState.Initial -> {}
-            SplashScreenState.NotAuthorized -> {
-                Spacer(modifier = Modifier.height(24.dp))
-                NewUserGreeting(viewModel::onBeginClicked)
-            }
-        }
+//        when (screenState) {
+//            SplashScreenState.Initial -> {}
+//            SplashScreenState.NotAuthorized -> {
+//                Spacer(modifier = Modifier.height(24.dp))
+//                NewUserGreeting(viewModel::onBeginClicked)
+//            }
+//        }
     }
 }
 

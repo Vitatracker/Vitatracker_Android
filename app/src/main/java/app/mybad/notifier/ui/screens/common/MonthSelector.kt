@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -49,20 +50,10 @@ fun MonthSelector(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        Icon(
-            painter = painterResource(R.drawable.prev_month),
-            tint = MaterialTheme.colorScheme.outlineVariant,
-            contentDescription = null,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    newDate = newDate.minusMonths(1)
-                    onSwitch(newDate)
-                }
-        )
+        MonthSelectorIcon(R.drawable.prev_month) {
+            newDate = newDate.minusMonths(1)
+            onSwitch(newDate)
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
@@ -78,7 +69,7 @@ fun MonthSelector(
                         enter = scaleIn(),
                         exit = scaleOut()
                     ),
-                    text = (targetCount - 1).monthFullDisplay(),
+                    text = targetCount.monthFullDisplay(),
                     style = Typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -89,19 +80,22 @@ fun MonthSelector(
                 modifier = modifier.alpha(0.5f)
             )
         }
-        Icon(
-            painter = painterResource(R.drawable.next_month),
-            tint = MaterialTheme.colorScheme.outlineVariant,
-            contentDescription = null,
-            modifier = Modifier
-                .size(36.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    newDate = newDate.plusMonths(1)
-                    onSwitch(newDate)
-                }
-        )
+        MonthSelectorIcon(R.drawable.next_month) {
+            newDate = newDate.plusMonths(1)
+            onSwitch(newDate)
+        }
     }
+}
+
+@Composable
+private fun MonthSelectorIcon(iconResId: Int, onClick: () -> Unit) {
+    Image(
+        painter = painterResource(iconResId),
+        contentDescription = null,
+        modifier = Modifier
+            .size(36.dp)
+            .clickable {
+                onClick()
+            }
+    )
 }

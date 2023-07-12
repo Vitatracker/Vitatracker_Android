@@ -14,7 +14,6 @@ import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
-import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
@@ -41,10 +40,10 @@ fun MainNav(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomNavBar(
-                navController = navController,
-                isVisible = isOnTopLevel
-            )
+//            BottomNavBar(
+//                navController = navController,
+//                isVisible = isOnTopLevel
+//            )
         }
     ) {
         NavHost(
@@ -54,10 +53,10 @@ fun MainNav(
         ) {
             composable(NavItemMain.Notifications.route) {
                 isOnTopLevel = true
-                StartMainScreen(
-                    navController = navController,
-                    vm = mainScreenVm
-                )
+//                StartMainScreen(
+//                    navController = navController,
+//                    vm = mainScreenVm
+//                )
             }
             composable(NavItemMain.Courses.route) {
                 val myCoursesNavController = rememberNavController()
@@ -70,12 +69,11 @@ fun MainNav(
                 isOnTopLevel = path.value?.destination?.route != MyCoursesNavItem.Course.route
             }
             composable(NavItemMain.Calendar.route) {
-                CalendarScreen(
-                    modifier = modifier.padding(horizontal = 16.dp),
-                    meds = calendarState.value.meds,
-                    usages = calendarState.value.usages,
-                    reducer = { intent -> calendarVm.reducer(intent) }
-                )
+//                CalendarScreen(
+//                    meds = calendarState.value.meds,
+//                    usages = calendarState.value.usages,
+//                    reducer = { intent -> calendarVm.reducer(intent) }
+//                )
                 isOnTopLevel = true
             }
             composable(NavItemMain.Settings.route) {

@@ -1,10 +1,14 @@
 package app.mybad.notifier
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
@@ -24,9 +28,8 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
-            val navigationState = rememberNavigationState()
             MyBADTheme {
-                AppNavGraph(navigationState = navigationState)
+                AppNavGraph()
             }
         }
     }

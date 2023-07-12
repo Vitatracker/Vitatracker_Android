@@ -27,14 +27,15 @@ class SplashScreenViewModel @Inject constructor(
     val screenState = _screenState.asStateFlow()
 
     init {
+        Log.w("VTTAG", "SplashScreenViewModel init")
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreUseCase.token.collect {
-                Log.w("VTTAG", "MainActivityViewModel::observeDataStore: token=$it")
+                Log.w("VTTAG", "SplashScreenViewModel::observeDataStore: token=$it")
                 AuthToken.token = it
                 val userAuthorized = it.isNotBlank()
                 if (userAuthorized) {
                     // check token and try to get new
-                    _screenState.value = SplashScreenState.Authorized
+                    _effect.send(SplashScreenEffect.NavigateToMain)
                 } else {
                     _screenState.value = SplashScreenState.NotAuthorized
                 }

@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,11 +37,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.DAYS_A_WEEK
 import app.mybad.notifier.utils.atEndOfDay
@@ -57,11 +61,10 @@ import kotlinx.datetime.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    modifier: Modifier = Modifier,
     usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>,
-    reducer: (CalendarIntent) -> Unit
+    meds: List<MedDomainModel>
 ) {
+    val viewModel: CalendarViewModel = hiltViewModel()
     var date by remember { mutableStateOf(getCurrentDateTime()) }
     var selectedDate: LocalDateTime? by remember { mutableStateOf(date) }
     var dialogIsShown by remember { mutableStateOf(false) }
@@ -70,30 +73,25 @@ fun CalendarScreen(
         usages = usages
     )
 
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxSize()
-    ) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { TitleText(textStringRes = R.string.calendar_h) }
+            )
+        }) { paddingValues ->
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.calendar_h),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 24.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
+            MonthSelector(
+                date = date,
+                onSwitch = { date = it }
             )
-            MonthSelector(date = date) { date = it }
             Spacer(Modifier.height(16.dp))
             CalendarScreenItem(
                 date = date,
@@ -117,7 +115,7 @@ fun CalendarScreen(
                                 usages = usages
                             )
                         },
-                        onUsed = { reducer(CalendarIntent.SetUsage(it)) }
+                        onUsed = { viewModel.onUsed(it) }
                     )
                 }
             }
@@ -127,7 +125,6 @@ fun CalendarScreen(
 
 @Composable
 private fun CalendarScreenItem(
-    modifier: Modifier = Modifier,
     date: LocalDateTime,
     usages: List<UsageCommonDomainModel>,
     onSelect: (LocalDateTime?) -> Unit
@@ -142,8 +139,8 @@ private fun CalendarScreenItem(
     // не понятно что это, начало месяца или что или последний день предыдущего месяца
     // minusDays(date.dayOfMonth.toLong())
     val fwd = date.atStartOfMonth()
-    repeat(6) { w->
-        repeat(DAYS_A_WEEK) {d->
+    repeat(6) { w ->
+        repeat(DAYS_A_WEEK) { d ->
             if (w == 0 && d < fwd.dayOfWeek.value) {
                 val time = fwd.minusDays(fwd.dayOfWeek.ordinal - d)
                 usgs[w][d] = usages.filter {
@@ -163,53 +160,48 @@ private fun CalendarScreenItem(
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(4.dp)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(0.5f)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.5f)
-            ) {
-                (1..DAYS_A_WEEK).forEach { day ->
-                    Text(
-                        text = day.dayShortDisplay().uppercase(),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.width(40.dp)
-                    )
-                }
+            (1..DAYS_A_WEEK).forEach { day ->
+                Text(
+                    text = day.dayShortDisplay().uppercase(),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.width(40.dp)
+                )
             }
-            Divider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
-                modifier = Modifier
-                    .padding(top = 12.dp, bottom = 4.dp)
-                    .fillMaxWidth()
-            )
-            repeat(6) { w ->
-                if (cdr[w].any { it?.month == date.month }) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        repeat(DAYS_A_WEEK) { day ->
-                            CalendarDayItem(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                date = cdr[w][day],
-                                usages = usgs[w][day].size,
-                                isSelected = cdr[w][day]?.dayOfYear == currentDate.dayOfYear &&
-                                        cdr[w][day]?.year == currentDate.year,
-                                isOtherMonth = date.month.value != cdr[w][day]?.month?.value
-                            ) { onSelect(it) }
-                        }
+        }
+        Divider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
+            modifier = Modifier
+                .padding(top = 12.dp, bottom = 4.dp)
+                .fillMaxWidth()
+        )
+        repeat(6) { w ->
+            if (cdr[w].any { it?.month == date.month }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    repeat(DAYS_A_WEEK) { day ->
+                        CalendarDayItem(
+                            date = cdr[w][day],
+                            usages = usgs[w][day].size,
+                            isSelected = cdr[w][day]?.dayOfYear == currentDate.dayOfYear &&
+                                    cdr[w][day]?.year == currentDate.year,
+                            isOtherMonth = date.month.value != cdr[w][day]?.month?.value
+                        ) { onSelect(it) }
                     }
                 }
             }
@@ -219,7 +211,6 @@ private fun CalendarScreenItem(
 
 @Composable
 private fun CalendarDayItem(
-    modifier: Modifier = Modifier,
     usages: Int = 0,
     date: LocalDateTime?,
     isSelected: Boolean = false,
@@ -228,7 +219,8 @@ private fun CalendarDayItem(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = Modifier
+            .padding(bottom = 8.dp)
             .size(40.dp)
             .clip(CircleShape)
             .border(

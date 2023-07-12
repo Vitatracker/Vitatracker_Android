@@ -9,9 +9,6 @@ sealed class Screen(val route: String) {
     private companion object {
         const val ROUTE_SPLASH = "splash"
         const val ROUTE_AUTHORIZATION = "authorization"
-        const val ROUTE_AUTHORIZATION_SELECT_AUTHORIZATION_MODE = "authorization_select_authorization_mode"
-        const val ROUTE_AUTHORIZATION_LOGIN = "authorization_login"
-        const val ROUTE_AUTHORIZATION_REGISTRATION = "authorization_registration"
         const val ROUTE_MAIN = "main"
     }
 }

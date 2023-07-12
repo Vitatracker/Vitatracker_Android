@@ -26,12 +26,12 @@ class NavigationState(val navController: NavHostController) {
 
     fun navigateToMain() {
         navController.popBackStack()
-        navController.navigate(Screen.Main.route)
+        navigateSingleTo(Screen.Main.route)
     }
 
     fun navigateToAuthorization() {
         navController.popBackStack()
-        navController.navigate(Screen.Authorization.route)
+        navigateSingleTo(Screen.Authorization.route)
     }
 }
 

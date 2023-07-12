@@ -27,94 +27,81 @@ import app.mybad.theme.R
 fun BottomNavBar(
     modifier: Modifier = Modifier,
     navController: NavHostController? = null,
-    isVisible: Boolean = true
+    onItemSelected: (MainScreens) -> Unit = {},
+    onAddItemClicked: () -> Unit = {}
 ) {
     val backStackEntry = navController?.currentBackStackEntryAsState()
-    var selected by remember { mutableStateOf(NavItemMain.Notifications.route) }
-
-    if (isVisible) {
-        Box(
-            contentAlignment = Alignment.BottomCenter,
-            modifier = modifier
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = modifier
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 26.dp)
+                .height(80.dp)
         ) {
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 26.dp)
-                    .height(80.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Spacer(Modifier.width(0.dp))
+                MainNavigationItem(
+                    icon = MainScreens.Notifications.icon,
+                    isSelected = backStackEntry?.value?.destination?.route == MainScreens.Notifications.route
                 ) {
-                    Spacer(Modifier.width(0.dp))
-                    MainNavigationItem(
-                        icon = NavItemMain.Notifications.icon,
-                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Notifications.route
-                    ) {
-                        selected = NavItemMain.Notifications.route
-                        navController?.popBackStack(NavItemMain.Notifications.route, false)
-                        navController?.navigate(selected)
-                    }
-                    MainNavigationItem(
-                        icon = NavItemMain.Courses.icon,
-                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Courses.route
-                    ) {
-                        selected = NavItemMain.Courses.route
-                        navController?.popBackStack(NavItemMain.Notifications.route, false)
-                        navController?.navigate(selected)
-                    }
-                    Spacer(Modifier.width(64.dp))
-                    MainNavigationItem(
-                        icon = NavItemMain.Calendar.icon,
-                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Calendar.route
-                    ) {
-                        selected = NavItemMain.Calendar.route
-                        navController?.popBackStack(NavItemMain.Notifications.route, false)
-                        navController?.navigate(selected)
-                    }
-                    MainNavigationItem(
-                        icon = NavItemMain.Settings.icon,
-                        isSelected = backStackEntry?.value?.destination?.route == NavItemMain.Settings.route
-                    ) {
-                        selected = NavItemMain.Settings.route
-                        navController?.popBackStack(NavItemMain.Notifications.route, false)
-                        navController?.navigate(selected)
-                    }
-                    Spacer(Modifier.width(0.dp))
+                    onItemSelected(MainScreens.Notifications)
                 }
-            }
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .size(84.dp)
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
+                MainNavigationItem(
+                    icon = MainScreens.Courses.icon,
+                    isSelected = backStackEntry?.value?.destination?.route == MainScreens.Courses.route
                 ) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape,
-                        shadowElevation = 2.dp,
-                        modifier = Modifier
-                            .size(64.dp)
-                            .clickable {
-                                selected = NavItemMain.Add.route
-                                navController?.popBackStack(NavItemMain.Notifications.route, false)
-                                navController?.navigate(selected)
-                            }
-                    ) {
-                        Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)
-                    }
+                    onItemSelected(MainScreens.Courses)
+                }
+                Spacer(Modifier.width(64.dp))
+                MainNavigationItem(
+                    icon = MainScreens.Calendar.icon,
+                    isSelected = backStackEntry?.value?.destination?.route == MainScreens.Calendar.route
+                ) {
+                    onItemSelected(MainScreens.Calendar)
+                }
+                MainNavigationItem(
+                    icon = MainScreens.Settings.icon,
+                    isSelected = backStackEntry?.value?.destination?.route == MainScreens.Settings.route
+                ) {
+                    onItemSelected(MainScreens.Settings)
+                }
+                Spacer(Modifier.width(0.dp))
+            }
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.primaryContainer,
+            shape = CircleShape,
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .size(84.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape,
+                    shadowElevation = 2.dp,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clickable {
+//                                selected = MainScreens.Add.route
+//                                navController?.popBackStack(MainScreens.Notifications.route, false)
+//                                navController?.navigate(selected)
+                        }
+                ) {
+                    Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)
                 }
             }
         }
-    } else {
-        Spacer(Modifier.height(16.dp))
     }
 }
 
