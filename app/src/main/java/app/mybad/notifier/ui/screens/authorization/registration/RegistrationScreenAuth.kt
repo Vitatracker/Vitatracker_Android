@@ -41,11 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import app.mybad.notifier.MainActivityViewModel
-import app.mybad.notifier.ui.screens.authorization.AuthorizationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.SignInWithGoogle
-import app.mybad.notifier.ui.screens.authorization.navigation.AuthorizationNavItem
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)

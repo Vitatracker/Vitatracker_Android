@@ -20,6 +20,9 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                 },
                 onRegistrationButtonClicked = {
                     navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
+                },
+                onSignInWithGoogleClicked = {
+                     // TODO("Добавить вход через Google")
                 }
             )
         }
