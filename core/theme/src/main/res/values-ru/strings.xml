@@ -80,7 +80,7 @@
 
     <!--LOGIN-->
     <string name="sign_in">Вход</string>
-    <string name="login_email">Электронная почта</string>
+    <string name="login_email">Email</string>
     <string name="login_password">Пароль</string>
     <string name="login_password_confirm">Подверждение пароля</string>
     <string name="login_forgot_password">Забыли пароль?</string>
@@ -171,4 +171,8 @@
     <string name="splash_welcome_in">Добро пожаловать в\n</string>
 
     <string name="sign_in_with_google" translatable="false">Войти с помощью Google</string>
+    <string name="continue_with" translatable="false">Продолжить с помощью</string>
+    <string name="action_confirm">Подтвердить</string>
+    <string name="password_recovery">Восстановление пароля</string>
+    <string name="password_recovery_enter_mail">Пожалуйста, введите ваш Email для отправки информации по восстановлению пароля</string>
 </resources>

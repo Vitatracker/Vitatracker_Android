@@ -52,7 +52,7 @@
     <string name="login_forgot_password">Forgot your password?</string>
     <string name="login_agree_policy_text">By clicking the Sign in button, you agree to the </string>
     <string name="login_text_privacy_policy">Privacy Policy</string>
-
+    <string name="action_confirm">Confirm</string>
     <!--REGISTRATION-->
     <string name="text_continue">Continue</string>
 
@@ -67,7 +67,7 @@
     <string name="facebook" translatable="false">Facebook</string>
     <string name="google" translatable="false">Google</string>
     <string name="sign_in_with_google" translatable="false">Sign in with Google</string>
-
+    <string name="continue_with" translatable="false">Continue with</string>
     <!--SETTINGS-->
     <string name="settings_profile">Profile</string>
     <string name="settings_notifications">Notifications</string>
@@ -180,4 +180,6 @@
     <string name="action_begin">Begin</string>
     <string name="splash_welcome_text">We help you take care\nof your health</string>
     <string name="splash_welcome_in">Welcome to\n</string>
+    <string name="password_recovery">Password recovery</string>
+    <string name="password_recovery_enter_mail">Please enter your Email address to send password recovery information</string>
 </resources>

@@ -41,7 +41,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +55,7 @@ fun StartMainRegistrationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                title = { TitleText(R.string.authorization_screen_registration) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -65,14 +67,13 @@ fun StartMainRegistrationScreen(
                 }
             )
         },
-        floatingActionButtonPosition = FabPosition.End,
         content = { contentPadding ->
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding)
             ) {
-                MainRegistrationScreen(viewModel::registration)
+                MainRegistrationScreen(viewModel::registration, viewModel::signInWithGoogle)
             }
         }
     )
@@ -80,41 +81,37 @@ fun StartMainRegistrationScreen(
 
 @Composable
 private fun MainRegistrationScreen(
-    onRegistrationClicked: (login: String, password: String, userName: String) -> Unit
+    onRegistrationClicked: (login: String, password: String, userName: String) -> Unit,
+    onSignInWithGoogleClicked: () -> Unit
 ) {
     val userNameState = remember { mutableStateOf("") }
     val loginState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val confirmPasswordState = remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-        ) {
-            RegistrationScreenBaseForSignIn(
-                loginState = loginState,
-                passwordState = passwordState,
-                userNameState = userNameState,
-                confirmPasswordState = confirmPasswordState
-            )
-            RegistrationScreenButtonRegistration(
-                onClick = {
-                    onRegistrationClicked(
-                        loginState.value,
-                        passwordState.value,
-                        userNameState.value
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            SignInWithGoogle(
-                onClick = {
-                }
-            )
-        }
+        RegistrationScreenBaseForSignIn(
+            loginState = loginState,
+            passwordState = passwordState,
+            userNameState = userNameState,
+            confirmPasswordState = confirmPasswordState
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        ReUseFilledButton(
+            textId = R.string.action_confirm,
+            onClick = { onRegistrationClicked(loginState.value, passwordState.value, userNameState.value) }
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        SignInWithGoogle(
+            signInTextResource = R.string.continue_with,
+            onClick = {
+                onSignInWithGoogleClicked()
+            }
+        )
     }
 }
 
@@ -243,20 +240,3 @@ private fun RegistrationScreenEnteredPassword(passwordState: MutableState<String
     )
 }
 
-@Composable
-private fun RegistrationScreenButtonRegistration(onClick: () -> Unit) {
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp, start = 8.dp, end = 8.dp),
-        onClick = { onClick() },
-        contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
-        shape = MaterialTheme.shapes.small
-    ) {
-        Text(
-            text = stringResource(id = R.string.text_continue),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}

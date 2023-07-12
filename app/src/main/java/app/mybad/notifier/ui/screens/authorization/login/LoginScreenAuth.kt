@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.login
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,7 +44,6 @@ import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.theme.R
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,8 +119,7 @@ private fun LoginScreenEnteredEmail(loginState: MutableState<String>) {
     OutlinedTextField(
         value = loginState.value,
         onValueChange = { newLogin -> loginState.value = newLogin },
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.login_email)) },
@@ -152,15 +151,9 @@ private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
         visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             val (icon, iconColor) = if (showPassword.value) {
-                Pair(
-                    Icons.Filled.Visibility,
-                    Color.Black
-                )
+                Pair(Icons.Filled.Visibility, Color.Black)
             } else {
-                Pair(
-                    Icons.Filled.VisibilityOff,
-                    Color.Black
-                )
+                Pair(Icons.Filled.VisibilityOff, Color.Black)
             }
 
             IconButton(onClick = { showPassword.value = !showPassword.value }) {
@@ -176,8 +169,8 @@ private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
 
 @Composable
 private fun LoginScreenForgotPassword(onForgotPasswordClicked: () -> Unit) {
-    ClickableText(
-        text = AnnotatedString(stringResource(id = R.string.login_forgot_password)),
-        onClick = { onForgotPasswordClicked() }
+    Text(
+        modifier = Modifier.clickable { onForgotPasswordClicked() },
+        text = AnnotatedString(stringResource(id = R.string.login_forgot_password))
     )
 }

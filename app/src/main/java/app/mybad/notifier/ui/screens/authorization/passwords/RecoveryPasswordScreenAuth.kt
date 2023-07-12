@@ -13,7 +13,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,64 +27,41 @@ fun StartMainRecoveryPasswordScreenAuth(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.sign_in)) },
+                title = { TitleText(textStringRes = R.string.password_recovery) },
                 navigationIcon = {
                     IconButton(onClick = {
                         onBackPressed()
                     }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                }
             )
-        },
-        floatingActionButtonPosition = FabPosition.End,
-        content = { contentPadding ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding)
-            ) {
-                MainRecoveryPasswordScreenAuth(onContinueClicked)
-            }
-        }
-    )
-}
-
-@Composable
-private fun MainRecoveryPasswordScreenAuth(onContinueClicked: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        RecoveryPasswordScreenBackgroundImage()
-        Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+        }) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         ) {
-            RecoveryPasswordScreenTextUser()
-            Spacer(modifier = Modifier.height(15.dp))
-            RecoveryPasswordScreenTextEmail()
-            ReUseFilledButton(textId = R.string.text_continue) {
-                onContinueClicked()
-            }
+            MainRecoveryPasswordScreenAuth(onContinueClicked)
         }
     }
 }
 
 @Composable
-private fun RecoveryPasswordScreenBackgroundImage() {
-}
-
-@Composable
-private fun RecoveryPasswordScreenTextUser() {
+private fun MainRecoveryPasswordScreenAuth(onContinueClicked: () -> Unit) {
     Column(
-        modifier = Modifier.padding(top = 24.dp, start = 10.dp, end = 10.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(id = R.string.recovery_text_1), textAlign = TextAlign.Justify)
-        Text(text = stringResource(id = R.string.recovery_text_2), textAlign = TextAlign.Justify)
-        Text(text = stringResource(id = R.string.recovery_text_3), textAlign = TextAlign.Justify)
+        Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = R.string.password_recovery_enter_mail), fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(24.dp))
+        RecoveryPasswordScreenTextEmail()
+        Spacer(modifier = Modifier.height(32.dp))
+        ReUseFilledButton(textId = R.string.text_continue) {
+            onContinueClicked()
+        }
     }
 }
 
@@ -94,8 +73,7 @@ private fun RecoveryPasswordScreenTextEmail() {
         value = loginState,
         onValueChange = { newLogin -> loginState = newLogin },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.login_email)) },

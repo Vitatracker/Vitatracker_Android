@@ -32,6 +32,7 @@ class RegistrationScreenViewModel @Inject constructor(
                     "VTTAG",
                     "AuthorizationScreenViewModel::registration: Error: email or password is not valid!"
                 )
+                log("Error: email or password is not valid!")
 //                _uiEvent.emit("Error: email or password is not valid!")
                 return@launch
             }
@@ -46,12 +47,12 @@ class RegistrationScreenViewModel @Inject constructor(
                     // добавить в локальную db user и получим userId
                     val userId: Long = createUserUseCase(email = login, name = userName)
                     val tokens = result.data as Authorization
-                    Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Ok: userId=$userId token=${tokens.token}")
+                    log("Ok: userId=$userId token=${tokens.token}")
                     dataStoreUseCase.updateAll(tokens.token, tokens.refreshToken, userId, login)
                 }
 
                 is ApiResult.ApiError -> {
-                    Log.w("VTTAG", "AuthorizationScreenViewModel::registration: ApiError ${result.code} ${result.message}")
+                    log("ApiError ${result.code} ${result.message}")
 //                    _uiEvent.emit("${result.code} ${result.message}")
                 }
 
@@ -61,5 +62,12 @@ class RegistrationScreenViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun log(message: String) {
+        Log.w("VTTAG", "AuthorizationScreenViewModel::registration: $message")
+    }
+    fun signInWithGoogle() {
+        // TODO("Not yet implemented")
     }
 }
