@@ -85,45 +85,45 @@ fun NewCourseNavScreen(
         ) {
             composable(NewCourseNavItem.AddMedicineFirst.route) {
                 title = stringResource(R.string.add_med_h)
-                AddMedicineFirstScreen(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
-                    reducer = vm::reduce,
-                    onNext = {
-                        navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route)
-                    },
-                )
+//                AddMedicineFirstScreen(
+//                    modifier = Modifier.padding(horizontal = 16.dp),
+//                    med = state.med,
+//                    reducer = vm::reduce,
+//                    onNext = {
+//                        navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route)
+//                    },
+//                )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
                 title = state.med.name ?: error("Med has empty name")
-                AddMedicineSecondScreen(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
-                    reducer = vm::reduce,
-                    onNext = {
-                        navHostController.navigate(NewCourseNavItem.AddCourse.route)
-                    },
-                )
+//                AddMedicineSecondScreen(
+//                    modifier = Modifier.padding(horizontal = 16.dp),
+//                    med = state.med,
+//                    reducer = vm::reduce,
+//                    onNext = {
+//                        navHostController.navigate(NewCourseNavItem.AddCourse.route)
+//                    },
+//                )
             }
             composable(NewCourseNavItem.AddCourse.route) {
                 title = stringResource(R.string.add_course_h)
-                AddCourseMainScreen(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    course = state.course,
-                    reducer = vm::reduce,
-                    onNext = {
-                        navHostController.navigate(NewCourseNavItem.AddNotifications.route)
-                    },
-                )
+//                AddCourseMainScreen(
+//                    modifier = Modifier.padding(horizontal = 16.dp),
+//                    course = state.course,
+//                    reducer = vm::reduce,
+//                    onNext = {
+//                        navHostController.navigate(NewCourseNavItem.AddNotifications.route)
+//                    },
+//                )
             }
             composable(NewCourseNavItem.AddNotifications.route) {
                 title = stringResource(R.string.add_course_notifications_time)
-                AddNotificationsMainScreen(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
-                    reducer = vm::reduce,
-                    onNext = { navHostController.navigate(NewCourseNavItem.Success.route) }
-                )
+//                AddNotificationsMainScreen(
+//                    modifier = Modifier.padding(horizontal = 16.dp),
+//                    med = state.med,
+//                    reducer = vm::reduce,
+//                    onNext = { navHostController.navigate(NewCourseNavItem.Success.route) }
+//                )
             }
             composable(NewCourseNavItem.Success.route) {
                 SuccessMainScreen(

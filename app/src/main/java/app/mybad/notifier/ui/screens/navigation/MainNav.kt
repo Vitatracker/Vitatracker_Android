@@ -61,11 +61,11 @@ fun MainNav(
             composable(NavItemMain.Courses.route) {
                 val myCoursesNavController = rememberNavController()
                 val path = myCoursesNavController.currentBackStackEntryAsState()
-                MyCoursesMainScreen(
-                    modifier = modifier.padding(horizontal = 16.dp),
-                    navHostController = myCoursesNavController,
-                    vm = myCoursesVm
-                )
+//                MyCoursesMainScreen(
+//                    modifier = modifier.padding(horizontal = 16.dp),
+//                    navHostController = myCoursesNavController,
+//                    vm = myCoursesVm
+//                )
                 isOnTopLevel = path.value?.destination?.route != MyCoursesNavItem.Course.route
             }
             composable(NavItemMain.Calendar.route) {

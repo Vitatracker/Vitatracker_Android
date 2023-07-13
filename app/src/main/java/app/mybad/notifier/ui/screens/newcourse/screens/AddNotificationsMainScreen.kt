@@ -22,10 +22,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,17 +52,17 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun AddNotificationsMainScreen(
-    modifier: Modifier = Modifier,
-    reducer: (NewCourseIntent) -> Unit = {},
     med: MedDomainModel = MedDomainModel(),
     onNext: () -> Unit = {}
 ) {
@@ -68,96 +71,109 @@ fun AddNotificationsMainScreen(
     var dialogIsShown by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column {
-            Text(
-                text = stringResource(id = R.string.add_notifications_time_set),
-                modifier = Modifier.padding(bottom = 4.dp),
-                style = MaterialTheme.typography.bodyLarge
-            )
-            AddNotificationButton(
-                form = med.type,
-                forms = forms,
-                onClick = {
-                    notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1))
-                    }
-                }
-            )
-            Spacer(Modifier.height(16.dp))
-            LazyColumn {
-                notificationsPattern.forEachIndexed { index, item ->
-                    item {
-                        NotificationItem(
-                            time = item.first,
-                            quantity = item.second,
-                            form = med.type,
-                            forms = forms,
-                            onDelete = {
-                                notificationsPattern = notificationsPattern.toMutableList().apply {
-                                    removeAt(index)
-                                }.toList()
-                            },
-                            onDoseChange = { q ->
-                                notificationsPattern = notificationsPattern.toMutableList()
-                                    .apply {
-                                        removeAt(index)
-                                        add(index, item.copy(second = q.toInt()))
-                                    }.toList()
-                            },
-                            onTimeClick = {
-                                selectedItem = item
-                                dialogIsShown = true
-                            }
-                        )
-                        Spacer(Modifier.height(16.dp))
-                    }
-                }
-            }
-            Spacer(Modifier.height(16.dp))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    TitleText(textStringRes = R.string.add_notifications_choose_time)
+                })
         }
-        Button(
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            shape = RoundedCornerShape(10.dp),
-            onClick = {
-                reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
-                onNext()
-            }
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(R.string.navigation_next),
-                style = Typography.bodyLarge
-            )
-        }
-    }
-
-    if (dialogIsShown && selectedItem != null) {
-        Dialog(onDismissRequest = { dialogIsShown = false }) {
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                TimeSelector(
-                    initTime = selectedItem!!.first,
-                    onSelect = {
-                        val n = notificationsPattern.toMutableList()
-                        val i = n.indexOf(selectedItem!!)
-                        n.removeAt(i)
-                        selectedItem = selectedItem!!.copy(first = it)
-                        n.add(i, selectedItem!!)
-                        n.sortBy { item -> item.first }
-                        notificationsPattern = n.toList()
-                        dialogIsShown = false
+            Column {
+                Text(
+                    text = stringResource(id = R.string.add_notifications_time_set),
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                AddNotificationButton(
+                    form = med.type,
+                    forms = forms,
+                    onClick = {
+                        notificationsPattern = notificationsPattern.toMutableList().apply {
+                            add(Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1))
+                        }
                     }
+                )
+                Spacer(Modifier.height(16.dp))
+                LazyColumn {
+                    notificationsPattern.forEachIndexed { index, item ->
+                        item {
+                            NotificationItem(
+                                time = item.first,
+                                quantity = item.second,
+                                form = med.type,
+                                forms = forms,
+                                onDelete = {
+                                    notificationsPattern = notificationsPattern.toMutableList().apply {
+                                        removeAt(index)
+                                    }.toList()
+                                },
+                                onDoseChange = { q ->
+                                    notificationsPattern = notificationsPattern.toMutableList()
+                                        .apply {
+                                            removeAt(index)
+                                            add(index, item.copy(second = q.toInt()))
+                                        }.toList()
+                                },
+                                onTimeClick = {
+                                    selectedItem = item
+                                    dialogIsShown = true
+                                }
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                shape = RoundedCornerShape(10.dp),
+                onClick = {
+//                reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
+                    onNext()
+                }
+            ) {
+                Text(
+                    text = stringResource(R.string.navigation_next),
+                    style = Typography.bodyLarge
                 )
             }
         }
+
+        if (dialogIsShown && selectedItem != null) {
+            Dialog(onDismissRequest = { dialogIsShown = false }) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    TimeSelector(
+                        initTime = selectedItem!!.first,
+                        onSelect = {
+                            val n = notificationsPattern.toMutableList()
+                            val i = n.indexOf(selectedItem!!)
+                            n.removeAt(i)
+                            selectedItem = selectedItem!!.copy(first = it)
+                            n.add(i, selectedItem!!)
+                            n.sortBy { item -> item.first }
+                            notificationsPattern = n.toList()
+                            dialogIsShown = false
+                        }
+                    )
+                }
+            }
+        }
     }
+
 }
 
 @Composable

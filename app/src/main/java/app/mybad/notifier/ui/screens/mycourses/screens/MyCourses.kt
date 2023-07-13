@@ -78,7 +78,7 @@ fun MyCourses(
                                     usage.useTime >= course.startDate &&
                                     usage.useTime < course.endDate.plusDay()
                         },
-                        onSelect = onSelect::invoke,
+                        onSelect = { onSelect(course.id) },
                     )
                     Spacer(Modifier.height(16.dp))
                 }

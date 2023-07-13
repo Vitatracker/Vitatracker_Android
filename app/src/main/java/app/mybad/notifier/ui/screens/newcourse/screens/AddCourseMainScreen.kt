@@ -15,11 +15,16 @@ import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +45,8 @@ import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
@@ -51,58 +58,70 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AddCourseMainScreen(
-    modifier: Modifier = Modifier,
     course: CourseDomainModel,
-    reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
-    val startLabel = stringResource(R.string.add_course_start_time)
-    val endLabel = stringResource(R.string.add_course_end_time)
-    val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
     val startDate = course.startDate.toLocalDateTime().atStartOfDay()
     val endDate = course.endDate.toLocalDateTime().atEndOfDay()
     var selectedInput by remember { mutableStateOf(-1) }
-    val sState = rememberBottomSheetScaffoldState()
+    val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
 
     BottomSheetScaffold(
-        scaffoldState = sState,
+        topBar = {
+            TopAppBar(
+                title = {
+                    TitleText(textStringRes = R.string.add_course_h)
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
+                    }
+                },
+                backgroundColor = MaterialTheme.colorScheme.secondary,
+                elevation = 0.dp
+            )
+        },
+        scaffoldState = bottomSheetState,
         sheetPeekHeight = 0.dp,
         sheetGesturesEnabled = false,
         sheetContent = {
             RemindNewCourseBottomSheet(
                 modifier = Modifier.padding(16.dp),
                 course = course,
-                reducer = reducer,
-                onSave = { scope.launch { sState.bottomSheetState.collapse() } },
-                onCancel = { scope.launch { sState.bottomSheetState.collapse() } },
+                onSave = { scope.launch { bottomSheetState.bottomSheetState.collapse() } },
+                onCancel = { scope.launch { bottomSheetState.bottomSheetState.collapse() } },
             )
         }
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(16.dp)
         ) {
             Column {
                 MultiBox(
                     {
                         ParameterIndicator(
-                            name = startLabel,
+                            name = stringResource(R.string.add_course_start_time),
                             value = startDate.toDateFullDisplay(),
                             onClick = { selectedInput = 1 }
                         )
                     },
                     {
                         ParameterIndicator(
-                            name = endLabel,
+                            name = stringResource(R.string.add_course_end_time),
                             value = endDate.toDateFullDisplay(),
                             onClick = { selectedInput = 2 }
                         )
                     },
                     {
                         ParameterIndicator(
-                            name = regimeLabel,
+                            name = stringResource(R.string.medication_regime),
                             value = regimeList[course.regime],
                             onClick = { selectedInput = 3 }
                         )
@@ -115,7 +134,7 @@ fun AddCourseMainScreen(
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                    onClick = { scope.launch { sState.bottomSheetState.expand() } },
+                    onClick = { scope.launch { bottomSheetState.bottomSheetState.expand() } },
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     Icon(
@@ -129,17 +148,8 @@ fun AddCourseMainScreen(
                     Text(text = stringResource(R.string.add_course_reminder))
                 }
             }
-            androidx.compose.material3.Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp),
-                shape = RoundedCornerShape(10.dp),
-                onClick = onNext::invoke
-            ) {
-                Text(
-                    text = stringResource(R.string.navigation_next),
-                    style = Typography.bodyLarge
-                )
+            ReUseFilledButton(textId = R.string.navigation_next) {
+                onNext()
             }
         }
     }
@@ -158,11 +168,10 @@ fun AddCourseMainScreen(
                         startDay = startDate,
                         endDay = endDate,
                         onSelect = { sd ->
-                            reducer(
-                                NewCourseIntent.UpdateCourse(
-                                    course.copy(
-                                        startDate = sd?.atStartOfDay()?.toEpochSecond() ?: 0L,
-                                    )
+                            // TODO
+                            NewCourseIntent.UpdateCourse(
+                                course.copy(
+                                    startDate = sd?.atStartOfDay()?.toEpochSecond() ?: 0L,
                                 )
                             )
                             selectedInput = -1
@@ -175,11 +184,10 @@ fun AddCourseMainScreen(
                         startDay = startDate,
                         endDay = endDate,
                         onSelect = { ed ->
-                            reducer(
-                                NewCourseIntent.UpdateCourse(
-                                    course.copy(
-                                        endDate = ed?.atStartOfDay()?.toEpochSecond() ?: 0L,
-                                    )
+                            // TODO
+                            NewCourseIntent.UpdateCourse(
+                                course.copy(
+                                    endDate = ed?.atStartOfDay()?.toEpochSecond() ?: 0L,
                                 )
                             )
                             selectedInput = -1
@@ -192,7 +200,8 @@ fun AddCourseMainScreen(
                         list = regimeList.toList(),
                         startOffset = course.regime,
                         onSelect = {
-                            reducer(NewCourseIntent.UpdateCourse(course.copy(regime = it)))
+                            // TODO
+                            NewCourseIntent.UpdateCourse(course.copy(regime = it))
                             selectedInput = -1
                         }
                     )

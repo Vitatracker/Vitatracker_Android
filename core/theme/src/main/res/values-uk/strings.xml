@@ -9,6 +9,7 @@
     <string name="add_med_form">Форма випуску</string>
     <string name="add_notifications_time">Додати нагадування</string>
     <string name="add_med_details">Опис препарату</string>
+    <string name="add_med_reception">Прийом</string>
     <string name="add_med_icon_color">Виберіть колір іконки</string>
     <string name="add_med_icon">Виберіть іконку</string>
     <string name="enter_med_name">Введіть найменування препарату</string>

@@ -93,9 +93,7 @@ fun BottomNavBar(
                     modifier = Modifier
                         .size(64.dp)
                         .clickable {
-//                                selected = MainScreens.Add.route
-//                                navController?.popBackStack(MainScreens.Notifications.route, false)
-//                                navController?.navigate(selected)
+                            onAddItemClicked()
                         }
                 ) {
                     Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)

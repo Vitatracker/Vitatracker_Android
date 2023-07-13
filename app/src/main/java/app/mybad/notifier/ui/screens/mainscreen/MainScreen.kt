@@ -6,12 +6,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
+import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.navigation.BottomNavBar
 import app.mybad.notifier.ui.screens.navigation.MainNavGraph
 import app.mybad.notifier.ui.screens.navigation.rememberNavigationState
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    notificationsScreenContent: @Composable () -> Unit,
+    coursesScreenContent: @Composable () -> Unit,
+    calendarScreenContent: @Composable () -> Unit,
+    settingsScreenContent: @Composable () -> Unit,
+    onAddClicked: () -> Unit
+) {
     val navigationState = rememberNavigationState()
 
     Scaffold(
@@ -21,23 +28,25 @@ fun MainScreen() {
                 onItemSelected = {
                     navigationState.navigateTo(it.route)
                 },
-                onAddItemClicked = {})
+                onAddItemClicked = {
+                    onAddClicked()
+                })
         }
     ) { paddingValues ->
         MainNavGraph(
             navController = navigationState.navController,
             paddingValues = paddingValues,
             notificationScreenContent = {
-                NotificationsScreen()
+                notificationsScreenContent()
             },
             coursesScreenContent = {
-                Text("Courses")
+                coursesScreenContent()
             },
             calendarScreenContent = {
-                CalendarScreen(usages = listOf(), meds = listOf())
+                calendarScreenContent()
             },
             settingsScreenContent = {
-                Text("Settings")
+                settingsScreenContent()
             }
         )
     }

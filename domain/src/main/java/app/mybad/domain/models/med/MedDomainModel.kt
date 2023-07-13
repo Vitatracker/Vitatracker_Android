@@ -1,7 +1,10 @@
 package app.mybad.domain.models.med
 
+import android.os.Parcelable
 import app.mybad.domain.models.AuthToken
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class MedDomainModel(
     val id: Long = 0,
     val creationDate: Long = 0,
@@ -17,4 +20,4 @@ data class MedDomainModel(
     val measureUnit: Int = 0,
     val photo: String? = null,
     val beforeFood: Int = 0,
-)
+): Parcelable

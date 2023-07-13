@@ -22,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,14 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.screens.reuse.TitleText
@@ -56,15 +52,15 @@ import app.mybad.notifier.utils.plusDays
 import app.mybad.notifier.utils.toDateFullDisplay
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toSecondsLeftFromStartOfDay
+import app.mybad.theme.R
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(
-    usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>
-) {
+fun CalendarScreen() {
     val viewModel: CalendarViewModel = hiltViewModel()
+    val usages: List<UsageCommonDomainModel> = listOf()
+    val meds: List<MedDomainModel> = listOf()
     var date by remember { mutableStateOf(getCurrentDateTime()) }
     var selectedDate: LocalDateTime? by remember { mutableStateOf(date) }
     var dialogIsShown by remember { mutableStateOf(false) }
