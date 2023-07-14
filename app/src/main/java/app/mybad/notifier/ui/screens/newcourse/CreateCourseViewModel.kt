@@ -143,7 +143,7 @@ class CreateCourseViewModel @Inject constructor(
                                 course = _state.value.course,
                                 usages = _state.value.usages
                             )
-                            _state.emit(newState())
+                            _state.value = newState()
                         }
                     }
                 }

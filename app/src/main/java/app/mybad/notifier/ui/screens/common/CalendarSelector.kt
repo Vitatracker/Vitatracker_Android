@@ -138,7 +138,7 @@ fun CalendarSelector(
             ) {
                 repeat(DAYS_A_WEEK) {
                     Text(
-                        text = it.dayShortDisplay(),
+                        text = (it + 1).dayShortDisplay(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()

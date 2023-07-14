@@ -28,16 +28,15 @@ import app.mybad.notifier.ui.theme.Typography
 fun AddMedicineSecondScreen(
     med: MedDomainModel,
     onNext: (MedDomainModel) -> Unit,
-    onBackPressed: (MedDomainModel) -> Unit,
+    onBackPressed: () -> Unit,
 ) {
-    var currentMed by rememberSaveable { mutableStateOf(med) }
 
     Scaffold(topBar = {
         TopAppBar(title = {
             TitleText(textStringRes = R.string.add_med_h)
         },
             navigationIcon = {
-                IconButton(onClick = { onBackPressed(currentMed) }) {
+                IconButton(onClick = { onBackPressed() }) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
                 }
             })
@@ -50,23 +49,21 @@ fun AddMedicineSecondScreen(
                 .padding(16.dp)
         ) {
             SecondScreenContent(
-                med = currentMed,
-                onNext = onNext,
-                onUpdate = {
-                    currentMed = it.copy()
-                }
+                med = med,
+                onNext = onNext
             )
         }
     }
 }
 
 @Composable
-private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) -> Unit, onUpdate: (MedDomainModel) -> Unit) {
+private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) -> Unit) {
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
     val relations = stringArrayResource(R.array.food_relations)
     val dose = stringResource(R.string.add_med_dose)
     val unit = stringResource(R.string.add_med_unit)
+    var currentMed by rememberSaveable { mutableStateOf(med) }
 
     Column {
         Text(
@@ -80,7 +77,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                 var exp by remember { mutableStateOf(false) }
                 ParameterIndicator(
                     name = stringResource(R.string.add_med_form),
-                    value = types[med.type],
+                    value = types[currentMed.type],
                     onClick = {
                         exp = true
                     }
@@ -94,7 +91,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {
-                                onUpdate(med.copy(type = index))
+                                currentMed = currentMed.copy(type = index)
                                 exp = false
                             }
                         )
@@ -104,7 +101,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
             {
                 BasicKeyboardInput(
                     label = dose,
-                    init = if (med.dose == 0) "" else med.dose.toString(),
+                    init = if (currentMed.dose == 0) "" else currentMed.dose.toString(),
                     hideOnGo = true,
                     keyboardType = KeyboardType.Number,
                     alignRight = true,
@@ -112,13 +109,13 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                         Text(text = dose, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
                     },
                     onChange = {
-                        onUpdate(med.copy(dose = it.toIntOrNull() ?: 0))
+                        currentMed = currentMed.copy(dose = it.toIntOrNull() ?: 0)
                     }
                 )
             },
             {
                 var exp by remember { mutableStateOf(false) }
-                ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = {
+                ParameterIndicator(name = unit, value = units[currentMed.measureUnit], onClick = {
                     exp = true
                 })
                 DropdownMenu(
@@ -130,7 +127,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {
-                                onUpdate(med.copy(measureUnit = index))
+                                currentMed = currentMed.copy(measureUnit = index)
                                 exp = false
                             }
                         )
@@ -141,7 +138,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                 var exp by remember { mutableStateOf(false) }
                 ParameterIndicator(
                     name = stringResource(R.string.add_med_food_relation),
-                    value = relations[med.beforeFood],
+                    value = relations[currentMed.beforeFood],
                     onClick = {
                         exp = true
                     }
@@ -155,7 +152,7 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {
-                                onUpdate(med.copy(beforeFood = index))
+                                currentMed = currentMed.copy(beforeFood = index)
                                 exp = false
                             }
                         )
@@ -168,6 +165,6 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
         )
     }
     ReUseFilledButton(textId = R.string.navigation_next) {
-        onNext(med)
+        onNext(currentMed)
     }
 }

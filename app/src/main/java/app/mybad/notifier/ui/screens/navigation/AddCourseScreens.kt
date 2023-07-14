@@ -1,31 +1,17 @@
 package app.mybad.notifier.ui.screens.navigation
 
-import app.mybad.domain.models.med.MedDomainModel
-import com.google.gson.Gson
-
 sealed class AddCourseScreens(val route: String) {
-
-    object FirstScreen : AddCourseScreens(ROUTE_FIRST)
-    object SecondScreen : AddCourseScreens(ROUTE_SECOND) {
-        private const val ROUTE_FOR_ARGS = "add_course_second"
-
-        fun getRouteWithArgs(medDomainModel: MedDomainModel): String {
-            return "$ROUTE_FOR_ARGS/${Gson().toJson(medDomainModel).toString().encode()}"
-        }
-    }
-
-    object ThirdScreen : AddCourseScreens(ROUTE_THIRD) {
-        private const val ROUTE_FOR_ARGS = "add_course_third"
-
-        fun getRouteWithArgs(medDomainModel: MedDomainModel): String {
-            return "$ROUTE_FOR_ARGS/${Gson().toJson(medDomainModel).toString().encode()}"
-        }
-    }
+    object MedDetailsScreen : AddCourseScreens(ROUTE_MED_DETAILS)
+    object MedReceptionScreen : AddCourseScreens(ROUTE_MED_RECEPTION)
+    object CourseDetailsScreen : AddCourseScreens(ROUTE_COURSE_DETAILS)
+    object CourseDurationScreen : AddCourseScreens(ROUTE_COURSE_DURATION)
+    object CongratulationsScreen : AddCourseScreens(ROUTE_CONGRATULATIONS)
 
     companion object {
-        const val KEY_MED = "med"
-        private const val ROUTE_FIRST = "add_course_first"
-        private const val ROUTE_SECOND = "add_course_second/{${KEY_MED}}"
-        private const val ROUTE_THIRD = "add_course_third/{${KEY_MED}}"
+        private const val ROUTE_MED_DETAILS = "add_course_med_details"
+        private const val ROUTE_MED_RECEPTION = "add_course_med_reception"
+        private const val ROUTE_COURSE_DETAILS = "add_course_details"
+        private const val ROUTE_COURSE_DURATION = "add_course_duration"
+        private const val ROUTE_CONGRATULATIONS = "add_course_congrats"
     }
 }

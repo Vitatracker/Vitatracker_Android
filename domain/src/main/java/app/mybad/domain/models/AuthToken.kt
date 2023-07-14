@@ -5,7 +5,7 @@ object AuthToken {
 
     var refreshToken = ""
 
-    var userId = -1L
+    var userId = 1L
 
     var email = ""
 

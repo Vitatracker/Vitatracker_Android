@@ -20,10 +20,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -52,6 +54,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.getCurrentDateTime
@@ -64,7 +67,8 @@ import app.mybad.notifier.utils.toTimeDisplay
 @Preview
 fun AddNotificationsMainScreen(
     med: MedDomainModel = MedDomainModel(),
-    onNext: () -> Unit = {}
+    onNext: () -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
     var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
@@ -76,6 +80,11 @@ fun AddNotificationsMainScreen(
             TopAppBar(
                 title = {
                     TitleText(textStringRes = R.string.add_notifications_choose_time)
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
+                    }
                 })
         }
     ) { paddingValues ->
@@ -89,7 +98,7 @@ fun AddNotificationsMainScreen(
             Column {
                 Text(
                     text = stringResource(id = R.string.add_notifications_time_set),
-                    modifier = Modifier.padding(bottom = 4.dp),
+                    modifier = Modifier.padding(bottom = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 AddNotificationButton(
@@ -133,20 +142,8 @@ fun AddNotificationsMainScreen(
                 }
                 Spacer(Modifier.height(16.dp))
             }
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                shape = RoundedCornerShape(10.dp),
-                onClick = {
-//                reducer(NewCourseIntent.UpdateUsagesPattern(notificationsPattern))
-                    onNext()
-                }
-            ) {
-                Text(
-                    text = stringResource(R.string.navigation_next),
-                    style = Typography.bodyLarge
-                )
+            ReUseFilledButton(textId = R.string.navigation_next) {
+                onNext()
             }
         }
 

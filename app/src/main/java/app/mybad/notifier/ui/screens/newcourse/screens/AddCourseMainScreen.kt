@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddCourseMainScreen(
     course: CourseDomainModel,
-    onNext: () -> Unit,
+    onNext: (CourseDomainModel) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val regimeList = stringArrayResource(R.array.regime)
@@ -149,7 +149,7 @@ fun AddCourseMainScreen(
                 }
             }
             ReUseFilledButton(textId = R.string.navigation_next) {
-                onNext()
+                onNext(course)
             }
         }
     }
