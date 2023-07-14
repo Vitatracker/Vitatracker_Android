@@ -1,7 +1,5 @@
 package app.mybad.notifier.ui.screens.navigation
 
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -22,14 +20,15 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                     navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
                 },
                 onSignInWithGoogleClicked = {
-                     // TODO("Добавить вход через Google")
+                    // TODO("Добавить вход через Google")
                 }
             )
         }
         composable(route = AuthorizationScreens.Login.route) {
             StartMainLoginScreen(
                 onBackPressed = { navigationState.navController.popBackStack() },
-                onForgotPasswordClicked = { navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route) }
+                onForgotPasswordClicked = { navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route) },
+                onLoginSuccess = { navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true) }
             )
         }
         composable(route = AuthorizationScreens.Registration.route) {
