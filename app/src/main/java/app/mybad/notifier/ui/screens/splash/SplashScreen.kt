@@ -1,21 +1,21 @@
 package app.mybad.notifier.ui.screens.splash
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,28 +30,29 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.theme.R
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(
+    viewModel: SplashScreenViewModel = hiltViewModel(),
     proceedToMain: () -> Unit,
     proceedToAuthorization: () -> Unit
 ) {
-    val viewModel: SplashScreenViewModel = hiltViewModel()
-//    val screenState by viewModel.screenState.collectAsState(SplashScreenState.Initial)
-    Log.w("VTTAG", "Splash recomposition")
+
+    var isButtonVisible by remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(true) {
         viewModel.effect.collect {
             when (it) {
-                SplashScreenEffect.NavigateNext -> {
+                SplashScreenEffect.NavigateToAuthorization -> {
                     proceedToAuthorization()
                 }
 
                 SplashScreenEffect.NavigateToMain -> proceedToMain()
+                SplashScreenEffect.ShowButton -> isButtonVisible = true
             }
         }
     }
@@ -61,7 +62,6 @@ fun SplashScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-//        Log.w("VTTAG", "Splash screenState ${screenState}")
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -70,18 +70,16 @@ fun SplashScreen(
             contentDescription = null,
             contentScale = ContentScale.FillWidth
         )
-//        when (screenState) {
-//            SplashScreenState.Initial -> {}
-//            SplashScreenState.NotAuthorized -> {
-//                Spacer(modifier = Modifier.height(24.dp))
-//                NewUserGreeting(viewModel::onBeginClicked)
-//            }
-//        }
+        Spacer(modifier = Modifier.height(24.dp))
+        NewUserGreeting(
+            isButtonVisible = isButtonVisible,
+            onBeginClicked = viewModel::onBeginClicked
+        )
     }
 }
 
 @Composable
-private fun NewUserGreeting(onBeginClicked: () -> Unit) {
+private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -109,9 +107,11 @@ private fun NewUserGreeting(onBeginClicked: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        ReUseFilledButton(
-            textId = R.string.action_begin,
-            onClick = { onBeginClicked() }
-        )
+        AnimatedVisibility(visible = isButtonVisible) {
+            ReUseFilledButton(
+                textId = R.string.action_begin,
+                onClick = { onBeginClicked() }
+            )
+        }
     }
 }

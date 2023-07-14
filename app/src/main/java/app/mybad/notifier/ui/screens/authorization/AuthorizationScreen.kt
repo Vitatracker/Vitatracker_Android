@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,19 +45,21 @@ fun MainAuthorizationScreen(
 ) {
     Box(
         modifier = Modifier,
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             AuthorizationScreenImage()
-            ReUseFilledButton(textId = R.string.authorization_screen_login, onLoginButtonClicked)
-            Spacer(modifier = Modifier.height(16.dp))
-            ReUseOutlinedButton(R.string.authorization_screen_registration, onRegistrationButtonClicked)
-            Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle(onClick = { onSignInWithGoogleClicked() })
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                ReUseFilledButton(textId = R.string.authorization_screen_login, onLoginButtonClicked)
+                Spacer(modifier = Modifier.height(16.dp))
+                ReUseOutlinedButton(R.string.authorization_screen_registration, onRegistrationButtonClicked)
+                Spacer(modifier = Modifier.height(32.dp))
+                SignInWithGoogle(onClick = { onSignInWithGoogleClicked() })
+            }
         }
     }
 }
@@ -66,11 +68,10 @@ fun MainAuthorizationScreen(
 private fun AuthorizationScreenImage() {
     Image(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(30.dp),
-        imageVector = ImageVector.vectorResource(id = R.drawable.ic_man_doctor),
+            .size(350.dp),
+        imageVector = ImageVector.vectorResource(id = R.drawable.enter_screen),
         contentDescription = null,
-        contentScale = ContentScale.FillWidth
+        contentScale = ContentScale.Fit
     )
 }
 

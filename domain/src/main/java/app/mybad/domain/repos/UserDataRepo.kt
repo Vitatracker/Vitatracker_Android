@@ -24,4 +24,6 @@ interface UserDataRepo {
     suspend fun deleteUserModel(id: String)
 
     suspend fun putUserModel(userDomainModel: UserDomainModel)
+
+    suspend fun getUsersCount(): Int
 }

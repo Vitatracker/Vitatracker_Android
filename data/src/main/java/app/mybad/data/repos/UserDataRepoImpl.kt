@@ -1,6 +1,7 @@
 package app.mybad.data.repos
 
 import androidx.datastore.core.DataStore
+import app.mybad.data.db.dao.UsersDao
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.NotificationsUserDomainModel
 import app.mybad.domain.models.user.PersonalDomainModel
@@ -24,6 +25,7 @@ class UserDataRepoImpl @Inject constructor(
     private val userRules: DataStore<UserRulesDataModel>,
     private val settingsNetworkRepo: SettingsNetworkRepository,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
+    private val db: UsersDao,
 ) : UserDataRepo {
 
     override suspend fun updateUserNotification(notification: NotificationsUserDomainModel) {
@@ -98,5 +100,9 @@ class UserDataRepoImpl @Inject constructor(
         withContext(dispatcher) {
             settingsNetworkRepo.putUserModel(userDomainModel)
         }
+    }
+
+    override suspend fun getUsersCount(): Int = withContext(dispatcher) {
+        db.getUsersCount()
     }
 }

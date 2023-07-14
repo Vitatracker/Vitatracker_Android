@@ -25,4 +25,6 @@ interface UsersDao {
     @Query("delete from users_common where id=:userId")
     fun deleteFromUserId(userId: Long)
 
+    @Query("SELECT COUNT(id) FROM users_common")
+    fun getUsersCount(): Int
 }
