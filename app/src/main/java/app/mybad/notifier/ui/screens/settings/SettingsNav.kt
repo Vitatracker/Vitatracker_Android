@@ -34,10 +34,8 @@ import androidx.navigation.compose.composable
 import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.about.SettingsOurContacts
-import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
-import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
 import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishes
 import app.mybad.notifier.ui.theme.Typography
 
@@ -96,33 +94,33 @@ fun SettingsNav(
         ) {
             composable(NavItemSettings.Navigation.route) {
                 title = stringResource(NavItemSettings.Navigation.stringId)
-                SettingsNavScreen(
-                    userModel = userPersonalModel,
-                    reducer = { vm.reduce(it) },
-                    onAbout = { navController.navigate(NavItemSettings.About.route) },
-                    onProfile = { navController.navigate(NavItemSettings.Profile.route) },
-                    onWishes = { navController.navigate(NavItemSettings.LeaveYourWishes.route) },
-                    onNotifications = {
-                        navController.navigate(NavItemSettings.Notifications.route)
-                    },
-                )
+//                SettingsNavScreen(
+//                    userModel = userPersonalModel,
+//                    reducer = { vm.reduce(it) },
+//                    onAbout = { navController.navigate(NavItemSettings.About.route) },
+//                    onProfile = { navController.navigate(NavItemSettings.Profile.route) },
+//                    onWishes = { navController.navigate(NavItemSettings.LeaveYourWishes.route) },
+//                    onNotifications = {
+//                        navController.navigate(NavItemSettings.Notifications.route)
+//                    },
+//                )
             }
             composable(NavItemSettings.Profile.route) {
                 title = stringResource(NavItemSettings.Profile.stringId)
-                SettingsProfile(
-                    userModel = userPersonalModel,
-                    savePersonal = {
-                        vm.reduce(
-                            SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)
-                        )
-                    },
-                    onPasswordEdit = {
-                        navController.navigate(NavItemSettings.PasswordChange.route)
-                    },
-                    mainVM = mainVM,
-                    settingsVM = vm,
-                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
-                )
+//                SettingsProfile(
+//                    userModel = userPersonalModel,
+//                    savePersonal = {
+//                        vm.reduce(
+//                            SettingsIntent.SetPersonal(personal = (it as SettingsIntent.SetPersonal).personal)
+//                        )
+//                    },
+//                    onPasswordEdit = {
+//                        navController.navigate(NavItemSettings.PasswordChange.route)
+//                    },
+//                    mainVM = mainVM,
+//                    settingsVM = vm,
+//                    onDismiss = { navController.popBackStack(NavItemSettings.Profile.route, true) }
+//                )
             }
             composable(NavItemSettings.LeaveYourWishes.route) {
                 title = stringResource(NavItemSettings.LeaveYourWishes.stringId)

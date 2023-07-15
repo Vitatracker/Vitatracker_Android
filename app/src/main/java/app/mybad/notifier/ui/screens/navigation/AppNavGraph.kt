@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -13,6 +12,7 @@ import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.mainscreen.MainScreen
 import app.mybad.notifier.ui.screens.mainscreen.NotificationsScreen
 import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
+import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.splash.SplashScreen
 
 @Composable
@@ -53,7 +53,17 @@ fun AppNavGraph() {
                         CalendarScreen()
                     },
                     settingsScreenContent = {
-                        Text("Settings")
+                        SettingsNavScreen(
+                            onProfileClicked = {
+                                navigationState.navigateSingleTo(Screen.Profile.route)
+                            },
+                            onNotificationsClicked = {},
+                            onWishesClicked = {},
+                            onAboutClicked = {},
+                            onBackPressed = {
+                                navigationState.navController.popBackStack()
+                            }
+                        )
                     },
                     onAddClicked = {
                         navigationState.navigateSingleTo(Screen.AddCourse.route)
@@ -61,6 +71,7 @@ fun AppNavGraph() {
                 )
             }
             addCourseNavGraph(navigationState)
+            profileNavGraph(navigationState)
         }
     }
 

@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,56 +18,59 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.PersonalDomainModel
-import app.mybad.domain.models.user.UserDomainModel
-import app.mybad.notifier.MainActivityViewModel
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
+import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.theme.R
-import app.mybad.notifier.ui.screens.settings.SettingsIntent
-import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
 fun SettingsProfile(
-    modifier: Modifier = Modifier,
     userModel: PersonalDomainModel = PersonalDomainModel(),
-    savePersonal: (SettingsIntent) -> Unit,
-    onPasswordEdit: () -> Unit = {},
-    mainVM: MainActivityViewModel,
-    settingsVM: SettingsViewModel,
-    onDismiss: () -> Unit = {},
+    savePersonal: (SettingsIntent) -> Unit = {},
+    onChangePasswordClicked: () -> Unit = {},
+    onChangeAccountClicked: () -> Unit = {},
+    onDeleteAccountClicked: () -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
     val editUserAvatar = remember { mutableStateOf(userModel.avatar) }
     val editUserName = remember { mutableStateOf(userModel.name) }
     val editEmail = remember { mutableStateOf(userModel.email) }
 
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        SettingsProfileTop(
-            editEmail = editEmail,
-            editUserName = editUserName,
-            editUserAvatar = editUserAvatar
-        )
-        when {
-            (userModel.name != editUserName.value) || (userModel.email != editEmail.value) || (userModel.avatar != editUserAvatar.value) -> SettingsProfileButtonSavable(
-                onDismiss = onDismiss,
-                editUserName = editUserName.value.toString(),
-                editEmail = editEmail.value.toString(),
-                editUserAvatar = editUserAvatar.value.toString(),
-                savePersonal = savePersonal
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { TitleText(textStringRes = R.string.navigation_settings_profile) },
+                navigationIcon = { NavigateBackIconButton(onBackPressed) }
             )
-
-            (userModel.name == editUserName.value) || (userModel.email == editEmail.value) || (userModel.avatar == editUserAvatar.value) -> SettingsProfileBottom(
-                onPasswordEdit = onPasswordEdit,
-                settingsVM = settingsVM,
-                mainVM = mainVM
+        }) { paddingValues ->
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            SettingsProfileTop(
+                editEmail = editEmail,
+                editUserName = editUserName,
+                editUserAvatar = editUserAvatar
+            )
+            SettingsProfileBottom(
+                onPasswordEdit = onChangePasswordClicked,
+                onChangeAccountClicked = onChangeAccountClicked,
+                onDeleteAccountClicked = onDeleteAccountClicked
             )
         }
     }
+
 }
 
 @Composable
@@ -77,7 +79,7 @@ private fun SettingsProfileTop(
     editUserAvatar: MutableState<String?>,
     editUserName: MutableState<String?>
 ) {
-    Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         UserImage(url = editUserAvatar.value, showEdit = true) {
             editUserAvatar.value = it
         }
@@ -105,8 +107,8 @@ private fun SettingsProfileTop(
 @Composable
 private fun SettingsProfileBottom(
     onPasswordEdit: () -> Unit,
-    settingsVM: SettingsViewModel,
-    mainVM: MainActivityViewModel
+    onChangeAccountClicked: () -> Unit,
+    onDeleteAccountClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier,
@@ -128,9 +130,7 @@ private fun SettingsProfileBottom(
             text = R.string.settings_quit,
             icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
             tint = Color.Gray,
-            onClick = {
-                mainVM.clearDataStore()
-            }
+            onClick = onChangeAccountClicked
         )
         Divider(
             modifier = Modifier.padding(vertical = 16.dp),
@@ -142,10 +142,7 @@ private fun SettingsProfileBottom(
             text = R.string.settings_delete_account,
             icon = Icons.Default.ErrorOutline,
             tint = MaterialTheme.colorScheme.error,
-            onClick = {
-                settingsVM.reduce(SettingsIntent.DeleteAccount)
-                mainVM.clearDataStore()
-            }
+            onClick = onDeleteAccountClicked
         )
         Divider(
             modifier = Modifier.padding(vertical = 16.dp),
@@ -169,11 +166,14 @@ private fun SettingsProfileBottomElement(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = stringResource(id = text), modifier = Modifier, fontSize = 20.sp)
+        Text(
+            text = stringResource(id = text),
+            fontSize = 16.sp
+        )
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(30.dp),
+            modifier = Modifier.size(24.dp),
             tint = tint
         )
     }
@@ -195,7 +195,9 @@ private fun SettingsProfileEditText(
         modifier = modifier.fillMaxWidth(),
         enabled = enabled,
         placeholder = {
-            Text(text = label, modifier = Modifier)
+            Text(
+                text = label,
+                fontSize = 16.sp)
         },
         value = value,
         onValueChange = {
@@ -213,80 +215,11 @@ private fun SettingsProfileEditText(
         shape = RoundedCornerShape(10.dp),
         trailingIcon = {
             Icon(
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(id = icon),
                 contentDescription = null,
                 tint = Color.Gray
             )
         }
     )
-}
-
-@Composable
-private fun SettingsProfileButtonSavable(
-    onDismiss: () -> Unit,
-    editUserName: String = "",
-    editEmail: String = "",
-    editUserAvatar: String = "",
-    savePersonal: (SettingsIntent) -> Unit,
-    userModel: UserDomainModel = UserDomainModel()
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(
-            onClick = {
-                onDismiss()
-            },
-            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = stringResource(R.string.settings_cancel),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-
-        Button(
-            onClick = {
-                savePersonal(
-                    SettingsIntent.SetPersonal(
-                        PersonalDomainModel(
-                            name = editUserName,
-                            age = userModel.personal.age,
-                            avatar = editUserAvatar,
-                            email = editEmail
-                        )
-                    )
-                )
-            },
-            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer),
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = stringResource(R.string.settings_save),
-                    color = Color.White
-                )
-            }
-        }
-    }
 }
