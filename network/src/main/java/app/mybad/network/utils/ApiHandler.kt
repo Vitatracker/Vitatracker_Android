@@ -12,7 +12,7 @@ object ApiHandler {
             if (response.isSuccessful) {
                 ApiResult.ApiSuccess(data = response.body() as Any? ?: "")
             } else {
-                ApiResult.ApiError(code = response.code(), message = response.message())
+                ApiResult.ApiError(code = response.code(), message = response.errorBody()?.string())
             }
         } catch (e: HttpException) {
             e.printStackTrace()

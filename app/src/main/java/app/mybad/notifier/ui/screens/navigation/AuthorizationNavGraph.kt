@@ -28,13 +28,22 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
             StartMainLoginScreen(
                 onBackPressed = { navigationState.navController.popBackStack() },
                 onForgotPasswordClicked = { navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route) },
-                onLoginSuccess = { navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true) }
+                onLoginSuccess = {
+                    navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
+                    navigationState.navigateToMain()
+                }
             )
         }
         composable(route = AuthorizationScreens.Registration.route) {
-            StartMainRegistrationScreen(onBackPressed = {
-                navigationState.navController.popBackStack()
-            })
+            StartMainRegistrationScreen(
+                onBackPressed = {
+                    navigationState.navController.popBackStack()
+                },
+                onRegistrationSuccess = {
+                    navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
+                    navigationState.navigateToMain()
+                }
+            )
         }
         composable(AuthorizationScreens.PasswordRecovery.route) {
             StartMainRecoveryPasswordScreenAuth(

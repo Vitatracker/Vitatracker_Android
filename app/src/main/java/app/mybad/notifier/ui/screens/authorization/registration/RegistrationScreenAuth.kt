@@ -1,8 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,13 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
@@ -50,8 +45,28 @@ import app.mybad.theme.R
 @Composable
 fun StartMainRegistrationScreen(
     onBackPressed: () -> Unit,
+    onRegistrationSuccess: () -> Unit,
     viewModel: RegistrationScreenViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(key1 = true) {
+        viewModel.event.collect {
+            when (it) {
+                RegistrationScreenEvents.InvalidCredentials -> {
+
+                }
+
+                RegistrationScreenEvents.RegistrationSuccessful -> {
+                    onRegistrationSuccess()
+                }
+
+                RegistrationScreenEvents.PasswordsMismatch -> {
+
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -81,7 +96,7 @@ fun StartMainRegistrationScreen(
 
 @Composable
 private fun MainRegistrationScreen(
-    onRegistrationClicked: (login: String, password: String, userName: String) -> Unit,
+    onRegistrationClicked: (login: String, password: String, userName: String, confirmPassword: String) -> Unit,
     onSignInWithGoogleClicked: () -> Unit
 ) {
     val userNameState = remember { mutableStateOf("") }
@@ -103,7 +118,7 @@ private fun MainRegistrationScreen(
         Spacer(modifier = Modifier.height(32.dp))
         ReUseFilledButton(
             textId = R.string.action_confirm,
-            onClick = { onRegistrationClicked(loginState.value, passwordState.value, userNameState.value) }
+            onClick = { onRegistrationClicked(loginState.value, passwordState.value, userNameState.value, confirmPasswordState.value) }
         )
         Spacer(modifier = Modifier.height(32.dp))
         SignInWithGoogle(
@@ -127,11 +142,14 @@ private fun RegistrationScreenBaseForSignIn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RegistrationScreenEnteredEmail(loginState = loginState)
+        Spacer(modifier = Modifier.height(8.dp))
         RegistrationScreenEnteredName(nameState = userNameState)
+        Spacer(modifier = Modifier.height(8.dp))
         RegistrationScreenEnteredPassword(
             passwordState = passwordState,
             textId = R.string.login_password
         )
+        Spacer(modifier = Modifier.height(8.dp))
         RegistrationScreenEnteredPassword(
             passwordState = confirmPasswordState,
             textId = R.string.login_password_confirm
@@ -147,8 +165,7 @@ private fun RegistrationScreenEnteredName(nameState: MutableState<String>) {
         shape = MaterialTheme.shapes.small,
         onValueChange = { newName -> nameState.value = newName },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = {
@@ -176,8 +193,7 @@ private fun RegistrationScreenEnteredEmail(loginState: MutableState<String>) {
         shape = MaterialTheme.shapes.small,
         onValueChange = { newLogin -> loginState.value = newLogin },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.login_email), color = Color.LightGray) },
@@ -202,8 +218,7 @@ private fun RegistrationScreenEnteredPassword(passwordState: MutableState<String
         shape = MaterialTheme.shapes.small,
         onValueChange = { newPassword -> passwordState.value = newPassword },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            .fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = textId), color = Color.LightGray) },
