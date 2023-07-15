@@ -54,6 +54,7 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
@@ -78,14 +79,9 @@ fun AddNotificationsMainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    TitleText(textStringRes = R.string.add_notifications_choose_time)
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                    }
-                })
+                title = { TitleText(textStringRes = R.string.add_notifications_choose_time) },
+                navigationIcon = { NavigateBackIconButton(onBackPressed) }
+            )
         }
     ) { paddingValues ->
         Column(

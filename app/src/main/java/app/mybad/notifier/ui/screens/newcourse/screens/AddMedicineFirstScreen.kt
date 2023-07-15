@@ -41,6 +41,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
@@ -62,11 +63,7 @@ fun AddMedicineFirstScreen(
             title = {
                 TitleText(textStringRes = R.string.add_med_h)
             },
-            navigationIcon = {
-                IconButton(onClick = onBackPressed) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                }
-            }
+            navigationIcon = { NavigateBackIconButton(onBackPressed) }
         )
     }) { paddingValues ->
         Column(

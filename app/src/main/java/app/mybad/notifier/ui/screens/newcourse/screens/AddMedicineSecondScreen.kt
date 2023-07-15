@@ -19,6 +19,7 @@ import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.*
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
@@ -32,14 +33,10 @@ fun AddMedicineSecondScreen(
 ) {
 
     Scaffold(topBar = {
-        TopAppBar(title = {
-            TitleText(textStringRes = R.string.add_med_h)
-        },
-            navigationIcon = {
-                IconButton(onClick = { onBackPressed() }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                }
-            })
+        TopAppBar(
+            title = { TitleText(textStringRes = R.string.add_med_h) },
+            navigationIcon = { NavigateBackIconButton(onBackPressed) }
+        )
     }) { paddingValues ->
         Column(
             verticalArrangement = Arrangement.SpaceBetween,

@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TitleText
@@ -77,11 +78,7 @@ fun StartMainLoginScreen(
                 title = {
                     TitleText(textStringRes = R.string.sign_in)
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                    }
-                }
+                navigationIcon = { NavigateBackIconButton(onBackPressed) }
             )
         },
         floatingActionButtonPosition = FabPosition.End,

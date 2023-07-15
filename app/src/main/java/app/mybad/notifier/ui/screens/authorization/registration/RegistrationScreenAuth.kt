@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TitleText
@@ -71,15 +72,7 @@ fun StartMainRegistrationScreen(
         topBar = {
             TopAppBar(
                 title = { TitleText(R.string.authorization_screen_registration) },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            onBackPressed()
-                        }
-                    ) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                    }
-                }
+                navigationIcon = { NavigateBackIconButton(onBackPressed) }
             )
         },
         content = { contentPadding ->

@@ -45,6 +45,7 @@ import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.Typography
@@ -75,11 +76,7 @@ fun AddCourseMainScreen(
                 title = {
                     TitleText(textStringRes = R.string.add_course_h)
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                    }
-                },
+                navigationIcon = { NavigateBackIconButton(onBackPressed) },
                 backgroundColor = MaterialTheme.colorScheme.secondary,
                 elevation = 0.dp
             )

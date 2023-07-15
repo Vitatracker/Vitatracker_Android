@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
@@ -47,13 +48,7 @@ fun StartMainNewPasswordScreenAuth(onBackPressed: () -> Unit = {}) {
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.sign_in)) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackPressed()
-                    }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Go Back")
-                    }
-                },
+                navigationIcon = { NavigateBackIconButton(onBackPressed) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             )
         },

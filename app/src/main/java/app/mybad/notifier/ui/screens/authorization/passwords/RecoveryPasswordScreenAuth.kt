@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.theme.R
@@ -28,13 +29,7 @@ fun StartMainRecoveryPasswordScreenAuth(
         topBar = {
             TopAppBar(
                 title = { TitleText(textStringRes = R.string.password_recovery) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBackPressed()
-                    }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.navigation_back))
-                    }
-                }
+                navigationIcon = { NavigateBackIconButton(onBackPressed) }
             )
         }) { contentPadding ->
         Surface(
