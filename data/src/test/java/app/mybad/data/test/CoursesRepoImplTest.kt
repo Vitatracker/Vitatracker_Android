@@ -1,12 +1,9 @@
 package app.mybad.data.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.mybad.data.db.entity.CourseDataModel
-import app.mybad.data.db.dao.MedDao
+import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.dao.RemedyDao
 import app.mybad.data.db.MedDbImpl
-import app.mybad.domain.models.AuthToken
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -36,37 +33,37 @@ class CoursesRepoImplTest {
     @Inject
     @Named("test_db")
     lateinit var db: MedDbImpl
-    private lateinit var medDao: MedDao
+    private lateinit var medDao: RemedyDao
     private val now = getCurrentDateTime().toEpochSecond()
     private val userId = 0L
     private val testCoursesData = listOf(
-        CourseDataModel(
+        CourseModel(
             id = 1L,
             userId = userId,
-            creationDate = now,
+            createdDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
-            medId = 1L,
+            remedyId = 1L,
             updateDate = now,
             interval = 86400 * 90
         ),
-        CourseDataModel(
+        CourseModel(
             id = 2L,
             userId = userId,
-            creationDate = now,
+            createdDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
-            medId = 2L,
+            remedyId = 2L,
             updateDate = now,
             interval = 86400 * 90
         ),
-        CourseDataModel(
+        CourseModel(
             id = 3L,
             userId = userId,
-            creationDate = now,
+            createdDate = now,
             startDate = now,
             endDate = now + 86400 * 30,
-            medId = 3L,
+            remedyId = 3L,
             updateDate = now,
             interval = 86400 * 90
         ),
@@ -75,7 +72,7 @@ class CoursesRepoImplTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        medDao = db.getMedDao()
+        medDao = db.getRemedyDao()
     }
 
     @After
@@ -87,7 +84,7 @@ class CoursesRepoImplTest {
     fun getAll_before_inserts_s_b_empty() {
         runTest {
             val r = medDao.getAllCourses(userId)
-            Assert.assertEquals(emptyList<CourseDataModel>(), r)
+            Assert.assertEquals(emptyList<CourseModel>(), r)
         }
     }
 
@@ -105,7 +102,7 @@ class CoursesRepoImplTest {
     fun getAllFlow_before_inserts_s_b_empty() {
         val r = medDao.getAllCoursesFlow(userId)
         runTest {
-            Assert.assertEquals(emptyList<CourseDataModel>(), r.first())
+            Assert.assertEquals(emptyList<CourseModel>(), r.first())
         }
     }
 

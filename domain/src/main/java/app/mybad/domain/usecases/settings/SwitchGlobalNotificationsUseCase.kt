@@ -9,9 +9,9 @@ class SwitchGlobalNotificationsUseCase @Inject constructor(
 ) {
     suspend fun execute(enabled: Boolean) {
         if (enabled) {
-            notificationsScheduler.rescheduleAll(AuthToken.userId)
+            notificationsScheduler.rescheduleAlarmByUserId(AuthToken.userId)
         } else {
-            notificationsScheduler.cancelAll(AuthToken.userId)
+            notificationsScheduler.cancelAlarmByUserId(AuthToken.userId)
         }
     }
 }

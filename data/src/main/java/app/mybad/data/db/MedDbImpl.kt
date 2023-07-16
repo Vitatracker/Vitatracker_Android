@@ -2,24 +2,36 @@ package app.mybad.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import app.mybad.data.db.dao.MedDao
-import app.mybad.data.db.dao.UsersDao
-import app.mybad.data.db.entity.CourseDataModel
-import app.mybad.data.db.entity.MedDataModel
-import app.mybad.data.db.entity.UsageCommonDataModel
-import app.mybad.data.db.entity.UserLocalDataModel
+import app.mybad.data.db.dao.CourseDao
+import app.mybad.data.db.dao.RemedyDao
+import app.mybad.data.db.dao.UsageDao
+import app.mybad.data.db.dao.UserDao
+import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.NotificationSettingsModel
+import app.mybad.data.db.models.RemedyModel
+import app.mybad.data.db.models.UsageModel
+import app.mybad.data.db.models.UserModel
 
 @Database(
     entities = [
-        UserLocalDataModel::class,
-        MedDataModel::class,
-        CourseDataModel::class,
-        UsageCommonDataModel::class
-    ], version = 3,
+        UserModel::class,
+        RemedyModel::class,
+        CourseModel::class,
+        UsageModel::class,
+        NotificationSettingsModel::class,
+    ],
+    version = MedDbImpl.DB_VERSION,
     exportSchema = false,
 )
 // @TypeConverters(Converters::class)
 abstract class MedDbImpl : RoomDatabase(), MedDb {
-    abstract override fun getMedDao(): MedDao
-    abstract override fun getUsersDao(): UsersDao
+    abstract override fun getUserDao(): UserDao
+    abstract override fun getRemedyDao(): RemedyDao
+    abstract override fun getCourseDao(): CourseDao
+    abstract override fun getUsageDao(): UsageDao
+
+    companion object {
+        const val DB_VERSION = 1
+        const val DB_NAME = "meds.db"
+    }
 }

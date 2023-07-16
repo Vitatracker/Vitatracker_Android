@@ -7,7 +7,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -29,10 +28,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.minusMonths
-import app.mybad.notifier.utils.monthFullDisplay
-import app.mybad.notifier.utils.plusMonths
 import app.mybad.theme.R
+import app.mybad.theme.utils.minusMonths
+import app.mybad.theme.utils.monthFullDisplay
+import app.mybad.theme.utils.plusMonths
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalAnimationApi::class)

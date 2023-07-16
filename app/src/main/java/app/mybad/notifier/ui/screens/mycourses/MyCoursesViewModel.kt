@@ -5,19 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.MyCoursesState
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.usecases.courses.DeleteCourseUseCase
-import app.mybad.domain.usecases.courses.GetCourseSingleUseCase
+import app.mybad.domain.usecases.courses.DeleteCourseFullUseCase
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
-import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
-import app.mybad.domain.usecases.meds.DeleteMedUseCase
-import app.mybad.domain.usecases.meds.UpdateMedUseCase
-import app.mybad.domain.usecases.usages.GetUsagesByMedIdUseCase
+import app.mybad.domain.usecases.remedies.UpdateRemedyUseCase
 import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
-import app.mybad.notifier.ui.screens.common.generateCommonUsages
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.notifier.ui.screens.common.generateUsages
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -28,23 +25,19 @@ import javax.inject.Inject
 class MyCoursesViewModel @Inject constructor(
     loadCourses: LoadCoursesUseCase,
 
-    private val deleteCourse: DeleteCourseUseCase,
-    private val updateCourse: UpdateCourseUseCase,
-    private val updateCourseAll: UpdateCourseAllUseCase,
+    private val updateCourseUseCase: UpdateCourseUseCase,
+    private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
 
-    private val updateMed: UpdateMedUseCase,
-    private val deleteMed: DeleteMedUseCase,
+    private val updateRemedyUseCase: UpdateRemedyUseCase,
 
-    private val updateUsagesInCourse: UpdateUsagesInCourseUseCase,
-
-    private val getCourseSingleUseCase: GetCourseSingleUseCase,
-    private val getUsagesByMedIdUseCase: GetUsagesByMedIdUseCase,
+    private val updateUsagesInCourseUseCase: UpdateUsagesInCourseUseCase,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state = loadCourses(AuthToken.userId)
-        .mapLatest { (courses, meds, usages) ->
-            Log.w("VTTAG", "MyCoursesViewModel::state: meds=${meds.size} usages=${usages.size}")
-            MyCoursesState(courses = courses, meds = meds, usages = usages)
+        .mapLatest { (courses, remedies, usages) ->
+            Log.w("VTTAG", "MyCoursesViewModel::state: meds=${remedies.size} usages=${usages.size}")
+            MyCoursesState(courses = courses, remedies = remedies, usages = usages)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -55,35 +48,30 @@ class MyCoursesViewModel @Inject constructor(
         when (intent) {
             is MyCoursesIntent.Delete -> {
                 viewModelScope.launch {
-                    val mId = getCourseSingleUseCase(intent.courseId).medId
-                    deleteCourse.execute(intent.courseId, getCurrentDateTime().toEpochSecond())
-                    deleteMed(mId)
+                    deleteCourseFullUseCase(intent.courseId, getCurrentDateTime().toEpochSecond())
+                    //TODO("запустить воркер удаления курса на беке")
                 }
             }
 
             is MyCoursesIntent.Update -> {
                 viewModelScope.launch {
-                    updateMed(intent.med)
-                    updateCourse.execute(intent.course.id, intent.course)
+                    updateRemedyUseCase(intent.remedy)
+                    updateCourseUseCase(intent.course)
                     Log.w(
                         "VTTAG",
-                        "MyCoursesViewModel::Update: userId=${intent.med.userId} pattern=${intent.usagesPattern} "
+                        "MyCoursesViewModel::Update: userId=${intent.course.userId} pattern=${intent.usagesPattern} "
                     )
-                    updateUsagesInCourse(
-                        usages = generateCommonUsages(
+                    updateUsagesInCourseUseCase(
+                        usages = generateUsages(
                             usagesByDay = intent.usagesPattern,
-                            medId = intent.med.id,
-                            userId = intent.med.userId,
+                            courseId = intent.course.id,
+                            userId = intent.course.userId,
                             startDate = intent.course.startDate,
                             endDate = intent.course.endDate,
                             regime = intent.course.regime
                         )
                     )
-                    updateCourseAll(
-                        med = intent.med,
-                        course = intent.course,
-                        usages = getUsagesByMedIdUseCase(intent.med.id)
-                    )
+                    //TODO("запустить воркер обновления на беке")
                 }
             }
         }

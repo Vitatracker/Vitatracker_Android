@@ -1,21 +1,21 @@
 package app.mybad.domain.usecases.usages
 
 import android.util.Log
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.repository.UsageRepository
 import javax.inject.Inject
 
 class UpdateUsagesInCourseUseCase @Inject constructor(
-    private val usagesRepo: UsagesRepo
+    private val repository: UsageRepository
 ) {
 
-    suspend operator fun invoke(usages: List<UsageCommonDomainModel>) {
+    suspend operator fun invoke(usages: List<UsageDomainModel>) {
         try {
             if (usages.isEmpty()) return
             //TODO("проверить нужно ли здесь удаление")
-            usagesRepo.deleteUsagesByMedId(usages.first().medId)
+            repository.deleteUsagesById(usages.first().courseId)
 
-            usagesRepo.addUsages(usages)
+            repository.insertUsages(usages)
         } catch (e: Error) {
             Log.e("VTTAG", "UpdateUsagesInCourseUseCase: Error", e)
         }

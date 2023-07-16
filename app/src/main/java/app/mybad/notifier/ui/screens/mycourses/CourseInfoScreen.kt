@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
@@ -48,12 +48,12 @@ import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.atEndOfDay
-import app.mybad.notifier.utils.atEndOfDaySystemToUTC
-import app.mybad.notifier.utils.atStartOfDay
-import app.mybad.notifier.utils.atStartOfDaySystemToUTC
-import app.mybad.notifier.utils.toDateFullDisplay
-import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.theme.utils.atEndOfDay
+import app.mybad.theme.utils.atEndOfDaySystemToUTC
+import app.mybad.theme.utils.atStartOfDay
+import app.mybad.theme.utils.atStartOfDaySystemToUTC
+import app.mybad.theme.utils.toDateFullDisplay
+import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.R
 
 private val usagesPattern = listOf<Pair<Long, Int>>(
@@ -67,7 +67,7 @@ fun CourseInfoScreen(
     modifier: Modifier = Modifier,
     course: CourseDomainModel = CourseDomainModel(),
     usagePattern: List<Pair<Long, Int>> = usagesPattern,
-    med: MedDomainModel = MedDomainModel(),
+    med: RemedyDomainModel = RemedyDomainModel(),
     reducer: (MyCoursesIntent) -> Unit = {},
 ) {
     val types = stringArrayResource(R.array.types)

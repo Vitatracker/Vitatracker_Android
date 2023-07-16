@@ -1,71 +1,120 @@
 package app.mybad.data
 
-import app.mybad.data.db.entity.CourseDataModel
-import app.mybad.data.db.entity.MedDataModel
-import app.mybad.data.db.entity.UsageCommonDataModel
-import app.mybad.data.db.entity.UserLocalDataModel
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.models.user.NotificationsUserDomainModel
-import app.mybad.domain.models.user.PersonalDomainModel
-import app.mybad.domain.models.user.RulesUserDomainModel
-import app.mybad.domain.models.user.UserLocalDomainModel
+import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.RemedyModel
+import app.mybad.data.db.models.UsageModel
+import app.mybad.data.db.models.UserModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.models.user.NotificationSettingDomainModel
+import app.mybad.domain.models.user.UserRulesDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
+import app.mybad.domain.models.user.UserDomainModel
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
 
-fun UserLocalDataModel.mapToDomain() = UserLocalDomainModel(
+fun UserModel.mapToDomain() = UserDomainModel(
     id = id,
+    idn = idn,
+
+    avatar = avatar,
+
+    createdDate = createdDate,
+    updatedDate = updatedDate,
+
     name = name,
     email = email,
+    password = password,
+
+    notUsed = notUsed,
+
+    token = token,
+    tokenDate = tokenDate,
+
+    tokenRefresh = tokenRefresh,
+    tokenRefreshDate = tokenRefreshDate,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate
 )
 
-fun CourseDataModel.mapToDomain() = CourseDomainModel(
+fun List<UserModel>.mapToDomain() = this.map { it.mapToDomain() }
+
+fun CourseModel.mapToDomain() = CourseDomainModel(
     id = id,
-    creationDate = creationDate,
-    updateDate = updateDate,
+    idn = idn,
+
+    createdDate = createdDate,
+    updatedDate = updateDate,
+
     userId = userId,
+    userIdn = userIdn,
+
     comment = comment,
-    medId = medId,
+    remedyId = remedyId,
+
     startDate = startDate,
     endDate = endDate,
-    interval = interval,
     remindDate = remindDate,
+
+    interval = interval,
     regime = regime,
-    showUsageTime = showUsageTime,
+
     isFinished = isFinished,
     isInfinite = isInfinite,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listCdmToDomain")
-fun List<CourseDataModel>.mapToDomain() = this.map { it.mapToDomain() }
+fun List<CourseModel>.mapToDomain() = this.map { it.mapToDomain() }
 
-fun CourseDomainModel.mapToData() = CourseDataModel(
+fun CourseDomainModel.mapToData() = CourseModel(
     id = id,
-    creationDate = creationDate,
-    updateDate = updateDate,
+    idn = idn,
+
+    createdDate = createdDate,
+    updateDate = updatedDate,
+
     userId = userId,
+    userIdn = userIdn,
+
     comment = comment,
-    medId = medId,
+    remedyId = remedyId,
+
     startDate = startDate,
     endDate = endDate,
-    interval = interval,
     remindDate = remindDate,
+
+    interval = interval,
     regime = regime,
-    showUsageTime = showUsageTime,
+
     isFinished = isFinished,
     isInfinite = isInfinite,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
-fun MedDataModel.mapToDomain() = MedDomainModel(
+fun RemedyModel.mapToDomain() = RemedyDomainModel(
     id = id,
-    creationDate = creationDate,
-    updateDate = updateDate,
+    idn = idn,
+
+    createdDate = creationDate,
+    updatedDate = updateDate,
+
     userId = userId,
+    userIdn = userIdn,
+
     name = name,
     description = description,
     comment = comment,
+
     type = type,
     icon = icon,
     color = color,
@@ -73,19 +122,29 @@ fun MedDataModel.mapToDomain() = MedDomainModel(
     measureUnit = measureUnit,
     photo = photo,
     beforeFood = beforeFood,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listMdmToDomain")
-fun List<MedDataModel>.mapToDomain() = this.map { it.mapToDomain() }
+fun List<RemedyModel>.mapToDomain() = this.map { it.mapToDomain() }
 
-fun MedDomainModel.mapToData() = MedDataModel(
+fun RemedyDomainModel.mapToData() = RemedyModel(
     id = id,
-    creationDate = creationDate,
-    updateDate = updateDate,
+    idn = idn,
+
+    creationDate = createdDate,
+    updateDate = updatedDate,
+
     userId = userId,
+    userIdn = userIdn,
+
     name = name,
     description = description,
     comment = comment,
+
     type = type,
     icon = icon,
     color = color,
@@ -93,45 +152,75 @@ fun MedDomainModel.mapToData() = MedDataModel(
     measureUnit = measureUnit,
     photo = photo,
     beforeFood = beforeFood,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
-fun UsageCommonDataModel.mapToDomain() = UsageCommonDomainModel(
+fun UsageModel.mapToDomain() = UsageDomainModel(
     id = id,
-    medId = medId,
+    idn = idn,
+
     userId = userId,
-    creationTime = creationTime,
-    editTime = editTime,
-    useTime = useTime,
+    userIdn = userIdn,
+
+    courseId = courseId,
+
+    createdDate = creationDate,
+    updatedDate = updatedDate,
+
     factUseTime = factUseTime,
+    useTime = useTime,
+
     quantity = quantity,
+
+    isDeleted = isDeleted,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listUcdmToDomain")
-fun List<UsageCommonDataModel>.mapToDomain() = this.map { it.mapToDomain() }
+fun List<UsageModel>.mapToDomain() = this.map { it.mapToDomain() }
 
-fun UsageCommonDomainModel.mapToData() = UsageCommonDataModel(
+fun UsageDomainModel.mapToData() = UsageModel(
     id = id,
-    medId = medId,
+    idn = idn,
+
     userId = userId,
-    creationTime = creationTime,
-    editTime = editTime,
-    useTime = useTime,
+    userIdn = userIdn,
+
+    courseId = courseId,
+
+    creationDate = createdDate,
+    updatedDate = updatedDate,
+
     factUseTime = factUseTime,
+    useTime = useTime,
+
     quantity = quantity,
+
+    isDeleted = isDeleted,
+    notUsed = notUsed,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("ucdm_toData")
-fun List<UsageCommonDomainModel>.mapToData() = this.map { it.mapToData() }
+fun List<UsageDomainModel>.mapToData() = this.map { it.mapToData() }
 
 @JvmName("Settings_toDomain")
-fun UserPersonalDataModel.mapToDomain() = PersonalDomainModel(
+fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     name = name,
     age = age,
     avatar = avatar,
     email = email,
 )
 
-fun UserNotificationsDataModel.mapToDomain() = NotificationsUserDomainModel(
+fun UserNotificationsDataModel.mapToDomain() = NotificationSettingDomainModel(
     isEnabled = isEnabled,
     isFloat = isFloat,
     medicationControl = medicationControl,
@@ -139,7 +228,7 @@ fun UserNotificationsDataModel.mapToDomain() = NotificationsUserDomainModel(
     medsId = emptyList(),
 )
 
-fun UserRulesDataModel.mapToDomain() = RulesUserDomainModel(
+fun UserRulesDataModel.mapToDomain() = UserRulesDomainModel(
     canEdit = canEdit,
     canAdd = canAdd,
     canShare = canShare,

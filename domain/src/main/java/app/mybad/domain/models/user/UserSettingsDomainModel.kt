@@ -1,6 +1,9 @@
 package app.mybad.domain.models.user
 
 data class UserSettingsDomainModel(
-    val notifications: NotificationsUserDomainModel = NotificationsUserDomainModel(),
-    val rules: RulesUserDomainModel = RulesUserDomainModel()
+    val id: Long = 0L,
+    val creationDate: Long = 0L,
+    val updateDate: Long = 0L,
+    val personal: UserPersonalDomainModel = UserPersonalDomainModel(),
+    val settings: UserNotificationDomainModel = UserNotificationDomainModel()
 )

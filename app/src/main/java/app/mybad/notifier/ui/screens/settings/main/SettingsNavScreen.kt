@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.user.PersonalDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.common.BaseDivider
 import app.mybad.notifier.ui.screens.settings.common.SettingsItem
@@ -22,7 +22,7 @@ import app.mybad.theme.R
 @Composable
 fun SettingsNavScreen(
     modifier: Modifier = Modifier,
-    userModel: PersonalDomainModel = PersonalDomainModel(),
+    userModel: UserPersonalDomainModel = UserPersonalDomainModel(),
     reducer: (SettingsIntent) -> Unit,
     onProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},

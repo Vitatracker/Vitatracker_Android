@@ -3,16 +3,19 @@ package app.mybad.data.test
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.room.Room
-import app.mybad.data.repos.CoursesRepoImpl
-import app.mybad.data.repos.MedsRepoImpl
-import app.mybad.data.repos.UsagesRepoImpl
+import app.mybad.data.repos.CourseRepositoryImpl
+import app.mybad.data.repos.RemedyRepositoryImpl
+import app.mybad.data.repos.UsageRepositoryImpl
 import app.mybad.data.repos.UserDataRepoImpl
-import app.mybad.data.db.dao.MedDao
+import app.mybad.data.db.dao.RemedyDao
 import app.mybad.data.db.MedDbImpl
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
-import app.mybad.domain.repos.UserDataRepo
+import app.mybad.data.db.dao.CourseDao
+import app.mybad.data.db.dao.UsageDao
+import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.RemedyRepository
+import app.mybad.domain.repository.network.SettingsNetworkRepository
+import app.mybad.domain.repository.UsageRepository
+import app.mybad.domain.repository.UserDataRepo
 import app.mybad.notifier.di.DataModule
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
@@ -22,6 +25,7 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -47,37 +51,40 @@ class TestDataModule {
         dataStore_userNotification: DataStore<UserNotificationsDataModel>,
         dataStore_userPersonal: DataStore<UserPersonalDataModel>,
         dataStore_userRules: DataStore<UserRulesDataModel>,
-        settingsNetworkRepo: SettingsNetworkRepo
+        settingsNetworkRepository: SettingsNetworkRepository
     ): UserDataRepo {
         return UserDataRepoImpl(
             dataStore_userNotification,
             dataStore_userPersonal,
             dataStore_userRules,
-            settingsNetworkRepo
+            settingsNetworkRepository,
         )
     }
 
     @Provides
     @Singleton
     fun providesCoursesRepo(
-        db: MedDao
-    ): CoursesRepo {
-        return CoursesRepoImpl(db)
+        db: CourseDao,
+        @Named("IoDispatcher") dispatcher: CoroutineDispatcher,
+    ): CourseRepository {
+        return CourseRepositoryImpl(db, dispatcher)
     }
 
     @Provides
     @Singleton
     fun providesMedsRepo(
-        db: MedDao
-    ): MedsRepo {
-        return MedsRepoImpl(db)
+        db: RemedyDao,
+        @Named("IoDispatcher") dispatcher: CoroutineDispatcher,
+    ): RemedyRepository {
+        return RemedyRepositoryImpl(db, dispatcher)
     }
 
     @Provides
     @Singleton
-    fun providesUsagesRepo(
-        db: MedDao
-    ): UsagesRepo {
-        return UsagesRepoImpl(db)
+    fun providesUsageRepository(
+        db: UsageDao,
+        @Named("IoDispatcher") dispatcher: CoroutineDispatcher,
+    ): UsageRepository {
+        return UsageRepositoryImpl(db, dispatcher)
     }
 }

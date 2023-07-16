@@ -3,15 +3,16 @@ package app.mybad.notifier.ui.screens.mainscreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.usecases.meds.LoadMedsFromListUseCase
-import app.mybad.domain.usecases.usages.LoadUsagesAllUseCase
-import app.mybad.domain.usecases.usages.LoadUsagesByIntervalUseCase
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.usecases.courses.GetCoursesUseCase
+import app.mybad.domain.usecases.remedies.GetRemediesByListIdUseCase
+import app.mybad.domain.usecases.usages.GetUsagesBetweenUseCase
+import app.mybad.domain.usecases.usages.GetUsagesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
-import app.mybad.notifier.utils.atEndOfDay
-import app.mybad.notifier.utils.atStartOfDay
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.theme.utils.atEndOfDay
+import app.mybad.theme.utils.atStartOfDay
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +22,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StartMainScreenViewModel @Inject constructor(
-    private val loadUsagesByInterval: LoadUsagesByIntervalUseCase,
-    private val loadUsagesAll: LoadUsagesAllUseCase,
-    private val loadMedsFromList:  LoadMedsFromListUseCase,
+    private val getRemediesByListIdUseCase: GetRemediesByListIdUseCase,
+    private val getCoursesUseCase: GetCoursesUseCase,
+    private val getUsagesBetweenUseCase: GetUsagesBetweenUseCase,
+    private val getUsagesUseCase: GetUsagesUseCase,
     private val updateUsage: UpdateUsageUseCase,
 ) : ViewModel() {
 
@@ -34,13 +36,13 @@ class StartMainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             setDataNow()
             updateUsages()
-            getAllUsages()
+//            getUsages()
         }
     }
 
-    fun setUsagesFactTime(usage: UsageCommonDomainModel) {
+    fun setUsagesFactTime(usage: UsageDomainModel) {
         viewModelScope.launch {
-            updateUsage.execute(usage = usage)
+            updateUsage(usage)
 //                medId = usage.medId,
 //                usageTime = usage.useTime,
 //                factTime = convertDateToLong(LocalDateTime.now())
@@ -59,34 +61,57 @@ class StartMainScreenViewModel @Inject constructor(
         viewModelScope.launch { _uiState.emit(_uiState.value.copy(date = getCurrentDateTime())) }
     }
 
-    private fun getAllUsages() {
+    private fun getUsages() {
         viewModelScope.launch {
-            _uiState.emit(_uiState.value.copy(allUsages = loadUsagesAll().size))
+            getUsagesUseCase().onSuccess {usages->
+                _uiState.emit(
+                    _uiState.value.copy(
+                        usages = usages,
+                        usagesSize = usages.size,
+                    ))
+            }
+                .onFailure {
+                    TODO("вывод ошибки")
+                }
         }
     }
 
     private fun updateUsages() {
         viewModelScope.launch {
-            _uiState.emit(
-                _uiState.value.copy(
-                    usages = loadUsagesByInterval(
-                        _uiState.value.date.atStartOfDay().toEpochSecond(),
-                        _uiState.value.date.atEndOfDay().toEpochSecond(),
-                    )
-                )
-            )
-            updateMeds()
+            getUsagesBetweenUseCase(
+                _uiState.value.date.atStartOfDay().toEpochSecond(),
+                _uiState.value.date.atEndOfDay().toEpochSecond(),
+            ).onSuccess { usages ->
+                _uiState.emit(_uiState.value.copy(
+                    usages = usages,
+                    usagesSize = usages.size
+                ))
+                updateRemedy()
+            }
+                .onFailure {
+                    TODO("вывод ошибки")
+                }
         }
     }
 
-    private fun updateMeds() {
+    private fun updateRemedy() {
         viewModelScope.launch {
-            val listMeds: List<Long> = _uiState.value.usages.map { it.medId }.toSet().toList()
-            _uiState.emit(
-                _uiState.value.copy(
-                    meds = loadMedsFromList.execute(listMedsId = listMeds)
-                )
-            )
+            getCoursesUseCase().onSuccess {courses->
+                _uiState.emit(_uiState.value.copy(courses = courses))
+            }
+                .onFailure {
+                    TODO("вывод ошибки")
+                }
+            val coursesIds = _uiState.value.usages.map { it.courseId }.toSet()
+            val remedyIds = _uiState.value.courses.filter { course->
+                course.id in coursesIds
+            }.map { it.remedyId }.toSet().toList()
+            getRemediesByListIdUseCase(remedyIds).onSuccess { remedies->
+                _uiState.emit(_uiState.value.copy(remedies = remedies))
+            }
+                .onFailure {
+                    TODO("вывод ошибки")
+                }
         }
     }
 

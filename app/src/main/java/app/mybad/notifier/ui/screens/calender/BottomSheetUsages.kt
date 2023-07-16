@@ -4,7 +4,18 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +26,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,35 +36,36 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.toDayDisplay
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
+import app.mybad.theme.utils.TIME_IS_UP
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.toDayDisplay
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toTimeDisplay
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.absoluteValue
 
 @SuppressLint("Recycle")
 @Composable
 private fun SingleUsageItem(
-    modifier: Modifier = Modifier,
     date: Long,
-    med: MedDomainModel,
+    remedy: RemedyDomainModel,
     quantity: Int,
+    modifier: Modifier = Modifier,
     isTaken: Boolean = false,
     onTake: (Long) -> Unit
 ) {
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
     val now = getCurrentDateTime().toEpochSecond()
-    val outlineColor =
-        if (now > date && !isTaken) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-    val alpha = if ((now - date).absoluteValue > 3600) 0.6f else 1f
+    val outlineColor = if (now > date && !isTaken) MaterialTheme.colorScheme.error
+    else MaterialTheme.colorScheme.primary
+    val alpha = if ((now - date).absoluteValue > TIME_IS_UP) 0.6f else 1f
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
 
     Row(
@@ -80,7 +93,7 @@ private fun SingleUsageItem(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = PickColor.getColor(med.color),
+                    color = PickColor.getColor(remedy.color),
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -90,7 +103,7 @@ private fun SingleUsageItem(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            painter = painterResource(r.getResourceId(med.icon, 0)),
+                            painter = painterResource(r.getResourceId(remedy.icon, 0)),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.outline
@@ -102,13 +115,13 @@ private fun SingleUsageItem(
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text(text = "${med.name}", style = Typography.bodyLarge)
+                    Text(text = "${remedy.name}", style = Typography.bodyLarge)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 4.dp)
                     ) {
-                        Text(text = relations[med.beforeFood], style = Typography.labelMedium)
+                        Text(text = relations[remedy.beforeFood], style = Typography.labelMedium)
                         Divider(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
@@ -117,11 +130,14 @@ private fun SingleUsageItem(
                                 .padding(horizontal = 8.dp)
                                 .width(1.dp)
                         )
-                        Text(text = "$quantity ${types[med.type]}", style = Typography.labelMedium)
+                        Text(
+                            text = "$quantity ${types[remedy.type]}",
+                            style = Typography.labelMedium
+                        )
                     }
                 }
                 when (now - date) {
-                    in Long.MIN_VALUE..-3600 -> {
+                    in Long.MIN_VALUE..-TIME_IS_UP -> {
                         Icon(
                             painter = painterResource(R.drawable.locked),
                             contentDescription = null,
@@ -133,7 +149,7 @@ private fun SingleUsageItem(
                         )
                     }
 
-                    in -3600..3600 -> {
+                    in -TIME_IS_UP..TIME_IS_UP -> {
                         Icon(
                             painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
                             contentDescription = null,
@@ -150,7 +166,7 @@ private fun SingleUsageItem(
                         )
                     }
 
-                    in 3600..Long.MAX_VALUE -> {
+                    in TIME_IS_UP..Long.MAX_VALUE -> {
                         Icon(
                             painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
                             contentDescription = null,
@@ -174,13 +190,13 @@ private fun SingleUsageItem(
 
 @Composable
 fun DailyUsages(
-    modifier: Modifier = Modifier,
     date: LocalDateTime?,
-    meds: List<MedDomainModel>,
-    dayData: List<UsageCommonDomainModel>,
+    remedies: List<RemedyDomainModel>,
+    usages: List<UsageDomainModel>,
+    modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {},
-    onUsed: (UsageCommonDomainModel) -> Unit
+    onUsed: (UsageDomainModel) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -223,7 +239,7 @@ fun DailyUsages(
                 onSelect = onNewDate::invoke
             )
             LazyColumn {
-                dayData.sortedBy {
+                usages.sortedBy {
                     it.useTime
                 }.forEach { entry ->
                     item {
@@ -236,10 +252,10 @@ fun DailyUsages(
                                     .padding(vertical = 8.dp)
                             )
                             SingleUsageItem(
-                                modifier = Modifier.padding(horizontal = 16.dp),
                                 date = entry.useTime,
+                                remedy = remedies.first { it.id == entry.courseId },
                                 quantity = entry.quantity,
-                                med = meds.first { it.id == entry.medId },
+                                modifier = Modifier.padding(horizontal = 16.dp),
                                 isTaken = entry.factUseTime > 10L,
                                 onTake = { datetime ->
                                     onUsed(entry.copy(factUseTime = datetime))

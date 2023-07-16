@@ -7,143 +7,167 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.RemedyRepository
+import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.scheduler.NotificationsScheduler
+import app.mybad.theme.utils.MILES_SECONDS
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @SuppressLint("UnspecifiedImmutableFlag")
 class NotificationsSchedulerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val medsRepo: MedsRepo,
-    private val usagesRepo: UsagesRepo,
-    private val coursesRepo: CoursesRepo,
+    private val remedyRepository: RemedyRepository,
+    private val usageRepository: UsageRepository,
+    private val courseRepository: CourseRepository,
 ) : NotificationsScheduler {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    override suspend fun add(usages: List<UsageCommonDomainModel>) {
-        usages.forEach {
-            val med = medsRepo.getSingle(it.medId)
-            val pi = generateUsagePi(med, it, context)
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, it.useTime * 1000L, pi)
+    override suspend fun addAlarm(usages: List<UsageDomainModel>) {
+        usages.forEach { usage ->
+            courseRepository.getCourseById(usage.courseId).getOrNull()?.let { course ->
+                remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+                    val pendingIntent = generateUsagePendingIntent(remedy, usage, context)
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        usage.useTime * MILES_SECONDS,
+                        pendingIntent
+                    )
+                }
+            }
         }
     }
 
-    override suspend fun add(course: CourseDomainModel) {
-        val med = medsRepo.getSingle(course.medId)
-        val pi = generateCoursePi(course, med, context)
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            course.remindDate * 1000L,
-            pi
-        )
-    }
-
-    override suspend fun cancel(usages: List<UsageCommonDomainModel>) {
-        usages.forEach {
-            val med = medsRepo.getSingle(it.medId)
-            val pi = generateUsagePi(med, it, context)
-            alarmManager.cancel(pi)
-            pi.cancel()
+    override suspend fun addAlarm(course: CourseDomainModel) {
+        remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+            val pendingIntent = generateCoursePendingIntent(course, remedy, context)
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                course.remindDate * MILES_SECONDS,
+                pendingIntent
+            )
         }
     }
 
-    override suspend fun cancel(course: CourseDomainModel) {
-        val med = medsRepo.getSingle(course.medId)
-        val pi = generateCoursePi(course, med, context)
-        alarmManager.cancel(pi)
-        pi.cancel()
+    override suspend fun cancelAlarm(usages: List<UsageDomainModel>) {
+        usages.forEach { usage ->
+            courseRepository.getCourseById(usage.courseId).getOrNull()?.let { course ->
+                remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+                    val pendingIntent = generateUsagePendingIntent(remedy, usage, context)
+                    alarmManager.cancel(pendingIntent)
+                    pendingIntent.cancel()
+                }
+            }
+        }
     }
 
-    override suspend fun cancelAll(userId: Long) {
-        val usages = usagesRepo.getCommonAll(userId)
-        cancel(usages)
+    override suspend fun cancelAlarm(course: CourseDomainModel) {
+        remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+            val pendingIntent = generateCoursePendingIntent(course, remedy, context)
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+        }
     }
 
-    override suspend fun cancelByMedId(medId: Long, onComplete: suspend () -> Unit) {
-        val usages = usagesRepo.getUsagesByMedId(medId)
-        cancel(usages)
+    override suspend fun cancelAlarmByUserId(userId: Long) {
+        usageRepository.getUsagesByUserId(userId).getOrNull()?.let { usages ->
+            this.cancelAlarm(usages)
+        }
+    }
+
+    override suspend fun cancelAlarmByCourseId(
+        courseId: Long,
+        onComplete: suspend () -> Unit
+    ) {
+        usageRepository.getUsagesByCourseId(courseId).getOrNull()?.let { usages ->
+            this.cancelAlarm(usages)
+            onComplete()
+        }
+    }
+
+    override suspend fun rescheduleAlarmByUserId(userId: Long, onComplete: () -> Unit) {
+        val now = getCurrentDateTime().toEpochSecond()
+        usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
+            if (usage.useTime >= now) {
+                courseRepository.getCourseById(usage.courseId).getOrNull()?.let { course ->
+                    remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+                        val pendingIntent = generateUsagePendingIntent(remedy, usage, context)
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            usage.useTime * MILES_SECONDS,
+                            pendingIntent
+                        )
+                    }
+                }
+            }
+        }
+        courseRepository.getCoursesByUserId(userId).getOrNull()?.forEach { course ->
+            if (course.remindDate >= now) {
+                remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+                    val pendingIntent = generateCoursePendingIntent(course, remedy, context)
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        course.remindDate * MILES_SECONDS,
+                        pendingIntent
+                    )
+                }
+            }
+        }
         onComplete()
     }
 
-    override suspend fun rescheduleAll(userId: Long, onComplete: () -> Unit) {
-        val now = System.currentTimeMillis() / 1000
-        usagesRepo.getCommonAll(userId).forEach {
-            if (it.useTime >= now) {
-                val med = medsRepo.getSingle(it.medId)
-                val pi = generateUsagePi(med, it, context)
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    it.useTime * 1000,
-                    pi
-                )
-            }
-        }
-        coursesRepo.getAll(userId).forEach {
-            if (it.remindDate > now) {
-                val med = medsRepo.getSingle(it.medId)
-                val pi = generateCoursePi(it, med, context)
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    it.remindDate * 1000,
-                    pi
-                )
-            }
-        }
-        onComplete()
-    }
-
-    private fun generateUsagePi(
-        med: MedDomainModel,
-        usage: UsageCommonDomainModel,
+    private fun generateUsagePendingIntent(
+        remedy: RemedyDomainModel,
+        usage: UsageDomainModel,
         context: Context
     ): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = NOTIFICATION_INTENT
-        i.data = Uri.parse("custom://${(usage.useTime + med.id).toInt()}")
-        i.putExtra(Extras.MED_NAME.name, med.name ?: "no name")
-        i.putExtra(Extras.MED_ID.name, med.id)
-        i.putExtra(Extras.TYPE.name, med.type)
-        i.putExtra(Extras.ICON.name, med.icon)
-        i.putExtra(Extras.COLOR.name, med.color)
-        i.putExtra(Extras.DOSE.name, med.dose)
-        i.putExtra(Extras.UNIT.name, med.measureUnit)
+        i.data = Uri.parse("custom://${(usage.useTime + remedy.id).toInt()}")
+        i.putExtra(Extras.REMEDY_NAME.name, remedy.name ?: "no name")
+        i.putExtra(Extras.REMEDY_ID.name, remedy.id)
+        i.putExtra(Extras.TYPE.name, remedy.type)
+        i.putExtra(Extras.ICON.name, remedy.icon)
+        i.putExtra(Extras.COLOR.name, remedy.color)
+        i.putExtra(Extras.DOSE.name, remedy.dose)
+        i.putExtra(Extras.UNIT.name, remedy.measureUnit)
         i.putExtra(Extras.USAGE_TIME.name, usage.useTime)
         i.putExtra(Extras.QUANTITY.name, usage.quantity)
         return PendingIntent.getBroadcast(
             context,
-            (usage.useTime + med.id).toInt(),
+            (usage.useTime + remedy.id).toInt(),
             i,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         )
     }
 
-    private fun generateCoursePi(
+    private fun generateCoursePendingIntent(
         course: CourseDomainModel,
-        med: MedDomainModel,
+        remedy: RemedyDomainModel,
         context: Context
     ): PendingIntent {
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = COURSE_NOTIFICATION_INTENT
-        i.data = Uri.parse("custom://${(course.id + med.id).toInt()}")
-        i.putExtra(Extras.MED_NAME.name, med.name ?: "no name")
-        i.putExtra(Extras.MED_ID.name, med.id)
-        i.putExtra(Extras.TYPE.name, med.type)
-        i.putExtra(Extras.ICON.name, med.icon)
-        i.putExtra(Extras.COLOR.name, med.color)
-        i.putExtra(Extras.DOSE.name, med.dose)
-        i.putExtra(Extras.UNIT.name, med.measureUnit)
+        i.data = Uri.parse("custom://${(course.id + remedy.id).toInt()}")
+        i.putExtra(Extras.REMEDY_NAME.name, remedy.name ?: "no name")
+        i.putExtra(Extras.REMEDY_ID.name, remedy.id)
+        i.putExtra(Extras.TYPE.name, remedy.type)
+        i.putExtra(Extras.ICON.name, remedy.icon)
+        i.putExtra(Extras.COLOR.name, remedy.color)
+        i.putExtra(Extras.DOSE.name, remedy.dose)
+        i.putExtra(Extras.UNIT.name, remedy.measureUnit)
         i.putExtra(Extras.NEW_COURSE_START_DATE.name, (course.startDate + course.interval))
         i.putExtra(Extras.COURSE_REMIND_TIME.name, course.remindDate)
         return PendingIntent.getBroadcast(
             context,
-            (course.remindDate + med.id).toInt(),
+            (course.remindDate + remedy.id).toInt(),
             i,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         )
@@ -154,8 +178,8 @@ class NotificationsSchedulerImpl @Inject constructor(
         const val COURSE_NOTIFICATION_INTENT = "android.intent.action.COURSE_NOTIFICATION"
 
         enum class Extras {
-            MED_ID,
-            MED_NAME,
+            REMEDY_ID,
+            REMEDY_NAME,
             TYPE,
             ICON,
             COLOR,

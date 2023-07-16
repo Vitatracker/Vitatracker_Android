@@ -1,23 +1,27 @@
 package app.mybad.notifier.ui.screens.settings.profile
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.UserSettingsDomainModel
+import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.settings.common.DecoratedTextInput
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.theme.R
-import app.mybad.notifier.ui.screens.common.NavigationRow
 
 @Composable
 @Preview(showBackground = true)
 fun SettingsPasswordEdit(
     modifier: Modifier = Modifier,
-    userModel: UserDomainModel = UserDomainModel(),
+    userModel: UserSettingsDomainModel = UserSettingsDomainModel(),
     onSave: () -> Unit = {},
     onDismiss: () -> Unit = {},
 ) {

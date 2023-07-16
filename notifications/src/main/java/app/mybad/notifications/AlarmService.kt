@@ -47,7 +47,7 @@ class AlarmService : Service() {
             NOTIFICATION_INTENT -> {
                 val type = intent.getIntExtra(Extras.TYPE.name, 0)
                 val qty = intent.getIntExtra(Extras.QUANTITY.name, 0)
-                val name = intent.getStringExtra(Extras.MED_NAME.name)
+                val name = intent.getStringExtra(Extras.REMEDY_NAME.name)
                 val contentText = String.format(
                     baseContext.getString(R.string.notifications_text_template),
                     name,
@@ -56,7 +56,7 @@ class AlarmService : Service() {
                 )
                 val takeIntent = Intent(baseContext, AlarmReceiver::class.java).apply {
                     action = TAKE_INTENT
-                    putExtra(Extras.MED_ID.name, intent.getLongExtra(Extras.MED_ID.name, 0L))
+                    putExtra(Extras.REMEDY_ID.name, intent.getLongExtra(Extras.REMEDY_ID.name, 0L))
                     putExtra(Extras.USAGE_TIME.name, intent.getLongExtra(Extras.USAGE_TIME.name, 0L))
                 }
                 val takePi = PendingIntent.getBroadcast(baseContext, 0, takeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -75,7 +75,7 @@ class AlarmService : Service() {
                 val type = intent.getIntExtra(Extras.TYPE.name, 0)
                 val unit = intent.getIntExtra(Extras.UNIT.name, 0)
                 val dose = intent.getIntExtra(Extras.DOSE.name, 0)
-                val name = intent.getStringExtra(Extras.MED_NAME.name)
+                val name = intent.getStringExtra(Extras.REMEDY_NAME.name)
                 val dateLong = intent.getLongExtra(Extras.NEW_COURSE_START_DATE.name, 0L)
                 val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(dateLong), ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))

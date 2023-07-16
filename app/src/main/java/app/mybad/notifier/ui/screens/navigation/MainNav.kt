@@ -3,7 +3,12 @@ package app.mybad.notifier.ui.screens.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -13,12 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import app.mybad.notifier.MainActivityViewModel
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
-import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreen
 import app.mybad.notifier.ui.screens.mainscreen.StartMainScreenViewModel
-import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
+import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.NewCourseNavScreen
 import app.mybad.notifier.ui.screens.settings.SettingsNav
@@ -72,7 +77,7 @@ fun MainNav(
             composable(NavItemMain.Calendar.route) {
                 CalendarScreen(
                     modifier = modifier.padding(horizontal = 16.dp),
-                    meds = calendarState.value.meds,
+                    remedies = calendarState.value.remedies,
                     usages = calendarState.value.usages,
                     reducer = { intent -> calendarVm.reducer(intent) }
                 )

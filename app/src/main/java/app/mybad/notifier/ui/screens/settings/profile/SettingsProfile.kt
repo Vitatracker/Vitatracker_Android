@@ -2,14 +2,33 @@ package app.mybad.notifier.ui.screens.settings.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,18 +40,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.domain.models.user.PersonalDomainModel
-import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
+import app.mybad.domain.models.user.UserSettingsDomainModel
 import app.mybad.notifier.MainActivityViewModel
-import app.mybad.notifier.ui.screens.settings.common.UserImage
-import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
+import app.mybad.notifier.ui.screens.settings.common.UserImage
+import app.mybad.theme.R
 
 @Composable
 fun SettingsProfile(
     modifier: Modifier = Modifier,
-    userModel: PersonalDomainModel = PersonalDomainModel(),
+    userModel: UserPersonalDomainModel = UserPersonalDomainModel(),
     savePersonal: (SettingsIntent) -> Unit,
     onPasswordEdit: () -> Unit = {},
     mainVM: MainActivityViewModel,
@@ -129,7 +148,7 @@ private fun SettingsProfileBottom(
             icon = ImageVector.vectorResource(id = R.drawable.icon_settings_exit),
             tint = Color.Gray,
             onClick = {
-                mainVM.clearDataStore()
+                mainVM.clearToken()
             }
         )
         Divider(
@@ -144,7 +163,7 @@ private fun SettingsProfileBottom(
             tint = MaterialTheme.colorScheme.error,
             onClick = {
                 settingsVM.reduce(SettingsIntent.DeleteAccount)
-                mainVM.clearDataStore()
+                mainVM.clearToken()
             }
         )
         Divider(
@@ -229,7 +248,7 @@ private fun SettingsProfileButtonSavable(
     editEmail: String = "",
     editUserAvatar: String = "",
     savePersonal: (SettingsIntent) -> Unit,
-    userModel: UserDomainModel = UserDomainModel()
+    userModel: UserSettingsDomainModel = UserSettingsDomainModel()
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -262,7 +281,7 @@ private fun SettingsProfileButtonSavable(
             onClick = {
                 savePersonal(
                     SettingsIntent.SetPersonal(
-                        PersonalDomainModel(
+                        UserPersonalDomainModel(
                             name = editUserName,
                             age = userModel.personal.age,
                             avatar = editUserAvatar,

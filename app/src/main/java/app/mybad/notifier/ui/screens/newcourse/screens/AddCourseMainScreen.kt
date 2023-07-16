@@ -33,19 +33,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.theme.R
+import app.mybad.domain.models.CourseDomainModel
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.atEndOfDay
-import app.mybad.notifier.utils.atStartOfDay
-import app.mybad.notifier.utils.toDateFullDisplay
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toLocalDateTime
+import app.mybad.theme.R
+import app.mybad.theme.utils.atEndOfDay
+import app.mybad.theme.utils.atStartOfDay
+import app.mybad.theme.utils.toDateFullDisplay
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toLocalDateTime
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)

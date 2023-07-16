@@ -22,16 +22,19 @@ private val LightColorScheme = lightColorScheme(
 
     secondary = secondary100,
     onSecondary = secondary20,
+
     secondaryContainer = secondary100,
     onSecondaryContainer = secondary20,
 
     tertiary = tertiary80,
     onTertiary = tertiary20,
+
     tertiaryContainer = tertiary30,
     onTertiaryContainer = tertiary90,
 
     error = errorRed,
     onError = errorRed,
+
     errorContainer = errorRed,
     onErrorContainer = errorRed,
 
@@ -40,6 +43,7 @@ private val LightColorScheme = lightColorScheme(
 
     surface = neutral99,
     onSurface = neutral10,
+
     surfaceVariant = secondaryContainerBlue,
     onSurfaceVariant = neutralVariant30,
 
@@ -56,16 +60,19 @@ private val DarkColorScheme = darkColorScheme(
 
     secondary = secondary80,
     onSecondary = secondary20,
+
     secondaryContainer = secondary30,
     onSecondaryContainer = secondary90,
 
     tertiary = tertiary80,
     onTertiary = tertiary20,
+
     tertiaryContainer = tertiary30,
     onTertiaryContainer = tertiary90,
 
     error = error80,
     onError = error20,
+
     errorContainer = error30,
     onErrorContainer = error90,
 
@@ -74,6 +81,7 @@ private val DarkColorScheme = darkColorScheme(
 
     surface = neutral10,
     onSurface = neutral80,
+
     surfaceVariant = neutralVariant30,
     onSurfaceVariant = neutralVariant80,
 

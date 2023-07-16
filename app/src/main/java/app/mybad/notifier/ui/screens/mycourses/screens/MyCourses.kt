@@ -35,25 +35,25 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.plusDay
-import app.mybad.notifier.utils.plusThreeDay
-import app.mybad.notifier.utils.secondsToDay
-import app.mybad.notifier.utils.toDateDisplay
-import app.mybad.notifier.utils.toEpochSecond
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.plusDay
+import app.mybad.theme.utils.plusThreeDay
+import app.mybad.theme.utils.secondsToDay
+import app.mybad.theme.utils.toDateDisplay
+import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.R
 
 @Composable
 fun MyCourses(
     modifier: Modifier = Modifier,
     courses: List<CourseDomainModel>,
-    usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>,
+    usages: List<UsageDomainModel>,
+    remedies: List<RemedyDomainModel>,
     onSelect: (Long) -> Unit
 ) {
     val height = LocalConfiguration.current.screenHeightDp
@@ -66,15 +66,15 @@ fun MyCourses(
         courses.forEach {
             Log.w("MC_courses", "$it")
         }
-        if (courses.isNotEmpty() && meds.isNotEmpty() && validate(meds, courses)) {
+        if (courses.isNotEmpty() && remedies.isNotEmpty() && validate(remedies, courses)) {
             LazyColumn(Modifier.heightIn(max = height.dp)) {
                 // Отображение текущих курсов таблеток
                 items(courses) { course ->
                     CourseItem(
                         course = course,
-                        med = meds.first { it.id == course.medId },
+                        remedy = remedies.first { it.id == course.remedyId },
                         usages = usages.filter { usage ->
-                            usage.medId == course.medId &&
+                            usage.courseId == course.id &&
                                     usage.useTime >= course.startDate &&
                                     usage.useTime < course.endDate.plusDay()
                         },
@@ -83,25 +83,25 @@ fun MyCourses(
                     Spacer(Modifier.height(16.dp))
                 }
                 // Отображение нового курса
-                courses.forEach { nCourse ->
+                courses.forEach { newCourse ->
                     if (
-                        nCourse.interval > 0 &&
-                        nCourse.startDate + nCourse.interval > now &&
-                        nCourse.startDate + nCourse.interval < now.plusThreeDay()
+                        newCourse.interval > 0 &&
+                        newCourse.startDate + newCourse.interval > now &&
+                        newCourse.startDate + newCourse.interval < now.plusThreeDay()
                     ) {
                         item {
                             CourseItem(
-                                course = nCourse.copy(
-                                    startDate = nCourse.startDate + nCourse.interval,
-                                    endDate = nCourse.endDate + nCourse.interval,
+                                course = newCourse.copy(
+                                    startDate = newCourse.startDate + newCourse.interval,
+                                    endDate = newCourse.endDate + newCourse.interval,
                                 ),
-                                med = meds.first { it.id == nCourse.medId },
+                                remedy = remedies.first { it.id == newCourse.remedyId },
                                 usages = usages.filter { usage ->
-                                    usage.medId == nCourse.medId &&
-                                            usage.useTime >= nCourse.startDate &&
-                                            usage.useTime < nCourse.startDate.plusDay()
+                                    usage.courseId == newCourse.id &&
+                                            usage.useTime >= newCourse.startDate &&
+                                            usage.useTime < newCourse.startDate.plusDay()
                                 }.take(10),
-                                startInDays = (nCourse.startDate + nCourse.interval - now).secondsToDay()
+                                startInDays = (newCourse.startDate + newCourse.interval - now).secondsToDay()
                                     .toInt(),
                             )
                         }
@@ -113,17 +113,17 @@ fun MyCourses(
 }
 
 private fun validate(
-    meds: List<MedDomainModel>,
+    remedies: List<RemedyDomainModel>,
     courses: List<CourseDomainModel>,
-) = courses.all { course -> meds.any { it.id == course.medId } }
+) = courses.all { course -> remedies.any { it.id == course.remedyId } }
 
 @SuppressLint("Recycle")
 @Composable
 private fun CourseItem(
-    modifier: Modifier = Modifier,
     course: CourseDomainModel,
-    usages: List<UsageCommonDomainModel>,
-    med: MedDomainModel,
+    usages: List<UsageDomainModel>,
+    remedy: RemedyDomainModel,
+    modifier: Modifier = Modifier,
     startInDays: Int = -1,
     onSelect: (Long) -> Unit = {},
 ) {
@@ -159,7 +159,7 @@ private fun CourseItem(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = PickColor.getColor(med.color),
+                    color = PickColor.getColor(remedy.color),
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -169,7 +169,7 @@ private fun CourseItem(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            painter = painterResource(r.getResourceId(med.icon, 0)),
+                            painter = painterResource(r.getResourceId(remedy.icon, 0)),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.outline
@@ -183,7 +183,7 @@ private fun CourseItem(
                 ) {
                     Column(Modifier.fillMaxWidth(0.85f)) {
                         Text(
-                            text = "${med.name}".replaceFirstChar { it.uppercase() },
+                            text = "${remedy.name}".replaceFirstChar { it.uppercase() },
                             style = Typography.bodyLarge,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -197,7 +197,7 @@ private fun CourseItem(
                             Row {
                                 if (itemsCount != 0) {
                                     Text(
-                                        text = "$itemsCount, ${types[med.type]}",
+                                        text = "$itemsCount, ${types[remedy.type]}",
                                         style = Typography.labelMedium
                                     )
                                     Divider(

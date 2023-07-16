@@ -38,23 +38,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.authorization.login.*
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.notifier.ui.theme.textColorSecond
 import app.mybad.notifier.ui.theme.textColorThird
-import app.mybad.notifier.utils.TIME_IS_UP
-import app.mybad.notifier.utils.changeDate
-import app.mybad.notifier.utils.dayShortDisplay
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.getDaysOfMonth
-import app.mybad.notifier.utils.monthShortDisplay
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
+import app.mybad.theme.utils.TIME_IS_UP
+import app.mybad.theme.utils.changeDate
+import app.mybad.theme.utils.dayShortDisplay
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.getDaysOfMonth
+import app.mybad.theme.utils.monthShortDisplay
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toTimeDisplay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -68,8 +69,8 @@ fun StartMainScreen(
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val dateNow = remember { mutableStateOf(uiState.date) }
-    val sizeUsages by remember { mutableStateOf(uiState.allUsages) }
-    val usageCommon = remember { mutableStateOf(UsageCommonDomainModel()) }
+    val usagesSize by remember { mutableIntStateOf(uiState.usagesSize) }
+    val usageCommon = remember { mutableStateOf(UsageDomainModel()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -98,10 +99,11 @@ fun StartMainScreen(
                 navController = navController,
                 uiState = dateNow,
                 changeData = { vm.changeData(dateNow.value) },
-                sizeUsages = sizeUsages,
+                usagesSize = usagesSize,
                 usages = uiState.usages,
-                meds = uiState.meds,
-                usageCommon = usageCommon,
+                remedies = uiState.remedies,
+                courses = uiState.courses,
+                usageState = usageCommon,
                 setUsageFactTime = { vm.setUsagesFactTime(usage = usageCommon.value) }
             )
         }
@@ -113,11 +115,12 @@ private fun MainScreen(
     navController: NavHostController,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
-    sizeUsages: Int,
-    usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>,
-    usageCommon: MutableState<UsageCommonDomainModel>,
-    setUsageFactTime: (UsageCommonDomainModel) -> Unit = {}
+    remedies: List<RemedyDomainModel>,
+    courses: List<CourseDomainModel>,
+    usagesSize: Int,
+    usages: List<UsageDomainModel>,
+    usageState: MutableState<UsageDomainModel>,
+    setUsageFactTime: (UsageDomainModel) -> Unit = {}
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -134,11 +137,12 @@ private fun MainScreen(
             MainScreenLazyMedicines(
                 uiState = uiState,
                 changeData = changeData,
+                remedies = remedies,
+                courses = courses,
                 usages = usages,
-                meds = meds,
-                sizeUsages = sizeUsages,
-                usageCommon = usageCommon,
-                setUsageFactTime = setUsageFactTime
+                usagesSize = usagesSize,
+                usageState = usageState,
+                setUsageFactTime = setUsageFactTime,
             )
         }
     }
@@ -173,7 +177,7 @@ private fun MainScreenMonthPager(
             shape = RoundedCornerShape(5.dp)
         ) {
             Text(
-                text = AnnotatedString(month.monthShortDisplay()),
+                text = month.monthShortDisplay(),
                 color = getMonthColor(stateMonth.currentPage, month),
                 modifier = Modifier
                     .padding(1.dp)
@@ -288,25 +292,29 @@ private fun MainScreenTextCategory() {
 private fun MainScreenLazyMedicines(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
-    usages: List<UsageCommonDomainModel>,
-    meds: List<MedDomainModel>,
-    sizeUsages: Int,
-    usageCommon: MutableState<UsageCommonDomainModel>,
-    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
+    remedies: List<RemedyDomainModel>,
+    courses: List<CourseDomainModel>,
+    usages: List<UsageDomainModel>,
+    usagesSize: Int,
+    usageState: MutableState<UsageDomainModel>,
+    setUsageFactTime: (UsageDomainModel) -> Unit,
 ) {
     Log.w(
         "VTTAG",
-        "StartMainScreen::MainScreenLazyMedicines: sizeUsages=$sizeUsages usages=${usages.size}"
+        "StartMainScreen::MainScreenLazyMedicines: sizeUsages=$usagesSize usages=${usages.size}"
     )
-    if (meds.isNotEmpty() && usages.isNotEmpty()) {
+    if (remedies.isNotEmpty() && usages.isNotEmpty()) {
         MainScreenTextCategory()
         Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}")
         LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
             items(usages.sortedBy { it.useTime }) { usage ->
+                val remedy = courses.firstOrNull { it.id == usage.courseId }?.let { course ->
+                    remedies.firstOrNull { it.id == course.remedyId }
+                } ?: RemedyDomainModel()
                 MainScreenCourseItem(
                     usage = usage,
-                    med = meds.firstOrNull { it.id == usage.medId } ?: MedDomainModel(),
-                    usageCommon = usageCommon,
+                    remedy = remedy,
+                    usageState = usageState,
                     setUsageFactTime = setUsageFactTime,
                     uiState = uiState,
                     changeData = changeData
@@ -364,10 +372,10 @@ private fun MainScreenMedsClearImage() {
 
 @Composable
 private fun MainScreenCourseItem(
-    usage: UsageCommonDomainModel,
-    med: MedDomainModel,
-    usageCommon: MutableState<UsageCommonDomainModel>,
-    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
+    remedy: RemedyDomainModel,
+    usage: UsageDomainModel,
+    usageState: MutableState<UsageDomainModel>,
+    setUsageFactTime: (UsageDomainModel) -> Unit,
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit
 ) {
@@ -394,11 +402,11 @@ private fun MainScreenCourseItem(
                 isDone = usage.factUseTime != -1L
             )
             MainScreenFormCourseHeader(
-                med = med,
-                usages = usage,
-                usageCommon = usageCommon,
+                remedy = remedy,
+                usage = usage,
+                usageState = usageState,
                 setUsageFactTime = setUsageFactTime,
-                uiState = uiState,
+                dateState = uiState,
                 changeData = changeData
             )
         }
@@ -428,14 +436,14 @@ private fun MainScreenTimeCourse(usageTime: Long, isDone: Boolean) {
 @SuppressLint("Recycle")
 @Composable
 private fun MainScreenFormCourseHeader(
-    med: MedDomainModel,
-    usages: UsageCommonDomainModel,
-    usageCommon: MutableState<UsageCommonDomainModel>,
-    setUsageFactTime: (UsageCommonDomainModel) -> Unit,
-    uiState: MutableState<LocalDateTime>,
+    remedy: RemedyDomainModel,
+    usage: UsageDomainModel,
+    usageState: MutableState<UsageDomainModel>,
+    setUsageFactTime: (UsageDomainModel) -> Unit,
+    dateState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit
 ) {
-    val usageTime = usages.useTime
+    val usageTime = usage.useTime
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
@@ -451,24 +459,24 @@ private fun MainScreenFormCourseHeader(
             Row(modifier = Modifier) {
                 // название препарата
                 Text(
-                    text = "${med.name}",
+                    text = "${remedy.name}",
                     style = Typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 // иконка препарата
                 Icon(
-                    painter = painterResource(r.getResourceId(med.icon, 0)),
+                    painter = painterResource(r.getResourceId(remedy.icon, 0)),
                     contentDescription = null,
                     modifier = Modifier.size(25.dp),
-                    tint = PickColor.getColor(med.color)
+                    tint = PickColor.getColor(remedy.color)
                 )
             }
             Row(
                 modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             ) {
                 Text(
-                    text = "${med.dose} ${types[med.type]}",
+                    text = "${remedy.dose} ${types[remedy.type]}",
                     style = Typography.labelMedium
                 )
                 Text(
@@ -479,7 +487,7 @@ private fun MainScreenFormCourseHeader(
                     fontSize = 12.sp
                 )
                 Text(
-                    text = relations[med.beforeFood],
+                    text = relations[remedy.beforeFood],
                     style = Typography.labelMedium,
                     modifier = Modifier.padding(end = 8.dp)
                 )
@@ -487,19 +495,19 @@ private fun MainScreenFormCourseHeader(
         }
         MainScreenButtonAccept(
             usageTime = usageTime,
-            isDone = usages.factUseTime.toInt() != -1,
+            isDone = usage.factUseTime.toInt() != -1,
             setUsageFactTime = {
-                usageCommon.value = usages.copy(
-                    factUseTime = if (usages.factUseTime == -1L) {
+                usageState.value = usage.copy(
+                    factUseTime = if (usage.factUseTime == -1L) {
                         getCurrentDateTime().toEpochSecond()
                     } else {
                         -1
                     }
                 )
                 setUsageFactTime(
-                    usageCommon.value
+                    usageState.value
                 )
-                changeData(uiState)
+                changeData(dateState)
             }
         )
     }

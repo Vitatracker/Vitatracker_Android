@@ -1,24 +1,24 @@
 package app.mybad.notifier.ui.screens.settings
 
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.user.NotificationsUserDomainModel
-import app.mybad.domain.models.user.PersonalDomainModel
-import app.mybad.domain.models.user.RulesUserDomainModel
-import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.user.NotificationSettingDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
+import app.mybad.domain.models.user.UserRulesDomainModel
+import app.mybad.domain.models.user.UserSettingsDomainModel
 
 sealed interface SettingsIntent {
     object DeleteAccount : SettingsIntent
     object Exit : SettingsIntent
     data class ChangePassword(val password: String) : SettingsIntent
-    data class SetNotifications(val notifications: NotificationsUserDomainModel) : SettingsIntent
-    data class SetPersonal(val personal: PersonalDomainModel) : SettingsIntent
-    data class SetRules(val rules: RulesUserDomainModel) : SettingsIntent
+    data class SetNotifications(val notifications: NotificationSettingDomainModel) : SettingsIntent
+    data class SetPersonal(val personal: UserPersonalDomainModel) : SettingsIntent
+    data class SetRules(val rules: UserRulesDomainModel) : SettingsIntent
 }
 
 data class SettingsState(
     val courses: List<CourseDomainModel> = emptyList(),
-    val userModel: UserDomainModel = UserDomainModel(),
-    val personalDomainModel: PersonalDomainModel = PersonalDomainModel(),
-    val notificationsUserDomainModel: NotificationsUserDomainModel = NotificationsUserDomainModel(),
-    val rulesUserDomainModel: RulesUserDomainModel = RulesUserDomainModel()
+    val userModel: UserSettingsDomainModel = UserSettingsDomainModel(),
+    val personalDomainModel: UserPersonalDomainModel = UserPersonalDomainModel(),
+    val notificationsUserDomainModel: NotificationSettingDomainModel = NotificationSettingDomainModel(),
+    val rulesUserDomainModel: UserRulesDomainModel = UserRulesDomainModel()
 )

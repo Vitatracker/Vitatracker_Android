@@ -1,14 +1,14 @@
 package app.mybad.domain.usecases.courses
 
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.repos.CoursesRepo
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.repository.CourseRepository
 import javax.inject.Inject
 
 class UpdateCourseUseCase @Inject constructor(
-    private val coursesRepo: CoursesRepo
+    private val coursesRepo: CourseRepository
 ) {
 
-    suspend fun execute(courseId: Long, updatedCourse: CourseDomainModel) {
-        coursesRepo.updateSingle(courseId, updatedCourse)
+    suspend operator fun invoke(updatedCourse: CourseDomainModel) {
+        coursesRepo.updateCourse(updatedCourse)
     }
 }

@@ -21,8 +21,8 @@ class AlarmReceiver : BroadcastReceiver() {
             NOTIFICATION_INTENT -> {
                 val i = Intent(context, AlarmService::class.java)
                 i.action = intent.action
-                i.putExtra(Extras.MED_NAME.name, intent.getStringExtra(Extras.MED_NAME.name))
-                i.putExtra(Extras.MED_ID.name, intent.getLongExtra(Extras.MED_ID.name, 0L))
+                i.putExtra(Extras.REMEDY_NAME.name, intent.getStringExtra(Extras.REMEDY_NAME.name))
+                i.putExtra(Extras.REMEDY_ID.name, intent.getLongExtra(Extras.REMEDY_ID.name, 0L))
                 i.putExtra(Extras.TYPE.name, intent.getIntExtra(Extras.TYPE.name, 0))
                 i.putExtra(Extras.ICON.name, intent.getIntExtra(Extras.ICON.name, 0))
                 i.putExtra(Extras.COLOR.name, intent.getIntExtra(Extras.COLOR.name, 0))
@@ -35,8 +35,8 @@ class AlarmReceiver : BroadcastReceiver() {
             COURSE_NOTIFICATION_INTENT -> {
                 val i = Intent(context, AlarmService::class.java)
                 i.action = intent.action
-                i.putExtra(Extras.MED_NAME.name, intent.getStringExtra(Extras.MED_NAME.name))
-                i.putExtra(Extras.MED_ID.name, intent.getLongExtra(Extras.MED_ID.name, 0L))
+                i.putExtra(Extras.REMEDY_NAME.name, intent.getStringExtra(Extras.REMEDY_NAME.name))
+                i.putExtra(Extras.REMEDY_ID.name, intent.getLongExtra(Extras.REMEDY_ID.name, 0L))
                 i.putExtra(Extras.TYPE.name, intent.getIntExtra(Extras.TYPE.name, 0))
                 i.putExtra(Extras.ICON.name, intent.getIntExtra(Extras.ICON.name, 0))
                 i.putExtra(Extras.COLOR.name, intent.getIntExtra(Extras.COLOR.name, 0))
@@ -54,8 +54,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 val si = Intent(context, AlarmService::class.java)
                 si.action = FORCE_CLOSE
                 i.action = intent.action
-                i.putExtra(Extras.MED_NAME.name, intent.getStringExtra(Extras.MED_NAME.name))
-                i.putExtra(Extras.MED_ID.name, intent.getLongExtra(Extras.MED_ID.name, 0L))
+                i.putExtra(Extras.REMEDY_NAME.name, intent.getStringExtra(Extras.REMEDY_NAME.name))
+                i.putExtra(Extras.REMEDY_ID.name, intent.getLongExtra(Extras.REMEDY_ID.name, 0L))
                 i.putExtra(Extras.TYPE.name, intent.getIntExtra(Extras.TYPE.name, 0))
                 i.putExtra(Extras.ICON.name, intent.getIntExtra(Extras.ICON.name, 0))
                 i.putExtra(Extras.COLOR.name, intent.getIntExtra(Extras.COLOR.name, 0))

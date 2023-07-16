@@ -7,6 +7,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -19,9 +20,10 @@ class CalendarViewModel @Inject constructor(
     private val updateUsageUseCase: UpdateUsageUseCase,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state = loadCoursesUseCase(AuthToken.userId)
         .mapLatest { (courses, meds, usages) ->
-            MyCoursesState(courses = courses, meds = meds, usages = usages)
+            MyCoursesState(courses = courses, remedies = meds, usages = usages)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -32,7 +34,7 @@ class CalendarViewModel @Inject constructor(
         when (intent) {
             is CalendarIntent.SetUsage -> {
                 viewModelScope.launch {
-                    updateUsageUseCase.execute(intent.usage)
+                    updateUsageUseCase(intent.usage)
                 }
             }
         }

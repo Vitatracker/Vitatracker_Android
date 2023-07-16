@@ -22,15 +22,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.screens.mycourses.CourseInfoScreen
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesIntent
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.plusDay
+import app.mybad.theme.utils.plusDay
 import app.mybad.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,8 +54,8 @@ fun MyCoursesMainScreen(
                                 R.string.my_course_h
                             )
                         } else {
-                            state.value.meds.firstOrNull {
-                                it.id == selectedCourse?.medId
+                            state.value.remedies.firstOrNull {
+                                it.id == selectedCourse?.remedyId
                             }?.name ?: "no data"
                         },
                         textAlign = TextAlign.Center,
@@ -78,7 +78,7 @@ fun MyCoursesMainScreen(
                     MyCourses(
                         courses = state.value.courses,
                         usages = state.value.usages,
-                        meds = state.value.meds,
+                        remedies = state.value.remedies,
                         onSelect = {
                             selectedCourse = state.value.courses.first { course -> course.id == it }
                             navHostController.navigate(MyCoursesNavItem.Course.route)
@@ -86,20 +86,23 @@ fun MyCoursesMainScreen(
                     )
                 }
                 composable(MyCoursesNavItem.Course.route) {
-                    if (state.value.meds.isEmpty()) selectedCourse = null
-                    selectedCourse?.let { selected ->
+                    if (state.value.remedies.isEmpty()) selectedCourse = null
+                    selectedCourse?.let { selectedCourse ->
                         CourseInfoScreen(
-                            course = selected,
-                            med = state.value.meds.firstOrNull { it.id == selected.medId }
-                                ?: MedDomainModel(),
-                            usagePattern = generatePattern(selected.medId, state.value.usages),
+                            course = selectedCourse,
+                            med = state.value.remedies.firstOrNull { it.id == selectedCourse.remedyId }
+                                ?: RemedyDomainModel(),
+                            usagePattern = generatePattern(
+                                selectedCourse.id,
+                                state.value.usages
+                            ),
                             reducer = {
                                 when (it) {
                                     is MyCoursesIntent.Update -> {
                                         vm.reduce(
                                             MyCoursesIntent.Update(
                                                 it.course,
-                                                it.med,
+                                                it.remedy,
                                                 it.usagesPattern
                                             )
                                         )
@@ -107,7 +110,7 @@ fun MyCoursesMainScreen(
                                     }
 
                                     is MyCoursesIntent.Delete -> {
-                                        vm.reduce(MyCoursesIntent.Delete(selected.id))
+                                        vm.reduce(MyCoursesIntent.Delete(selectedCourse.id))
                                         navHostController.popBackStack()
                                     }
                                 }
@@ -121,11 +124,11 @@ fun MyCoursesMainScreen(
 }
 
 private fun generatePattern(
-    medId: Long,
-    usages: List<UsageCommonDomainModel>
+    courseId: Long,
+    usages: List<UsageDomainModel>
 ): List<Pair<Long, Int>> {
     if (usages.isNotEmpty()) {
-        val list = usages.filter { it.medId == medId }
+        val list = usages.filter { it.courseId == courseId }
         if (list.isNotEmpty()) {
             val firstTimeTomorrow = list.minBy { it.useTime }.useTime.plusDay()
             return list.mapNotNull { usage ->

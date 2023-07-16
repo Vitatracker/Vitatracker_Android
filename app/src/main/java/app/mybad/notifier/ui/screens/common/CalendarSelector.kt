@@ -29,15 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.DAYS_A_WEEK
-import app.mybad.notifier.utils.atStartOfDaySystemToUTC
-import app.mybad.notifier.utils.atStartOfMonth
-import app.mybad.notifier.utils.dayShortDisplay
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.minusDays
-import app.mybad.notifier.utils.plusDays
+import app.mybad.theme.R
+import app.mybad.theme.utils.DAYS_A_WEEK
+import app.mybad.theme.utils.atStartOfDaySystemToUTC
+import app.mybad.theme.utils.atStartOfMonth
+import app.mybad.theme.utils.dayShortDisplay
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.minusDays
+import app.mybad.theme.utils.plusDays
 import kotlinx.datetime.LocalDateTime
 
 @Composable
@@ -95,11 +95,11 @@ fun CalendarSelectorScreen(
 
 @Composable
 fun CalendarSelector(
-    modifier: Modifier = Modifier,
     date: LocalDateTime,
     startDay: LocalDateTime,
     endDay: LocalDateTime,
     editStart: Boolean,
+    modifier: Modifier = Modifier,
     onSelect: (date: LocalDateTime) -> Unit = { }
 ) {
     var startDate by remember { mutableStateOf(startDay) }
@@ -136,9 +136,9 @@ fun CalendarSelector(
                     .fillMaxWidth()
                     .alpha(0.5f)
             ) {
-                repeat(DAYS_A_WEEK) {
+                repeat(DAYS_A_WEEK) {day->
                     Text(
-                        text = it.dayShortDisplay(),
+                        text = day.dayShortDisplay(),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()

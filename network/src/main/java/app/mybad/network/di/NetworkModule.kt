@@ -1,11 +1,15 @@
 package app.mybad.network.di
 
-import app.mybad.domain.repos.AuthorizationNetworkRepository
-import app.mybad.domain.repos.CoursesNetworkRepo
-import app.mybad.domain.repos.SettingsNetworkRepository
-import app.mybad.network.repos.impl.AuthorizationNetworkRepoImpl
-import app.mybad.network.repos.impl.CoursesNetworkRepoImpl
-import app.mybad.network.repos.impl.SettingsNetworkRepoImpl
+import app.mybad.domain.repository.network.AuthorizationNetworkRepository
+import app.mybad.domain.repository.network.CourseNetworkRepository
+import app.mybad.domain.repository.network.RemedyNetworkRepository
+import app.mybad.domain.repository.network.SettingsNetworkRepository
+import app.mybad.domain.repository.network.UsageNetworkRepository
+import app.mybad.network.repository.AuthorizationNetworkRepositoryImpl
+import app.mybad.network.repository.CourseNetworkRepositoryImpl
+import app.mybad.network.repository.RemedyNetworkRepositoryImpl
+import app.mybad.network.repository.SettingsNetworkRepoImpl
+import app.mybad.network.repository.UsageNetworkRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,13 +22,21 @@ interface NetworkModule {
 
     @Binds
     @Singleton
-    fun providesAuthorizationNetworkRepo(impl: AuthorizationNetworkRepoImpl): AuthorizationNetworkRepository
+    fun provideAuthorizationNetworkRepository(impl: AuthorizationNetworkRepositoryImpl): AuthorizationNetworkRepository
 
     @Binds
     @Singleton
-    fun providesCoursesNetworkRepo(impl: CoursesNetworkRepoImpl): CoursesNetworkRepo
+    fun provideRemedyNetworkRepository(impl: RemedyNetworkRepositoryImpl): RemedyNetworkRepository
 
     @Binds
     @Singleton
-    fun providesSettingsNetworkRepo(impl: SettingsNetworkRepoImpl): SettingsNetworkRepository
+    fun provideCourseNetworkRepository(impl: CourseNetworkRepositoryImpl): CourseNetworkRepository
+
+    @Binds
+    @Singleton
+    fun provideUsageNetworkRepository(impl: UsageNetworkRepositoryImpl): UsageNetworkRepository
+
+    @Binds
+    @Singleton
+    fun provideSettingsNetworkRepository(impl: SettingsNetworkRepoImpl): SettingsNetworkRepository
 }

@@ -87,7 +87,7 @@ fun NewCourseNavScreen(
                 title = stringResource(R.string.add_med_h)
                 AddMedicineFirstScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
+                    med = state.remedy,
                     reducer = vm::reduce,
                     onNext = {
                         navHostController.navigate(NewCourseNavItem.AddMedicineSecond.route)
@@ -95,10 +95,10 @@ fun NewCourseNavScreen(
                 )
             }
             composable(NewCourseNavItem.AddMedicineSecond.route) {
-                title = state.med.name ?: error("Med has empty name")
+                title = state.remedy.name ?: error("Med has empty name")
                 AddMedicineSecondScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
+                    med = state.remedy,
                     reducer = vm::reduce,
                     onNext = {
                         navHostController.navigate(NewCourseNavItem.AddCourse.route)
@@ -120,7 +120,7 @@ fun NewCourseNavScreen(
                 title = stringResource(R.string.add_course_notifications_time)
                 AddNotificationsMainScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    med = state.med,
+                    med = state.remedy,
                     reducer = vm::reduce,
                     onNext = { navHostController.navigate(NewCourseNavItem.Success.route) }
                 )

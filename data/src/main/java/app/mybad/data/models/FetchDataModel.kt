@@ -1,11 +1,11 @@
 package app.mybad.data.models
 
-import app.mybad.data.db.entity.CourseDataModel
-import app.mybad.data.db.entity.MedDataModel
-import app.mybad.data.db.entity.UsageCommonDataModel
+import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.RemedyModel
+import app.mybad.data.db.models.UsageModel
 
 data class FetchDataModel(
-    val med: MedDataModel?,
-    val course: CourseDataModel?,
-    val usages: List<UsageCommonDataModel>?
+    val med: RemedyModel?,
+    val course: CourseModel?,
+    val usages: List<UsageModel>?
 )

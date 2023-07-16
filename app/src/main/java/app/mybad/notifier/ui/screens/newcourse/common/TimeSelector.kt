@@ -35,10 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.changeTime
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toLocalDateTime
-import app.mybad.notifier.utils.toSystemDateTime
+import app.mybad.theme.utils.changeTime
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toLocalDateTime
+import app.mybad.theme.utils.toSystemDateTime
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)

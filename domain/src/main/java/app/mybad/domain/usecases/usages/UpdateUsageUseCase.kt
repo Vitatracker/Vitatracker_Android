@@ -1,17 +1,18 @@
 package app.mybad.domain.usecases.usages
 
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.domain.repos.CoursesNetworkRepo
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.repository.UsageRepository
+import app.mybad.domain.repository.network.CourseNetworkRepository
 import javax.inject.Inject
 
 class UpdateUsageUseCase @Inject constructor(
-    private val usagesRepo: UsagesRepo,
-    private val coursesNetworkRepo: CoursesNetworkRepo,
+    private val usageRepository: UsageRepository,
+    private val coursesNetworkRepo: CourseNetworkRepository,
 ) {
 
-    suspend fun execute(usage: UsageCommonDomainModel) {
-        usagesRepo.updateSingle(usage)
-        coursesNetworkRepo.updateUsage(usage)
+    suspend operator fun invoke(usage: UsageDomainModel) {
+        usageRepository.insertUsage(usage)
+        //TODO("сделать обновление через воркер")
+//        coursesNetworkRepo.updateUsage(usage)
     }
 }

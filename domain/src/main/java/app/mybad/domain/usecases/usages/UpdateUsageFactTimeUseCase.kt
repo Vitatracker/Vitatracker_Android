@@ -1,15 +1,15 @@
 package app.mybad.domain.usecases.usages
 
-import app.mybad.domain.repos.UsagesRepo
+import app.mybad.domain.repository.UsageRepository
 import javax.inject.Inject
 
 class UpdateUsageFactTimeUseCase @Inject constructor(
-    private val usagesRepo: UsagesRepo
+    private val repository: UsageRepository
 ) {
 
-    suspend fun execute(medId: Long, usageTime: Long, factTime: Long) {
-        usagesRepo.setUsageTime(
-            medId = medId,
+    suspend operator fun invoke(courseId: Long, usageTime: Long, factTime: Long) {
+        repository.updateUsageFactTimeById(
+            courseId = courseId,
             usageTime = usageTime,
             factTime = factTime
         )

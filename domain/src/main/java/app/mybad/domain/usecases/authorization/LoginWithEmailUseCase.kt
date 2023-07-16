@@ -1,10 +1,10 @@
 package app.mybad.domain.usecases.authorization
 
-import app.mybad.domain.repos.AuthorizationRepo
+import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import javax.inject.Inject
 
 class LoginWithEmailUseCase @Inject constructor(
-    private val repository: AuthorizationRepo,
+    private val repository: AuthorizationNetworkRepository,
 ) {
 
     suspend operator fun invoke(

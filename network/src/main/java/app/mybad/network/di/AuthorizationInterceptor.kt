@@ -16,6 +16,10 @@ class AuthorizationInterceptor : Interceptor {
                         "Authorization",
                         "Bearer ${AuthToken.token}"
                     )
+                    .addHeader(
+                        "Content-Type",
+                        "application/json"
+                    )
                     .build()
             } else chain.request()
         )

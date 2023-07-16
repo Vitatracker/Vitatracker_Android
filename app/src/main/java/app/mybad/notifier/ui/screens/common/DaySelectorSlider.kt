@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.utils.changeDate
-import app.mybad.notifier.utils.dayShortDisplay
-import app.mybad.notifier.utils.isLeapYear
+import app.mybad.theme.utils.changeDate
+import app.mybad.theme.utils.dayShortDisplay
+import app.mybad.theme.utils.isLeapYear
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 

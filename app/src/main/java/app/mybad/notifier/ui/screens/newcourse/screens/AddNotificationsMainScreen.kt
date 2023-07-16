@@ -45,22 +45,21 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.theme.R
+import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toTimeDisplay
+import app.mybad.theme.R
+import app.mybad.theme.utils.getCurrentDateTimeWithoutSecond
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toTimeDisplay
 
 @Composable
 @Preview
 fun AddNotificationsMainScreen(
     modifier: Modifier = Modifier,
     reducer: (NewCourseIntent) -> Unit = {},
-    med: MedDomainModel = MedDomainModel(),
+    med: RemedyDomainModel = RemedyDomainModel(),
     onNext: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)

@@ -54,7 +54,7 @@ class RescheduleAlarmService : Service() {
 
         startForeground(NOTIFICATION_ID, notification)
         scope.launch {
-            notificationsScheduler.rescheduleAll(AuthToken.userId)
+            notificationsScheduler.rescheduleAlarmByUserId(AuthToken.userId)
             stopForeground(STOP_FOREGROUND_DETACH)
         }
         return START_STICKY

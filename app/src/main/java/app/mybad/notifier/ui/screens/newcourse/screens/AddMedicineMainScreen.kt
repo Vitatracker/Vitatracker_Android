@@ -1,12 +1,20 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
@@ -15,18 +23,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.theme.R
+import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
-import app.mybad.notifier.ui.screens.newcourse.common.*
+import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
+import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
+import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
+import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
+import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 
 @Composable
 fun AddMedicineMainScreen(
     modifier: Modifier = Modifier,
-    med: MedDomainModel,
+    med: RemedyDomainModel,
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
     onBack: () -> Unit,

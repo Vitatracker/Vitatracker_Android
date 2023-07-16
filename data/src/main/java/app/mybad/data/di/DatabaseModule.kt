@@ -20,16 +20,24 @@ class DatabaseModule {
         .databaseBuilder(
             app,
             MedDbImpl::class.java,
-            "meds.db"
+            MedDbImpl.DB_NAME
         )
         .fallbackToDestructiveMigration()
         .build()
 
     @Provides
     @Singleton
-    fun provideMedDao(db: MedDb) = db.getMedDao()
+    fun provideMedDao(db: MedDb) = db.getRemedyDao()
 
     @Provides
     @Singleton
-    fun provideUsersDao(db: MedDb) = db.getUsersDao()
+    fun provideUsersDao(db: MedDb) = db.getUserDao()
+
+    @Provides
+    @Singleton
+    fun provideCourseDao(db: MedDb) = db.getCourseDao()
+
+    @Provides
+    @Singleton
+    fun provideUsageDao(db: MedDb) = db.getUsageDao()
 }

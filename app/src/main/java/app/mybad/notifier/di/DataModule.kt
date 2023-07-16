@@ -1,17 +1,15 @@
 package app.mybad.notifier.di
 
-import app.mybad.data.repos.AuthorizationRepoImpl
-import app.mybad.data.repos.CoursesRepoImpl
-import app.mybad.data.repos.MedsRepoImpl
-import app.mybad.data.repos.UsagesRepoImpl
+import app.mybad.data.repos.CourseRepositoryImpl
+import app.mybad.data.repos.RemedyRepositoryImpl
+import app.mybad.data.repos.UsageRepositoryImpl
 import app.mybad.data.repos.UserDataRepoImpl
-import app.mybad.data.repos.UsersRepositoryImpl
-import app.mybad.domain.repos.AuthorizationRepo
-import app.mybad.domain.repos.CoursesRepo
-import app.mybad.domain.repos.MedsRepo
-import app.mybad.domain.repos.UsagesRepo
-import app.mybad.domain.repos.UserDataRepo
-import app.mybad.domain.repos.UsersRepository
+import app.mybad.data.repos.UserRepositoryImpl
+import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.RemedyRepository
+import app.mybad.domain.repository.UsageRepository
+import app.mybad.domain.repository.UserDataRepo
+import app.mybad.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,26 +22,22 @@ interface DataModule {
 
     @Binds
     @Singleton
-    fun provideUserRepo(impl: UserDataRepoImpl): UserDataRepo
+    fun provideUserDataRepo(impl: UserDataRepoImpl): UserDataRepo
 
     @Binds
     @Singleton
-    fun provideCoursesRepo(impl: CoursesRepoImpl): CoursesRepo
+    fun provideUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
     @Singleton
-    fun provideMedsRepo(impl: MedsRepoImpl): MedsRepo
+    fun provideCourseRepository(impl: CourseRepositoryImpl): CourseRepository
 
     @Binds
     @Singleton
-    fun provideUsagesRepo(impl: UsagesRepoImpl): UsagesRepo
+    fun provideRemedyRepository(impl: RemedyRepositoryImpl): RemedyRepository
 
     @Binds
     @Singleton
-    fun provideAuthorizationRepo(impl: AuthorizationRepoImpl): AuthorizationRepo
-
-    @Binds
-    @Singleton
-    fun provideUsersRepository(impl: UsersRepositoryImpl): UsersRepository
+    fun provideUsageRepository(impl: UsageRepositoryImpl): UsageRepository
 
 }

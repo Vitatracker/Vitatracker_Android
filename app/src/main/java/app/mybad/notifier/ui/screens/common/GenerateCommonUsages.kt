@@ -1,29 +1,29 @@
 package app.mybad.notifier.ui.screens.common
 
 import android.util.Log
-import app.mybad.domain.models.usages.UsageCommonDomainModel
-import app.mybad.notifier.utils.changeTime
-import app.mybad.notifier.utils.daysBetween
-import app.mybad.notifier.utils.getCurrentDateTime
-import app.mybad.notifier.utils.plusDays
-import app.mybad.notifier.utils.toEpochSecond
-import app.mybad.notifier.utils.toLocalDateTime
+import app.mybad.domain.models.UsageDomainModel
+import app.mybad.theme.utils.changeTime
+import app.mybad.theme.utils.daysBetween
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.plusDays
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toLocalDateTime
 
-fun generateCommonUsages(
+fun generateUsages(
     usagesByDay: List<Pair<Long, Int>>,
-    medId: Long,
+    courseId: Long,
     userId: Long,
     startDate: Long,
     endDate: Long,
     regime: Int,
-): List<UsageCommonDomainModel> {
+): List<UsageDomainModel> {
     val now = getCurrentDateTime().toEpochSecond()
     val interval = endDate.daysBetween(startDate).toInt()
     Log.w(
         "VTTAG",
         "generateCommonUsages: interval=$interval startDate=${startDate.toLocalDateTime()} endDate=${endDate.toLocalDateTime()}"
     )
-    val usage = mutableListOf<UsageCommonDomainModel>()
+    val usage = mutableListOf<UsageDomainModel>()
     Log.w(
         "VTTAG",
         "generateCommonUsages: userId=${userId} interval=${interval} regime=$regime usagesByDay=${usagesByDay}"
@@ -42,10 +42,10 @@ fun generateCommonUsages(
                 )
                 if (useTime > now) {
                     usage.add(
-                        UsageCommonDomainModel(
-                            medId = medId,
+                        UsageDomainModel(
+                            courseId = courseId,
                             userId = userId,
-                            creationTime = now,
+                            createdDate = now,
                             useTime = useTime,
                             quantity = quantity,
                         )

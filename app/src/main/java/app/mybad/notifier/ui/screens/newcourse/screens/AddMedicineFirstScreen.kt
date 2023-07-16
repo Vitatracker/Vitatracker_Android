@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
@@ -37,7 +37,7 @@ import app.mybad.notifier.ui.theme.Typography
 @Composable
 fun AddMedicineFirstScreen(
     modifier: Modifier = Modifier,
-    med: MedDomainModel = MedDomainModel(),
+    med: RemedyDomainModel = RemedyDomainModel(),
     reducer: (NewCourseIntent) -> Unit = {},
     onNext: () -> Unit,
 ) {

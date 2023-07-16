@@ -58,11 +58,12 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // Logging interceptor
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 
     //Hilt
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    implementation 'androidx.test:runner:1.5.2'
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.test:runner:1.5.2"
+    implementation "androidx.hilt:hilt-work:1.0.0"
     testImplementation project(path: ':app')
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
     
@@ -85,6 +86,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
 
     //    local unit test
     implementation "androidx.arch.core:core-testing:2.2.0"

@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
-            val isAuthorize by mainActivityViewModel.isAuthorize.collectAsStateWithLifecycle()
+            val isAuthorize by mainActivityViewModel.isAuthorize.collectAsStateWithLifecycle(false)
 
             MyBADTheme {
                 if (!isAuthorize) {

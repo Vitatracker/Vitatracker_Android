@@ -1,6 +1,6 @@
 package app.mybad.domain.usecases.user
 
-import app.mybad.domain.repos.UserDataRepo
+import app.mybad.domain.repository.UserDataRepo
 import javax.inject.Inject
 
 class DeleteUserModelUseCase @Inject constructor(
@@ -8,6 +8,6 @@ class DeleteUserModelUseCase @Inject constructor(
 ) {
 
     suspend fun execute(id: String) {
-        userDataRepo.deleteUserModel(id = id)
+        userDataRepo.deleteUser(id = id)
     }
 }
