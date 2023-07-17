@@ -51,14 +51,16 @@ class CreateCourseViewModel @Inject constructor(
                     )
                     // записать remedy и получить remedyId
                     createRemedyUseCase(_state.value.remedy).getOrNull()?.let { remedyId ->
+                        Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId")
                         _state.update {
                             it.copy(
                                 remedy = _state.value.remedy.copy(id = remedyId),
                                 course = _state.value.course.copy(remedyId = remedyId),
                             )
                         }
-                        // записать course и получить medId
+                        // записать course и получить remedyId
                         createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
+                            Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: courseId=$courseId")
                             _state.update {
                                 it.copy(
                                     course = _state.value.course.copy(id = courseId),
@@ -72,7 +74,11 @@ class CreateCourseViewModel @Inject constructor(
                                 course = _state.value.course,
                                 usages = _state.value.usages,
                             )
+                        } ?: {
+                            Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: error")
                         }
+                    } ?: {
+                        Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: error")
                     }
                     _state.emit(newState())
                 }
@@ -99,6 +105,7 @@ class CreateCourseViewModel @Inject constructor(
                         )
                         // записать remedy и получить remedyId
                         createRemedyUseCase(_state.value.remedy).getOrNull()?.let {remedyId->
+                            Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId")
                             _state.update {
                                 it.copy(
                                     remedy = _state.value.remedy.copy(id = remedyId),
@@ -107,6 +114,7 @@ class CreateCourseViewModel @Inject constructor(
                             }
                             // записать course и получить courseId
                             createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
+                                Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: courseId=$courseId")
                                 _state.update {
                                     it.copy(
                                         course = _state.value.course.copy(id = courseId),
@@ -121,6 +129,7 @@ class CreateCourseViewModel @Inject constructor(
                                     regime = _state.value.course.regime
                                 )
                                 createUsageUseCase(usages)
+                                Log.w("VTTAG", "CreateCourseViewModel::createUsageUseCase: usages=${usages.size}")
                                 _state.update {
                                     it.copy(
                                         remedy = _state.value.remedy,
@@ -130,11 +139,15 @@ class CreateCourseViewModel @Inject constructor(
                                 }
                                 Log.w(
                                     "VTTAG",
-                                    "CreateCourseViewModel::UpdateUsagesPattern: medId=${
+                                    "CreateCourseViewModel::UpdateUsagesPattern: remedyId=${
                                         _state.value.remedy.id
                                     } userId=${_state.value.remedy.userId}"
                                 )
+                            } ?: {
+                                Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: error")
                             }
+                        } ?: {
+                            Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: error")
                         }
                     }.invokeOnCompletion {
                         launch {
@@ -156,7 +169,6 @@ class CreateCourseViewModel @Inject constructor(
         Log.w("VTTAG", "CreateCourseViewModel::newState: userId=${AuthToken.userId}")
         val currentDateTime = getCurrentDateTime()
         return NewCourseState(
-//            userId = userId,
             remedy = RemedyDomainModel(
                 createdDate = currentDateTime.toEpochSecond(),
                 userId = userId

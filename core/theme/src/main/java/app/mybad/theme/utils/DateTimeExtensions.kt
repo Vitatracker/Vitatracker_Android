@@ -6,13 +6,13 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.Month
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -74,7 +74,7 @@ fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
     Locale.getDefault()
 ).uppercase(Locale.getDefault()).replace(".", "")
 
-fun Int.monthFullDisplay(): String = Month(this).getDisplayName(
+fun Int.monthFullDisplay(): String = Month(this + 1).getDisplayName(
     TextStyle.FULL_STANDALONE,
     Locale.getDefault()
 ).replaceFirstChar { it.uppercase(Locale.getDefault()) }
@@ -88,7 +88,7 @@ fun Int.dayShortDisplay() = DayOfWeek(this + 1).displayName()
 
 fun LocalDateTime.dayShortDisplay() = this.dayOfWeek.displayName()
 
-fun Int.dayFullDisplay(): String = DayOfWeek(this).getDisplayName(
+fun Int.dayFullDisplay(): String = DayOfWeek(this + 1).getDisplayName(
     TextStyle.FULL_STANDALONE,
     Locale.getDefault()
 ).replaceFirstChar { it.uppercase(Locale.getDefault()) }

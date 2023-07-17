@@ -37,13 +37,13 @@ import app.mybad.notifier.ui.theme.Typography
 @Composable
 fun AddMedicineFirstScreen(
     modifier: Modifier = Modifier,
-    med: RemedyDomainModel = RemedyDomainModel(),
+    remedy: RemedyDomainModel = RemedyDomainModel(),
     reducer: (NewCourseIntent) -> Unit = {},
     onNext: () -> Unit,
 ) {
     val name = stringResource(R.string.enter_med_name)
     var isError by rememberSaveable { mutableStateOf(false) }
-    var currentName by rememberSaveable { mutableStateOf(med.name) }
+    var currentName by rememberSaveable { mutableStateOf(remedy.name) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -104,9 +104,9 @@ fun AddMedicineFirstScreen(
             MultiBox(
                 {
                     IconSelector(
-                        selected = med.icon,
-                        color = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(icon = it))) }
+                        selected = remedy.icon,
+                        color = remedy.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(remedy.copy(icon = it))) }
                     )
                 },
                 itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
@@ -121,8 +121,8 @@ fun AddMedicineFirstScreen(
             MultiBox(
                 {
                     ColorSelector(
-                        selected = med.color,
-                        onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) }
+                        selected = remedy.color,
+                        onSelect = { reducer(NewCourseIntent.UpdateMed(remedy.copy(color = it))) }
                     )
                 },
                 itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
@@ -136,7 +136,7 @@ fun AddMedicineFirstScreen(
             shape = RoundedCornerShape(10.dp),
             onClick = {
                 if (!currentName.isNullOrBlank()) {
-                    reducer(NewCourseIntent.UpdateMed(med.copy(name = currentName)))
+                    reducer(NewCourseIntent.UpdateMed(remedy.copy(name = currentName)))
                     onNext()
                 } else {
                     isError = true

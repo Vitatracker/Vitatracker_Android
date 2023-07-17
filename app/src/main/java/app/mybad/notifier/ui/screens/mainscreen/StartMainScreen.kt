@@ -70,7 +70,7 @@ fun StartMainScreen(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val dateNow = remember { mutableStateOf(uiState.date) }
     val usagesSize by remember { mutableIntStateOf(uiState.usagesSize) }
-    val usageCommon = remember { mutableStateOf(UsageDomainModel()) }
+    val usageState = remember { mutableStateOf(UsageDomainModel()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -103,8 +103,8 @@ fun StartMainScreen(
                 usages = uiState.usages,
                 remedies = uiState.remedies,
                 courses = uiState.courses,
-                usageState = usageCommon,
-                setUsageFactTime = { vm.setUsagesFactTime(usage = usageCommon.value) }
+                usageState = usageState,
+                setUsageFactTime = { vm.setUsagesFactTime(usage = usageState.value) }
             )
         }
     }

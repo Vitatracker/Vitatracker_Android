@@ -59,7 +59,7 @@ import app.mybad.theme.utils.toTimeDisplay
 fun AddNotificationsMainScreen(
     modifier: Modifier = Modifier,
     reducer: (NewCourseIntent) -> Unit = {},
-    med: RemedyDomainModel = RemedyDomainModel(),
+    remedy: RemedyDomainModel = RemedyDomainModel(),
     onNext: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
@@ -78,7 +78,7 @@ fun AddNotificationsMainScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             AddNotificationButton(
-                form = med.type,
+                form = remedy.type,
                 forms = forms,
                 onClick = {
                     notificationsPattern = notificationsPattern.toMutableList().apply {
@@ -93,7 +93,7 @@ fun AddNotificationsMainScreen(
                         NotificationItem(
                             time = item.first,
                             quantity = item.second,
-                            form = med.type,
+                            form = remedy.type,
                             forms = forms,
                             onDelete = {
                                 notificationsPattern = notificationsPattern.toMutableList().apply {

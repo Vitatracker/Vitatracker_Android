@@ -25,7 +25,7 @@ class LoadCoursesUseCase @Inject constructor(
         ).onEach { (courses, remedies, usages) ->
             Log.w(
                 "VTTAG",
-                "LoadCoursesUseCase: courses=${courses.size} meds=${remedies.size} usages=${usages.size}"
+                "LoadCoursesUseCase: courses=${courses.size} remedies=${remedies.size} usages=${usages.size}"
             )
         }
 

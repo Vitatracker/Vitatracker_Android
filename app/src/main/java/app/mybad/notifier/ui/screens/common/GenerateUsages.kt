@@ -21,12 +21,12 @@ fun generateUsages(
     val interval = endDate.daysBetween(startDate).toInt()
     Log.w(
         "VTTAG",
-        "generateCommonUsages: interval=$interval startDate=${startDate.toLocalDateTime()} endDate=${endDate.toLocalDateTime()}"
+        "generateUsages: interval=$interval startDate=${startDate.toLocalDateTime()} endDate=${endDate.toLocalDateTime()}"
     )
     val usage = mutableListOf<UsageDomainModel>()
     Log.w(
         "VTTAG",
-        "generateCommonUsages: userId=${userId} interval=${interval} regime=$regime usagesByDay=${usagesByDay}"
+        "generateUsages: userId=${userId} interval=${interval} regime=$regime usagesByDay=${usagesByDay}"
     )
     if (interval <= 0 || usagesByDay.isEmpty()) return emptyList()
     repeat(interval) { position ->
@@ -38,7 +38,7 @@ fun generateUsages(
                     .toEpochSecond()
                 Log.w(
                     "VTTAG",
-                    "generateCommonUsages: useTime=${useTime.toLocalDateTime()} usage=${now.toLocalDateTime()}"
+                    "generateUsages: useTime=${useTime.toLocalDateTime()} usage=${now.toLocalDateTime()}"
                 )
                 if (useTime > now) {
                     usage.add(
@@ -54,6 +54,6 @@ fun generateUsages(
             }
         }
     }
-    Log.w("VTTAG", "generateCommonUsages: size=${usage.size} usage=${usage}")
+    Log.w("VTTAG", "generateUsages: size=${usage.size} usage=${usage}")
     return usage.toList()
 }

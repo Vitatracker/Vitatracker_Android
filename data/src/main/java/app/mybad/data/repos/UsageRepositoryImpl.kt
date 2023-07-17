@@ -1,5 +1,6 @@
 package app.mybad.data.repos
 
+import android.util.Log
 import app.mybad.data.db.dao.UsageDao
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
@@ -71,6 +72,7 @@ class UsageRepositoryImpl @Inject constructor(
             try {
                 db.insertUsage(usage.mapToData())
             } catch (ignore: Throwable) {
+                Log.w("VTTAG", "UsageRepositoryImpl::insertUsage: error=${ignore.localizedMessage}")
             }
         }
     }
@@ -80,6 +82,7 @@ class UsageRepositoryImpl @Inject constructor(
             try {
                 db.insertUsages(usages.mapToData())
             } catch (ignore: Throwable) {
+                Log.w("VTTAG", "UsageRepositoryImpl::insertUsages: error=${ignore.localizedMessage}")
             }
         }
     }

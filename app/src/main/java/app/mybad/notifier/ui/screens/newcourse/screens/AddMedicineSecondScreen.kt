@@ -35,7 +35,7 @@ import app.mybad.theme.R
 @Composable
 fun AddMedicineSecondScreen(
     modifier: Modifier = Modifier,
-    med: RemedyDomainModel,
+    remedy: RemedyDomainModel,
     reducer: (NewCourseIntent) -> Unit,
     onNext: () -> Unit,
 ) {
@@ -60,7 +60,7 @@ fun AddMedicineSecondScreen(
             MultiBox(
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = form, value = types[med.type], onClick = {
+                    ParameterIndicator(name = form, value = types[remedy.type], onClick = {
                         exp = true
                     })
                     DropdownMenu(
@@ -72,7 +72,7 @@ fun AddMedicineSecondScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    reducer(NewCourseIntent.UpdateMed(med.copy(type = index)))
+                                    reducer(NewCourseIntent.UpdateMed(remedy.copy(type = index)))
                                     exp = false
                                 }
                             )
@@ -82,7 +82,7 @@ fun AddMedicineSecondScreen(
                 {
                     BasicKeyboardInput(
                         label = dose,
-                        init = if (med.dose == 0) "" else med.dose.toString(),
+                        init = if (remedy.dose == 0) "" else remedy.dose.toString(),
                         hideOnGo = true,
                         keyboardType = KeyboardType.Number,
                         alignRight = true,
@@ -95,7 +95,7 @@ fun AddMedicineSecondScreen(
                         onChange = {
                             reducer(
                                 NewCourseIntent.UpdateMed(
-                                    med.copy(
+                                    remedy.copy(
                                         dose = it.toIntOrNull() ?: 0
                                     )
                                 )
@@ -105,7 +105,7 @@ fun AddMedicineSecondScreen(
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = unit, value = units[med.measureUnit], onClick = {
+                    ParameterIndicator(name = unit, value = units[remedy.measureUnit], onClick = {
                         exp = true
                     })
                     DropdownMenu(
@@ -117,7 +117,7 @@ fun AddMedicineSecondScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    reducer(NewCourseIntent.UpdateMed(med.copy(measureUnit = index)))
+                                    reducer(NewCourseIntent.UpdateMed(remedy.copy(measureUnit = index)))
                                     exp = false
                                 }
                             )
@@ -126,7 +126,7 @@ fun AddMedicineSecondScreen(
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
-                    ParameterIndicator(name = rel, value = rels[med.beforeFood], onClick = {
+                    ParameterIndicator(name = rel, value = rels[remedy.beforeFood], onClick = {
                         exp = true
                     })
                     DropdownMenu(
@@ -138,7 +138,7 @@ fun AddMedicineSecondScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    reducer(NewCourseIntent.UpdateMed(med.copy(beforeFood = index)))
+                                    reducer(NewCourseIntent.UpdateMed(remedy.copy(beforeFood = index)))
                                     exp = false
                                 }
                             )

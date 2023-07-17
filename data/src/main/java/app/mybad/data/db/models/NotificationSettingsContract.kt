@@ -1,7 +1,7 @@
 package app.mybad.data.db.models
 
 object NotificationSettingsContract {
-    const val TABLE_NAME = "user_local" //
+    const val TABLE_NAME = "notification_settings" //
 
     object Columns {
         const val USER_ID = "user_id" //

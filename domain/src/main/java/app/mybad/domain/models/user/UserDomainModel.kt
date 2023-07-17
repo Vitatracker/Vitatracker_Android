@@ -1,7 +1,7 @@
 package app.mybad.domain.models.user
 
 data class UserDomainModel(
-    val id: Long = -1,
+    val id: Long = 0,
     val idn: String = "",
 
     val avatar: String = "",

@@ -36,7 +36,7 @@ class MyCoursesViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = loadCourses(AuthToken.userId)
         .mapLatest { (courses, remedies, usages) ->
-            Log.w("VTTAG", "MyCoursesViewModel::state: meds=${remedies.size} usages=${usages.size}")
+            Log.w("VTTAG", "MyCoursesViewModel::state: remedies=${remedies.size} usages=${usages.size}")
             MyCoursesState(courses = courses, remedies = remedies, usages = usages)
         }.stateIn(
             scope = viewModelScope,

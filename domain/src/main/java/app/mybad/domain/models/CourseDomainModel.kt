@@ -2,7 +2,7 @@ package app.mybad.domain.models
 
 data class CourseDomainModel(
     val id: Long = 0,
-    var idn: Long = 0,
+    var idn: Long = -1,
 
     val createdDate: Long = 0,
     val updatedDate: Long = 0,
