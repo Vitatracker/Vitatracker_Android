@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.mycourses.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +55,7 @@ fun MyCourses(
     courses: List<CourseDomainModel>,
     usages: List<UsageCommonDomainModel>,
     meds: List<MedDomainModel>,
-    onSelect: (Long) -> Unit
+    onEditClicked: (Long) -> Unit
 ) {
     val height = LocalConfiguration.current.screenHeightDp
     Column(
@@ -78,7 +79,7 @@ fun MyCourses(
                                     usage.useTime >= course.startDate &&
                                     usage.useTime < course.endDate.plusDay()
                         },
-                        onSelect = { onSelect(course.id) },
+                        onEditClicked = { onEditClicked(course.id) },
                     )
                     Spacer(Modifier.height(16.dp))
                 }
@@ -125,7 +126,7 @@ private fun CourseItem(
     usages: List<UsageCommonDomainModel>,
     med: MedDomainModel,
     startInDays: Int = -1,
-    onSelect: (Long) -> Unit = {},
+    onEditClicked: (Long) -> Unit = {},
 ) {
     Log.w("MC_usages_in_item", "$usages")
     val types = stringArrayResource(R.array.types)
@@ -225,20 +226,21 @@ private fun CourseItem(
                     Surface(
                         shape = CircleShape,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                onEditClicked(course.id)
+                            }
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            Image(
                                 painter = painterResource(R.drawable.icon_pencil),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(16.dp)
-                                    .clickable {
-                                        onSelect(course.id)
-                                    }
                             )
                         }
                     }

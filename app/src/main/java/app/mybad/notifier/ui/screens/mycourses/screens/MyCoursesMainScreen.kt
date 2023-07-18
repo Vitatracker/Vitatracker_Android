@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
@@ -27,16 +28,20 @@ fun MyCoursesMainScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-        CenterAlignedTopAppBar(title = {
-            TitleText(textStringRes = R.string.my_course_h)
-        })
-    }) { paddingValues ->
+            CenterAlignedTopAppBar(
+                title = {
+                    TitleText(textStringRes = R.string.my_course_h)
+                }
+            )
+        }) { paddingValues ->
         MyCourses(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp),
             courses = state.value.courses,
             usages = state.value.usages,
             meds = state.value.meds,
-            onSelect = {
+            onEditClicked = {
 //                        selectedCourse = state.value.courses.first { course -> course.id == it }
 //                        navHostController.navigate(MyCoursesNavItem.Course.route)
             }
