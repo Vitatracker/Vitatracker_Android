@@ -1,9 +1,12 @@
 package app.mybad.notifier.ui.screens.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
+import app.mybad.notifier.ui.screens.authorization.login.LoginScreenContract
+import app.mybad.notifier.ui.screens.authorization.login.LoginScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainNewPasswordScreenAuth
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPasswordScreenAuth
@@ -25,12 +28,24 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
             )
         }
         composable(route = AuthorizationScreens.Login.route) {
+            val viewModel: LoginScreenViewModel = hiltViewModel()
             StartMainLoginScreen(
-                onBackPressed = { navigationState.navController.popBackStack() },
-                onForgotPasswordClicked = { navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route) },
-                onLoginSuccess = {
-                    navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
-                    navigationState.navigateToMain()
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationAction ->
+                    when (navigationAction) {
+                        LoginScreenContract.Effect.Navigation.ToForgotPassword -> {
+                            navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route)
+                        }
+
+                        LoginScreenContract.Effect.Navigation.ToMain -> {
+                            navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
+                            navigationState.navigateToMain()
+                        }
+
+                        LoginScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
+                    }
                 }
             )
         }

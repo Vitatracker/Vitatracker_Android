@@ -54,7 +54,7 @@ fun MainAuthorizationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
-                ReUseFilledButton(textId = R.string.authorization_screen_login, onLoginButtonClicked)
+                ReUseFilledButton(textId = R.string.authorization_screen_login, onClick = onLoginButtonClicked)
                 Spacer(modifier = Modifier.height(16.dp))
                 ReUseOutlinedButton(R.string.authorization_screen_registration, onRegistrationButtonClicked)
                 Spacer(modifier = Modifier.height(32.dp))

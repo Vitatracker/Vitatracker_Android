@@ -22,43 +22,47 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.theme.R
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun StartMainLoginScreen(
-    onBackPressed: () -> Unit,
-    onForgotPasswordClicked: () -> Unit,
-    onLoginSuccess: () -> Unit,
-    viewModel: LoginScreenViewModel = hiltViewModel()
+    state: LoginScreenContract.State,
+    events: Flow<LoginScreenContract.Effect>? = null,
+    onEventSent: (event: LoginScreenContract.Event) -> Unit = {},
+    onNavigationRequested: (navigationEffect: LoginScreenContract.Effect.Navigation) -> Unit
 ) {
 
-    LaunchedEffect(key1 = true) {
-        viewModel.event.collect {
-            when (it) {
-                LoginScreenEvents.InvalidCredentials -> {
-
+    LaunchedEffect(key1 = SIDE_EFFECTS_KEY) {
+        events?.collect { effect ->
+            when (effect) {
+                LoginScreenContract.Effect.LoginSuccessful -> {}
+                is LoginScreenContract.Effect.Navigation.ToForgotPassword -> {
+                    onNavigationRequested(LoginScreenContract.Effect.Navigation.ToForgotPassword)
                 }
 
-                LoginScreenEvents.LoginSuccessful -> {
-                    onLoginSuccess()
+                is LoginScreenContract.Effect.Navigation.ToMain -> {
+                    onNavigationRequested(LoginScreenContract.Effect.Navigation.ToMain)
+                }
+
+                LoginScreenContract.Effect.Navigation.Back -> {
+                    onNavigationRequested(LoginScreenContract.Effect.Navigation.Back)
                 }
             }
         }
@@ -66,7 +70,10 @@ fun StartMainLoginScreen(
 
     Scaffold(
         topBar = {
-            TopAppBarWithBackAction(titleResId = R.string.sign_in, onBackPressed)
+            TopAppBarWithBackAction(
+                titleResId = R.string.sign_in,
+                onBackPressed = { onEventSent(LoginScreenContract.Event.ActionBack) }
+            )
         },
         floatingActionButtonPosition = FabPosition.End,
         content = { contentPadding ->
@@ -76,9 +83,16 @@ fun StartMainLoginScreen(
                     .padding(contentPadding)
             ) {
                 MainLoginScreen(
-                    onForgotPasswordClicked = onForgotPasswordClicked,
-                    onSignInClicked = viewModel::signIn,
-                    onSignInWithGoogleClicked = viewModel::signInWithGoogle
+                    onForgotPasswordClicked = { onEventSent(LoginScreenContract.Event.ForgotPassword) },
+                    onSignInClicked = { email, password ->
+                        onEventSent(LoginScreenContract.Event.LoginWithEmail(email, password))
+                    },
+                    onSignInWithGoogleClicked = { onEventSent(LoginScreenContract.Event.LoginWithGoogle) },
+                    login = state.email,
+                    updateLogin = { onEventSent(LoginScreenContract.Event.UpdateLogin(it)) },
+                    password = state.password,
+                    updatePassword = { onEventSent(LoginScreenContract.Event.UpdatePassword(it)) },
+                    isLoggingByEmail = state.isLoggingByEmail
                 )
             }
         }
@@ -89,7 +103,12 @@ fun StartMainLoginScreen(
 private fun MainLoginScreen(
     onForgotPasswordClicked: () -> Unit,
     onSignInClicked: (String, String) -> Unit,
-    onSignInWithGoogleClicked: () -> Unit
+    onSignInWithGoogleClicked: () -> Unit,
+    login: String,
+    password: String,
+    updateLogin: (String) -> Unit,
+    updatePassword: (String) -> Unit,
+    isLoggingByEmail: Boolean
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -100,17 +119,19 @@ private fun MainLoginScreen(
                 .padding(PaddingValues(start = 16.dp, end = 16.dp))
                 .fillMaxWidth()
         ) {
-            val loginState = remember { mutableStateOf("") }    //{ mutableStateOf("bob@mail.ru") }
-            val passwordState = remember { mutableStateOf("") } //{ mutableStateOf("12345678") }
-            LoginScreenEnteredEmail(loginState = loginState)
+            LoginScreenEnteredEmail(login = login, updateLogin = updateLogin)
             Spacer(modifier = Modifier.height(16.dp))
-            LoginScreenEnteredPassword(passwordState = passwordState)
+            LoginScreenEnteredPassword(password = password, updatePassword = updatePassword)
             Spacer(modifier = Modifier.height(16.dp))
             LoginScreenForgotPassword(onForgotPasswordClicked)
             Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(textId = R.string.sign_in) {
-                onSignInClicked(loginState.value, passwordState.value)
-            }
+            ReUseFilledButton(
+                textId = R.string.sign_in,
+                onClick = {
+                    onSignInClicked(login, password)
+                },
+                isLoading = isLoggingByEmail
+            )
             Spacer(modifier = Modifier.height(32.dp))
             SignInWithGoogle(onClick = onSignInWithGoogleClicked)
         }
@@ -118,15 +139,14 @@ private fun MainLoginScreen(
 }
 
 @Composable
-private fun LoginScreenEnteredEmail(loginState: MutableState<String>) {
+private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit) {
     OutlinedTextField(
-        value = loginState.value,
-        onValueChange = { newLogin -> loginState.value = newLogin },
+        value = login,
+        onValueChange = { newLogin -> updateLogin(newLogin) },
         modifier = Modifier.fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.login_email)) },
-        placeholder = { Text(text = stringResource(id = R.string.login_email)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = Next
@@ -135,18 +155,17 @@ private fun LoginScreenEnteredEmail(loginState: MutableState<String>) {
 }
 
 @Composable
-private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
+private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = passwordState.value,
-        onValueChange = { newPassword -> passwordState.value = newPassword },
+        value = password,
+        onValueChange = { newPassword -> updatePassword(newPassword) },
         modifier = Modifier
             .fillMaxWidth(),
         enabled = true,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.login_password)) },
-        placeholder = { Text(text = stringResource(id = R.string.login_password)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = Done
@@ -174,6 +193,6 @@ private fun LoginScreenEnteredPassword(passwordState: MutableState<String>) {
 private fun LoginScreenForgotPassword(onForgotPasswordClicked: () -> Unit) {
     Text(
         modifier = Modifier.clickable { onForgotPasswordClicked() },
-        text = AnnotatedString(stringResource(id = R.string.login_forgot_password))
+        text = stringResource(id = R.string.login_forgot_password)
     )
 }
