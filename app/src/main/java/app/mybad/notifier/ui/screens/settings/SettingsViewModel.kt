@@ -132,7 +132,9 @@ class SettingsViewModel @Inject constructor(
                     dataStoreUseCase.clear()
                 }
 
-                is SettingsIntent.Exit -> {}
+                is SettingsIntent.Exit -> {
+                    dataStoreUseCase.clear()
+                }
                 is SettingsIntent.SetNotifications -> {
                     userNotificationUseCase.execute(notificationsUserDomainModel = intent.notifications)
                     _state.emit(_state.value.copy(notificationsUserDomainModel = intent.notifications))

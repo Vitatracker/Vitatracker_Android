@@ -71,7 +71,13 @@ fun AppNavGraph() {
                 )
             }
             addCourseNavGraph(navigationState)
-            profileNavGraph(navigationState)
+            profileNavGraph(
+                navigationState = navigationState,
+                onExitToAuthorization = {
+                    navigationState.navController.popBackStack(Screen.Profile.route, true)
+                    navigationState.navigateToAuthorization()
+                }
+            )
         }
     }
 

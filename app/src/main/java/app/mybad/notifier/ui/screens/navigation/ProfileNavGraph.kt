@@ -10,7 +10,7 @@ import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.SettingsViewModel
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfile
 
-fun NavGraphBuilder.profileNavGraph(navigationState: NavigationState) {
+fun NavGraphBuilder.profileNavGraph(navigationState: NavigationState, onExitToAuthorization: () -> Unit) {
     navigation(startDestination = ProfileScreens.MainScreen.route, route = Screen.Profile.route) {
         composable(route = ProfileScreens.MainScreen.route) {
             val viewModel: SettingsViewModel = hiltViewModel()
@@ -21,6 +21,7 @@ fun NavGraphBuilder.profileNavGraph(navigationState: NavigationState) {
                 onChangePasswordClicked = {},
                 onChangeAccountClicked = {
                     viewModel.reduce(SettingsIntent.Exit)
+                    onExitToAuthorization()
                 },
                 onDeleteAccountClicked = {},
                 onBackPressed = {
