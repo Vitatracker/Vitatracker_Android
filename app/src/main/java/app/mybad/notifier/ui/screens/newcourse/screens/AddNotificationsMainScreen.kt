@@ -20,17 +20,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.RemoveCircleOutline
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,19 +46,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.theme.R
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
-import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
+import app.mybad.theme.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun AddNotificationsMainScreen(
@@ -78,9 +69,9 @@ fun AddNotificationsMainScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { TitleText(textStringRes = R.string.add_notifications_choose_time) },
-                navigationIcon = { NavigateBackIconButton(onBackPressed) }
+            TopAppBarWithBackAction(
+                titleResId = R.string.add_notifications_choose_time,
+                onBackPressed = onBackPressed
             )
         }
     ) { paddingValues ->

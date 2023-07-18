@@ -22,13 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.PersonalDomainModel
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
-import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.screens.settings.SettingsIntent
 import app.mybad.notifier.ui.screens.settings.common.UserImage
 import app.mybad.theme.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun SettingsProfile(
@@ -45,9 +43,9 @@ fun SettingsProfile(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { TitleText(textStringRes = R.string.navigation_settings_profile) },
-                navigationIcon = { NavigateBackIconButton(onBackPressed) }
+            TopAppBarWithBackAction(
+                titleResId = R.string.navigation_settings_profile,
+                onBackPressed = onBackPressed
             )
         }) { paddingValues ->
         Column(

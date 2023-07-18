@@ -1,9 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -15,16 +12,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.*
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
-import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicineSecondScreen(
     med: MedDomainModel,
@@ -33,9 +27,9 @@ fun AddMedicineSecondScreen(
 ) {
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = { TitleText(textStringRes = R.string.add_med_h) },
-            navigationIcon = { NavigateBackIconButton(onBackPressed) }
+        TopAppBarWithBackAction(
+            titleResId = R.string.add_med_h,
+            onBackPressed = onBackPressed
         )
     }) { paddingValues ->
         Column(

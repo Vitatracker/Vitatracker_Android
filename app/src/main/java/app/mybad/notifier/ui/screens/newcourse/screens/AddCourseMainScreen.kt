@@ -15,16 +15,11 @@ import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,21 +34,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.theme.R
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
-import app.mybad.notifier.ui.screens.reuse.TitleText
-import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.toDateFullDisplay
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toLocalDateTime
+import app.mybad.theme.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -72,13 +65,9 @@ fun AddCourseMainScreen(
 
     BottomSheetScaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    TitleText(textStringRes = R.string.add_course_h)
-                },
-                navigationIcon = { NavigateBackIconButton(onBackPressed) },
-                backgroundColor = MaterialTheme.colorScheme.secondary,
-                elevation = 0.dp
+            TopAppBarWithBackAction(
+                titleResId = R.string.add_course_h,
+                onBackPressed = onBackPressed
             )
         },
         scaffoldState = bottomSheetState,

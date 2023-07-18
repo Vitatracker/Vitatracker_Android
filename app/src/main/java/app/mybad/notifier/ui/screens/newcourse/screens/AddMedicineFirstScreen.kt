@@ -10,19 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,18 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.med.MedDomainModel
-import app.mybad.theme.R
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
-import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicineFirstScreen(
     med: MedDomainModel,
@@ -59,11 +49,9 @@ fun AddMedicineFirstScreen(
     var currentName by rememberSaveable { mutableStateOf(currentMed.name) }
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                TitleText(textStringRes = R.string.add_med_h)
-            },
-            navigationIcon = { NavigateBackIconButton(onBackPressed) }
+        TopAppBarWithBackAction(
+            titleResId = R.string.add_med_h,
+            onBackPressed = onBackPressed
         )
     }) { paddingValues ->
         Column(

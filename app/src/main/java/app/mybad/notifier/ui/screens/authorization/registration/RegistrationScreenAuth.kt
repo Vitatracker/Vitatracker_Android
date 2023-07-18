@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -36,13 +34,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import app.mybad.notifier.ui.screens.reuse.NavigateBackIconButton
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
-import app.mybad.notifier.ui.screens.reuse.TitleText
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.theme.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartMainRegistrationScreen(
     onBackPressed: () -> Unit,
@@ -70,9 +66,9 @@ fun StartMainRegistrationScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { TitleText(R.string.authorization_screen_registration) },
-                navigationIcon = { NavigateBackIconButton(onBackPressed) }
+            TopAppBarWithBackAction(
+                titleResId = R.string.authorization_screen_registration,
+                onBackPressed = onBackPressed
             )
         },
         content = { contentPadding ->
