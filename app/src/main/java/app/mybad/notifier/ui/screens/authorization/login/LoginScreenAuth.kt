@@ -10,34 +10,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.screens.reuse.OutlinedPasswordTextField
 import app.mybad.notifier.ui.screens.reuse.Progress
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.screens.reuse.ReUseOutlinedTextField
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.theme.R
@@ -136,23 +125,11 @@ private fun MainLoginScreen(
 
 @Composable
 private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit, errorTextId: Int?) {
-    OutlinedTextField(
+    ReUseOutlinedTextField(
         value = login,
-        onValueChange = { newLogin -> updateLogin(newLogin) },
-        modifier = Modifier.fillMaxWidth(),
-        isError = errorTextId != null,
-        supportingText = {
-            if (errorTextId != null) {
-                Text(text = stringResource(id = errorTextId))
-            }
-        },
-        singleLine = true,
-        trailingIcon = {
-            if (errorTextId != null) {
-                Icon(imageVector = Icons.Default.Error, contentDescription = null)
-            }
-        },
-        label = { Text(text = stringResource(id = R.string.login_email)) },
+        label = stringResource(id = R.string.login_email),
+        onValueChanged = { newLogin -> updateLogin(newLogin) },
+        errorTextId = errorTextId,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = Next
@@ -162,41 +139,11 @@ private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit
 
 @Composable
 private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit, errorTextId: Int?) {
-    val showPassword = remember { mutableStateOf(false) }
-
-    OutlinedTextField(
+    OutlinedPasswordTextField(
         value = password,
-        onValueChange = { newPassword -> updatePassword(newPassword) },
-        modifier = Modifier
-            .fillMaxWidth(),
-        singleLine = true,
-        isError = errorTextId != null,
-        supportingText = {
-            if (errorTextId != null) {
-                Text(text = stringResource(id = errorTextId))
-            }
-        },
-        label = { Text(text = stringResource(id = R.string.login_password)) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = Done
-        ),
-        visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            val (icon, iconColor) = if (showPassword.value) {
-                Pair(Icons.Filled.Visibility, Color.Black)
-            } else {
-                Pair(Icons.Filled.VisibilityOff, Color.Black)
-            }
-
-            IconButton(onClick = { showPassword.value = !showPassword.value }) {
-                Icon(
-                    icon,
-                    contentDescription = "Visibility",
-                    tint = iconColor
-                )
-            }
-        }
+        label = stringResource(id = R.string.login_password),
+        onValueChanged = { newPassword -> updatePassword(newPassword) },
+        errorTextId = errorTextId
     )
 }
 
