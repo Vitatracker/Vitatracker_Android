@@ -8,7 +8,9 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -46,8 +48,11 @@ fun ReUseOutlinedTextField(
                 Icon(imageVector = Icons.Default.Error, contentDescription = null)
             }
         },
-        label = { Text(text = label) },
-        keyboardOptions = keyboardOptions
+        placeholder = { Text(text = label) },
+        keyboardOptions = keyboardOptions,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
 
@@ -67,7 +72,7 @@ fun OutlinedPasswordTextField(value: String = "", label: String = "", onValueCha
                 Text(text = stringResource(id = errorTextId))
             }
         },
-        label = { Text(text = label) },
+        placeholder = { Text(text = label) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
@@ -87,6 +92,9 @@ fun OutlinedPasswordTextField(value: String = "", label: String = "", onValueCha
                     tint = iconColor
                 )
             }
-        }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
