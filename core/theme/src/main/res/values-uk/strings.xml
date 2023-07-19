@@ -173,4 +173,6 @@
     <string name="action_confirm">Підтвердити</string>
     <string name="password_recovery">Відновлення пароля</string>
     <string name="password_recovery_enter_mail">Please enter your Email address to send password recovery information</string>
+    <string name="incorrect_email">Email format is invalid</string>
+    <string name="incorrect_password">Password format is invalid</string>
 </resources>

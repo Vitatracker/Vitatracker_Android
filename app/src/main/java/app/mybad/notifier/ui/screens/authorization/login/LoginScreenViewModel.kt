@@ -12,6 +12,7 @@ import app.mybad.network.models.response.Authorization
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
+import app.mybad.theme.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,8 +29,9 @@ class LoginScreenViewModel @Inject constructor(
         return LoginScreenContract.State(
             email = "",
             password = "",
-            isLoggingByEmail = false,
-            isLoggingByGoogle = false,
+            loginErrorResID = null,
+            passwordErrorResID = null,
+            isLoading = false,
             isError = false
         )
     }
@@ -40,8 +42,8 @@ class LoginScreenViewModel @Inject constructor(
             LoginScreenContract.Event.ForgotPassword -> setEffect { LoginScreenContract.Effect.Navigation.ToForgotPassword }
             is LoginScreenContract.Event.LoginWithEmail -> signIn(login = event.email, password = event.password)
             LoginScreenContract.Event.LoginWithGoogle -> signInWithGoogle()
-            is LoginScreenContract.Event.UpdateLogin -> setState { copy(email = event.newLogin) }
-            is LoginScreenContract.Event.UpdatePassword -> setState { copy(password = event.newPassword) }
+            is LoginScreenContract.Event.UpdateLogin -> setState { copy(email = event.newLogin, loginErrorResID = null) }
+            is LoginScreenContract.Event.UpdatePassword -> setState { copy(password = event.newPassword, passwordErrorResID = null) }
         }
     }
 
@@ -55,10 +57,17 @@ class LoginScreenViewModel @Inject constructor(
                     "AuthorizationScreenViewModel::logIn: Error: email or password is not valid!"
                 )
 //                _event.send(LoginScreenEvents.InvalidCredentials)
-                setState { copy(isError = true, isLoggingByEmail = false) }
+                setState {
+                    copy(
+                        isError = true,
+                        isLoading = false,
+                        loginErrorResID = if (!login.isValidEmail()) R.string.incorrect_email else null,
+                        passwordErrorResID = if (!password.isValidPassword()) R.string.incorrect_password else null
+                    )
+                }
                 return@launch
             }
-            setState { copy(isError = false, isLoggingByEmail = true) }
+            setState { copy(isError = false, isLoading = true, loginErrorResID = null, passwordErrorResID = null) }
             when (
                 val result = loginWithEmailUseCase(login = login, password = password)
             ) {
@@ -71,23 +80,21 @@ class LoginScreenViewModel @Inject constructor(
                     val tokens = result.data as Authorization
                     AuthToken.userId = userId
                     dataStoreUseCase.updateAll(tokens.token, tokens.refreshToken, userId, login)
-                    setState { copy(isError = false, isLoggingByEmail = false) }
+                    setState { copy(isError = false, isLoading = false, loginErrorResID = null, passwordErrorResID = null) }
                     setEffect { LoginScreenContract.Effect.Navigation.ToMain }
                 }
 
                 is ApiResult.ApiError -> {
-                    setState { copy(isError = true, isLoggingByEmail = false) }
-//                    _uiEvent.emit("${result.code} ${result.message}")
+                    setState { copy(isError = true, isLoading = false, loginErrorResID = null, passwordErrorResID = null) }
                 }
 
                 is ApiResult.ApiException -> {
-                    setState { copy(isError = true, isLoggingByEmail = false) }
-//                    _uiEvent.emit("${result.e}")
+                    setState { copy(isError = true, isLoading = false, loginErrorResID = null, passwordErrorResID = null) }
                 }
             }
         }
     }
 
-    fun signInWithGoogle() {
+    private fun signInWithGoogle() {
     }
 }

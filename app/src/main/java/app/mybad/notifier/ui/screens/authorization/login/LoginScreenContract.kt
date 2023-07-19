@@ -18,8 +18,9 @@ class LoginScreenContract {
     data class State(
         val email: String,
         val password: String,
-        val isLoggingByEmail: Boolean,
-        val isLoggingByGoogle: Boolean,
+        val loginErrorResID: Int?,
+        val passwordErrorResID: Int?,
+        val isLoading: Boolean,
         val isError: Boolean,
     ) : ViewState
 

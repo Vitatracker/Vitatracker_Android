@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.FabPosition
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.screens.reuse.Progress
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.SignInWithGoogle
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
@@ -83,17 +85,12 @@ fun StartMainLoginScreen(
                     .padding(contentPadding)
             ) {
                 MainLoginScreen(
-                    onForgotPasswordClicked = { onEventSent(LoginScreenContract.Event.ForgotPassword) },
-                    onSignInClicked = { email, password ->
-                        onEventSent(LoginScreenContract.Event.LoginWithEmail(email, password))
-                    },
-                    onSignInWithGoogleClicked = { onEventSent(LoginScreenContract.Event.LoginWithGoogle) },
-                    login = state.email,
-                    updateLogin = { onEventSent(LoginScreenContract.Event.UpdateLogin(it)) },
-                    password = state.password,
-                    updatePassword = { onEventSent(LoginScreenContract.Event.UpdatePassword(it)) },
-                    isLoggingByEmail = state.isLoggingByEmail
+                    onEvent = { onEventSent(it) },
+                    state = state
                 )
+                if (state.isLoading) {
+                    Progress()
+                }
             }
         }
     )
@@ -101,14 +98,8 @@ fun StartMainLoginScreen(
 
 @Composable
 private fun MainLoginScreen(
-    onForgotPasswordClicked: () -> Unit,
-    onSignInClicked: (String, String) -> Unit,
-    onSignInWithGoogleClicked: () -> Unit,
-    login: String,
-    password: String,
-    updateLogin: (String) -> Unit,
-    updatePassword: (String) -> Unit,
-    isLoggingByEmail: Boolean
+    onEvent: (LoginScreenContract.Event) -> Unit,
+    state: LoginScreenContract.State
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -119,33 +110,48 @@ private fun MainLoginScreen(
                 .padding(PaddingValues(start = 16.dp, end = 16.dp))
                 .fillMaxWidth()
         ) {
-            LoginScreenEnteredEmail(login = login, updateLogin = updateLogin)
+            LoginScreenEnteredEmail(
+                login = state.email,
+                updateLogin = { onEvent(LoginScreenContract.Event.UpdateLogin(it)) },
+                errorTextId = state.loginErrorResID
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            LoginScreenEnteredPassword(password = password, updatePassword = updatePassword)
+            LoginScreenEnteredPassword(
+                password = state.password,
+                updatePassword = { onEvent(LoginScreenContract.Event.UpdatePassword(it)) },
+                errorTextId = state.passwordErrorResID
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            LoginScreenForgotPassword(onForgotPasswordClicked)
+            LoginScreenForgotPassword { onEvent(LoginScreenContract.Event.ForgotPassword) }
             Spacer(modifier = Modifier.height(32.dp))
             ReUseFilledButton(
                 textId = R.string.sign_in,
-                onClick = {
-                    onSignInClicked(login, password)
-                },
-                isLoading = isLoggingByEmail
+                onClick = { onEvent(LoginScreenContract.Event.LoginWithEmail(state.email, state.password)) }
             )
             Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle(onClick = onSignInWithGoogleClicked)
+            SignInWithGoogle { onEvent(LoginScreenContract.Event.LoginWithGoogle) }
         }
     }
 }
 
 @Composable
-private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit) {
+private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit, errorTextId: Int?) {
     OutlinedTextField(
         value = login,
         onValueChange = { newLogin -> updateLogin(newLogin) },
         modifier = Modifier.fillMaxWidth(),
-        enabled = true,
+        isError = errorTextId != null,
+        supportingText = {
+            if (errorTextId != null) {
+                Text(text = stringResource(id = errorTextId))
+            }
+        },
         singleLine = true,
+        trailingIcon = {
+            if (errorTextId != null) {
+                Icon(imageVector = Icons.Default.Error, contentDescription = null)
+            }
+        },
         label = { Text(text = stringResource(id = R.string.login_email)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
@@ -155,7 +161,7 @@ private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit
 }
 
 @Composable
-private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit) {
+private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit, errorTextId: Int?) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
@@ -163,8 +169,13 @@ private fun LoginScreenEnteredPassword(password: String, updatePassword: (String
         onValueChange = { newPassword -> updatePassword(newPassword) },
         modifier = Modifier
             .fillMaxWidth(),
-        enabled = true,
         singleLine = true,
+        isError = errorTextId != null,
+        supportingText = {
+            if (errorTextId != null) {
+                Text(text = stringResource(id = errorTextId))
+            }
+        },
         label = { Text(text = stringResource(id = R.string.login_password)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
