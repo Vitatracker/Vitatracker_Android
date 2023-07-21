@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
 data class UsageModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = UsageContract.Columns.ID)
-    val id: Long = 0,
+    var id: Long = 0,
     @ColumnInfo(name = UsageContract.Columns.IDN)
     val idn: Long = 0,
 

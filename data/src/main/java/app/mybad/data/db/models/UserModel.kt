@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
 data class UserModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = UserContract.Columns.ID)
-    val id: Long = 0,
+    var id: Long = 0,
     @ColumnInfo(name = UserContract.Columns.IDN)
     val idn: String = "",
     @ColumnInfo(name = UserContract.Columns.AVATAR)

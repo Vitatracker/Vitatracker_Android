@@ -1,8 +1,11 @@
 package app.mybad.notifier
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
+import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.usecases.courses.GetCoursesUseCase
@@ -15,6 +18,7 @@ import app.mybad.domain.usecases.user.UpdateUserRulesUseCase
 import app.mybad.theme.utils.getCurrentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
@@ -22,6 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getCoursesUseCase: GetCoursesUseCase,
     private val takeUserAuthTokenUseCase: TakeUserAuthTokenUseCase,
     private val clearUserAuthTokenUseCase: ClearUserAuthTokenUseCase,
@@ -35,9 +40,13 @@ class MainActivityViewModel @Inject constructor(
         if (it.value) readData()
     }
 
+    // worker синхронизации данных
+    private val workSync = WorkManager.getInstance(context)
+
     init {
         Log.w("VTTAG", "MainActivityViewModel::init: app start")
         readToken()
+        workSync.start()
     }
 
     private fun readToken() {

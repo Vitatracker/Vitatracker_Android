@@ -40,6 +40,7 @@ fun UserModel.mapToDomain() = UserDomainModel(
     updateLocalDate = updateLocalDate
 )
 
+@JvmName("listUrmToDomain")
 fun List<UserModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 fun CourseModel.mapToDomain() = CourseDomainModel(
@@ -70,7 +71,7 @@ fun CourseModel.mapToDomain() = CourseDomainModel(
     updateLocalDate = updateLocalDate,
 )
 
-@JvmName("listCdmToDomain")
+@JvmName("listCmToDomain")
 fun List<CourseModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 fun CourseDomainModel.mapToData() = CourseModel(
@@ -128,7 +129,7 @@ fun RemedyModel.mapToDomain() = RemedyDomainModel(
     updateLocalDate = updateLocalDate,
 )
 
-@JvmName("listMdmToDomain")
+@JvmName("listRmToDomain")
 fun List<RemedyModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 fun RemedyDomainModel.mapToData() = RemedyModel(
@@ -182,7 +183,7 @@ fun UsageModel.mapToDomain() = UsageDomainModel(
     updateLocalDate = updateLocalDate,
 )
 
-@JvmName("listUcdmToDomain")
+@JvmName("listUmToDomain")
 fun List<UsageModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 fun UsageDomainModel.mapToData() = UsageModel(
@@ -209,10 +210,9 @@ fun UsageDomainModel.mapToData() = UsageModel(
     updateLocalDate = updateLocalDate,
 )
 
-@JvmName("ucdm_toData")
+@JvmName("listUdmToData")
 fun List<UsageDomainModel>.mapToData() = this.map { it.mapToData() }
 
-@JvmName("Settings_toDomain")
 fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     name = name,
     age = age,

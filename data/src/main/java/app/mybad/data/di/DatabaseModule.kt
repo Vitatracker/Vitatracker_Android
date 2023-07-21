@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import app.mybad.data.db.MedDb
 import app.mybad.data.db.MedDbImpl
+import app.mybad.data.db.dao.CourseDao
+import app.mybad.data.db.dao.RemedyDao
+import app.mybad.data.db.dao.UsageDao
+import app.mybad.data.db.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,17 +31,17 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideMedDao(db: MedDb) = db.getRemedyDao()
+    fun provideUsersDao(db: MedDb): UserDao = db.getUserDao()
 
     @Provides
     @Singleton
-    fun provideUsersDao(db: MedDb) = db.getUserDao()
+    fun provideMedDao(db: MedDb): RemedyDao = db.getRemedyDao()
 
     @Provides
     @Singleton
-    fun provideCourseDao(db: MedDb) = db.getCourseDao()
+    fun provideCourseDao(db: MedDb): CourseDao = db.getCourseDao()
 
     @Provides
     @Singleton
-    fun provideUsageDao(db: MedDb) = db.getUsageDao()
+    fun provideUsageDao(db: MedDb): UsageDao = db.getUsageDao()
 }

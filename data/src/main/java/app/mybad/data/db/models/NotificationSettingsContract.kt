@@ -4,6 +4,7 @@ object NotificationSettingsContract {
     const val TABLE_NAME = "notification_settings" //
 
     object Columns {
+        const val ID = "id" //
         const val USER_ID = "user_id" //
         const val IS_ENABLED = "is_enabled" //
         const val IS_FLOAT = "is_float" //

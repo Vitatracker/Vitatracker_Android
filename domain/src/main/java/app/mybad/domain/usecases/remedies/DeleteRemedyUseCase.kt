@@ -7,9 +7,9 @@ class DeleteRemedyUseCase @Inject constructor(
     private val repository: CourseNetworkRepository
 ) {
 
-    suspend operator fun invoke(medId: Long) {
+    suspend operator fun invoke(remedyId: Long) {
         TODO("написать код")
-//        repository.deleteMed(medId)
+//        repository.deleteMed(remedyId)
     }
 
 }

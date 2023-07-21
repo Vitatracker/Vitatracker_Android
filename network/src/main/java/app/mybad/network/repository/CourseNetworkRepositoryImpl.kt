@@ -1,15 +1,51 @@
 package app.mybad.network.repository
 
+import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.repository.network.CourseNetworkRepository
 import app.mybad.network.api.CourseApi
+import app.mybad.network.models.mapToDomain
+import app.mybad.network.models.mapToNet
+import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.toEpochSecond
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class CourseNetworkRepositoryImpl @Inject constructor(
-    private val coursesApi: CourseApi,
+    private val courseApi: CourseApi,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : CourseNetworkRepository {
+    override suspend fun getCourse(courseId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            courseApi.getCourse(courseId).mapToDomain()
+        }
+    }
+
+    override suspend fun getCoursesByRemedyId(remedyId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            courseApi.getCoursesByRemedyId(remedyId).mapToDomain()
+        }
+    }
+
+    override suspend fun updateCourse(course: CourseDomainModel) = withContext(dispatcher) {
+        Result.runCatching {
+            var net = course.mapToNet()
+            net = if (net.id < 0) courseApi.addCourse(net)
+            else courseApi.updateCourse(net)
+            course.copy(
+                idn = net.id,
+                userIdn = net.userId ?: "",
+                updateNetworkDate = getCurrentDateTime().toEpochSecond(),
+            )
+        }
+    }
+
+    override suspend fun deleteCourse(courseId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            courseApi.deleteCourse(courseId).isSuccessful
+        }
+    }
 
 }
 /*

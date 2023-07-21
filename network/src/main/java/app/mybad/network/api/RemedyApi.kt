@@ -11,18 +11,18 @@ import retrofit2.http.Path
 
 interface RemedyApi {
     @GET("api/remedies")
-    fun getRemedies(): List<RemedyNetworkModel>
+    suspend fun getRemedies(): List<RemedyNetworkModel>
 
     @GET("api/remedies/{id}")
-    fun getRemedy(@Path("id") remedyId: Long): RemedyNetworkModel
+    suspend fun getRemedy(@Path("id") remedyId: Long): RemedyNetworkModel
 
     @POST("api/remedies")
-    fun addRemedy(@Body remedy: RemedyNetworkModel): Response<Unit>
+    suspend fun addRemedy(@Body remedy: RemedyNetworkModel): RemedyNetworkModel
 
     @PUT("api/remedies")
-    fun updateRemedy(@Body remedy: RemedyNetworkModel): Response<Unit>
+    suspend fun updateRemedy(@Body remedy: RemedyNetworkModel): RemedyNetworkModel
 
     @DELETE("api/remedies/{id}")
-    fun deleteRemedy(@Path("id") remedyId: Long): Response<Unit>
+    suspend fun deleteRemedy(@Path("id") remedyId: Long): Response<Unit>
 
 }

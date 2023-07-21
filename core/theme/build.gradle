@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk 26
+        targetSdk 34
 
         testInstrumentationRunner "app.mybad.data.test.HiltTestRunner"
 //        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

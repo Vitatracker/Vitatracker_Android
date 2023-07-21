@@ -23,7 +23,7 @@ data class RemedyModel(
     @ColumnInfo(name = RemedyContract.Columns.ID)
     var id: Long = 0,
     @ColumnInfo(name = RemedyContract.Columns.IDN)
-    var idn: Long = 0,
+    val idn: Long = 0,
 
     @ColumnInfo(name = RemedyContract.Columns.CREATION_DATE)
     val creationDate: Long = 0,

@@ -5,8 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStoreFile
-import app.mybad.data.*
-import app.mybad.data.datastore.serialize.*
+import app.mybad.data.datastore.serialize.UserNotificationDataModelSerializer
+import app.mybad.data.datastore.serialize.UserPersonalDataModelSerializer
+import app.mybad.data.datastore.serialize.UserRulesDataModelSerializer
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel

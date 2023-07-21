@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id("com.google.dagger.hilt.android")
+    id 'com.google.dagger.hilt.android'
     id 'kotlin-kapt'
     id 'io.gitlab.arturbosch.detekt'
 }
@@ -52,8 +52,12 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
 
     //Hilt
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // Date Time
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
     //JWT
     api 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'

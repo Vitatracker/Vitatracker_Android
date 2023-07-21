@@ -61,10 +61,17 @@ interface UsageDao {
 
     @Query(
         "delete from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.ID
+        } = :usageId"
+    )
+    suspend fun deleteUsagesById(usageId: Long)
+
+    @Query(
+        "delete from ${UsageContract.TABLE_NAME} where ${
             UsageContract.Columns.COURSE_ID
         } = :courseId"
     )
-    suspend fun deleteUsagesById(courseId: Long)
+    suspend fun deleteUsagesByCourseId(courseId: Long)
 
     @Query(
         "delete from ${UsageContract.TABLE_NAME} where ${

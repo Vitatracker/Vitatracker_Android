@@ -23,7 +23,7 @@ data class CourseModel(
     @ColumnInfo(name = CourseContract.Columns.ID)
     var id: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.IDN)
-    var idn: Long = 0,
+    val idn: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.CREATION_DATE)
     val createdDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.UPDATE_DATE)

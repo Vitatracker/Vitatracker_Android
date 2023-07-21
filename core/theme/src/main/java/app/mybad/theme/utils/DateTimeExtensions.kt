@@ -69,6 +69,13 @@ fun LocalDateTime.toDayDisplay(): String = this.toInstant(TimeZone.UTC).formatDa
 
 fun Instant.formatDay(): String = dayDisplayFormatter.format(this.toJavaInstant())
 
+private val dateTimeIsoDisplayFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+
+fun Long.toDateTimeIsoDisplay(): String = Instant.fromEpochSeconds(this).formatDateTimeIso()
+
+fun Instant.formatDateTimeIso(): String = dateTimeIsoDisplayFormatter.format(this.toJavaInstant())
+
+// названия месяцев и дней
 fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
     TextStyle.SHORT_STANDALONE,
     Locale.getDefault()
@@ -268,3 +275,5 @@ val Int.isLeapYear
     }
 
 fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)
+
+fun String.toLocalDateTime() = Instant.parse(this).toLocalDateTime(TimeZone.UTC)

@@ -17,6 +17,9 @@ interface CourseDao {
     @Query("select * from ${CourseContract.TABLE_NAME} where ${CourseContract.Columns.USER_ID} = :userId")
     suspend fun getCoursesByUserId(userId: Long): List<CourseModel>
 
+    @Query("select * from ${CourseContract.TABLE_NAME} where ${CourseContract.Columns.REMEDY_ID} = :remedyId")
+    suspend fun getCoursesByRemedyId(remedyId: Long): List<CourseModel>
+
     @Query("select * from ${CourseContract.TABLE_NAME} where ${CourseContract.Columns.ID} = :courseId limit 1")
     suspend fun getCourseById(courseId: Long): CourseModel
 

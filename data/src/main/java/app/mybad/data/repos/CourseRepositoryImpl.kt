@@ -27,6 +27,12 @@ class CourseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCoursesByRemedyId(remedyId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.getCoursesByRemedyId(remedyId).mapToDomain()
+        }
+    }
+
     override suspend fun getCourseById(courseId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.getCourseById(courseId).mapToDomain()

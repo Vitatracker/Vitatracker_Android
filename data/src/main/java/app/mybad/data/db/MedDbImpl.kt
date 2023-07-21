@@ -3,6 +3,7 @@ package app.mybad.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import app.mybad.data.db.dao.CourseDao
+import app.mybad.data.db.dao.NotificationSettingsDao
 import app.mybad.data.db.dao.RemedyDao
 import app.mybad.data.db.dao.UsageDao
 import app.mybad.data.db.dao.UserDao
@@ -29,6 +30,7 @@ abstract class MedDbImpl : RoomDatabase(), MedDb {
     abstract override fun getRemedyDao(): RemedyDao
     abstract override fun getCourseDao(): CourseDao
     abstract override fun getUsageDao(): UsageDao
+    abstract override fun getNotificationSettingsDao(): NotificationSettingsDao
 
     companion object {
         const val DB_VERSION = 1

@@ -11,6 +11,9 @@ import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
+import app.mybad.theme.utils.toDateTimeIsoDisplay
+import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.toLocalDateTime
 
 fun UserDomainModel.mapToNet() = UserNetworkModel(
     id = idn,
@@ -86,13 +89,14 @@ fun CourseDomainModel.mapToNet() = CourseNetworkModel(
     notUsed = notUsed,
 )
 
-fun List<CourseNetworkModel>.mapToDomain() = this.map { it.mapToDomain() }
+@JvmName("listCnmToDomain")
+fun List<CourseNetworkModel>.mapToDomain(): List<CourseDomainModel> = this.map { it.mapToDomain() }
 
 fun RemedyNetworkModel.mapToDomain() = RemedyDomainModel(
     idn = id,
 
-    createdDate = createdDate ?: 0,
-    updatedDate = updatedDate ?: 0,
+    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
+    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
     userIdn = userId ?: "",
 
@@ -109,11 +113,11 @@ fun RemedyNetworkModel.mapToDomain() = RemedyDomainModel(
     notUsed = notUsed,
 )
 
-fun RemedyDomainModel.mapToDomain() = RemedyNetworkModel(
+fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
     id = idn,
 
-    createdDate = createdDate,
-    updatedDate = updatedDate,
+    createdDate = createdDate.toDateTimeIsoDisplay(),
+    updatedDate = updatedDate.toDateTimeIsoDisplay(),
 
     userId = userIdn,
 
@@ -129,6 +133,9 @@ fun RemedyDomainModel.mapToDomain() = RemedyNetworkModel(
     beforeFood = beforeFood,
     notUsed = notUsed,
 )
+
+@JvmName("listRnmToDomain")
+fun List<RemedyNetworkModel>.mapToDomain(): List<RemedyDomainModel> = this.map { it.mapToDomain() }
 
 fun UsageNetworkModel.mapToDomain() = UsageDomainModel(
     idn = id,
@@ -165,6 +172,9 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 
     notUsed = notUsed,
 )
+
+@JvmName("listUnmToDomain")
+fun List<UsageNetworkModel>.mapToDomain(): List<UsageDomainModel> = this.map { it.mapToDomain() }
 
 fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
     token = token,

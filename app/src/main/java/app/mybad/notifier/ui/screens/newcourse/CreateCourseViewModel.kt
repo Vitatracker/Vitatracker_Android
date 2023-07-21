@@ -1,8 +1,11 @@
 package app.mybad.notifier.ui.screens.newcourse
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
+import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
@@ -16,6 +19,7 @@ import app.mybad.theme.utils.atStartOfDay
 import app.mybad.theme.utils.getCurrentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,6 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCourseViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val createRemedyUseCase: CreateRemedyUseCase,
     private val createCourseUseCase: CreateCourseUseCase,
     private val createUsageUseCase: CreateUsageUseCase,
@@ -32,6 +37,9 @@ class CreateCourseViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(newState())
     val state = _state.asStateFlow()
+
+    // worker синхронизации данных
+    private val workSync = WorkManager.getInstance(context)
 
     fun reduce(intent: NewCourseIntent) {
         Log.w("VTTAG", "CreateCourseViewModel::reduce: in")
@@ -51,7 +59,10 @@ class CreateCourseViewModel @Inject constructor(
                     )
                     // записать remedy и получить remedyId
                     createRemedyUseCase(_state.value.remedy).getOrNull()?.let { remedyId ->
-                        Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId")
+                        Log.w(
+                            "VTTAG",
+                            "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId"
+                        )
                         _state.update {
                             it.copy(
                                 remedy = _state.value.remedy.copy(id = remedyId),
@@ -60,7 +71,10 @@ class CreateCourseViewModel @Inject constructor(
                         }
                         // записать course и получить remedyId
                         createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
-                            Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: courseId=$courseId")
+                            Log.w(
+                                "VTTAG",
+                                "CreateCourseViewModel::createCourseUseCase: courseId=$courseId"
+                            )
                             _state.update {
                                 it.copy(
                                     course = _state.value.course.copy(id = courseId),
@@ -74,6 +88,8 @@ class CreateCourseViewModel @Inject constructor(
                                 course = _state.value.course,
                                 usages = _state.value.usages,
                             )
+                            // синхронизировать
+                            workSync.start()
                         } ?: {
                             Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: error")
                         }
@@ -104,8 +120,11 @@ class CreateCourseViewModel @Inject constructor(
                             } userId=${_state.value.remedy.userId}"
                         )
                         // записать remedy и получить remedyId
-                        createRemedyUseCase(_state.value.remedy).getOrNull()?.let {remedyId->
-                            Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId")
+                        createRemedyUseCase(_state.value.remedy).getOrNull()?.let { remedyId ->
+                            Log.w(
+                                "VTTAG",
+                                "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId"
+                            )
                             _state.update {
                                 it.copy(
                                     remedy = _state.value.remedy.copy(id = remedyId),
@@ -114,7 +133,10 @@ class CreateCourseViewModel @Inject constructor(
                             }
                             // записать course и получить courseId
                             createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
-                                Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: courseId=$courseId")
+                                Log.w(
+                                    "VTTAG",
+                                    "CreateCourseViewModel::createCourseUseCase: courseId=$courseId"
+                                )
                                 _state.update {
                                     it.copy(
                                         course = _state.value.course.copy(id = courseId),
@@ -129,7 +151,10 @@ class CreateCourseViewModel @Inject constructor(
                                     regime = _state.value.course.regime
                                 )
                                 createUsageUseCase(usages)
-                                Log.w("VTTAG", "CreateCourseViewModel::createUsageUseCase: usages=${usages.size}")
+                                Log.w(
+                                    "VTTAG",
+                                    "CreateCourseViewModel::createUsageUseCase: usages=${usages.size}"
+                                )
                                 _state.update {
                                     it.copy(
                                         remedy = _state.value.remedy,
@@ -157,6 +182,8 @@ class CreateCourseViewModel @Inject constructor(
                             )
                             //TODO("запустить воркер обновления на беке")
                             _state.emit(newState())
+                            // синхронизировать
+                            workSync.start()
                         }
                     }
                 }

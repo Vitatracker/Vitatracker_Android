@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyBAD" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.MyBAD" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 
     <style name="Theme.AppSplashScreen" parent="Theme.SplashScreen">
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/splash_screen_icon_background</item>

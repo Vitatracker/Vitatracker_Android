@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
     id "com.google.protobuf" version '0.9.1'
-    id 'org.jetbrains.kotlin.kapt'
+    id 'kotlin-kapt'
     id 'io.gitlab.arturbosch.detekt'
 }
 
@@ -63,10 +63,9 @@ dependencies {
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.test:runner:1.5.2"
-    implementation "androidx.hilt:hilt-work:1.0.0"
     testImplementation project(path: ':app')
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-    
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
     //RoomDB
     implementation "androidx.room:room-ktx:$room"
     implementation "androidx.room:room-runtime:$room"
@@ -89,6 +88,8 @@ dependencies {
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.8.1"
+    implementation "androidx.hilt:hilt-work:1.0.0"
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //    local unit test
     implementation "androidx.arch.core:core-testing:2.2.0"

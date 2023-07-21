@@ -44,10 +44,19 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUsagesById(courseId: Long) {
+    override suspend fun deleteUsagesById(usageId: Long) {
         withContext(dispatcher) {
             try {
-                db.deleteUsagesById(courseId)
+                db.deleteUsagesById(usageId)
+            } catch (ignore: Throwable) {
+            }
+        }
+    }
+
+    override suspend fun deleteUsagesByCourseId(courseId: Long) {
+        withContext(dispatcher) {
+            try {
+                db.deleteUsagesByCourseId(courseId)
             } catch (ignore: Throwable) {
             }
         }
@@ -85,6 +94,10 @@ class UsageRepositoryImpl @Inject constructor(
                 Log.w("VTTAG", "UsageRepositoryImpl::insertUsages: error=${ignore.localizedMessage}")
             }
         }
+    }
+
+    override suspend fun updateUsage(usage: UsageDomainModel) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long) {

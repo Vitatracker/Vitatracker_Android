@@ -9,8 +9,10 @@ import androidx.room.PrimaryKey
 )
 data class NotificationSettingsModel(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = NotificationSettingsContract.Columns.ID)
+    var id: Long = 0L,
     @ColumnInfo(name = NotificationSettingsContract.Columns.USER_ID)
-    val userId: Long = 0,
+    val userId: Long = 0L,
     @ColumnInfo(name = NotificationSettingsContract.Columns.IS_ENABLED)
     val isEnabled: Boolean = false,
     @ColumnInfo(name = NotificationSettingsContract.Columns.IS_FLOAT)
@@ -21,7 +23,7 @@ data class NotificationSettingsModel(
     val isNextCourseStart: Boolean = false,
 
     @ColumnInfo(name = NotificationSettingsContract.Columns.UPDATED_NETWORK_DATE)
-    val updateNetworkDate: Long = 0,
+    val updateNetworkDate: Long = 0L,
     @ColumnInfo(name = NotificationSettingsContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0,
+    val updateLocalDate: Long = 0L,
 )

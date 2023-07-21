@@ -12,17 +12,20 @@ import retrofit2.http.Path
 interface UsageApi {
 
     @GET("api/usages")
-    fun getUsages(): List<UsageNetworkModel>
+    suspend fun getUsages(): List<UsageNetworkModel>
+
+    @GET("api/courses/{id}/usages")
+    suspend fun getUsagesByCourseId(@Path("id") courseId: Long): List<UsageNetworkModel>
 
     @GET("api/usages/{id}")
-    fun getUsage(@Path("id") usageId: Long): UsageNetworkModel
+    suspend fun getUsage(@Path("id") usageId: Long): UsageNetworkModel
 
     @POST("api/usages")
-    fun addUsage(@Body usage: UsageNetworkModel): Response<Unit>
+    suspend fun addUsage(@Body usage: UsageNetworkModel): UsageNetworkModel
 
     @PUT("api/usages")
-    fun updateUsage(@Body usage: UsageNetworkModel): Response<Unit>
+    suspend fun updateUsage(@Body usage: UsageNetworkModel): UsageNetworkModel
 
     @DELETE("api/usages/{id}")
-    fun deleteUsage(@Path("id") usageId: Long): Response<Unit>
+    suspend fun deleteUsage(@Path("id") usageId: Long): Response<Unit>
 }

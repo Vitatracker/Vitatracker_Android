@@ -283,6 +283,5 @@ private fun collectUsagesToday(
             "VTTAG",
             "CalendarScreen::collectUsagesToday: date=${date.toDateFullDisplay()} usages=${it.size}"
         )
-
     }
 }

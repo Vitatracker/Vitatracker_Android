@@ -12,18 +12,21 @@ import retrofit2.http.Path
 interface CourseApi {
 
     @GET("api/courses")
-    fun getCourses(): List<CourseNetworkModel>
+    suspend fun getCourses(): List<CourseNetworkModel>
+
+    @GET("api/remedies/{id}/courses")
+    suspend fun getCoursesByRemedyId(@Path("id") remedyId: Long): List<CourseNetworkModel>
 
     @GET("api/courses/{id}")
-    fun getCourse(@Path("id") courseId: Long): CourseNetworkModel
+    suspend fun getCourse(@Path("id") courseId: Long): CourseNetworkModel
 
     @POST("api/courses")
-    fun addCourse(@Body course: CourseNetworkModel): Response<Unit>
+    suspend fun addCourse(@Body course: CourseNetworkModel): CourseNetworkModel
 
     @PUT("api/courses")
-    fun updateCourse(@Body course: CourseNetworkModel): Response<Unit>
+    suspend fun updateCourse(@Body course: CourseNetworkModel): CourseNetworkModel
 
     @DELETE("api/courses/{id}")
-    fun deleteCourse(@Path("id") courseId: Long): Response<Unit>
+    suspend fun deleteCourse(@Path("id") courseId: Long): Response<Unit>
 
 }
