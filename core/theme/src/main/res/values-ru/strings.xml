@@ -85,8 +85,8 @@
     <string name="login_password">Пароль</string>
     <string name="login_password_confirm">Подверждение пароля</string>
     <string name="login_forgot_password">Забыли пароль?</string>
-    <string name="login_agree_policy_text">Нажимая кнопку "Войти", вы соглашаетесь с </string>
-    <string name="login_text_privacy_policy">Политикой конфиденциальности</string>
+    <string name="login_agree_policy_text">Нажимая кнопку \"Создать аккаунт\", вы соглашаетесь с</string>
+    <string name="login_text_privacy_policy">Пользовательским соглашением и Политикой конфиденциальности</string>
 
     <!--RECOVERY PASSWORD-->
     <string name="recovery_text_1">Не беспокойтесь. Такое случается.</string>
@@ -180,4 +180,6 @@
     <string name="incorrect_email">Некорректный email</string>
     <string name="incorrect_password">Пустой пароль</string>
     <string name="incorrect_credentials">Неверный email или пароль</string>
+    <string name="password_format">Должен содержать от 6 до 16 знаков, включая 1 заглавную и 1 строчную букву, 1 цифру и 1 символ</string>
+    <string name="registration_create_account">Создать аккаунт</string>
 </resources>

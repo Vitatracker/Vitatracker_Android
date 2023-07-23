@@ -51,8 +51,8 @@
     <string name="login_password">Password</string>
     <string name="login_password_confirm">Confirm password</string>
     <string name="login_forgot_password">Forgot your password?</string>
-    <string name="login_agree_policy_text">By clicking the Sign in button, you agree to the </string>
-    <string name="login_text_privacy_policy">Privacy Policy</string>
+    <string name="login_agree_policy_text">By clicking the \"Create account\" button, you agree to the </string>
+    <string name="login_text_privacy_policy">User agreement and Privacy Policy</string>
     <string name="action_confirm">Confirm</string>
     <!--REGISTRATION-->
     <string name="text_continue">Continue</string>
@@ -186,4 +186,7 @@
     <string name="incorrect_email">Email format is invalid</string>
     <string name="incorrect_password">Password is empty</string>
     <string name="incorrect_credentials">Invalid credentials</string>
+    <string name="password_format">Must contain from 6 to 16 characters, incl. 1 uppercase and 1 lowercase letter, 1 number and 1 special character</string>
+    <string name="registration_create_account">Create account</string>
+
 </resources>

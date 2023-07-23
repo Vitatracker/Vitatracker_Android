@@ -43,7 +43,6 @@ fun StartMainLoginScreen(
     LaunchedEffect(key1 = SIDE_EFFECTS_KEY) {
         events?.collect { effect ->
             when (effect) {
-                LoginScreenContract.Effect.LoginSuccessful -> {}
                 is LoginScreenContract.Effect.Navigation.ToForgotPassword -> {
                     onNavigationRequested(LoginScreenContract.Effect.Navigation.ToForgotPassword)
                 }
@@ -116,11 +115,11 @@ private fun MainLoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
             ReUseFilledButton(
                 textId = R.string.sign_in,
-                onClick = { onEvent(LoginScreenContract.Event.LoginWithEmail(state.email, state.password)) },
+                onClick = { onEvent(LoginScreenContract.Event.SignIn(state.email, state.password)) },
                 isEnabled = state.isLoginEnabled
             )
             Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle { onEvent(LoginScreenContract.Event.LoginWithGoogle) }
+            SignInWithGoogle { onEvent(LoginScreenContract.Event.SignInWithGoogle) }
         }
     }
 }

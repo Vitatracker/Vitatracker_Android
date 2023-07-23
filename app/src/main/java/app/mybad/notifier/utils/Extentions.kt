@@ -7,5 +7,5 @@ fun String.isValidEmail(): Boolean {
 }
 
 fun String.isValidPassword(): Boolean {
-    return this.length > 3
+    return Regex("^(?=.{6,16})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&+*!=]).*\$").matches(this)
 }

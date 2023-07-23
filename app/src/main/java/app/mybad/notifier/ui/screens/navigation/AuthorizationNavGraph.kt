@@ -10,6 +10,8 @@ import app.mybad.notifier.ui.screens.authorization.login.LoginScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainNewPasswordScreenAuth
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPasswordScreenAuth
+import app.mybad.notifier.ui.screens.authorization.registration.RegistrationScreenContract
+import app.mybad.notifier.ui.screens.authorization.registration.RegistrationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistrationScreen
 
 fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
@@ -50,13 +52,19 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
             )
         }
         composable(route = AuthorizationScreens.Registration.route) {
+            val viewModel: RegistrationScreenViewModel = hiltViewModel()
             StartMainRegistrationScreen(
-                onBackPressed = {
-                    navigationState.navController.popBackStack()
-                },
-                onRegistrationSuccess = {
-                    navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
-                    navigationState.navigateToMain()
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationAction ->
+                    when (navigationAction) {
+                        RegistrationScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
+                        RegistrationScreenContract.Effect.Navigation.ToMain -> {
+                            navigationState.navController.popBackStack(AuthorizationScreens.ChooseMode.route, true)
+                            navigationState.navigateToMain()
+                        }
+                    }
                 }
             )
         }

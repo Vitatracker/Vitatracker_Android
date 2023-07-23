@@ -12,14 +12,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HyperLinkText(link: String, modifier: Modifier = Modifier) {
+fun HyperLinkText(text: String, link: String = text) {
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline, fontSize = 14.sp)) {
-            append(link)
+            append(text)
         }
     }
     val uriHandler = LocalUriHandler.current
-    ClickableText(text = annotatedString, modifier = modifier, onClick = {
-        uriHandler.openUri(annotatedString.text)
+    ClickableText(text = annotatedString, onClick = {
+        uriHandler.openUri(link)
     })
 }

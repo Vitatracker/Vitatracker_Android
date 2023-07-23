@@ -36,8 +36,8 @@ class LoginScreenViewModel @Inject constructor(
         when (event) {
             LoginScreenContract.Event.ActionBack -> setEffect { LoginScreenContract.Effect.Navigation.Back }
             LoginScreenContract.Event.ForgotPassword -> setEffect { LoginScreenContract.Effect.Navigation.ToForgotPassword }
-            is LoginScreenContract.Event.LoginWithEmail -> signIn(login = event.email, password = event.password)
-            LoginScreenContract.Event.LoginWithGoogle -> signInWithGoogle()
+            is LoginScreenContract.Event.SignIn -> signIn(login = event.email, password = event.password)
+            LoginScreenContract.Event.SignInWithGoogle -> signInWithGoogle()
             is LoginScreenContract.Event.UpdateLogin -> setState {
                 copy(
                     email = event.newLogin,

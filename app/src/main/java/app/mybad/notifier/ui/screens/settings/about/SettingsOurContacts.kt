@@ -2,7 +2,9 @@ package app.mybad.notifier.ui.screens.settings.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,15 +40,17 @@ fun SettingsOurContacts(modifier: Modifier = Modifier) {
             fontSize = 16.sp
         )
         HyperLinkText("https://lnkd.in/eKz_n5Df")
-        HyperLinkText("https://lnkd.in/eaSMTNie", modifier = Modifier.padding(top = 16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        HyperLinkText("https://lnkd.in/eaSMTNie", )
         BaseDivider()
         Text(
             text = stringResource(R.string.settings_contacts_android_team),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
-        HyperLinkText("https://lnkd.in/eGmXzP6b")
-        HyperLinkText("https://lnkd.in/eX4htR79", modifier = Modifier.padding(top = 16.dp))
+        HyperLinkText(text = "https://lnkd.in/eGmXzP6b")
+        Spacer(modifier = Modifier.height(16.dp))
+        HyperLinkText( text = "https://lnkd.in/eX4htR79")
         BaseDivider()
     }
 }
