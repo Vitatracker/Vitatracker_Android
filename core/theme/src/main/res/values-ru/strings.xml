@@ -177,6 +177,7 @@
     <string name="password_recovery">Восстановление пароля</string>
     <string name="password_recovery_enter_mail">Пожалуйста, введите ваш Email для отправки информации по восстановлению пароля</string>
 
-    <string name="incorrect_email">Некорректный формат email</string>
-    <string name="incorrect_password">Некорректный формат пароля</string>
+    <string name="incorrect_email">Некорректный email</string>
+    <string name="incorrect_password">Пустой пароль</string>
+    <string name="incorrect_credentials">Неверный email или пароль</string>
 </resources>

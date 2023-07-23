@@ -3,7 +3,7 @@ package app.mybad.notifier.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryBlue = Color(0xFF10D2D2)
-val primaryContainerBlue = Color(0xFFDDF7FB)
+val primaryContainerBlue = Color(0xFFC3F4F4)
 val secondaryContainerBlue = Color(0xFFF1F7F7)
 val primaryIndication = Color(0xFF203839)
 val cardBackground = Color(0xFFF4FFFF)
@@ -43,6 +43,7 @@ val error30 = Color(0xFF930004)
 val error20 = Color(0xFF690002)
 val error10 = Color(0xFF410001)
 val errorRed = Color(0xFFF23939)
+val errorContainer = Color(0x80F23939)
 
 val neutral99 = Color(0xFFFAFDFC)
 val neutral90 = Color(0xFFE0E3E2)

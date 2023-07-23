@@ -28,6 +28,7 @@ fun ReUseOutlinedTextField(
     value: String = "",
     label: String = "",
     onValueChanged: (String) -> Unit = {},
+    isError: Boolean = false,
     errorTextId: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true
@@ -36,7 +37,7 @@ fun ReUseOutlinedTextField(
         value = value,
         onValueChange = { newValue -> onValueChanged(newValue) },
         modifier = Modifier.fillMaxWidth(),
-        isError = errorTextId != null,
+        isError = isError,
         supportingText = {
             if (errorTextId != null) {
                 Text(text = stringResource(id = errorTextId))
@@ -51,13 +52,20 @@ fun ReUseOutlinedTextField(
         placeholder = { Text(text = label) },
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            errorBorderColor = MaterialTheme.colorScheme.errorContainer
         )
     )
 }
 
 @Composable
-fun OutlinedPasswordTextField(value: String = "", label: String = "", onValueChanged: (String) -> Unit = {}, errorTextId: Int? = null) {
+fun OutlinedPasswordTextField(
+    value: String = "",
+    label: String = "",
+    isError: Boolean = false,
+    onValueChanged: (String) -> Unit = {},
+    errorTextId: Int? = null
+) {
     val showPassword = remember { mutableStateOf(false) }
 
     OutlinedTextField(
@@ -66,7 +74,7 @@ fun OutlinedPasswordTextField(value: String = "", label: String = "", onValueCha
         modifier = Modifier
             .fillMaxWidth(),
         singleLine = true,
-        isError = errorTextId != null,
+        isError = isError,
         supportingText = {
             if (errorTextId != null) {
                 Text(text = stringResource(id = errorTextId))
@@ -94,7 +102,8 @@ fun OutlinedPasswordTextField(value: String = "", label: String = "", onValueCha
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            errorBorderColor = MaterialTheme.colorScheme.errorContainer
         )
     )
 }

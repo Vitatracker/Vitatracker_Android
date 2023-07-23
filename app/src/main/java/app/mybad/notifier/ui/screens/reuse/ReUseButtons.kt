@@ -19,11 +19,12 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.MyBADTheme
 
 @Composable
-fun ReUseFilledButton(textId: Int, onClick: () -> Unit = {}) {
+fun ReUseFilledButton(textId: Int, isEnabled: Boolean = true, onClick: () -> Unit = {}) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
+        enabled = isEnabled,
         onClick = {
             onClick()
         },

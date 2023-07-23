@@ -102,20 +102,22 @@ private fun MainLoginScreen(
             LoginScreenEnteredEmail(
                 login = state.email,
                 updateLogin = { onEvent(LoginScreenContract.Event.UpdateLogin(it)) },
-                errorTextId = state.loginErrorResID
+                isError = state.isError
             )
             Spacer(modifier = Modifier.height(16.dp))
             LoginScreenEnteredPassword(
                 password = state.password,
                 updatePassword = { onEvent(LoginScreenContract.Event.UpdatePassword(it)) },
-                errorTextId = state.passwordErrorResID
+                isError = state.isError,
+                errorTextId = if (state.isError) R.string.incorrect_credentials else null
             )
             Spacer(modifier = Modifier.height(16.dp))
             LoginScreenForgotPassword { onEvent(LoginScreenContract.Event.ForgotPassword) }
             Spacer(modifier = Modifier.height(32.dp))
             ReUseFilledButton(
                 textId = R.string.sign_in,
-                onClick = { onEvent(LoginScreenContract.Event.LoginWithEmail(state.email, state.password)) }
+                onClick = { onEvent(LoginScreenContract.Event.LoginWithEmail(state.email, state.password)) },
+                isEnabled = state.isLoginEnabled
             )
             Spacer(modifier = Modifier.height(32.dp))
             SignInWithGoogle { onEvent(LoginScreenContract.Event.LoginWithGoogle) }
@@ -124,12 +126,12 @@ private fun MainLoginScreen(
 }
 
 @Composable
-private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit, errorTextId: Int?) {
+private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit, isError: Boolean) {
     ReUseOutlinedTextField(
         value = login,
         label = stringResource(id = R.string.login_email),
         onValueChanged = { newLogin -> updateLogin(newLogin) },
-        errorTextId = errorTextId,
+        isError = isError,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = Next
@@ -138,11 +140,12 @@ private fun LoginScreenEnteredEmail(login: String, updateLogin: (String) -> Unit
 }
 
 @Composable
-private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit, errorTextId: Int?) {
+private fun LoginScreenEnteredPassword(password: String, updatePassword: (String) -> Unit, isError: Boolean, errorTextId: Int?) {
     OutlinedPasswordTextField(
         value = password,
         label = stringResource(id = R.string.login_password),
         onValueChanged = { newPassword -> updatePassword(newPassword) },
+        isError = isError,
         errorTextId = errorTextId
     )
 }
