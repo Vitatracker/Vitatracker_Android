@@ -1,15 +1,13 @@
 package app.mybad.notifier.ui.screens.splash
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.DataStoreUseCase
 import app.mybad.domain.usecases.user.GetUsersCountUseCase
+import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,35 +15,37 @@ import javax.inject.Inject
 class SplashScreenViewModel @Inject constructor(
     private val dataStoreUseCase: DataStoreUseCase,
     private val getUsersCountUseCase: GetUsersCountUseCase
-) : ViewModel() {
-
-    private val _effect: Channel<SplashScreenEffect> = Channel()
-    val effect = _effect.receiveAsFlow()
+) : BaseViewModel<SplashScreenContract.Event, SplashScreenContract.State, SplashScreenContract.Effect>() {
 
     init {
         Log.w("VTTAG", "SplashScreenViewModel init")
         viewModelScope.launch(Dispatchers.IO) {
-            dataStoreUseCase.token.collect {
-                Log.w("VTTAG", "SplashScreenViewModel::observeDataStore: token=$it")
-                AuthToken.token = it
-                val usersCount = getUsersCountUseCase.execute()
-                val userAuthorized = it.isNotBlank()
-                if (userAuthorized) {
+            dataStoreUseCase.token.collect { token ->
+                Log.w("VTTAG", "SplashScreenViewModel::observeDataStore: token=$token")
+                AuthToken.token = token
+                if (token.isNotBlank()) {
                     // check token and try to get new
-                    _effect.send(SplashScreenEffect.NavigateToMain)
-                } else if (usersCount == 0) {
-                    _effect.send(SplashScreenEffect.ShowButton)
+                    setEffect { SplashScreenContract.Effect.Navigation.ToMain }
+                } else if (getUsersCountUseCase.execute() == 0) {
+                    viewModelScope.launch(Dispatchers.Main) {
+                        setState { copy(startButtonVisible = true) }
+                    }
                 } else {
-                    _effect.send(SplashScreenEffect.NavigateToAuthorization)
+                    setEffect { SplashScreenContract.Effect.Navigation.ToAuthorization }
                 }
             }
         }
     }
 
-    fun onBeginClicked() {
-        viewModelScope.launch {
-            _effect.send(SplashScreenEffect.NavigateToAuthorization)
-        }
+    override fun setInitialState(): SplashScreenContract.State {
+        return SplashScreenContract.State(startButtonVisible = false)
     }
 
+    override fun handleEvents(event: SplashScreenContract.Event) {
+        when (event) {
+            SplashScreenContract.Event.OnStartClicked -> {
+                setEffect { SplashScreenContract.Effect.Navigation.ToAuthorization }
+            }
+        }
+    }
 }
