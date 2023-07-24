@@ -61,7 +61,7 @@ private fun MainRecoveryPasswordScreenAuth(onContinueClicked: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
         RecoveryPasswordScreenTextEmail()
         Spacer(modifier = Modifier.height(32.dp))
-        ReUseFilledButton(textId = R.string.text_continue) {
+        ReUseFilledButton(textId = R.string.action_recover) {
             onContinueClicked()
         }
     }

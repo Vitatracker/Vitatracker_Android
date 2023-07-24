@@ -103,14 +103,14 @@ private fun MainLoginScreen(
                 updateLogin = { onEvent(LoginScreenContract.Event.UpdateLogin(it)) },
                 isError = state.isError
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             LoginScreenEnteredPassword(
                 password = state.password,
                 updatePassword = { onEvent(LoginScreenContract.Event.UpdatePassword(it)) },
                 isError = state.isError,
                 errorTextId = if (state.isError) R.string.incorrect_credentials else null
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             LoginScreenForgotPassword { onEvent(LoginScreenContract.Event.ForgotPassword) }
             Spacer(modifier = Modifier.height(32.dp))
             ReUseFilledButton(

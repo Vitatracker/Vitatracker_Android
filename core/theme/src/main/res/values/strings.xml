@@ -189,5 +189,5 @@
     <string name="password_format">Must contain from 6 to 16 characters, incl. 1 uppercase and 1 lowercase letter, 1 number and 1 special character</string>
     <string name="password_mismatch">Password mismatches</string>
     <string name="registration_create_account">Create account</string>
-
+    <string name="action_recover">Recover</string>
 </resources>
