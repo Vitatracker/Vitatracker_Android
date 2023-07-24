@@ -8,6 +8,8 @@ import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
 import app.mybad.notifier.ui.screens.authorization.login.LoginScreenContract
 import app.mybad.notifier.ui.screens.authorization.login.LoginScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
+import app.mybad.notifier.ui.screens.authorization.passwords.RecoverPasswordScreenContract
+import app.mybad.notifier.ui.screens.authorization.passwords.RecoverPasswordScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainNewPasswordScreenAuth
 import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPasswordScreenAuth
 import app.mybad.notifier.ui.screens.authorization.registration.RegistrationScreenContract
@@ -69,11 +71,22 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
             )
         }
         composable(AuthorizationScreens.PasswordRecovery.route) {
+            val viewModel: RecoverPasswordScreenViewModel = hiltViewModel()
             StartMainRecoveryPasswordScreenAuth(
-                onBackPressed = {
-                    navigationState.navController.popBackStack()
-                },
-                onContinueClicked = {}
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationAction ->
+                    when (navigationAction) {
+                        RecoverPasswordScreenContract.Effect.Navigation.Back -> {
+                            navigationState.navController.popBackStack()
+                        }
+
+                        RecoverPasswordScreenContract.Effect.Navigation.ToAuthorization -> {
+                            navigationState.navController.popBackStack()
+                        }
+                    }
+                }
             )
         }
         composable(AuthorizationScreens.NewPassword.route) {

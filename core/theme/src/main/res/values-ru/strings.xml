@@ -184,4 +184,6 @@
     <string name="registration_create_account">Создать аккаунт</string>
     <string name="password_mismatch">Пароли не совпадают</string>
     <string name="action_recover">Восстановить</string>
+    <string name="password_recovery_dialog_body">Cсылка для восстановления пароля отправлена на электронную почту %s.</string>
+    <string name="action_navigate">Перейти</string>
 </resources>
