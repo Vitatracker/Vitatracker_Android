@@ -13,6 +13,7 @@ class RegistrationScreenContract {
         data class UpdateName(val newName: String) : Event()
         data class UpdatePassword(val newPassword: String) : Event()
         data class UpdateConfirmationPassword(val newConfirmationPassword: String) : Event()
+        object ShowUserAgreement : Event()
     }
 
     data class State(

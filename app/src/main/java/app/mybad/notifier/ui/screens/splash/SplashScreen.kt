@@ -2,12 +2,15 @@ package app.mybad.notifier.ui.screens.splash
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -32,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.theme.R
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SplashScreen(
@@ -39,7 +44,6 @@ fun SplashScreen(
     proceedToMain: () -> Unit,
     proceedToAuthorization: () -> Unit
 ) {
-
     var isButtonVisible by remember {
         mutableStateOf(false)
     }
@@ -56,26 +60,46 @@ fun SplashScreen(
             }
         }
     }
-
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+            .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         Image(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_frau_doctor),
+                .fillMaxWidth(),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_background_start_screen),
             contentDescription = null,
             contentScale = ContentScale.FillWidth
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        NewUserGreeting(
-            isButtonVisible = isButtonVisible,
-            onBeginClicked = viewModel::onBeginClicked
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                painter = painterResource(id = R.drawable.start_screen_pills),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                NewUserGreeting(
+                    isButtonVisible = isButtonVisible,
+                    onBeginClicked = viewModel::onBeginClicked
+                )
+            }
+        }
+
     }
+
 }
 
 @Composable

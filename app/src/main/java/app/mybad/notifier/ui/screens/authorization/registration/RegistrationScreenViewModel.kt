@@ -72,6 +72,10 @@ class RegistrationScreenViewModel @Inject constructor(
                     isRegistrationEnabled = email.isNotBlank() && password.isNotBlank()
                 )
             }
+
+            RegistrationScreenContract.Event.ShowUserAgreement -> {
+                //TODO("add user agreement navigation")
+            }
         }
     }
 

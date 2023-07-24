@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -79,7 +80,7 @@ fun StartMainRegistrationScreen(
                     .padding(16.dp)
             ) {
                 RegistrationScreenBaseForSignIn(state, onEventSent)
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 ReUseFilledButton(
                     textId = R.string.registration_create_account,
                     isEnabled = state.isRegistrationEnabled,
@@ -94,11 +95,11 @@ fun StartMainRegistrationScreen(
                         )
                     }
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 ClickableText(modifier = Modifier.fillMaxWidth(), text = getAgreementText()) {
-
+                    onEventSent(RegistrationScreenContract.Event.ShowUserAgreement)
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 SignInWithGoogle(
                     signInTextResource = R.string.continue_with,
                     onClick = { onEventSent(RegistrationScreenContract.Event.SignInWithGoogle) }
@@ -112,7 +113,7 @@ fun StartMainRegistrationScreen(
 }
 
 @Composable
-private fun getAgreementText() : AnnotatedString {
+private fun getAgreementText(): AnnotatedString {
     //Find where searchQuery appears in courseName
     val start = stringResource(id = R.string.login_agree_policy_text) + " "
     return buildAnnotatedString {
@@ -122,6 +123,7 @@ private fun getAgreementText() : AnnotatedString {
         }
     }
 }
+
 @Composable
 private fun RegistrationScreenBaseForSignIn(
     state: RegistrationScreenContract.State,
@@ -131,6 +133,8 @@ private fun RegistrationScreenBaseForSignIn(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val isEmailFormatError = state.error is RegistrationScreenContract.RegistrationError.WrongEmailFormat
+        val isPasswordMismatch = state.error is RegistrationScreenContract.RegistrationError.PasswordsMismatch
         ReUseOutlinedTextField(
             value = state.email,
             label = stringResource(id = R.string.login_email),
@@ -138,9 +142,11 @@ private fun RegistrationScreenBaseForSignIn(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = Next
-            )
+            ),
+            isError = isEmailFormatError,
+            errorTextId = if (isEmailFormatError) R.string.incorrect_email else null
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         ReUseOutlinedTextField(
             value = state.name,
             label = stringResource(id = R.string.settings_user_name),
@@ -149,19 +155,22 @@ private fun RegistrationScreenBaseForSignIn(
                 imeAction = Next
             )
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         OutlinedPasswordTextField(
             value = state.password,
             label = stringResource(id = R.string.login_password),
             onValueChanged = { onEventSent(RegistrationScreenContract.Event.UpdatePassword(it)) },
+            isError = state.error is RegistrationScreenContract.RegistrationError.WrongPassword,
             errorTextId = R.string.password_format
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         OutlinedPasswordTextField(
             value = state.confirmationPassword,
             label = stringResource(id = R.string.login_password_confirm),
-            onValueChanged = { onEventSent(RegistrationScreenContract.Event.UpdateConfirmationPassword(it)) }
+            onValueChanged = { onEventSent(RegistrationScreenContract.Event.UpdateConfirmationPassword(it)) },
+            isError = isPasswordMismatch,
+            errorTextId = if (isPasswordMismatch) R.string.password_mismatch else null
         )
     }
 }
