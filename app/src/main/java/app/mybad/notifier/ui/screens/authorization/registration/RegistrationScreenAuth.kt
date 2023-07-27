@@ -1,8 +1,5 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import androidx.compose.foundation.gestures.FlingBehavior
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,13 +11,10 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -28,11 +22,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import app.mybad.notifier.ui.screens.reuse.HyperLinkText
 import app.mybad.notifier.ui.screens.reuse.OutlinedPasswordTextField
 import app.mybad.notifier.ui.screens.reuse.Progress
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
@@ -88,7 +79,6 @@ fun StartMainRegistrationScreen(
                         onEventSent(
                             RegistrationScreenContract.Event.CreateAccount(
                                 email = state.email,
-                                name = state.name,
                                 password = state.password,
                                 confirmationPassword = state.confirmationPassword
                             )
@@ -145,15 +135,6 @@ private fun RegistrationScreenBaseForSignIn(
             ),
             isError = isEmailFormatError,
             errorTextId = if (isEmailFormatError) R.string.incorrect_email else null
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        ReUseOutlinedTextField(
-            value = state.name,
-            label = stringResource(id = R.string.settings_user_name),
-            onValueChanged = { onEventSent(RegistrationScreenContract.Event.UpdateName(it)) },
-            keyboardOptions = KeyboardOptions(
-                imeAction = Next
-            )
         )
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedPasswordTextField(

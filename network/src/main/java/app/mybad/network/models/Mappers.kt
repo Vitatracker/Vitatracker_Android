@@ -158,12 +158,10 @@ fun AuthorizationUserLogin.mapToDomain() = AuthorizationUserLoginDomainModel(
 
 fun AuthorizationUserRegistrationDomainModel.mapToNet() = AuthorizationUserRegistration(
     email = email,
-    password = password,
-    name = name,
+    password = password
 )
 
 fun AuthorizationUserRegistration.mapToDomain() = AuthorizationUserRegistrationDomainModel(
     email = email,
-    password = password,
-    name = name,
+    password = password
 )

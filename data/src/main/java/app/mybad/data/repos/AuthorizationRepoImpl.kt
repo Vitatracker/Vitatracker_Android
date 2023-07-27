@@ -5,8 +5,6 @@ import app.mybad.domain.models.authorization.AuthorizationUserRegistrationDomain
 import app.mybad.domain.repos.AuthorizationNetworkRepository
 import app.mybad.domain.repos.AuthorizationRepo
 import app.mybad.domain.utils.ApiResult
-import app.mybad.network.models.request.AuthorizationUserLogin
-import app.mybad.network.models.request.AuthorizationUserRegistration
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -41,14 +39,12 @@ class AuthorizationRepoImpl @Inject constructor(
 
     override suspend fun registrationUser(
         login: String,
-        password: String,
-        userName: String
+        password: String
     ): ApiResult = withContext(dispatcher) {
         authorizationNetworkRepo.registrationUser(
             authorizationUserRegistration = AuthorizationUserRegistrationDomainModel(
                 email = login,
-                password = password,
-                name = userName
+                password = password
             )
         )
     }

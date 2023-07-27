@@ -29,7 +29,6 @@ class RegistrationScreenViewModel @Inject constructor(
     override fun setInitialState(): RegistrationScreenContract.State {
         return RegistrationScreenContract.State(
             email = "",
-            name = "",
             password = "",
             confirmationPassword = "",
             isLoading = false,
@@ -42,7 +41,7 @@ class RegistrationScreenViewModel @Inject constructor(
         when (event) {
             RegistrationScreenContract.Event.ActionBack -> setEffect { RegistrationScreenContract.Effect.Navigation.Back }
             is RegistrationScreenContract.Event.CreateAccount -> {
-                registration(event.email, event.password, event.name, event.confirmationPassword)
+                registration(event.email, event.password, event.confirmationPassword)
             }
 
             RegistrationScreenContract.Event.SignInWithGoogle -> signInWithGoogle()
@@ -61,10 +60,6 @@ class RegistrationScreenViewModel @Inject constructor(
                 )
             }
 
-            is RegistrationScreenContract.Event.UpdateName -> setState {
-                copy(name = event.newName)
-            }
-
             is RegistrationScreenContract.Event.UpdatePassword -> setState {
                 copy(
                     password = event.newPassword,
@@ -79,7 +74,7 @@ class RegistrationScreenViewModel @Inject constructor(
         }
     }
 
-    fun registration(login: String, password: String, userName: String, confirmPassword: String) {
+    fun registration(login: String, password: String, confirmPassword: String) {
         if (password != confirmPassword) {
             setState { copy(error = RegistrationScreenContract.RegistrationError.PasswordsMismatch, isLoading = false) }
             log("Error: passwords mismatch")
@@ -98,9 +93,9 @@ class RegistrationScreenViewModel @Inject constructor(
                 return@launch
             }
             setState { copy(error = null, isLoading = true) }
-            when (val result = registrationUserUseCase(login, password, userName)) {
+            when (val result = registrationUserUseCase(login, password)) {
                 is ApiResult.ApiSuccess -> {
-                    val userId: Long = createUserUseCase(email = login, name = userName)
+                    val userId: Long = createUserUseCase(email = login)
                     val tokens = result.data as Authorization
                     AuthToken.userId = userId
                     AuthToken.token = tokens.token

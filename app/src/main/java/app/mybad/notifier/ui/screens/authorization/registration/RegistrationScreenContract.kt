@@ -6,11 +6,10 @@ import app.mybad.notifier.ui.base.ViewState
 
 class RegistrationScreenContract {
     sealed class Event : ViewEvent {
-        data class CreateAccount(val email: String, val name: String, val password: String, val confirmationPassword: String) : Event()
+        data class CreateAccount(val email: String, val password: String, val confirmationPassword: String) : Event()
         object ActionBack : Event()
         object SignInWithGoogle : Event()
         data class UpdateEmail(val newEmail: String) : Event()
-        data class UpdateName(val newName: String) : Event()
         data class UpdatePassword(val newPassword: String) : Event()
         data class UpdateConfirmationPassword(val newConfirmationPassword: String) : Event()
         object ShowUserAgreement : Event()
@@ -18,7 +17,6 @@ class RegistrationScreenContract {
 
     data class State(
         val email: String,
-        val name: String,
         val password: String,
         val confirmationPassword: String,
         val isLoading: Boolean,

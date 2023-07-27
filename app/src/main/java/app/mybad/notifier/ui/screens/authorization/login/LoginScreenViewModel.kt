@@ -74,8 +74,7 @@ class LoginScreenViewModel @Inject constructor(
             ) {
                 is ApiResult.ApiSuccess -> {
                     val userId: Long = getUserIdUseCase(email = login) ?: createUserUseCase(
-                        email = login,
-                        name = ""
+                        email = login
                     )
                     Log.w("VTTAG", "AuthorizationScreenViewModel::logIn: Ok: userId=$userId")
                     val tokens = result.data as Authorization
