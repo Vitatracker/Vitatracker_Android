@@ -9,11 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.mainscreen.MainScreen
-import app.mybad.notifier.ui.screens.mainscreen.NotificationsScreen
-import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
-import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.splash.SplashScreen
 import app.mybad.notifier.ui.screens.splash.SplashScreenContract
 import app.mybad.notifier.ui.screens.splash.SplashScreenViewModel
@@ -54,28 +50,6 @@ fun AppNavGraph() {
             authorizationNavGraph(navigationState)
             composable(Screen.Main.route) {
                 MainScreen(
-                    notificationsScreenContent = {
-                        NotificationsScreen()
-                    },
-                    coursesScreenContent = {
-                        MyCoursesMainScreen()
-                    },
-                    calendarScreenContent = {
-                        CalendarScreen()
-                    },
-                    settingsScreenContent = {
-                        SettingsNavScreen(
-                            onProfileClicked = {
-                                navigationState.navigateSingleTo(Screen.Profile.route)
-                            },
-                            onNotificationsClicked = {},
-                            onWishesClicked = {},
-                            onAboutClicked = {},
-                            onBackPressed = {
-                                navigationState.navController.popBackStack()
-                            }
-                        )
-                    },
                     onAddClicked = {
                         navigationState.navigateSingleTo(Screen.AddCourse.route)
                     }

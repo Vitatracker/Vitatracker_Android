@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.mycourses.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -42,6 +41,7 @@ fun MyCoursesMainScreen() {
             usages = state.value.usages,
             meds = state.value.meds,
             onEditClicked = {
+
 //                        selectedCourse = state.value.courses.first { course -> course.id == it }
 //                        navHostController.navigate(MyCoursesNavItem.Course.route)
             }

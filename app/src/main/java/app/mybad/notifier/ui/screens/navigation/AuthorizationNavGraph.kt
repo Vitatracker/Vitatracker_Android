@@ -4,7 +4,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import app.mybad.notifier.ui.screens.authorization.StartAuthorizationScreen
 import app.mybad.notifier.ui.screens.authorization.login.LoginScreenContract
 import app.mybad.notifier.ui.screens.authorization.login.LoginScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.login.StartMainLoginScreen
@@ -15,19 +14,27 @@ import app.mybad.notifier.ui.screens.authorization.passwords.StartMainRecoveryPa
 import app.mybad.notifier.ui.screens.authorization.registration.RegistrationScreenContract
 import app.mybad.notifier.ui.screens.authorization.registration.RegistrationScreenViewModel
 import app.mybad.notifier.ui.screens.authorization.registration.StartMainRegistrationScreen
+import app.mybad.notifier.ui.screens.authorization.start.AuthorizationStartScreenContract
+import app.mybad.notifier.ui.screens.authorization.start.AuthorizationStartScreenViewModel
+import app.mybad.notifier.ui.screens.authorization.start.StartAuthorizationScreen
 
 fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
     navigation(startDestination = AuthorizationScreens.ChooseMode.route, route = Screen.Authorization.route) {
         composable(route = AuthorizationScreens.ChooseMode.route) {
+            val viewModel: AuthorizationStartScreenViewModel = hiltViewModel()
             StartAuthorizationScreen(
-                onLoginButtonClicked = {
-                    navigationState.navigateSingleTo(AuthorizationScreens.Login.route)
-                },
-                onRegistrationButtonClicked = {
-                    navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
-                },
-                onSignInWithGoogleClicked = {
-                    // TODO("Добавить вход через Google")
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationAction ->
+                    when (navigationAction) {
+                        AuthorizationStartScreenContract.Effect.Navigation.ToAuthorization -> {
+                            navigationState.navigateSingleTo(AuthorizationScreens.Login.route)
+                        }
+
+                        AuthorizationStartScreenContract.Effect.Navigation.ToRegistration -> {
+                            navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
+                        }
+                    }
                 }
             )
         }

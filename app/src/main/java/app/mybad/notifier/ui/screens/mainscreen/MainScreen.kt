@@ -12,10 +12,6 @@ import app.mybad.notifier.ui.screens.navigation.rememberNavigationState
 @Preview
 @Composable
 fun MainScreen(
-    notificationsScreenContent: @Composable () -> Unit = {},
-    coursesScreenContent: @Composable () -> Unit = {},
-    calendarScreenContent: @Composable () -> Unit = {},
-    settingsScreenContent: @Composable () -> Unit = {},
     onAddClicked: () -> Unit = {}
 ) {
     val navigationState = rememberNavigationState()
@@ -33,20 +29,8 @@ fun MainScreen(
         }
     ) { paddingValues ->
         MainNavGraph(
-            navController = navigationState.navController,
-            paddingValues = paddingValues,
-            notificationScreenContent = {
-                notificationsScreenContent()
-            },
-            coursesScreenContent = {
-                coursesScreenContent()
-            },
-            calendarScreenContent = {
-                calendarScreenContent()
-            },
-            settingsScreenContent = {
-                settingsScreenContent()
-            }
+            navigationState = navigationState,
+            paddingValues = paddingValues
         )
     }
 }

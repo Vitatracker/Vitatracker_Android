@@ -4,43 +4,31 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-
-fun NavGraphBuilder.mainNavGraph(navigationState: NavigationState) {
-    navigation(startDestination = MainScreens.Notifications.route, route = Screen.Main.route) {
-
-    }
-}
+import app.mybad.notifier.ui.screens.calender.CalendarScreen
+import app.mybad.notifier.ui.screens.mainscreen.NotificationsScreen
+import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 
 @Composable
 fun MainNavGraph(
-    navController: NavHostController,
-    paddingValues: PaddingValues,
-    notificationScreenContent: @Composable () -> Unit,
-    coursesScreenContent: @Composable () -> Unit,
-    calendarScreenContent: @Composable () -> Unit,
-    settingsScreenContent: @Composable () -> Unit,
+    navigationState: NavigationState,
+    paddingValues: PaddingValues
 ) {
     NavHost(
         modifier = Modifier.padding(paddingValues),
-        navController = navController,
+        navController = navigationState.navController,
         startDestination = MainScreens.Notifications.route
     ) {
         composable(route = MainScreens.Notifications.route) {
-            notificationScreenContent()
+            NotificationsScreen()
         }
         composable(route = MainScreens.Courses.route) {
-            coursesScreenContent()
+            MyCoursesMainScreen()
         }
         composable(route = MainScreens.Calendar.route) {
-            calendarScreenContent()
+            CalendarScreen()
         }
-        composable(route = MainScreens.Settings.route) {
-            settingsScreenContent()
-        }
+        settingsNavGraph(navigationState)
     }
 }
