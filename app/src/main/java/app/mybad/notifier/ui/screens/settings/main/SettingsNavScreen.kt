@@ -72,9 +72,9 @@ fun SettingsNavScreen(
         ) {
             UserImage(
                 url = state.userAvatar,
-                showEdit = true
-            ) {
-            }
+                imageSize = 100.dp,
+                showEdit = false
+            )
             Spacer(Modifier.height(32.dp))
             SettingsItem(
                 label = stringResource(R.string.settings_profile),

@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.reuse
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
@@ -17,27 +18,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun ReUseOutlinedTextField(
     value: String = "",
     label: String = "",
+    enabled: Boolean = true,
     onValueChanged: (String) -> Unit = {},
     isError: Boolean = false,
     errorTextId: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    trailingIcon: @Composable() (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = { newValue -> onValueChanged(newValue) },
         modifier = Modifier.fillMaxWidth(),
         isError = isError,
+        enabled = enabled,
         supportingText = {
             if (errorTextId != null) {
                 Text(text = stringResource(id = errorTextId))
@@ -45,8 +52,14 @@ fun ReUseOutlinedTextField(
         },
         singleLine = singleLine,
         trailingIcon = {
-            if (errorTextId != null) {
-                Icon(imageVector = Icons.Default.Error, contentDescription = null)
+            if (trailingIcon != null) {
+                trailingIcon()
+            } else if (errorTextId != null) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = Icons.Default.Error,
+                    contentDescription = null
+                )
             }
         },
         placeholder = { Text(text = label) },

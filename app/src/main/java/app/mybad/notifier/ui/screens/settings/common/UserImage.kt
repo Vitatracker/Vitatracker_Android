@@ -1,8 +1,5 @@
 package app.mybad.notifier.ui.screens.settings.common
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.mybad.theme.R
@@ -38,16 +36,17 @@ fun UserImage(
     modifier: Modifier = Modifier,
     url: String? = null,
     showEdit: Boolean = true,
-    onEdit: (String) -> Unit = {}
+    imageSize: Dp = 130.dp,
+    onEditClicked: () -> Unit = {}
 ) {
     val editAvatar = remember { mutableStateOf(url) }
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
-            editAvatar.value = it.toString()
-            onEdit(it.toString())
-        }
-    )
+//    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.PickVisualMedia(),
+//        onResult = {
+//            editAvatar.value = it.toString()
+//            onEdit(it.toString())
+//        }
+//    )
 
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -71,7 +70,7 @@ fun UserImage(
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .size(130.dp)
+                    .size(imageSize)
                     .border(
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                         shape = CircleShape
@@ -86,9 +85,10 @@ fun UserImage(
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary)
                         .clickable {
-                            singlePhotoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
+                            onEditClicked()
+//                            singlePhotoPickerLauncher.launch(
+//                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+//                            )
                         }
                 )
             }

@@ -134,7 +134,10 @@ fun AddCourseMainScreen(
                     Text(text = stringResource(R.string.add_course_reminder))
                 }
             }
-            ReUseFilledButton(textId = R.string.navigation_next) {
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.navigation_next
+            ) {
                 onNext(course)
             }
         }

@@ -129,7 +129,10 @@ fun AddNotificationsMainScreen(
                 }
                 Spacer(Modifier.height(16.dp))
             }
-            ReUseFilledButton(textId = R.string.navigation_next) {
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.navigation_next
+            ) {
                 onNext()
             }
         }

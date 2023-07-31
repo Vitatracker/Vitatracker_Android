@@ -144,7 +144,11 @@ private fun MainRecoveryPasswordScreenAuth(
             errorTextId = null
         )
         Spacer(modifier = Modifier.height(32.dp))
-        ReUseFilledButton(textId = R.string.action_recover, isEnabled = state.isRecoveringEnabled) {
+        ReUseFilledButton(
+            modifier = Modifier.fillMaxWidth(),
+            textId = R.string.action_recover,
+            isEnabled = state.isRecoveringEnabled
+        ) {
             onEventSent(RecoverPasswordScreenContract.Event.Recover(state.email))
         }
     }

@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.mybad.theme.R
@@ -68,7 +69,9 @@ fun BottomNavBar(
                 }
                 MainNavigationItem(
                     icon = MainScreens.Settings.icon,
-                    isSelected = backStackEntry?.value?.destination?.route == MainScreens.Settings.route
+                    isSelected = backStackEntry?.value?.destination?.hierarchy?.any {
+                        it.route == MainScreens.Settings.route
+                    } ?: false
                 ) {
                     onItemSelected(MainScreens.Settings)
                 }

@@ -114,6 +114,7 @@ private fun MainLoginScreen(
             LoginScreenForgotPassword { onEvent(LoginScreenContract.Event.ForgotPassword) }
             Spacer(modifier = Modifier.height(32.dp))
             ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.sign_in,
                 onClick = { onEvent(LoginScreenContract.Event.SignIn(state.email, state.password)) },
                 isEnabled = state.isLoginEnabled

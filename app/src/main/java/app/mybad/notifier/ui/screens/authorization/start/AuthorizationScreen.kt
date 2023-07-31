@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -67,12 +68,14 @@ fun MainAuthorizationScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 ReUseFilledButton(
+                    modifier = Modifier.fillMaxWidth(),
                     textId = R.string.authorization_screen_login,
                     onClick = { onEventSent(AuthorizationStartScreenContract.Event.SignIn) }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 ReUseOutlinedButton(
-                    R.string.authorization_screen_registration,
+                    modifier = Modifier.fillMaxWidth(),
+                    textId = R.string.authorization_screen_registration,
                     onClick = { onEventSent(AuthorizationStartScreenContract.Event.Registration) })
                 Spacer(modifier = Modifier.height(32.dp))
                 SignInWithGoogle(

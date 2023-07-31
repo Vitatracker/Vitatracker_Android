@@ -16,7 +16,9 @@ class SettingsMainViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val userModel = userSettingsUseCase.getUserPersonal()
-            setState { copy(userAvatar = userModel.avatar ?: "") }
+            launch(Dispatchers.Main) {
+                setState { copy(userAvatar = userModel.avatar ?: "") }
+            }
         }
     }
 

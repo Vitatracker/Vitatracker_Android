@@ -68,7 +68,10 @@ private fun StartScreenBottom(
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(50.dp))
-        ReUseFilledButton(textId = R.string.start_screen_go) {
+        ReUseFilledButton(
+            modifier = Modifier.fillMaxWidth(),
+            textId = R.string.start_screen_go
+        ) {
             onGo()
         }
     }

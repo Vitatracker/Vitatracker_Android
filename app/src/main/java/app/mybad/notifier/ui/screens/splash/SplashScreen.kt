@@ -127,6 +127,7 @@ private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit
         Spacer(modifier = Modifier.height(24.dp))
         AnimatedVisibility(visible = isButtonVisible) {
             ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.action_begin,
                 onClick = { onBeginClicked() }
             )

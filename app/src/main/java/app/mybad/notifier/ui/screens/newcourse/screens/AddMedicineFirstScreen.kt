@@ -143,7 +143,10 @@ fun AddMedicineFirstScreen(
                     outlineColor = MaterialTheme.colorScheme.primary,
                 )
             }
-            ReUseFilledButton(textId = R.string.navigation_next) {
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.navigation_next
+            ) {
                 if (!currentName.isNullOrBlank()) {
                     currentMed = currentMed.copy(name = currentName)
                     onNext(currentMed)

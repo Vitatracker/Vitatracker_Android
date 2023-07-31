@@ -69,7 +69,10 @@ private fun MainNewPasswordScreenAuth() {
         ) {
             NewPasswordScreenEnteredPassword(R.string.login_password)
             NewPasswordScreenEnteredPassword(R.string.login_password_confirm)
-            ReUseFilledButton(textId = R.string.text_continue) {
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.text_continue
+            ) {
 //                navController.navigate(
 //                    route = AuthorizationNavItem.Authorization.route
 //                )

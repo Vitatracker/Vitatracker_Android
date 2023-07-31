@@ -13,7 +13,8 @@ import app.mybad.notifier.ui.screens.mycourses.screens.MyCoursesMainScreen
 @Composable
 fun MainNavGraph(
     navigationState: NavigationState,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    toAuthorizationRequested: () -> Unit
 ) {
     NavHost(
         modifier = Modifier.padding(paddingValues),
@@ -29,6 +30,8 @@ fun MainNavGraph(
         composable(route = MainScreens.Calendar.route) {
             CalendarScreen()
         }
-        settingsNavGraph(navigationState)
+        settingsNavGraph(navigationState) {
+            toAuthorizationRequested()
+        }
     }
 }

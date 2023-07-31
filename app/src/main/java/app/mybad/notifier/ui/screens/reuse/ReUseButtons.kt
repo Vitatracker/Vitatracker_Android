@@ -19,11 +19,9 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.MyBADTheme
 
 @Composable
-fun ReUseFilledButton(textId: Int, isEnabled: Boolean = true, onClick: () -> Unit = {}) {
+fun ReUseFilledButton(modifier: Modifier, textId: Int, isEnabled: Boolean = true, onClick: () -> Unit = {}) {
     Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
+        modifier = modifier,
         enabled = isEnabled,
         onClick = {
             onClick()
@@ -40,9 +38,9 @@ fun ReUseFilledButton(textId: Int, isEnabled: Boolean = true, onClick: () -> Uni
 }
 
 @Composable
-fun ReUseOutlinedButton(textId: Int, onClick: () -> Unit = {}) {
+fun ReUseOutlinedButton(modifier: Modifier = Modifier, textId: Int, onClick: () -> Unit = {}) {
     OutlinedButton(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         onClick = { onClick() },
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
@@ -54,7 +52,6 @@ fun ReUseOutlinedButton(textId: Int, onClick: () -> Unit = {}) {
     ) {
         Text(
             text = stringResource(id = textId),
-            modifier = Modifier,
             fontSize = 16.sp
         )
     }
@@ -64,6 +61,11 @@ fun ReUseOutlinedButton(textId: Int, onClick: () -> Unit = {}) {
 @Composable
 fun ReUseButtonContinuePreview() {
     MyBADTheme {
-        ReUseFilledButton(textId = app.mybad.theme.R.string.text_continue)
+        ReUseFilledButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            textId = app.mybad.theme.R.string.text_continue
+        )
     }
 }

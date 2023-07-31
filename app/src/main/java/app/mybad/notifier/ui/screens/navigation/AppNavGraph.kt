@@ -40,6 +40,7 @@ fun AppNavGraph() {
                             SplashScreenContract.Effect.Navigation.ToAuthorization -> {
                                 navigationState.navigateToAuthorization()
                             }
+
                             SplashScreenContract.Effect.Navigation.ToMain -> {
                                 navigationState.navigateToMain()
                             }
@@ -50,19 +51,11 @@ fun AppNavGraph() {
             authorizationNavGraph(navigationState)
             composable(Screen.Main.route) {
                 MainScreen(
-                    onAddClicked = {
-                        navigationState.navigateSingleTo(Screen.AddCourse.route)
-                    }
+                    onAddClicked = { navigationState.navigateSingleTo(Screen.AddCourse.route) },
+                    toAuthorizationRequested = { navigationState.navigateToAuthorization() }
                 )
             }
             addCourseNavGraph(navigationState)
-            profileNavGraph(
-                navigationState = navigationState,
-                onExitToAuthorization = {
-                    navigationState.navController.popBackStack(Screen.Profile.route, true)
-                    navigationState.navigateToAuthorization()
-                }
-            )
         }
     }
 

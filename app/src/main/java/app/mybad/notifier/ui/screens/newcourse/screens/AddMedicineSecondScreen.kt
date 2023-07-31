@@ -155,7 +155,10 @@ private fun SecondScreenContent(med: MedDomainModel, onNext: (MedDomainModel) ->
             outlineColor = MaterialTheme.colorScheme.primary,
         )
     }
-    ReUseFilledButton(textId = R.string.navigation_next) {
+    ReUseFilledButton(
+        modifier = Modifier.fillMaxWidth(),
+        textId = R.string.navigation_next
+    ) {
         onNext(currentMed)
     }
 }

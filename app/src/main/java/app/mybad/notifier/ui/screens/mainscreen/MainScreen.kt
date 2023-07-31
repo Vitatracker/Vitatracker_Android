@@ -4,15 +4,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import app.mybad.notifier.ui.screens.navigation.BottomNavBar
 import app.mybad.notifier.ui.screens.navigation.MainNavGraph
 import app.mybad.notifier.ui.screens.navigation.rememberNavigationState
 
-@Preview
 @Composable
 fun MainScreen(
-    onAddClicked: () -> Unit = {}
+    onAddClicked: () -> Unit = {},
+    toAuthorizationRequested: () -> Unit = {}
 ) {
     val navigationState = rememberNavigationState()
 
@@ -30,7 +29,8 @@ fun MainScreen(
     ) { paddingValues ->
         MainNavGraph(
             navigationState = navigationState,
-            paddingValues = paddingValues
+            paddingValues = paddingValues,
+            toAuthorizationRequested = toAuthorizationRequested
         )
     }
 }
