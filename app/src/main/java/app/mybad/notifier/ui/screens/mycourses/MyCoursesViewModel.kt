@@ -11,7 +11,7 @@ import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.remedies.UpdateRemedyUseCase
 import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
 import app.mybad.notifier.ui.screens.common.generateUsages
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +48,7 @@ class MyCoursesViewModel @Inject constructor(
         when (intent) {
             is MyCoursesIntent.Delete -> {
                 viewModelScope.launch {
-                    deleteCourseFullUseCase(intent.courseId, getCurrentDateTime().toEpochSecond())
+                    deleteCourseFullUseCase(intent.courseId, currentDateTime().toEpochSecond())
                     //TODO("запустить воркер удаления курса на беке")
                 }
             }
@@ -64,6 +64,7 @@ class MyCoursesViewModel @Inject constructor(
                     updateUsagesInCourseUseCase(
                         usages = generateUsages(
                             usagesByDay = intent.usagesPattern,
+                            remedyId = intent.remedy.id,
                             courseId = intent.course.id,
                             userId = intent.course.userId,
                             startDate = intent.course.startDate,
@@ -74,6 +75,7 @@ class MyCoursesViewModel @Inject constructor(
                     //TODO("запустить воркер обновления на беке")
                 }
             }
+            else -> error("MyCoursesIntent")
         }
     }
 }

@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -45,13 +46,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.getCurrentDateTimeWithoutSecond
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.theme.utils.currentTimeInMinutes
+import app.mybad.theme.utils.minutesToHHmm
 import app.mybad.theme.utils.toTimeDisplay
 
 @Composable
@@ -63,9 +65,9 @@ fun AddNotificationsMainScreen(
     onNext: () -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
-    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
+    var notificationsPattern by remember { mutableStateOf<List<UsageFormat>>(listOf()) }
     var dialogIsShown by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
+    var selectedItem by remember { mutableStateOf(UsageFormat(-1, 0)) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -81,34 +83,34 @@ fun AddNotificationsMainScreen(
                 form = remedy.type,
                 forms = forms,
                 onClick = {
-                    notificationsPattern = notificationsPattern.toMutableList().apply {
-                        add(Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1))
-                    }
+                    notificationsPattern = notificationsPattern.plus(
+                        // тут UTC время
+                        UsageFormat(timeInMinutes = currentTimeInMinutes(), quantity = 1)
+                    )
                 }
             )
             Spacer(Modifier.height(16.dp))
             LazyColumn {
-                notificationsPattern.forEachIndexed { index, item ->
+                notificationsPattern.forEachIndexed { index, usage ->
                     item {
                         NotificationItem(
-                            time = item.first,
-                            quantity = item.second,
+                            time = usage.timeInMinutes,// тут время в UTC
+                            quantity = usage.quantity,
                             form = remedy.type,
                             forms = forms,
                             onDelete = {
-                                notificationsPattern = notificationsPattern.toMutableList().apply {
-                                    removeAt(index)
-                                }.toList()
+                                notificationsPattern =
+                                    notificationsPattern.minus(notificationsPattern[index])
                             },
                             onDoseChange = { q ->
                                 notificationsPattern = notificationsPattern.toMutableList()
                                     .apply {
                                         removeAt(index)
-                                        add(index, item.copy(second = q.toInt()))
+                                        add(index, usage.copy(quantity = q.toInt()))
                                     }.toList()
                             },
                             onTimeClick = {
-                                selectedItem = item
+                                selectedItem = usage
                                 dialogIsShown = true
                             }
                         )
@@ -135,21 +137,21 @@ fun AddNotificationsMainScreen(
         }
     }
 
-    if (dialogIsShown && selectedItem != null) {
+    if (dialogIsShown && selectedItem.timeInMinutes >= 0) {
         Dialog(onDismissRequest = { dialogIsShown = false }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background
             ) {
                 TimeSelector(
-                    initTime = selectedItem!!.first,
+                    initTime = selectedItem.timeInMinutes,
                     onSelect = {
                         val n = notificationsPattern.toMutableList()
-                        val i = n.indexOf(selectedItem!!)
+                        val i = n.indexOf(selectedItem)
                         n.removeAt(i)
-                        selectedItem = selectedItem!!.copy(first = it)
-                        n.add(i, selectedItem!!)
-                        n.sortBy { item -> item.first }
+                        selectedItem = selectedItem.copy(timeInMinutes = it)
+                        n.add(i, selectedItem)
+                        n.sortBy { usageFormat -> usageFormat.timeInMinutes }
                         notificationsPattern = n.toList()
                         dialogIsShown = false
                     }
@@ -162,7 +164,7 @@ fun AddNotificationsMainScreen(
 @Composable
 private fun NotificationItem(
     modifier: Modifier = Modifier,
-    time: Long,
+    time: Int, // время в UTC
     quantity: Int,
     form: Int,
     forms: Array<String>,
@@ -206,8 +208,12 @@ private fun NotificationItem(
                         onClick = onDelete::invoke
                     )
             )
+            Log.w(
+                "VTTAG",
+                "TimeSelector::NotificationItem: time=${time.minutesToHHmm()} - ${time.toTimeDisplay()}"
+            )
             Text(
-                text = time.toTimeDisplay(),
+                text = time.toTimeDisplay(),// отобразить время системное
                 style = Typography.bodyLarge,
                 modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },

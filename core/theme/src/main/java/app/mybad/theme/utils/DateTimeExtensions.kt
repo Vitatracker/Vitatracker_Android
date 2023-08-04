@@ -1,5 +1,6 @@
 package app.mybad.theme.utils
 
+import android.util.Log
 import kotlinx.datetime.Clock.System.now
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
@@ -12,6 +13,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaZoneOffset
 import kotlinx.datetime.toLocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -19,6 +21,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 private const val SECONDS_IN_DAY = 86400L
+private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
@@ -69,11 +72,26 @@ fun LocalDateTime.toDayDisplay(): String = this.toInstant(TimeZone.UTC).formatDa
 
 fun Instant.formatDay(): String = dayDisplayFormatter.format(this.toJavaInstant())
 
-private val dateTimeIsoDisplayFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+//DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+private const val dateTimeIsoFormatter = "%04d-%02d-%02dT%02d:%02d:%02dZ"
 
-fun Long.toDateTimeIsoDisplay(): String = Instant.fromEpochSeconds(this).formatDateTimeIso()
+fun Long.toDateTimeIsoDisplay(): String {
+    Log.d("VTTAG", "DateTimeExtensions::toDateTimeIsoDisplay: date=$this")
+    return if (this == 0L) ""
+    else this.toLocalDateTime().formatISO()
+        .also {
+            Log.d("VTTAG", "DateTimeExtensions::toDateTimeIsoDisplay: date=$it")
+        }
+}
 
-fun Instant.formatDateTimeIso(): String = dateTimeIsoDisplayFormatter.format(this.toJavaInstant())
+fun LocalDateTime.formatISO() = dateTimeIsoFormatter.format(
+    year,
+    month.value,
+    dayOfMonth,
+    hour,
+    minute,
+    second,
+)
 
 // названия месяцев и дней
 fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
@@ -126,37 +144,37 @@ fun LocalDateTime.toEpochSecond(isUTC: Boolean = true) = this.toInstant(
 ).epochSeconds
 
 // Преобразование и замена даты и времени
-fun LocalDateTime.changeTime(hour: Int? = null, minute: Int? = null) = LocalDateTime(
-    year = this.year,
-    monthNumber = this.monthNumber,
-    dayOfMonth = this.dayOfMonth,
-    hour = hour ?: this.hour,
-    minute = minute ?: this.minute,
-    second = 0,
-    nanosecond = 0,
-)
-
-fun LocalDateTime.changeTime(time: LocalDateTime) = LocalDateTime(
-    year = this.year,
-    monthNumber = this.monthNumber,
-    dayOfMonth = this.dayOfMonth,
-    hour = time.hour,
-    minute = time.minute,
-    second = time.second,
-    nanosecond = time.nanosecond,
-)
-
-fun LocalDateTime.changeTime(time: Long) = time.toLocalDateTime().let {
-    LocalDateTime(
+fun LocalDateTime.changeTime(
+    hour: Int? = null,
+    minute: Int? = null,
+    second: Int = 0,
+    nanosecond: Int = 0
+): LocalDateTime {
+    var h = hour
+    var m = minute ?: this.minute
+    if (h == null && m > 59) {
+        h = m / MINUTES_IN_HOUR
+        m %= MINUTES_IN_HOUR
+    }
+    return LocalDateTime(
         year = this.year,
         monthNumber = this.monthNumber,
         dayOfMonth = this.dayOfMonth,
-        hour = it.hour,
-        minute = it.minute,
-        second = it.second,
-        nanosecond = it.nanosecond,
+        hour = h ?: this.hour,
+        minute = m,
+        second = second,
+        nanosecond = nanosecond,
     )
 }
+
+fun LocalDateTime.changeTime(time: LocalDateTime) = this.changeTime(
+    hour = time.hour,
+    minute = time.minute,
+    second = time.second,
+    nanosecond = time.nanosecond
+)
+
+fun LocalDateTime.changeTime(time: Long) = this.changeTime(time.toLocalDateTime())
 
 // month: 1..12, days: 1..31
 fun LocalDateTime.changeDate(year: Int? = null, month: Int? = null, dayOfMonth: Int? = null) =
@@ -170,51 +188,41 @@ fun LocalDateTime.changeDate(year: Int? = null, month: Int? = null, dayOfMonth: 
         nanosecond = this.nanosecond,
     )
 
-fun LocalDateTime.atStartOfDay() = LocalDateTime(
-    year = this.year,
-    monthNumber = this.monthNumber,
-    dayOfMonth = this.dayOfMonth,
+fun LocalDateTime.atStartOfDay() = this.changeTime(
     hour = 0,
     minute = 0,
     second = 0,
-    nanosecond = 0,
+    nanosecond = 0
 )
 
+// преобразует текущее локальное время в UTC
 fun LocalDateTime.atStartOfDaySystemToUTC() = this.atStartOfDay()
     .toInstant(TimeZone.currentSystemDefault())
     .toLocalDateTime(TimeZone.UTC)
 
-fun Long.atStartOfDay() = Instant.fromEpochSeconds(this)
-    .toLocalDateTime(TimeZone.UTC)
+fun Long.atStartOfDay() = this.toLocalDateTime()
     .atStartOfDay()
     .toEpochSecond()
 
-fun Long.atStartOfDaySystemToUTC() = Instant.fromEpochSeconds(this)
-    .toLocalDateTime(TimeZone.UTC)
+fun Long.atStartOfDaySystemToUTC() = this.toLocalDateTime()
     .atStartOfDaySystemToUTC()
-//    .toEpochSeconds()
 
-fun LocalDateTime.atEndOfDay() = LocalDateTime(
-    year = this.year,
-    monthNumber = this.monthNumber,
-    dayOfMonth = this.dayOfMonth,
+fun LocalDateTime.atEndOfDay() = this.changeTime(
     hour = 23,
     minute = 59,
     second = 59,
-    nanosecond = 999,
+    nanosecond = 0
 )
 
 fun LocalDateTime.atEndOfDaySystemToUTC() = this.atEndOfDay()
     .toInstant(TimeZone.currentSystemDefault())
     .toLocalDateTime(TimeZone.UTC)
 
-fun Long.atEndOfDay() = Instant.fromEpochSeconds(this)
-    .toLocalDateTime(TimeZone.UTC)
+fun Long.atEndOfDay() = this.toLocalDateTime()
     .atEndOfDay()
     .toEpochSecond()
 
-fun Long.atEndOfDaySystemToUTC() = Instant.fromEpochSeconds(this)
-    .toLocalDateTime(TimeZone.UTC)
+fun Long.atEndOfDaySystemToUTC() = this.toLocalDateTime()
     .atEndOfDaySystemToUTC()
 //    .toEpochSeconds()
 
@@ -258,10 +266,57 @@ fun LocalDateTime.plusMonths(months: Int): LocalDateTime {
 }
 
 // Получение даты + времени
-fun getCurrentDateTime() = now().toLocalDateTime(TimeZone.UTC)
+fun currentDateTime() = now().toLocalDateTime(TimeZone.UTC)
+fun systemDateTime() = now().toLocalDateTime(TimeZone.currentSystemDefault())
 
-fun getCurrentDateTimeWithoutSecond() = now().toLocalDateTime(TimeZone.UTC).changeTime()
+// сегодня + 1 день, дата и время
+fun Long.dateTimeTomorrow() = currentDateTime().changeTime(this)
+    .plusDays(1)
+    .toEpochSecond()
 
+// текущее время преобразованное в минуты
+fun Int.minutesToHHmm() = "%02d:%02d".format(this.hour(), this.minute())
+fun Int.hour() = this / MINUTES_IN_HOUR
+
+fun Int.minute() = this % MINUTES_IN_HOUR
+
+fun LocalDateTime.timeInMinutes() = this.run {
+    time.hour * MINUTES_IN_HOUR + time.minute
+}
+
+fun currentTimeInMinutes() = currentDateTime().timeInMinutes()
+
+fun Int.toSystemTimeInMinutes() = currentDateTime()
+    .changeTime(hour = this.hour(), minute = this.minute())
+    .also {
+        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::toSystemTimeInMinutes: time=${it.timeInMinutes().minutesToHHmm()}")
+    }
+    .toInstant(TimeZone.UTC)
+    .toLocalDateTime(TimeZone.currentSystemDefault())
+    .timeInMinutes()
+    .also {
+        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::toSystemTimeInMinutes: time=${it.minutesToHHmm()}")
+    }
+
+fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
+    .changeTime(hour = hour, minute = minute)
+    .also {
+        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::systemTimeInMinutes: time=${it.timeInMinutes().minutesToHHmm()}")
+    }
+    .toInstant(TimeZone.currentSystemDefault())
+    .toLocalDateTime(TimeZone.UTC)
+    .timeInMinutes()
+    .also {
+        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::systemTimeInMinutes: time=${it.minutesToHHmm()}")
+    }
+
+fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
+
+fun Int.toTimeDisplay() = currentDateTime()
+    .changeTime(hour = this.hour(), minute = this.minute())
+    .toTimeDisplay()
+
+// высокосный год
 val Int.isLeapYear
     get() = when {
         this % 4 == 0 -> {
@@ -276,4 +331,8 @@ val Int.isLeapYear
 
 fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)
 
-fun String.toLocalDateTime() = Instant.parse(this).toLocalDateTime(TimeZone.UTC)
+fun String.toLocalDateTime(): LocalDateTime {
+    Log.d("VTTAG", "DateTimeExtensions::toLocalDateTime: date=$this")
+    return if (this == "") currentDateTime()
+    else LocalDateTime.parse(this)
+}

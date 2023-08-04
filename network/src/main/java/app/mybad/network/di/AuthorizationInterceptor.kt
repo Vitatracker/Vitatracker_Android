@@ -20,6 +20,10 @@ class AuthorizationInterceptor : Interceptor {
                         "Content-Type",
                         "application/json"
                     )
+                    .addHeader(
+                        "User-Agent",
+                        "android"
+                    )
                     .build()
             } else chain.request()
         )

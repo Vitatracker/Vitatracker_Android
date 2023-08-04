@@ -17,15 +17,15 @@ class RemedyRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : RemedyRepository {
 
+    override fun getRemedies(userId: Long) = db.getRemedies(userId)
+        .map { it.mapToDomain() }
+        .flowOn(dispatcher)
+
     override suspend fun getRemediesByUserId(userId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.getRemediesByUserId(userId).mapToDomain()
         }
     }
-
-    override fun getRemedies(userId: Long) = db.getRemedies(userId)
-        .map { it.mapToDomain() }
-        .flowOn(dispatcher)
 
     override suspend fun getRemedyById(remedyId: Long) = withContext(dispatcher) {
         Result.runCatching {
@@ -33,25 +33,42 @@ class RemedyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertRemedy(remedy: RemedyDomainModel) = withContext(dispatcher) {
+    override suspend fun getRemedyByIdn(remedyIdn: Long) = withContext(dispatcher) {
         Result.runCatching {
-            db.addRemedy(remedy.mapToData())
+            db.getRemedyByIdn(remedyIdn).mapToDomain()
         }
     }
 
-    override suspend fun updateRemedy(remedy: RemedyDomainModel): Unit = withContext(dispatcher) {
-        try {
-            db.addRemedy(remedy.mapToData())
-        } catch (ignore: Throwable) {
+    override suspend fun insertRemedy(remedy: RemedyDomainModel) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertRemedy(remedy.mapToData())
+        }
+    }
+
+    override suspend fun insertRemedy(remedies: List<RemedyDomainModel>) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertRemedy(remedies.mapToData())
+        }
+    }
+
+    override suspend fun updateRemedy(remedy: RemedyDomainModel) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertRemedy(remedy.mapToData())
         }
     }
 
     override suspend fun deleteRemedyById(remedyId: Long) = withContext(dispatcher) {
-        try {
+        Result.runCatching {
             db.deleteRemedyById(remedyId)
-        } catch (ignore: Throwable) {
         }
     }
+
+    override suspend fun deleteRemedies(remedies: List<RemedyDomainModel>) =
+        withContext(dispatcher) {
+            Result.runCatching {
+                db.deleteRemedy(remedies.mapToData())
+            }
+        }
 
     override suspend fun getRemediesByIds(remedyIdList: List<Long>) = withContext(dispatcher) {
         Result.runCatching {

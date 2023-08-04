@@ -14,13 +14,14 @@ interface UsageRepository {
     ): Result<List<UsageDomainModel>>
 
     suspend fun getUsagesBetween(startTime: Long, endTime: Long): Result<List<UsageDomainModel>>
-    suspend fun insertUsage(usage: UsageDomainModel)
-    suspend fun insertUsages(usages: List<UsageDomainModel>)
-    suspend fun updateUsage(usage: UsageDomainModel)
-    suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long)
-    suspend fun deleteUsagesById(usageId: Long)
-    suspend fun deleteUsagesByCourseId(courseId: Long)
-    suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long)
-    suspend fun deleteUsagesAfter(courseId: Long, afterTime: Long)
+    suspend fun insertUsage(usage: UsageDomainModel): Result<Unit>
+    suspend fun insertUsage(usages: List<UsageDomainModel>): Result<Unit>
+    suspend fun updateUsage(usage: UsageDomainModel): Result<Unit>
+    suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long): Result<Unit?>
+    suspend fun deleteUsagesById(usageId: Long): Result<Unit>
+    suspend fun deleteUsages(usages: List<UsageDomainModel>): Result<Unit>
+    suspend fun deleteUsagesByCourseId(courseId: Long): Result<Unit>
+    suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long): Result<Unit>
+    suspend fun deleteUsagesAfter(courseId: Long, afterTime: Long): Result<Unit>
     suspend fun getUsagesNotUpdateByUserId(userId: Long): Result<List<UsageDomainModel>>
 }

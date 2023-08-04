@@ -1,16 +1,15 @@
 package app.mybad.notifier.di
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
+import app.mybad.data.repos.SynchronizationCourseWorker
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 
 @HiltAndroidApp
-class AppModule : Application(), Configuration.Provider {
+class AppModule : Application() {
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .build()
+    override fun onCreate() {
+        super.onCreate()
+        SynchronizationCourseWorker.createNotificationChannel(this)
+    }
+
 }

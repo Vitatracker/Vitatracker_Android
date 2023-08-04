@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class CourseNetworkModel(
     @SerializedName("id") val id: Long,// -> idn
     @SerializedName("comment") val comment: String? = null,
-    @SerializedName("created") val createdDate: Long? = null,
+    @SerializedName("created") val createdDate: String = "",
     @SerializedName("end_date") val endDate: Long,
     @SerializedName("interval") val interval: Long,
     @SerializedName("is_finished") val isFinished: Boolean,
@@ -15,7 +15,7 @@ data class CourseNetworkModel(
     @SerializedName("regime") val regime: Int,
     @SerializedName("remind_date") val remindDate: Long,
     @SerializedName("start_date") val startDate: Long,
-    @SerializedName("updated") val updatedDate: Long? = null,
+    @SerializedName("updated") val updatedDate: String = "",
     @SerializedName("remedy_id") val remedyId: Long,
     @SerializedName("user_id") val userId: String? = null,
 )

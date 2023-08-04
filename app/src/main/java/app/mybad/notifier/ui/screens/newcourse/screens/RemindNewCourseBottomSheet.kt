@@ -25,14 +25,17 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
+import app.mybad.theme.R
 import app.mybad.theme.utils.changeTime
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
+import app.mybad.theme.utils.hour
 import app.mybad.theme.utils.minus
+import app.mybad.theme.utils.minute
 import app.mybad.theme.utils.plus
+import app.mybad.theme.utils.timeInMinutes
 import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.utils.toLocalDateTime
 import app.mybad.theme.utils.toTimeDisplay
-import app.mybad.theme.R
 import kotlinx.datetime.DateTimePeriod
 
 @Composable
@@ -52,7 +55,7 @@ fun RemindNewCourseBottomSheet(
     var selectedInput by remember { mutableStateOf(-1) }
     var coursesInterval by remember { mutableStateOf(DateTimePeriod(days = 3)) }
     var remindTime by remember {
-        mutableStateOf(getCurrentDateTime().changeTime(14, 0))
+        mutableStateOf(currentDateTime().changeTime(14, 0)) // что тут
     }
     var remindBeforePeriod by remember { mutableStateOf(DateTimePeriod(days = 3)) }
 
@@ -126,8 +129,11 @@ fun RemindNewCourseBottomSheet(
                     )
 
                     3 -> TimeSelector(
-                        initTime = remindTime.toEpochSecond(),
-                        onSelect = { remindTime = it.toLocalDateTime(); selectedInput = -1 }
+                        initTime = remindTime.timeInMinutes(),
+                        onSelect = { time ->
+                            selectedInput = -1
+                            remindTime = currentDateTime().changeTime(time.hour(), time.minute())
+                        }
                     )
                 }
             }

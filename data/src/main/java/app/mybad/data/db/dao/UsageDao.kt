@@ -1,6 +1,7 @@
 package app.mybad.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -26,7 +27,7 @@ interface UsageDao {
     suspend fun getUsagesByUserId(userId: Long): List<UsageModel>
 
     @Query("select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.COURSE_ID} = :courseId")
-    suspend fun getUsagesById(courseId: Long): List<UsageModel>
+    suspend fun getUsagesByCourseId(courseId: Long): List<UsageModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsage(usage: UsageModel)
@@ -65,6 +66,9 @@ interface UsageDao {
         } = :usageId"
     )
     suspend fun deleteUsagesById(usageId: Long)
+
+    @Delete
+    suspend fun deleteUsages(usages: List<UsageModel>)
 
     @Query(
         "delete from ${UsageContract.TABLE_NAME} where ${

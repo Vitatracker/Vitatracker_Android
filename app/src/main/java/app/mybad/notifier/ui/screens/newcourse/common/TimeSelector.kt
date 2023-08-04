@@ -33,26 +33,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.theme.utils.changeTime
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toLocalDateTime
-import app.mybad.theme.utils.toSystemDateTime
+import app.mybad.theme.R
+import app.mybad.theme.utils.hour
+import app.mybad.theme.utils.minute
+import app.mybad.theme.utils.minutesToHHmm
+import app.mybad.theme.utils.systemTimeInMinutes
+import app.mybad.theme.utils.toSystemTimeInMinutes
+import app.mybad.theme.utils.toTimeDisplay
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimeSelector(
     modifier: Modifier = Modifier,
-    initTime: Long,
-    onSelect: (Long) -> Unit
+    initTime: Int,
+    onSelect: (Int) -> Unit
 ) {
     val hours = (0..23).toList()
     val minutes = (0..59).toList()
-    val time = initTime.toSystemDateTime()
-    val pagerStateHours = rememberPagerState(initialPage = time.hour) { hours.size }
-    val pagerStateMinutes = rememberPagerState(initialPage = time.minute) { minutes.size }
+    val timeSystem = initTime.toSystemTimeInMinutes()
+    Log.w(
+        "VTTAG",
+        "TimeSelector::init: date time=${timeSystem.minutesToHHmm()} - ${initTime.minutesToHHmm()} - ${initTime.toTimeDisplay()}"
+    )
+
+    val pagerStateHours = rememberPagerState(initialPage = timeSystem.hour()) { hours.size }
+    val pagerStateMinutes = rememberPagerState(initialPage = timeSystem.minute()) { minutes.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,13 +93,13 @@ fun TimeSelector(
                 .padding(16.dp),
             shape = RoundedCornerShape(10.dp),
             onClick = {
-                val newTime = time.changeTime(
+                val newTime = systemTimeInMinutes(
                     hour = pagerStateHours.currentPage % hours.size,
                     minute = pagerStateMinutes.currentPage % minutes.size,
-                ).toEpochSecond(isUTC = false)
+                )
                 Log.w(
                     "VTTAG",
-                    "TimeSelector::onSelect: date time=${newTime.toSystemDateTime()} = ${newTime.toLocalDateTime()}"
+                    "TimeSelector::onSelect: date time=${newTime.minutesToHHmm()} - ${newTime.toTimeDisplay()}"
                 )
                 onSelect(newTime)
             },

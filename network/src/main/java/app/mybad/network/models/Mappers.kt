@@ -1,5 +1,6 @@
 package app.mybad.network.models
 
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
@@ -11,6 +12,7 @@ import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toDateTimeIsoDisplay
 import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.utils.toLocalDateTime
@@ -20,8 +22,8 @@ fun UserDomainModel.mapToNet() = UserNetworkModel(
 
     avatar = avatar,
 
-    createdDate = createdDate,
-    updatedDate = updatedDate,
+    createdDate = createdDate.toDateTimeIsoDisplay(),
+    updatedDate = updatedDate.toDateTimeIsoDisplay(),
 
     name = name,
     email = email,
@@ -30,30 +32,41 @@ fun UserDomainModel.mapToNet() = UserNetworkModel(
     notUsed = notUsed,
 )
 
-fun UserNetworkModel.mapToDomain() = UserDomainModel(
+fun UserNetworkModel.mapToDomain(userIdLoc: Long = 0) = UserDomainModel(
+    id = userIdLoc,
     idn = id,
 
     avatar = avatar ?: "",
 
-    createdDate = createdDate ?: 0L,
-    updatedDate = updatedDate ?: 0L,
+    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
+    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
     name = name ?: "",
     email = email ?: "",
     password = password ?: "",
 
     notUsed = notUsed,
+
+    updateNetworkDate = if (userIdLoc > 0) currentDateTime().toEpochSecond() else 0,
 )
 
-fun CourseNetworkModel.mapToDomain() = CourseDomainModel(
+fun CourseNetworkModel.mapToDomain(
+    remedyIdLoc: Long = 0,
+    courseIdLoc: Long = 0,
+) = CourseDomainModel(
+    id = courseIdLoc,
     idn = id,
 
-    createdDate = createdDate ?: 0L,
+    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
+    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
+    userId = AuthToken.userId,
     userIdn = userId ?: "",
 
     comment = comment ?: "",
-    remedyId = remedyId,
+
+    remedyId = remedyIdLoc,
+    remedyIdn = remedyId,
 
     startDate = startDate,
     endDate = endDate,
@@ -65,17 +78,21 @@ fun CourseNetworkModel.mapToDomain() = CourseDomainModel(
     isFinished = isFinished,
     isInfinite = isInfinite,
     notUsed = notUsed,
+
+    updateNetworkDate = if (courseIdLoc > 0) currentDateTime().toEpochSecond() else 0,
 )
 
 fun CourseDomainModel.mapToNet() = CourseNetworkModel(
     id = idn,
 
-    createdDate = createdDate,
+    createdDate = createdDate.toDateTimeIsoDisplay(),
+    updatedDate = updatedDate.toDateTimeIsoDisplay(),
 
     userId = userIdn,
 
     comment = comment,
-    remedyId = remedyId,
+
+    remedyId = remedyIdn,
 
     startDate = startDate,
     endDate = endDate,
@@ -90,14 +107,17 @@ fun CourseDomainModel.mapToNet() = CourseNetworkModel(
 )
 
 @JvmName("listCnmToDomain")
-fun List<CourseNetworkModel>.mapToDomain(): List<CourseDomainModel> = this.map { it.mapToDomain() }
+fun List<CourseNetworkModel>.mapToDomain(remedyIdLoc: Long = 0): List<CourseDomainModel> =
+    this.map { it.mapToDomain(remedyIdLoc = remedyIdLoc) }
 
-fun RemedyNetworkModel.mapToDomain() = RemedyDomainModel(
+fun RemedyNetworkModel.mapToDomain(remedyIdLoc: Long = 0) = RemedyDomainModel(
+    id = remedyIdLoc,
     idn = id,
 
     createdDate = createdDate.toLocalDateTime().toEpochSecond(),
     updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
+    userId = AuthToken.userId,
     userIdn = userId ?: "",
 
     name = name,
@@ -111,6 +131,8 @@ fun RemedyNetworkModel.mapToDomain() = RemedyDomainModel(
     measureUnit = measureUnit,
     beforeFood = beforeFood,
     notUsed = notUsed,
+
+    updateNetworkDate = if (remedyIdLoc > 0) currentDateTime().toEpochSecond() else 0,
 )
 
 fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
@@ -137,15 +159,25 @@ fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
 @JvmName("listRnmToDomain")
 fun List<RemedyNetworkModel>.mapToDomain(): List<RemedyDomainModel> = this.map { it.mapToDomain() }
 
-fun UsageNetworkModel.mapToDomain() = UsageDomainModel(
+fun UsageNetworkModel.mapToDomain(
+    remedyIdLoc: Long = 0,
+    courseIdLoc: Long = 0,
+    usageIdLoc: Long = 0
+) = UsageDomainModel(
+    id = usageIdLoc,
     idn = id,
 
+    userId = AuthToken.userId,
     userIdn = userId ?: "",
 
-    courseId = courseId ?: 0,
+    courseId = courseIdLoc,
+    courseIdn = courseId ?: 0,
 
-    createdDate = createdDate ?: 0,
-    updatedDate = updatedDate ?: 0,
+    remedyId = remedyIdLoc,
+    remedyIdn = remedyId ?: 0,
+
+    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
+    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
     factUseTime = factUseTime,
     useTime = useTime,
@@ -153,6 +185,8 @@ fun UsageNetworkModel.mapToDomain() = UsageDomainModel(
     quantity = quantity,
 
     notUsed = notUsed,
+
+    updateNetworkDate = if (usageIdLoc > 0) currentDateTime().toEpochSecond() else 0,
 )
 
 fun UsageDomainModel.mapToNet() = UsageNetworkModel(
@@ -160,10 +194,12 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 
     userId = userIdn,
 
-    courseId = courseId,
+    courseId = courseIdn,
 
-    createdDate = createdDate,
-    updatedDate = updatedDate,
+    remedyId = remedyIdn,
+
+    createdDate = createdDate.toDateTimeIsoDisplay(),
+    updatedDate = updatedDate.toDateTimeIsoDisplay(),
 
     factUseTime = factUseTime,
     useTime = useTime,
@@ -174,7 +210,12 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 )
 
 @JvmName("listUnmToDomain")
-fun List<UsageNetworkModel>.mapToDomain(): List<UsageDomainModel> = this.map { it.mapToDomain() }
+fun List<UsageNetworkModel>.mapToDomain(
+    remedyIdLoc: Long = 0,
+    courseIdLoc: Long = 0
+): List<UsageDomainModel> = this.map {
+    it.mapToDomain(remedyIdLoc = remedyIdLoc, courseIdLoc = courseIdLoc)
+}
 
 fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
     token = token,
@@ -184,10 +225,10 @@ fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
 fun UserSettingsDomainModel.mapToNet() = UserNetworkModel(
     id = "",
     avatar = null,
-    createdDate = null,
+    createdDate = createdDate.toDateTimeIsoDisplay(),
+    updatedDate = updatedDate.toDateTimeIsoDisplay(),
     email = null,
     name = null,
     notUsed = false,
     password = null,
-    updatedDate = null
 )

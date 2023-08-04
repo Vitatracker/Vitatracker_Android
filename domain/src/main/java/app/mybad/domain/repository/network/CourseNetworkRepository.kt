@@ -4,8 +4,13 @@ import app.mybad.domain.models.CourseDomainModel
 
 interface CourseNetworkRepository {
 
+    suspend fun getCourses(): Result<List<CourseDomainModel>>
     suspend fun getCourse(courseId: Long): Result<CourseDomainModel>
-    suspend fun getCoursesByRemedyId(remedyId: Long): Result<List<CourseDomainModel>>
+    suspend fun getCoursesByRemedyId(
+        remedyId: Long,
+        remedyIdLoc: Long = 0L,
+    ): Result<List<CourseDomainModel>>
+
     suspend fun updateCourse(course: CourseDomainModel): Result<CourseDomainModel>
     suspend fun deleteCourse(courseId: Long): Result<Boolean>
 

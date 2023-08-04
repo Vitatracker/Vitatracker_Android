@@ -12,7 +12,7 @@ import app.mybad.domain.usecases.authorization.LoginWithFacebookUseCase
 import app.mybad.domain.usecases.authorization.LoginWithGoogleUseCase
 import app.mybad.domain.usecases.authorization.RegistrationUserUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.plusDays
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,7 +58,7 @@ class AuthorizationScreenViewModel @Inject constructor(
                         name = ""
                     )
                     Log.w("VTTAG", "AuthorizationScreenViewModel::logIn: Ok: userId=$userId token=${result.token}")
-                    val currentDate = getCurrentDateTime()
+                    val currentDate = currentDateTime()
                     //TODO("получить даты обносления с сервера")
                     updateUserAuthTokenUseCase(
                         userId = userId,
@@ -99,7 +99,7 @@ class AuthorizationScreenViewModel @Inject constructor(
                 // добавить в локальную db user и получим userId
                 val userId: Long = createUserUseCase(email = login, name = userName)
                 Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Ok: userId=$userId")
-                val currentDate = getCurrentDateTime()
+                val currentDate = currentDateTime()
                 //TODO("получить даты обносления с сервера")
                 updateUserAuthTokenUseCase(
                     userId = userId,

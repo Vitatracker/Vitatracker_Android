@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
@@ -50,8 +49,8 @@ import app.mybad.notifier.ui.theme.textColorThird
 import app.mybad.theme.R
 import app.mybad.theme.utils.TIME_IS_UP
 import app.mybad.theme.utils.changeDate
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.getCurrentDateTime
 import app.mybad.theme.utils.getDaysOfMonth
 import app.mybad.theme.utils.monthShortDisplay
 import app.mybad.theme.utils.toEpochSecond
@@ -102,7 +101,6 @@ fun StartMainScreen(
                 usagesSize = usagesSize,
                 usages = uiState.usages,
                 remedies = uiState.remedies,
-                courses = uiState.courses,
                 usageState = usageState,
                 setUsageFactTime = { vm.setUsagesFactTime(usage = usageState.value) }
             )
@@ -116,7 +114,6 @@ private fun MainScreen(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
     remedies: List<RemedyDomainModel>,
-    courses: List<CourseDomainModel>,
     usagesSize: Int,
     usages: List<UsageDomainModel>,
     usageState: MutableState<UsageDomainModel>,
@@ -138,7 +135,6 @@ private fun MainScreen(
                 uiState = uiState,
                 changeData = changeData,
                 remedies = remedies,
-                courses = courses,
                 usages = usages,
                 usagesSize = usagesSize,
                 usageState = usageState,
@@ -158,7 +154,7 @@ private fun MainScreenMonthPager(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit = {}
 ) {
-    val stateMonth = rememberPagerState(getCurrentDateTime().month.ordinal) { 12 }
+    val stateMonth = rememberPagerState(currentDateTime().month.ordinal) { 12 }
     val scope = rememberCoroutineScope()
 
     HorizontalPager(
@@ -209,7 +205,7 @@ private fun MainScreenWeekPager(
 
     var shortNameOfDay by remember { mutableStateOf("") }
     var countDay by remember { mutableStateOf(0) }
-    val currentDate = getCurrentDateTime()
+    val currentDate = currentDateTime()
     val date by remember { mutableStateOf(currentDate) }
     val stateDay = rememberPagerState(uiState.value.dayOfMonth - 1) {
         // количество дней в месяце с учетом высокосного года
@@ -293,7 +289,6 @@ private fun MainScreenLazyMedicines(
     uiState: MutableState<LocalDateTime>,
     changeData: (MutableState<LocalDateTime>) -> Unit,
     remedies: List<RemedyDomainModel>,
-    courses: List<CourseDomainModel>,
     usages: List<UsageDomainModel>,
     usagesSize: Int,
     usageState: MutableState<UsageDomainModel>,
@@ -308,9 +303,7 @@ private fun MainScreenLazyMedicines(
         Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}")
         LazyColumn(modifier = Modifier.padding(top = 10.dp), userScrollEnabled = true) {
             items(usages.sortedBy { it.useTime }) { usage ->
-                val remedy = courses.firstOrNull { it.id == usage.courseId }?.let { course ->
-                    remedies.firstOrNull { it.id == course.remedyId }
-                } ?: RemedyDomainModel()
+                val remedy = remedies.firstOrNull { it.id == usage.remedyId } ?: RemedyDomainModel()
                 MainScreenCourseItem(
                     usage = usage,
                     remedy = remedy,
@@ -499,7 +492,7 @@ private fun MainScreenFormCourseHeader(
             setUsageFactTime = {
                 usageState.value = usage.copy(
                     factUseTime = if (usage.factUseTime == -1L) {
-                        getCurrentDateTime().toEpochSecond()
+                        currentDateTime().toEpochSecond()
                     } else {
                         -1
                     }
@@ -519,7 +512,7 @@ private fun MainScreenButtonAccept(
     isDone: Boolean,
     setUsageFactTime: () -> Unit
 ) {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 
     val tint: Color
     val painter: Painter
@@ -582,7 +575,7 @@ private fun getMonthColor(page: Int, month: Int) = when (page) {
 // цвет рамки вокруг карточки
 @Composable
 private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 //TODO("проверить тут время, возможно в usageTime подменять дату или нет")
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
@@ -596,7 +589,7 @@ private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
 // цвет фона карточки 5%
 @Composable
 private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
@@ -610,7 +603,7 @@ private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
 // цвет рамки вокруг времени
 @Composable
 private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
@@ -624,7 +617,7 @@ private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStro
 // цвет фона времени 10% в карточке
 @Composable
 private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
@@ -638,7 +631,7 @@ private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
 // цвет времени в карточке
 @Composable
 private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = getCurrentDateTime().toEpochSecond()
+    val nowDate = currentDateTime().toEpochSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.onPrimary

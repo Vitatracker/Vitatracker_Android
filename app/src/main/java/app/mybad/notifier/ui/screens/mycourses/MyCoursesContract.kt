@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.mycourses
 
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 
@@ -8,6 +9,6 @@ sealed interface MyCoursesIntent {
     data class Update(
         val course: CourseDomainModel,
         val remedy: RemedyDomainModel,
-        val usagesPattern: List<Pair<Long, Int>>
+        val usagesPattern: List<UsageFormat>
     ) : MyCoursesIntent
 }

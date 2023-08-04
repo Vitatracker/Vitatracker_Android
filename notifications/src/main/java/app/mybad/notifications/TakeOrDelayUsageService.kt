@@ -9,7 +9,7 @@ import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.REMEDY_ID
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.USAGE_TIME
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -44,7 +44,7 @@ class TakeOrDelayUsageService : Service() {
                         intent.getLongExtra(USAGE_TIME.name, 0),
                     ).getOrNull()?.firstOrNull()?.let { usage ->
                         updateUsageUseCase(
-                            usage.copy(factUseTime = getCurrentDateTime().toEpochSecond())
+                            usage.copy(factUseTime = currentDateTime().toEpochSecond())
                         )
                     }
                 }
@@ -60,7 +60,7 @@ class TakeOrDelayUsageService : Service() {
                         notificationsScheduler.addAlarm(
                             listOf(
                                 usage.copy(
-                                    useTime = getCurrentDateTime().toEpochSecond()
+                                    useTime = currentDateTime().toEpochSecond()
                                         .plus(20) //TODO("что это за 20")
                                 )
                             )

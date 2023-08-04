@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
             entity = UserModel::class,
             parentColumns = [UserContract.Columns.ID],
             childColumns = [RemedyContract.Columns.USER_ID],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.NO_ACTION,
         ),
     ],
     indices = [Index(RemedyContract.Columns.USER_ID)],

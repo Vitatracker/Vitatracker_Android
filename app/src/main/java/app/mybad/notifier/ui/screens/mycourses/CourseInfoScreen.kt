@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
@@ -48,26 +49,26 @@ import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 import app.mybad.theme.utils.atEndOfDay
 import app.mybad.theme.utils.atEndOfDaySystemToUTC
 import app.mybad.theme.utils.atStartOfDay
 import app.mybad.theme.utils.atStartOfDaySystemToUTC
 import app.mybad.theme.utils.toDateFullDisplay
 import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.R
 
-private val usagesPattern = listOf<Pair<Long, Int>>(
-    Pair(1678190400L, 1),
-    Pair(1678197600L, 3),
-    Pair(1678204800L, 2),
+private val usagesPattern = listOf(
+    UsageFormat(480, 1), //08:00
+    UsageFormat(720, 3), //12:00
+    UsageFormat(1080, 2),//18:00
 )
 
 @Composable
 fun CourseInfoScreen(
     modifier: Modifier = Modifier,
+    remedy: RemedyDomainModel = RemedyDomainModel(),
     course: CourseDomainModel = CourseDomainModel(),
-    usagePattern: List<Pair<Long, Int>> = usagesPattern,
-    med: RemedyDomainModel = RemedyDomainModel(),
+    usagePattern: List<UsageFormat> = usagesPattern,
     reducer: (MyCoursesIntent) -> Unit = {},
 ) {
     val types = stringArrayResource(R.array.types)
@@ -78,7 +79,7 @@ fun CourseInfoScreen(
     val dose = stringResource(R.string.mycourse_dosage_and_usage)
     val unit = stringResource(R.string.add_med_unit)
     val rel = stringResource(R.string.add_med_food_relation)
-    var medInternal by remember { mutableStateOf(med) }
+    var remedyInternal by remember { mutableStateOf(remedy) }
     var courseInternal by remember { mutableStateOf(course) }
     val patternInternal by remember { mutableStateOf(usagePattern) }
 
@@ -109,9 +110,9 @@ fun CourseInfoScreen(
             MultiBox(
                 {
                     IconSelector(
-                        selected = medInternal.icon,
-                        color = medInternal.color,
-                        onSelect = { medInternal = medInternal.copy(icon = it) }
+                        selected = remedyInternal.icon,
+                        color = remedyInternal.color,
+                        onSelect = { remedyInternal = remedyInternal.copy(icon = it) }
                     )
                 },
                 itemsPadding = PaddingValues(16.dp),
@@ -125,8 +126,8 @@ fun CourseInfoScreen(
             MultiBox(
                 {
                     ColorSelector(
-                        selected = medInternal.color,
-                        onSelect = { medInternal = medInternal.copy(color = it) }
+                        selected = remedyInternal.color,
+                        onSelect = { remedyInternal = remedyInternal.copy(color = it) }
                     )
                 },
                 itemsPadding = PaddingValues(16.dp),
@@ -141,16 +142,16 @@ fun CourseInfoScreen(
                 {
                     BasicKeyboardInput(
                         label = name,
-                        init = medInternal.name,
+                        init = remedyInternal.name,
                         hideOnGo = true,
-                        onChange = { medInternal = medInternal.copy(name = it) }
+                        onChange = { remedyInternal = remedyInternal.copy(name = it) }
                     )
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
                     ParameterIndicator(
                         name = form,
-                        value = types[med.type],
+                        value = types[remedy.type],
                         onClick = { exp = true }
                     )
                     DropdownMenu(
@@ -162,7 +163,7 @@ fun CourseInfoScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    medInternal = medInternal.copy(type = index)
+                                    remedyInternal = remedyInternal.copy(type = index)
                                     exp = false
                                 }
                             )
@@ -172,7 +173,7 @@ fun CourseInfoScreen(
                 {
                     BasicKeyboardInput(
                         label = dose,
-                        init = if (medInternal.dose == 0) "" else medInternal.dose.toString(),
+                        init = if (remedyInternal.dose == 0) "" else remedyInternal.dose.toString(),
                         hideOnGo = true,
                         keyboardType = KeyboardType.Number,
                         alignRight = true,
@@ -182,14 +183,16 @@ fun CourseInfoScreen(
                                 style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                             )
                         },
-                        onChange = { medInternal = medInternal.copy(dose = it.toIntOrNull() ?: 0) }
+                        onChange = {
+                            remedyInternal = remedyInternal.copy(dose = it.toIntOrNull() ?: 0)
+                        }
                     )
                 },
                 {
                     var exp by remember { mutableStateOf(false) }
                     ParameterIndicator(
                         name = unit,
-                        value = units[medInternal.measureUnit],
+                        value = units[remedyInternal.measureUnit],
                         onClick = { exp = true }
                     )
                     DropdownMenu(
@@ -201,7 +204,7 @@ fun CourseInfoScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    medInternal = medInternal.copy(measureUnit = index)
+                                    remedyInternal = remedyInternal.copy(measureUnit = index)
                                     exp = false
                                 }
                             )
@@ -212,7 +215,7 @@ fun CourseInfoScreen(
                     var exp by remember { mutableStateOf(false) }
                     ParameterIndicator(
                         name = rel,
-                        value = rels[medInternal.beforeFood],
+                        value = rels[remedyInternal.beforeFood],
                         onClick = { exp = true }
                     )
                     DropdownMenu(
@@ -224,7 +227,7 @@ fun CourseInfoScreen(
                             DropdownMenuItem(
                                 text = { Text(item) },
                                 onClick = {
-                                    medInternal = medInternal.copy(beforeFood = index)
+                                    remedyInternal = remedyInternal.copy(beforeFood = index)
                                     exp = false
                                 }
                             )
@@ -288,7 +291,7 @@ fun CourseInfoScreen(
         Spacer(Modifier.height(16.dp))
         SaveDecline(
             onSave = {
-                reducer(MyCoursesIntent.Update(courseInternal, medInternal, patternInternal))
+                reducer(MyCoursesIntent.Update(courseInternal, remedyInternal, patternInternal))
             },
             onDelete = { reducer(MyCoursesIntent.Delete(courseInternal.id)) },
         )

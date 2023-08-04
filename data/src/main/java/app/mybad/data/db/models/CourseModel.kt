@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
             entity = RemedyModel::class,
             parentColumns = [RemedyContract.Columns.ID],
             childColumns = [CourseContract.Columns.REMEDY_ID],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.NO_ACTION,
         ),
     ],
     indices = [Index(CourseContract.Columns.REMEDY_ID)],
@@ -24,22 +24,30 @@ data class CourseModel(
     var id: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.IDN)
     val idn: Long = 0,
+
     @ColumnInfo(name = CourseContract.Columns.CREATION_DATE)
     val createdDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.UPDATE_DATE)
     val updateDate: Long = 0,
+
     @ColumnInfo(name = CourseContract.Columns.USER_ID)
     val userId: Long,
     @ColumnInfo(name = CourseContract.Columns.USER_IDN)
     val userIdn: String,
+
     @ColumnInfo(name = CourseContract.Columns.COMMENT)
     val comment: String = "",
+
     @ColumnInfo(name = CourseContract.Columns.REMEDY_ID)
     val remedyId: Long = -1L,
+    @ColumnInfo(name = CourseContract.Columns.REMEDY_IDN)
+    val remedyIdn: Long = 0,
+
     @ColumnInfo(name = CourseContract.Columns.START_DATE)
     val startDate: Long = -1L,
     @ColumnInfo(name = CourseContract.Columns.END_DATE)
     val endDate: Long = -1L,
+
     @ColumnInfo(name = CourseContract.Columns.REMIND_DATE)
     val remindDate: Long = -1L,
     @ColumnInfo(name = CourseContract.Columns.INTERVAL)

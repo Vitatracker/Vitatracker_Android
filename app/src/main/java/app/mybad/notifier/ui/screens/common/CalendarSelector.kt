@@ -35,7 +35,7 @@ import app.mybad.theme.utils.DAYS_A_WEEK
 import app.mybad.theme.utils.atStartOfDaySystemToUTC
 import app.mybad.theme.utils.atStartOfMonth
 import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.minusDays
 import app.mybad.theme.utils.plusDays
 import kotlinx.datetime.LocalDateTime
@@ -43,7 +43,7 @@ import kotlinx.datetime.LocalDateTime
 @Composable
 fun CalendarSelectorScreen(
     modifier: Modifier = Modifier,
-    date: LocalDateTime = getCurrentDateTime(),
+    date: LocalDateTime = currentDateTime(),
     startDay: LocalDateTime,
     endDay: LocalDateTime,
     onSelect: (date: LocalDateTime?) -> Unit,
@@ -104,7 +104,7 @@ fun CalendarSelector(
 ) {
     var startDate by remember { mutableStateOf(startDay) }
     var endDate by remember { mutableStateOf(endDay) }
-    val currentDate = getCurrentDateTime()
+    val currentDate = currentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(DAYS_A_WEEK) { null }
     }
@@ -153,7 +153,7 @@ fun CalendarSelector(
                     .padding(top = 8.dp)
                     .fillMaxWidth()
             )
-            val currentDateTime = getCurrentDateTime()
+            val currentDateTime = currentDateTime()
             repeat(6) { w ->
                 if (cdr[w].any { it?.month == date.month }) {
                     Row(

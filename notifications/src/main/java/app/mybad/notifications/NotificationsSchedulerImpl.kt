@@ -15,7 +15,7 @@ import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.scheduler.NotificationsScheduler
 import app.mybad.theme.utils.MILES_SECONDS
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -93,7 +93,7 @@ class NotificationsSchedulerImpl @Inject constructor(
     }
 
     override suspend fun rescheduleAlarmByUserId(userId: Long, onComplete: () -> Unit) {
-        val now = getCurrentDateTime().toEpochSecond()
+        val now = currentDateTime().toEpochSecond()
         usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
             if (usage.useTime >= now) {
                 courseRepository.getCourseById(usage.courseId).getOrNull()?.let { course ->

@@ -11,7 +11,7 @@ import app.mybad.domain.usecases.usages.GetUsagesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import app.mybad.theme.utils.atEndOfDay
 import app.mybad.theme.utils.atStartOfDay
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +58,7 @@ class StartMainScreenViewModel @Inject constructor(
     }
 
     private fun setDataNow() {
-        viewModelScope.launch { _uiState.emit(_uiState.value.copy(date = getCurrentDateTime())) }
+        viewModelScope.launch { _uiState.emit(_uiState.value.copy(date = currentDateTime())) }
     }
 
     private fun getUsages() {
@@ -102,10 +102,13 @@ class StartMainScreenViewModel @Inject constructor(
                 .onFailure {
                     TODO("вывод ошибки")
                 }
-            val coursesIds = _uiState.value.usages.map { it.courseId }.toSet()
-            val remedyIds = _uiState.value.courses.filter { course->
-                course.id in coursesIds
-            }.map { it.remedyId }.toSet().toList()
+            val remedyIds = _uiState.value.usages.map {usage-> usage.remedyId }.toList()
+//            val coursesIds = _uiState.value.usages.map {usage-> usage.courseId }.toSet()
+//            val remedyIds = _uiState.value.courses.filter { course->
+//                course.id in coursesIds
+//            }.map {course->
+//                course.remedyId
+//            }.toSet().toList()
             getRemediesByListIdUseCase(remedyIds).onSuccess { remedies->
                 _uiState.emit(_uiState.value.copy(remedies = remedies))
             }

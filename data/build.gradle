@@ -58,7 +58,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // Logging interceptor
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
 
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -79,7 +79,7 @@ dependencies {
     // Proto DataStore
     implementation "androidx.datastore:datastore:$data_store"
     implementation "androidx.datastore:datastore-core:$data_store"
-    implementation "com.google.protobuf:protobuf-javalite:3.21.12"
+    implementation 'com.google.protobuf:protobuf-javalite:3.23.4'
 
     // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
@@ -94,16 +94,16 @@ dependencies {
     //    local unit test
     implementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "com.google.truth:truth:1.1.2"
-    testImplementation 'org.robolectric:robolectric:4.9'
+    testImplementation 'com.google.truth:truth:1.1.5'
+    testImplementation 'org.robolectric:robolectric:4.10.3'
     //    instrumentation test
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation "androidx.arch.core:core-testing:2.2.0"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation "com.google.truth:truth:1.1.2"
+    androidTestImplementation 'com.google.truth:truth:1.1.5'
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     implementation "com.google.dagger:hilt-android-testing:$hilt_version"

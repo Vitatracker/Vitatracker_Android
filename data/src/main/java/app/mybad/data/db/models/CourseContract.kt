@@ -12,6 +12,7 @@ object CourseContract {
         const val USER_ID = "user_id" //
         const val USER_IDN = "user_idn" //
         const val REMEDY_ID = "remedy_id" //
+        const val REMEDY_IDN = "remedy_idn" //
         const val START_DATE = "start_date" //
         const val END_DATE = "end_date" //
         const val REMIND_DATE = "remind_date" //

@@ -48,6 +48,7 @@
     <string name="settings_profile">Профиль</string>
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_about">О приложении</string>
+    <string name="settings_db_clear">Очистить DB</string>
     <string name="settings_quit">Выйти</string>
     <string name="settings_delete_account">Удалить учетную запись</string>
     <string name="settings_change_password">Изменить пароль</string>

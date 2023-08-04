@@ -15,7 +15,7 @@ class UpdateUsagesInCourseUseCase @Inject constructor(
             //TODO("проверить нужно ли здесь удаление")
             repository.deleteUsagesById(usages.first().courseId)
 
-            repository.insertUsages(usages)
+            repository.insertUsage(usages)
         } catch (e: Error) {
             Log.e("VTTAG", "UpdateUsagesInCourseUseCase: Error", e)
         }

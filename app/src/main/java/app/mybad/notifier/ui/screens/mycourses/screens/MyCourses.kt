@@ -21,10 +21,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,20 +40,20 @@ import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.R
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.plusDay
 import app.mybad.theme.utils.plusThreeDay
 import app.mybad.theme.utils.secondsToDay
 import app.mybad.theme.utils.toDateDisplay
 import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.R
 
 @Composable
 fun MyCourses(
     modifier: Modifier = Modifier,
+    remedies: List<RemedyDomainModel>,
     courses: List<CourseDomainModel>,
     usages: List<UsageDomainModel>,
-    remedies: List<RemedyDomainModel>,
     onSelect: (Long) -> Unit
 ) {
     val height = LocalConfiguration.current.screenHeightDp
@@ -62,7 +62,7 @@ fun MyCourses(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        val now = getCurrentDateTime().toEpochSecond()
+        val now = currentDateTime().toEpochSecond()
         courses.forEach {
             Log.w("MC_courses", "$it")
         }
@@ -75,8 +75,8 @@ fun MyCourses(
                         remedy = remedies.first { it.id == course.remedyId },
                         usages = usages.filter { usage ->
                             usage.courseId == course.id &&
-                                    usage.useTime >= course.startDate &&
-                                    usage.useTime < course.endDate.plusDay()
+                                usage.useTime >= course.startDate &&
+                                usage.useTime < course.endDate.plusDay()
                         },
                         onSelect = onSelect::invoke,
                     )
@@ -98,8 +98,8 @@ fun MyCourses(
                                 remedy = remedies.first { it.id == newCourse.remedyId },
                                 usages = usages.filter { usage ->
                                     usage.courseId == newCourse.id &&
-                                            usage.useTime >= newCourse.startDate &&
-                                            usage.useTime < newCourse.startDate.plusDay()
+                                        usage.useTime >= newCourse.startDate &&
+                                        usage.useTime < newCourse.startDate.plusDay()
                                 }.take(10),
                                 startInDays = (newCourse.startDate + newCourse.interval - now).secondsToDay()
                                     .toInt(),
@@ -200,7 +200,7 @@ private fun CourseItem(
                                         text = "$itemsCount, ${types[remedy.type]}",
                                         style = Typography.labelMedium
                                     )
-                                    Divider(
+                                    VerticalDivider(
                                         thickness = 1.dp,
                                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                                         modifier = Modifier

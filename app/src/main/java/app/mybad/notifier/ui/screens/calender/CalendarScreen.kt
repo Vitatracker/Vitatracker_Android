@@ -46,7 +46,7 @@ import app.mybad.theme.utils.atEndOfDay
 import app.mybad.theme.utils.atStartOfDay
 import app.mybad.theme.utils.atStartOfMonth
 import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.minusDays
 import app.mybad.theme.utils.plusDays
 import app.mybad.theme.utils.toDateFullDisplay
@@ -62,8 +62,8 @@ fun CalendarScreen(
     remedies: List<RemedyDomainModel>,
     reducer: (CalendarIntent) -> Unit
 ) {
-    var date by remember { mutableStateOf(getCurrentDateTime()) }
-    var selectedDate: LocalDateTime? by remember { mutableStateOf(date) }
+    var date by remember { mutableStateOf(currentDateTime()) }
+    var selectedDate by remember { mutableStateOf<LocalDateTime?>(date) }
     var dialogIsShown by remember { mutableStateOf(false) }
     var usagesDaily = collectUsagesToday(
         date = selectedDate,
@@ -132,7 +132,7 @@ private fun CalendarScreenItem(
     usages: List<UsageDomainModel>,
     onSelect: (LocalDateTime?) -> Unit
 ) {
-    val currentDate = getCurrentDateTime()
+    val currentDate = currentDateTime()
     val cdr: Array<Array<LocalDateTime?>> = Array(6) {
         Array(DAYS_A_WEEK) { null }
     }

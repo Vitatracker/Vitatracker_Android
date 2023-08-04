@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
             entity = UserModel::class,
             parentColumns = [UserContract.Columns.ID],
             childColumns = [UsageContract.Columns.USER_ID],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.NO_ACTION,
         ),
     ],
     indices = [Index(UsageContract.Columns.USER_ID), Index(UsageContract.Columns.COURSE_ID)],
@@ -27,6 +27,13 @@ data class UsageModel(
 
     @ColumnInfo(name = UsageContract.Columns.COURSE_ID)
     val courseId: Long,
+    @ColumnInfo(name = UsageContract.Columns.COURSE_IDN)
+    val courseIdn: Long,
+
+    @ColumnInfo(name = UsageContract.Columns.REMEDY_ID)
+    val remedyId: Long,
+    @ColumnInfo(name = UsageContract.Columns.REMEDY_IDN)
+    val remedyIdn: Long,
 
     @ColumnInfo(name = UsageContract.Columns.USER_ID)
     val userId: Long,
@@ -39,7 +46,7 @@ data class UsageModel(
     val updatedDate: Long = 0,
 
     @ColumnInfo(name = UsageContract.Columns.USE_TIME)
-    val useTime: Long,
+    val useTime: Long, // тут полная дата со временем, но нужно только время
     @ColumnInfo(name = UsageContract.Columns.FACT_USE_TIME)
     val factUseTime: Long = 0,
 

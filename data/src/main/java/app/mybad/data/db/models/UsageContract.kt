@@ -10,7 +10,11 @@ object UsageContract {
         const val USER_ID = "user_id" //
         const val USER_IDN = "user_idn" //
 
-        const val COURSE_ID = "course_id" //
+        const val COURSE_ID = "course_id" // курс
+        const val COURSE_IDN = "course_idn" // курс
+
+        const val REMEDY_ID = "remedy_id" // таблетка, нужна для вывода информации
+        const val REMEDY_IDN = "remedy_idn" // таблетка, нужна для вывода информации
 
         const val CREATION_DATE = "creation" //
         const val UPDATED_DATE = "updated" //

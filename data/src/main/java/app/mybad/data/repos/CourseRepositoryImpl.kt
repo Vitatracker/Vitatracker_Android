@@ -39,25 +39,39 @@ class CourseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCourseByIdn(courseIdn: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.getCourseByIdn(courseIdn).mapToDomain()
+        }
+    }
+
     override suspend fun insertCourse(course: CourseDomainModel) = withContext(dispatcher) {
         Result.runCatching {
             db.insertCourse(course.mapToData())
         }
     }
 
-    override suspend fun updateCourse(course: CourseDomainModel) {
-        withContext(dispatcher) {
-            Result.runCatching {
-                db.insertCourse(course.mapToData())
-            }
+    override suspend fun insertCourse(courses: List<CourseDomainModel>) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertCourse(courses.mapToData())
         }
     }
 
-    override suspend fun deleteCourseById(courseId: Long) {
-        withContext(dispatcher) {
-            Result.runCatching {
-                db.deleteCourseById(courseId)
-            }
+    override suspend fun updateCourse(course: CourseDomainModel) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertCourse(course.mapToData())
+        }
+    }
+
+    override suspend fun deleteCourse(courses: List<CourseDomainModel>) = withContext(dispatcher) {
+        Result.runCatching {
+            db.deleteCourse(courses.mapToData())
+        }
+    }
+
+    override suspend fun deleteCourseById(courseId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.deleteCourseById(courseId)
         }
     }
 

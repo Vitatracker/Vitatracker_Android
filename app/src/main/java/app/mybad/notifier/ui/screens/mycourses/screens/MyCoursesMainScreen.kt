@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
@@ -30,8 +31,9 @@ import app.mybad.notifier.ui.screens.mycourses.MyCoursesIntent
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.theme.utils.plusDay
 import app.mybad.theme.R
+import app.mybad.theme.utils.timeInMinutes
+import app.mybad.theme.utils.dateTimeTomorrow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,8 +56,8 @@ fun MyCoursesMainScreen(
                                 R.string.my_course_h
                             )
                         } else {
-                            state.value.remedies.firstOrNull {
-                                it.id == selectedCourse?.remedyId
+                            state.value.remedies.firstOrNull { remedy ->
+                                remedy.id == selectedCourse?.remedyId
                             }?.name ?: "no data"
                         },
                         textAlign = TextAlign.Center,
@@ -76,11 +78,13 @@ fun MyCoursesMainScreen(
             ) {
                 composable(MyCoursesNavItem.Main.route) {
                     MyCourses(
+                        remedies = state.value.remedies,
                         courses = state.value.courses,
                         usages = state.value.usages,
-                        remedies = state.value.remedies,
-                        onSelect = {
-                            selectedCourse = state.value.courses.first { course -> course.id == it }
+                        onSelect = { courseId ->
+                            selectedCourse = state.value.courses.first { course ->
+                                course.id == courseId
+                            }
                             navHostController.navigate(MyCoursesNavItem.Course.route)
                         }
                     )
@@ -90,8 +94,9 @@ fun MyCoursesMainScreen(
                     selectedCourse?.let { selectedCourse ->
                         CourseInfoScreen(
                             course = selectedCourse,
-                            med = state.value.remedies.firstOrNull { it.id == selectedCourse.remedyId }
-                                ?: RemedyDomainModel(),
+                            remedy = state.value.remedies.firstOrNull { remedy ->
+                                remedy.id == selectedCourse.remedyId
+                            } ?: RemedyDomainModel(),
                             usagePattern = generatePattern(
                                 selectedCourse.id,
                                 state.value.usages
@@ -126,14 +131,20 @@ fun MyCoursesMainScreen(
 private fun generatePattern(
     courseId: Long,
     usages: List<UsageDomainModel>
-): List<Pair<Long, Int>> {
+): List<UsageFormat> {
     if (usages.isNotEmpty()) {
         val list = usages.filter { it.courseId == courseId }
         if (list.isNotEmpty()) {
-            val firstTimeTomorrow = list.minBy { it.useTime }.useTime.plusDay()
+            //TODO("тут нужно понять что нужно, время или дата и время")
+            // тут берется дата и время
+            val firstTimeTomorrow = list.minBy { it.useTime }.useTime.dateTimeTomorrow()
             return list.mapNotNull { usage ->
-                if (usage.useTime < firstTimeTomorrow) usage.useTime to usage.quantity
-                else null
+                if (usage.useTime < firstTimeTomorrow) {
+                    UsageFormat(
+                        timeInMinutes = usage.useTime.timeInMinutes(),
+                        quantity = usage.quantity
+                    )
+                } else null
             }
         }
     }

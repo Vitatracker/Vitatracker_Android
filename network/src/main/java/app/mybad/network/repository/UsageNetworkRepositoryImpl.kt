@@ -1,12 +1,11 @@
 package app.mybad.network.repository
 
+import android.util.Log
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.repository.network.UsageNetworkRepository
 import app.mybad.network.api.UsageApi
 import app.mybad.network.models.mapToDomain
 import app.mybad.network.models.mapToNet
-import app.mybad.theme.utils.getCurrentDateTime
-import app.mybad.theme.utils.toEpochSecond
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,21 +16,37 @@ class UsageNetworkRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UsageNetworkRepository {
 
-    override suspend fun getUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
+    override suspend fun getUsages() = withContext(dispatcher) {
         Result.runCatching {
-            usageApi.getUsagesByCourseId(courseId).mapToDomain()
+            usageApi.getUsages().mapToDomain()
+        }
+    }
+
+    override suspend fun getUsagesByCourseId(
+        courseId: Long,
+        remedyIdLoc: Long,
+        courseIdLoc: Long,
+    ) = withContext(dispatcher) {
+        Result.runCatching {
+            usageApi.getUsagesByCourseId(courseId)
+                .mapToDomain(
+                    remedyIdLoc = remedyIdLoc,
+                    courseIdLoc = courseIdLoc,
+                )
         }
     }
 
     override suspend fun updateUsage(usage: UsageDomainModel) = withContext(dispatcher) {
-        var net = usage.mapToNet()
-        net = if (net.id < 0) usageApi.addUsage(net)
-        else usageApi.updateUsage(net)
-        usage.copy(
-            idn = net.id,
-            userIdn = net.userId ?: "",
-            updateNetworkDate = getCurrentDateTime().toEpochSecond(),
-        )
+        Result.runCatching {
+            Log.d(
+                "VTTAG",
+                "SynchronizationCourseWorker::UsageNetworkRepositoryImpl: usage id=${usage.id}"
+            )
+            var usageNet = usage.mapToNet()
+            usageNet = if (usageNet.id < 0) usageApi.addUsage(usageNet)
+            else usageApi.updateUsage(usageNet)
+            usageNet.mapToDomain(usage.id)
+        }
     }
 
     override suspend fun deleteUsage(usageId: Long) = withContext(dispatcher) {

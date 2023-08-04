@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse
 
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
@@ -9,7 +10,7 @@ sealed interface NewCourseIntent {
     object Finish : NewCourseIntent
     data class UpdateMed(val remedy: RemedyDomainModel) : NewCourseIntent
     data class UpdateCourse(val course: CourseDomainModel) : NewCourseIntent
-    data class UpdateUsagesPattern(val pattern: List<Pair<Long, Int>>) : NewCourseIntent
+    data class UpdateUsagesPattern(val pattern: List<UsageFormat>) : NewCourseIntent
     data class UpdateUsages(val usages: List<UsageDomainModel>) : NewCourseIntent
 }
 

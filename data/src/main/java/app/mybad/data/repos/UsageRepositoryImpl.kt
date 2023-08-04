@@ -1,6 +1,5 @@
 package app.mybad.data.repos
 
-import android.util.Log
 import app.mybad.data.db.dao.UsageDao
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
@@ -30,7 +29,7 @@ class UsageRepositoryImpl @Inject constructor(
 
     override suspend fun getUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
         Result.runCatching {
-            db.getUsagesById(courseId).mapToDomain()
+            db.getUsagesByCourseId(courseId).mapToDomain()
         }
     }
 
@@ -44,79 +43,65 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUsagesById(usageId: Long) {
-        withContext(dispatcher) {
-            try {
-                db.deleteUsagesById(usageId)
-            } catch (ignore: Throwable) {
-            }
+    override suspend fun deleteUsagesById(usageId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.deleteUsagesById(usageId)
         }
     }
 
-    override suspend fun deleteUsagesByCourseId(courseId: Long) {
-        withContext(dispatcher) {
-            try {
-                db.deleteUsagesByCourseId(courseId)
-            } catch (ignore: Throwable) {
-            }
+    override suspend fun deleteUsages(usages: List<UsageDomainModel>) = withContext(dispatcher) {
+        Result.runCatching {
+            db.deleteUsages(usages.mapToData())
+        }
+    }
+
+    override suspend fun deleteUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.deleteUsagesByCourseId(courseId)
         }
     }
 
     //TODO("не понятно что тут происходит")
-    override suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long) {
+    override suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long) =
         withContext(dispatcher) {
-            try {
-                db.getUsagesById(courseId)
-                    .lastOrNull { it.courseId == courseId && it.useTime == usageTime }
-                    ?.copy(factUseTime = factTime)?.let {
-                        db.insertUsage(it)
+            Result.runCatching {
+                db.getUsagesByCourseId(courseId)
+                    .lastOrNull { usage ->
+                        usage.courseId == courseId && usage.useTime == usageTime
+                    }?.copy(factUseTime = factTime)?.let { usage ->
+                        // TODO("добавлять в другую базу")
+                        db.insertUsage(usage)
                     }
-            } catch (ignore: Throwable) {
             }
+        }
+
+    override suspend fun insertUsage(usage: UsageDomainModel) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertUsage(usage.mapToData())
         }
     }
 
-    override suspend fun insertUsage(usage: UsageDomainModel) {
-        withContext(dispatcher) {
-            try {
-                db.insertUsage(usage.mapToData())
-            } catch (ignore: Throwable) {
-                Log.w("VTTAG", "UsageRepositoryImpl::insertUsage: error=${ignore.localizedMessage}")
-            }
+    override suspend fun insertUsage(usages: List<UsageDomainModel>) = withContext(dispatcher) {
+        Result.runCatching {
+            db.insertUsages(usages.mapToData())
         }
     }
 
-    override suspend fun insertUsages(usages: List<UsageDomainModel>) {
-        withContext(dispatcher) {
-            try {
-                db.insertUsages(usages.mapToData())
-            } catch (ignore: Throwable) {
-                Log.w("VTTAG", "UsageRepositoryImpl::insertUsages: error=${ignore.localizedMessage}")
-            }
-        }
-    }
+    override suspend fun updateUsage(usage: UsageDomainModel) = insertUsage(usage)
 
-    override suspend fun updateUsage(usage: UsageDomainModel) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long) {
+    override suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long) =
         withContext(dispatcher) {
-            try {
+            Result.runCatching {
                 db.deleteUsagesBetweenById(courseId, startTime, endTime)
-            } catch (ignore: Throwable) {
             }
         }
-    }
 
-    override suspend fun deleteUsagesAfter(courseId: Long, afterTime: Long) {
+    override suspend fun deleteUsagesAfter(courseId: Long, afterTime: Long) =
         withContext(dispatcher) {
-            try {
+            Result.runCatching {
                 db.deleteUsagesAfter(courseId, afterTime)
-            } catch (ignore: Throwable) {
             }
         }
-    }
 
     override suspend fun getUsagesBetween(
         startTime: Long,

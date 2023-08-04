@@ -1,23 +1,25 @@
 package app.mybad.notifier.ui.screens.common
 
 import android.util.Log
+import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.theme.utils.changeTime
 import app.mybad.theme.utils.daysBetween
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.plusDays
 import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.utils.toLocalDateTime
 
 fun generateUsages(
-    usagesByDay: List<Pair<Long, Int>>,
+    usagesByDay: List<UsageFormat>,
+    remedyId: Long,
     courseId: Long,
     userId: Long,
     startDate: Long,
     endDate: Long,
     regime: Int,
 ): List<UsageDomainModel> {
-    val now = getCurrentDateTime().toEpochSecond()
+    val now = currentDateTime().toEpochSecond()
     val interval = endDate.daysBetween(startDate).toInt()
     Log.w(
         "VTTAG",
@@ -33,16 +35,17 @@ fun generateUsages(
         if (position % (regime + 1) == 0) {
             usagesByDay.forEach { (time, quantity) ->
                 val useTime = startDate.toLocalDateTime()
-                    .changeTime(time)
+                    .changeTime(minute = time)
                     .plusDays(position)
                     .toEpochSecond()
                 Log.w(
                     "VTTAG",
-                    "generateUsages: useTime=${useTime.toLocalDateTime()} usage=${now.toLocalDateTime()}"
+                    "generateUsages: useTime=${useTime.toLocalDateTime()}"
                 )
                 if (useTime > now) {
                     usage.add(
                         UsageDomainModel(
+                            remedyId = remedyId,
                             courseId = courseId,
                             userId = userId,
                             createdDate = now,

@@ -1,6 +1,5 @@
 package app.mybad.notifier
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,18 +14,15 @@ import app.mybad.domain.usecases.user.TakeUserAuthTokenUseCase
 import app.mybad.domain.usecases.user.UpdateUserNotificationUseCase
 import app.mybad.domain.usecases.user.UpdateUserPersonalUseCase
 import app.mybad.domain.usecases.user.UpdateUserRulesUseCase
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val getCoursesUseCase: GetCoursesUseCase,
     private val takeUserAuthTokenUseCase: TakeUserAuthTokenUseCase,
     private val clearUserAuthTokenUseCase: ClearUserAuthTokenUseCase,
@@ -34,24 +30,26 @@ class MainActivityViewModel @Inject constructor(
     private val userPersonalUseCase: UpdateUserPersonalUseCase,
     private val userNotificationUseCase: UpdateUserNotificationUseCase,
     private val getUserSettingsUseCase: GetUserSettingsUseCase,
+    private val workSync: WorkManager,
 ) : ViewModel() {
 
-    val isAuthorize = AuthToken.isAuthorize.also {
-        if (it.value) readData()
+    val isAuthorize = AuthToken.isAuthorize.onEach {
+        Log.w("VTTAG", "MainActivityViewModel::init: isAuthorize=${it}")
+        if (it) {
+            readData()
+            // worker синхронизации данных
+            workSync.start()
+        }
     }
-
-    // worker синхронизации данных
-    private val workSync = WorkManager.getInstance(context)
 
     init {
         Log.w("VTTAG", "MainActivityViewModel::init: app start")
         readToken()
-        workSync.start()
     }
 
     private fun readToken() {
         viewModelScope.launch {
-            takeUserAuthTokenUseCase(currentDate = getCurrentDateTime().toEpochSecond())
+            takeUserAuthTokenUseCase(currentDate = currentDateTime().toEpochSecond())
             Log.w("VTTAG", "MainActivityViewModel::readToken: userId=${AuthToken.userId}")
         }
     }

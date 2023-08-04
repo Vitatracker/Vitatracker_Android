@@ -71,6 +71,7 @@
     <string name="settings_profile">Profile</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_about">About application</string>
+    <string name="settings_db_clear">Clear DB</string>
     <string name="settings_quit">Quit</string>
     <string name="settings_delete_account">Delete account</string>
     <string name="settings_change_password">Change password</string>

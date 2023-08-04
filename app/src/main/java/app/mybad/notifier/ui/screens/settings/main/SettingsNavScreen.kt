@@ -27,6 +27,7 @@ fun SettingsNavScreen(
     onProfile: () -> Unit = {},
     onNotifications: () -> Unit = {},
     onAbout: () -> Unit = {},
+    onClearDB: () -> Unit = {},
     onWishes: () -> Unit = {}
 ) {
     val editAvatar = remember { mutableStateOf(userModel.avatar) }
@@ -79,6 +80,13 @@ fun SettingsNavScreen(
                 label = stringResource(R.string.settings_about),
                 icon = R.drawable.icon_settings_information,
                 onSelect = onAbout::invoke
+            )
+            BaseDivider()
+// очистить базы данных
+            SettingsItem(
+                label = stringResource(R.string.settings_db_clear),
+                icon = R.drawable.icon_settings_information,
+                onSelect = onClearDB::invoke
             )
             BaseDivider()
         }

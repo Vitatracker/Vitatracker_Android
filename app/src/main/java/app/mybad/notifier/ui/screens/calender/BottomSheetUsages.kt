@@ -21,11 +21,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,7 +44,7 @@ import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.theme.utils.TIME_IS_UP
-import app.mybad.theme.utils.getCurrentDateTime
+import app.mybad.theme.utils.currentDateTime
 import app.mybad.theme.utils.toDayDisplay
 import app.mybad.theme.utils.toEpochSecond
 import app.mybad.theme.utils.toTimeDisplay
@@ -62,7 +63,7 @@ private fun SingleUsageItem(
 ) {
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
-    val now = getCurrentDateTime().toEpochSecond()
+    val now = currentDateTime().toEpochSecond()
     val outlineColor = if (now > date && !isTaken) MaterialTheme.colorScheme.error
     else MaterialTheme.colorScheme.primary
     val alpha = if ((now - date).absoluteValue > TIME_IS_UP) 0.6f else 1f
@@ -122,7 +123,7 @@ private fun SingleUsageItem(
                             .padding(top = 4.dp)
                     ) {
                         Text(text = relations[remedy.beforeFood], style = Typography.labelMedium)
-                        Divider(
+                        VerticalDivider(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                             modifier = Modifier
@@ -159,7 +160,7 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) getCurrentDateTime().toEpochSecond()
+                                    val n = if (!isTaken) currentDateTime().toEpochSecond()
                                     else -1L
                                     onTake(n)
                                 }
@@ -176,7 +177,7 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) getCurrentDateTime().toEpochSecond()
+                                    val n = if (!isTaken) currentDateTime().toEpochSecond()
                                     else -1L
                                     onTake(n)
                                 }
@@ -241,10 +242,10 @@ fun DailyUsages(
             LazyColumn {
                 usages.sortedBy {
                     it.useTime
-                }.forEach { entry ->
+                }.forEach { usage ->
                     item {
                         Column {
-                            Divider(
+                            HorizontalDivider(
                                 thickness = 1.dp,
                                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                                 modifier = Modifier
@@ -252,13 +253,13 @@ fun DailyUsages(
                                     .padding(vertical = 8.dp)
                             )
                             SingleUsageItem(
-                                date = entry.useTime,
-                                remedy = remedies.first { it.id == entry.courseId },
-                                quantity = entry.quantity,
+                                date = usage.useTime,
+                                remedy = remedies.first { remedy -> remedy.id == usage.remedyId },
+                                quantity = usage.quantity,
                                 modifier = Modifier.padding(horizontal = 16.dp),
-                                isTaken = entry.factUseTime > 10L,
+                                isTaken = usage.factUseTime > 10L,
                                 onTake = { datetime ->
-                                    onUsed(entry.copy(factUseTime = datetime))
+                                    onUsed(usage.copy(factUseTime = datetime))
                                 }
                             )
                         }

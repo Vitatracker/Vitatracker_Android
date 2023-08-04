@@ -8,7 +8,7 @@ interface RemedyNetworkRepository {
 
     suspend fun getRemedy(remedyId: Long): Result<RemedyDomainModel>
 
-    suspend fun updateRemedy(remedy: RemedyDomainModel): RemedyDomainModel
+    suspend fun updateRemedy(remedy: RemedyDomainModel): Result<RemedyDomainModel>
 
     suspend fun deleteRemedy(remedyId: Long): Result<Boolean>
 }

@@ -9,6 +9,6 @@ class CreateUsageUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(usages: List<UsageDomainModel>) {
-        repository.insertUsages(usages)
+        repository.insertUsage(usages)
     }
 }

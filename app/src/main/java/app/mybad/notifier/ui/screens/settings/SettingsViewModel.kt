@@ -7,6 +7,7 @@ import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserNotificationDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
 import app.mybad.domain.usecases.courses.GetCoursesUseCase
+import app.mybad.domain.usecases.user.ClearDBUseCase
 import app.mybad.domain.usecases.user.DeleteUserModelUseCase
 import app.mybad.domain.usecases.user.GetUserSettingsUseCase
 import app.mybad.domain.usecases.user.UpdateUserModelUseCase
@@ -33,6 +34,7 @@ class SettingsViewModel @Inject constructor(
 //    private val switchGlobalNotificationsUseCase: SwitchGlobalNotificationsUseCase,
 
     private val getCoursesUseCase: GetCoursesUseCase,
+    private val clearDBUseCase: ClearDBUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -149,6 +151,10 @@ class SettingsViewModel @Inject constructor(
                 }
 
                 is SettingsIntent.ChangePassword -> {}
+
+                is SettingsIntent.ClearDB -> {
+                    clearDBUseCase()
+                }
             }
         }
     }

@@ -105,6 +105,7 @@ fun SettingsNav(
                     onNotifications = {
                         navController.navigate(NavItemSettings.Notifications.route)
                     },
+                    onClearDB = { vm.reduce(SettingsIntent.ClearDB) }
                 )
             }
             composable(NavItemSettings.Profile.route) {

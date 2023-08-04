@@ -1,6 +1,7 @@
 package app.mybad.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -20,11 +21,20 @@ interface RemedyDao {
     @Query("select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.ID} = :remedyId limit 1")
     suspend fun getRemedyById(remedyId: Long): RemedyModel
 
+    @Query("select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.IDN} = :remedyIdn limit 1")
+    suspend fun getRemedyByIdn(remedyIdn: Long): RemedyModel
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addRemedy(remedy: RemedyModel): Long?
+    suspend fun insertRemedy(remedy: RemedyModel): Long?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRemedy(remedies: List<RemedyModel>)
 
     @Query("delete from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.ID} = :remedyId")
     suspend fun deleteRemedyById(remedyId: Long)
+
+    @Delete
+    suspend fun deleteRemedy(remedies: List<RemedyModel>)
 
     @Query("SELECT * FROM ${RemedyContract.TABLE_NAME} WHERE ${RemedyContract.Columns.ID} IN (:remedyIdList)")
     suspend fun getRemediesByIds(remedyIdList: List<Long>): List<RemedyModel>
