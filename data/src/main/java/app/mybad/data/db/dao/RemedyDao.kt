@@ -12,10 +12,18 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RemedyDao {
 
-    @Query("select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.USER_ID} = :userId")
+    @Query(
+        "select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.DELETED_DATE} = 0 and ${
+            RemedyContract.Columns.USER_ID
+        } = :userId"
+    )
     suspend fun getRemediesByUserId(userId: Long): List<RemedyModel>
 
-    @Query("select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.USER_ID} = :userId")
+    @Query(
+        "select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.DELETED_DATE} = 0 and ${
+            RemedyContract.Columns.USER_ID
+        } = :userId"
+    )
     fun getRemedies(userId: Long): Flow<List<RemedyModel>>
 
     @Query("select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.ID} = :remedyId limit 1")
@@ -30,6 +38,13 @@ interface RemedyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRemedy(remedies: List<RemedyModel>)
 
+    @Query(
+        "UPDATE ${RemedyContract.TABLE_NAME} SET ${
+            RemedyContract.Columns.DELETED_DATE
+        } = :dateTime WHERE ${RemedyContract.Columns.ID} = :remedyId"
+    )
+    suspend fun delete(remedyId: Long, dateTime: Long)
+
     @Query("delete from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.ID} = :remedyId")
     suspend fun deleteRemedyById(remedyId: Long)
 
@@ -40,10 +55,17 @@ interface RemedyDao {
     suspend fun getRemediesByIds(remedyIdList: List<Long>): List<RemedyModel>
 
     @Query(
-        "select * from ${RemedyContract.TABLE_NAME} where ${
-            RemedyContract.Columns.USER_ID
-        } = :userId and ${RemedyContract.Columns.UPDATED_NETWORK_DATE} = 0"
+        "select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.DELETED_DATE} = 0 and ${
+            RemedyContract.Columns.UPDATED_NETWORK_DATE
+        } = 0 and ${RemedyContract.Columns.USER_ID} = :userId"
     )
     suspend fun getRemedyNotUpdateByUserId(userId: Long): List<RemedyModel>
+
+    @Query(
+        "select * from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.DELETED_DATE} > 0 and ${
+            RemedyContract.Columns.USER_ID
+        } = :userId"
+    )
+    suspend fun getRemedyDeletedByUserId(userId: Long): List<RemedyModel>
 
 }

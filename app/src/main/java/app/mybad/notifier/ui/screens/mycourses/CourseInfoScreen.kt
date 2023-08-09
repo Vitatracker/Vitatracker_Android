@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -50,12 +50,12 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.atEndOfDay
-import app.mybad.theme.utils.atEndOfDaySystemToUTC
-import app.mybad.theme.utils.atStartOfDay
-import app.mybad.theme.utils.atStartOfDaySystemToUTC
-import app.mybad.theme.utils.toDateFullDisplay
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atEndOfDaySystemToUTC
+import app.mybad.utils.atStartOfDay
+import app.mybad.utils.atStartOfDaySystemToUTC
+import app.mybad.utils.toDateFullDisplay
+import app.mybad.utils.toEpochSecond
 
 private val usagesPattern = listOf(
     UsageFormat(480, 1), //08:00

@@ -52,9 +52,9 @@ import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.currentTimeInMinutes
-import app.mybad.theme.utils.minutesToHHmm
-import app.mybad.theme.utils.toTimeDisplay
+import app.mybad.utils.currentTimeInMinutes
+import app.mybad.utils.minutesToHHmm
+import app.mybad.utils.toTimeDisplay
 
 @Composable
 @Preview

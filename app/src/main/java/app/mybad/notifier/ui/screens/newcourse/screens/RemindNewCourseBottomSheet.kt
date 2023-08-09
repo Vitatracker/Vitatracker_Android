@@ -26,16 +26,16 @@ import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.theme.R
-import app.mybad.theme.utils.changeTime
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.hour
-import app.mybad.theme.utils.minus
-import app.mybad.theme.utils.minute
-import app.mybad.theme.utils.plus
-import app.mybad.theme.utils.timeInMinutes
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toLocalDateTime
-import app.mybad.theme.utils.toTimeDisplay
+import app.mybad.utils.changeTime
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.hour
+import app.mybad.utils.minus
+import app.mybad.utils.minute
+import app.mybad.utils.plus
+import app.mybad.utils.timeInMinutes
+import app.mybad.utils.toEpochSecond
+import app.mybad.utils.toLocalDateTime
+import app.mybad.utils.toTimeDisplay
 import kotlinx.datetime.DateTimePeriod
 
 @Composable

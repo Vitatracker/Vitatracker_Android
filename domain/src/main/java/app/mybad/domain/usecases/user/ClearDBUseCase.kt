@@ -19,24 +19,24 @@ class ClearDBUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke() {
-        remedyNetworkRepository.getRemedies().getOrNull()?.forEach { remedy ->
-            remedyNetworkRepository.deleteRemedy(remedy.idn)
+        usageNetworkRepository.getUsages().getOrNull()?.forEach { usage ->
+            usageNetworkRepository.deleteUsage(usage.idn)
         }
         courseNetworkRepository.getCourses().getOrNull()?.forEach { course ->
             courseNetworkRepository.deleteCourse(course.idn)
         }
-        usageNetworkRepository.getUsages().getOrNull()?.forEach { usage ->
-            usageNetworkRepository.deleteUsage(usage.idn)
+        remedyNetworkRepository.getRemedies().getOrNull()?.forEach { remedy ->
+            remedyNetworkRepository.deleteRemedy(remedy.idn)
         }
         AuthToken.userId.takeIf { it > 0 }?.let { userId ->
-            remedyRepository.getRemediesByUserId(userId).getOrNull()?.forEach { remedy ->
-                remedyRepository.deleteRemedyById(remedy.id)
+            usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
+                usageRepository.deleteUsagesById(usage.id)
             }
             courseRepository.getCoursesByUserId(userId).getOrNull()?.forEach { course ->
                 courseRepository.deleteCourseById(course.id)
             }
-            usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
-                usageRepository.deleteUsagesById(usage.id)
+            remedyRepository.getRemediesByUserId(userId).getOrNull()?.forEach { remedy ->
+                remedyRepository.deleteRemedyById(remedy.id)
             }
         }
     }

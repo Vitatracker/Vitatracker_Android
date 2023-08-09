@@ -3,7 +3,7 @@ package app.mybad.notifier.ui.screens.mainscreen
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
-import app.mybad.theme.utils.currentDateTime
+import app.mybad.utils.currentDateTime
 import kotlinx.datetime.LocalDateTime
 
 data class MainScreenContract(

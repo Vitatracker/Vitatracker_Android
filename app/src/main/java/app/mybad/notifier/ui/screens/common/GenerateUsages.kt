@@ -3,12 +3,12 @@ package app.mybad.notifier.ui.screens.common
 import android.util.Log
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.UsageDomainModel
-import app.mybad.theme.utils.changeTime
-import app.mybad.theme.utils.daysBetween
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.plusDays
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toLocalDateTime
+import app.mybad.utils.changeTime
+import app.mybad.utils.daysBetween
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.plusDays
+import app.mybad.utils.toEpochSecond
+import app.mybad.utils.toLocalDateTime
 
 fun generateUsages(
     usagesByDay: List<UsageFormat>,

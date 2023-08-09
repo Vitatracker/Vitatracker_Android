@@ -9,7 +9,7 @@ data class UserNetworkModel(
     @SerializedName("created") val createdDate: String = "",
     @SerializedName("email") val email: String? = null,
     @SerializedName("name") val name: String? = null,
-    @SerializedName("not_used") val notUsed: Boolean,
+    @SerializedName("notUsed") val notUsed: Boolean,
     @SerializedName("password") val password: String? = null,
     @SerializedName("updated") val updatedDate: String = "",
 )

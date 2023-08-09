@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 // сверено с беком 10.07.23
 data class NotificationSettingNetworkModel(
-    @SerializedName("user_id") val userId: String,
-    @SerializedName("is_enabled") val isEnabled: Boolean,
-    @SerializedName("is_float") val isFloat: Boolean,
-    @SerializedName("medical_control") val medicationControl: Boolean,
-    @SerializedName("next_course_start") val nextCourseStart: Boolean
+    @SerializedName("userId") val userId: String,
+    @SerializedName("isEnabled") val isEnabled: Boolean,
+    @SerializedName("isFloat") val isFloat: Boolean,
+    @SerializedName("medicalControl") val medicationControl: Boolean,
+    @SerializedName("nextCourseStart") val nextCourseStart: Boolean
 )

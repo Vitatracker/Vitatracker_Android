@@ -63,4 +63,6 @@ data class RemedyModel(
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = RemedyContract.Columns.UPDATED_LOCAL_DATE)
     val updateLocalDate: Long = 0,
+    @ColumnInfo(name = RemedyContract.Columns.DELETED_DATE)
+    val deleteLocalDate: Long = 0,
 )

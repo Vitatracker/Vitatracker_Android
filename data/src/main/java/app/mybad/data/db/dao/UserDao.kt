@@ -26,6 +26,13 @@ interface UserDao {
     @Update
     fun updateUser(user: UserModel)
 
+    @Query(
+        "UPDATE ${UserContract.TABLE_NAME} SET ${
+            UserContract.Columns.DELETED_DATE
+        } = :dateTime WHERE ${UserContract.Columns.ID} = :userId"
+    )
+    suspend fun delete(userId: Long, dateTime: Long)
+
     @Query("delete from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId")
     fun deleteByUserId(userId: Long)
 

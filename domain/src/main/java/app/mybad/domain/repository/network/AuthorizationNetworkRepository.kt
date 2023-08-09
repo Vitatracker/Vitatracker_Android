@@ -19,4 +19,5 @@ interface AuthorizationNetworkRepository {
         userName: String
     ): Result<AuthorizationDomainModel>
 
+    suspend fun refreshToken(): Result<AuthorizationDomainModel>
 }

@@ -57,6 +57,12 @@ class RemedyRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun delete(remedyId: Long, dateTime: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.delete(remedyId, dateTime)
+        }
+    }
+
     override suspend fun deleteRemedyById(remedyId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.deleteRemedyById(remedyId)
@@ -79,6 +85,12 @@ class RemedyRepositoryImpl @Inject constructor(
     override suspend fun getRemedyNotUpdateByUserId(userId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.getRemedyNotUpdateByUserId(userId).mapToDomain()
+        }
+    }
+
+    override suspend fun getRemedyDeletedByUserId(userId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.getRemedyDeletedByUserId(userId).mapToDomain()
         }
     }
 }

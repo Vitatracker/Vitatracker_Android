@@ -41,12 +41,12 @@ import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.plusDay
-import app.mybad.theme.utils.plusThreeDay
-import app.mybad.theme.utils.secondsToDay
-import app.mybad.theme.utils.toDateDisplay
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.plusDay
+import app.mybad.utils.plusThreeDay
+import app.mybad.utils.secondsToDay
+import app.mybad.utils.toDateDisplay
+import app.mybad.utils.toEpochSecond
 
 @Composable
 fun MyCourses(

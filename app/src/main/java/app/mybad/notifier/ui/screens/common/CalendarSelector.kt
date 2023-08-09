@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.common
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,13 +32,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.DAYS_A_WEEK
-import app.mybad.theme.utils.atStartOfDaySystemToUTC
-import app.mybad.theme.utils.atStartOfMonth
-import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.minusDays
-import app.mybad.theme.utils.plusDays
+import app.mybad.utils.DAYS_A_WEEK
+import app.mybad.utils.atStartOfDaySystemToUTC
+import app.mybad.utils.atStartOfMonth
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.minusDays
+import app.mybad.utils.plusDays
 import kotlinx.datetime.LocalDateTime
 
 @Composable
@@ -50,6 +51,7 @@ fun CalendarSelectorScreen(
     onDismiss: () -> Unit,
     editStart: Boolean,
 ) {
+    Log.d("VTTAG", "CalendarSelector::CalendarSelectorScreen: start")
     var sDate by remember { mutableStateOf(date) }
     var selectedDiapason by remember { mutableStateOf(Pair(startDay, endDay)) }
 
@@ -68,11 +70,11 @@ fun CalendarSelectorScreen(
                 startDay = selectedDiapason.first,
                 endDay = selectedDiapason.second,
                 editStart = editStart,
-                onSelect = { sd ->
+                onSelect = { selectDate ->
                     selectedDiapason = if (editStart) {
-                        sd to endDay
+                        selectDate to endDay
                     } else {
-                        startDay to sd
+                        startDay to selectDate
                     }
                 }
             )
@@ -102,6 +104,7 @@ fun CalendarSelector(
     modifier: Modifier = Modifier,
     onSelect: (date: LocalDateTime) -> Unit = { }
 ) {
+    Log.d("VTTAG", "CalendarSelector::CalendarSelector: start")
     var startDate by remember { mutableStateOf(startDay) }
     var endDate by remember { mutableStateOf(endDay) }
     val currentDate = currentDateTime()
@@ -136,7 +139,7 @@ fun CalendarSelector(
                     .fillMaxWidth()
                     .alpha(0.5f)
             ) {
-                repeat(DAYS_A_WEEK) {day->
+                repeat(DAYS_A_WEEK) { day ->
                     Text(
                         text = day.dayShortDisplay(),
                         textAlign = TextAlign.Center,
@@ -146,7 +149,7 @@ fun CalendarSelector(
                     )
                 }
             }
-            Divider(
+            HorizontalDivider(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
                 modifier = Modifier
@@ -197,6 +200,7 @@ private fun CalendarDayItem(
     isOtherMonth: Boolean = false,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
+    Log.d("VTTAG", "CalendarSelector::CalendarDayItem: start")
     val outlineColor = MaterialTheme.colorScheme.primary
 
     Box(

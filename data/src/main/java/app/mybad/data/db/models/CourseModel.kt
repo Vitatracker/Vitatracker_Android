@@ -67,4 +67,6 @@ data class CourseModel(
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.UPDATED_LOCAL_DATE)
     val updateLocalDate: Long = 0,
+    @ColumnInfo(name = CourseContract.Columns.DELETED_DATE)
+    val deleteLocalDate: Long = 0,
 )

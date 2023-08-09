@@ -42,8 +42,8 @@ object NetworkApiModule {
         @Named("AuthInterceptor") authInterceptor: Interceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addNetworkInterceptor(loggingInterceptor)
             .addNetworkInterceptor(authInterceptor)
+            .addNetworkInterceptor(loggingInterceptor)
             .retryOnConnectionFailure(false) // not necessary but useful!
             .build()
     }

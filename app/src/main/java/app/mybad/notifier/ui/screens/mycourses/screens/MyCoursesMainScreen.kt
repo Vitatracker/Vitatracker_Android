@@ -32,8 +32,8 @@ import app.mybad.notifier.ui.screens.mycourses.MyCoursesNavItem
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.timeInMinutes
-import app.mybad.theme.utils.dateTimeTomorrow
+import app.mybad.utils.timeInMinutes
+import app.mybad.utils.dateTimeTomorrow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,14 +101,14 @@ fun MyCoursesMainScreen(
                                 selectedCourse.id,
                                 state.value.usages
                             ),
-                            reducer = {
-                                when (it) {
+                            reducer = {intent->
+                                when (intent) {
                                     is MyCoursesIntent.Update -> {
                                         vm.reduce(
                                             MyCoursesIntent.Update(
-                                                it.course,
-                                                it.remedy,
-                                                it.usagesPattern
+                                                intent.course,
+                                                intent.remedy,
+                                                intent.usagesPattern
                                             )
                                         )
                                         navHostController.popBackStack()

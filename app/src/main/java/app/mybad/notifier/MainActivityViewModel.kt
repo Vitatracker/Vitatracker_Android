@@ -10,12 +10,12 @@ import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.usecases.courses.GetCoursesUseCase
 import app.mybad.domain.usecases.settings.GetUserSettingsUseCase
 import app.mybad.domain.usecases.user.ClearUserAuthTokenUseCase
+import app.mybad.domain.usecases.user.RefreshAuthTokenUseCase
 import app.mybad.domain.usecases.user.TakeUserAuthTokenUseCase
 import app.mybad.domain.usecases.user.UpdateUserNotificationUseCase
 import app.mybad.domain.usecases.user.UpdateUserPersonalUseCase
 import app.mybad.domain.usecases.user.UpdateUserRulesUseCase
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.currentDateTimeInSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,6 +26,7 @@ class MainActivityViewModel @Inject constructor(
     private val getCoursesUseCase: GetCoursesUseCase,
     private val takeUserAuthTokenUseCase: TakeUserAuthTokenUseCase,
     private val clearUserAuthTokenUseCase: ClearUserAuthTokenUseCase,
+    private val refreshAuthTokenUseCase: RefreshAuthTokenUseCase,
     private val userRulesUseCase: UpdateUserRulesUseCase,
     private val userPersonalUseCase: UpdateUserPersonalUseCase,
     private val userNotificationUseCase: UpdateUserNotificationUseCase,
@@ -49,7 +50,7 @@ class MainActivityViewModel @Inject constructor(
 
     private fun readToken() {
         viewModelScope.launch {
-            takeUserAuthTokenUseCase(currentDate = currentDateTime().toEpochSecond())
+            takeUserAuthTokenUseCase(currentDate = currentDateTimeInSecond())
             Log.w("VTTAG", "MainActivityViewModel::readToken: userId=${AuthToken.userId}")
         }
     }

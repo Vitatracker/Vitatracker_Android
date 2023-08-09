@@ -9,12 +9,10 @@ class UpdateUsagesInCourseUseCase @Inject constructor(
     private val repository: UsageRepository
 ) {
 
-    suspend operator fun invoke(usages: List<UsageDomainModel>) {
+    suspend operator fun invoke(courseId: Long, usages: List<UsageDomainModel>) {
         try {
+            repository.deleteUsagesByCourseId(courseId)
             if (usages.isEmpty()) return
-            //TODO("проверить нужно ли здесь удаление")
-            repository.deleteUsagesById(usages.first().courseId)
-
             repository.insertUsage(usages)
         } catch (e: Error) {
             Log.e("VTTAG", "UpdateUsagesInCourseUseCase: Error", e)

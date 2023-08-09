@@ -15,18 +15,22 @@ interface UsageDao {
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${
             UsageContract.Columns.USER_ID
-        } = :userId"
+        } = :userId and ${UsageContract.Columns.DELETED_DATE} = 0"
     )
     fun getUsages(userId: Long): Flow<List<UsageModel>>
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${
             UsageContract.Columns.USER_ID
-        } = :userId"
+        } = :userId and ${UsageContract.Columns.DELETED_DATE} = 0"
     )
     suspend fun getUsagesByUserId(userId: Long): List<UsageModel>
 
-    @Query("select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.COURSE_ID} = :courseId")
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${UsageContract.Columns.DELETED_DATE} = 0"
+    )
     suspend fun getUsagesByCourseId(courseId: Long): List<UsageModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -38,7 +42,9 @@ interface UsageDao {
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${
             UsageContract.Columns.COURSE_ID
-        } = :courseId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime"
+        } = :courseId  and ${UsageContract.Columns.DELETED_DATE} = 0 and ${
+            UsageContract.Columns.USE_TIME
+        } between :startTime and :endTime"
     )
     suspend fun getUsagesBetweenById(
         courseId: Long,
@@ -47,18 +53,29 @@ interface UsageDao {
     ): List<UsageModel>
 
     @Query(
-        "SELECT * FROM ${UsageContract.TABLE_NAME} WHERE ${
+        "SELECT * FROM ${UsageContract.TABLE_NAME} WHERE ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.USE_TIME
         } BETWEEN :startTime AND :endTime"
     )
     suspend fun getUsagesBetween(startTime: Long, endTime: Long): List<UsageModel>
 
     @Query(
-        "select * from ${UsageContract.TABLE_NAME} where ${
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.COURSE_ID
         } = :courseId and ${UsageContract.Columns.USE_TIME} >= :time"
     )
     suspend fun getUsagesAfter(courseId: Long, time: Long): List<UsageModel>
+
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.DELETED_DATE
+        } = :dateTime WHERE ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${
+            UsageContract.Columns.USE_TIME
+        } >= :dateTime"
+    )
+    suspend fun delete(courseId: Long, dateTime: Long)
 
     @Query(
         "delete from ${UsageContract.TABLE_NAME} where ${
@@ -92,9 +109,16 @@ interface UsageDao {
     suspend fun deleteUsagesAfter(courseId: Long, time: Long)
 
     @Query(
-        "select * from ${UsageContract.TABLE_NAME} where ${
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.USER_ID
         } = :userId and ${UsageContract.Columns.UPDATED_NETWORK_DATE} = 0"
     )
     suspend fun getUsagesNotUpdateByUserId(userId: Long): List<UsageModel>
+
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} > 0 and ${
+            UsageContract.Columns.USER_ID
+        } = :userId"
+    )
+    suspend fun getUsagesDeletedByUserId(userId: Long): List<UsageModel>
 }

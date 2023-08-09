@@ -47,14 +47,14 @@ import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.notifier.ui.theme.textColorSecond
 import app.mybad.notifier.ui.theme.textColorThird
 import app.mybad.theme.R
-import app.mybad.theme.utils.TIME_IS_UP
-import app.mybad.theme.utils.changeDate
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.getDaysOfMonth
-import app.mybad.theme.utils.monthShortDisplay
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toTimeDisplay
+import app.mybad.utils.TIME_IS_UP
+import app.mybad.utils.changeDate
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.getDaysOfMonth
+import app.mybad.utils.monthShortDisplay
+import app.mybad.utils.toTimeDisplay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -491,11 +491,7 @@ private fun MainScreenFormCourseHeader(
             isDone = usage.factUseTime.toInt() != -1,
             setUsageFactTime = {
                 usageState.value = usage.copy(
-                    factUseTime = if (usage.factUseTime == -1L) {
-                        currentDateTime().toEpochSecond()
-                    } else {
-                        -1
-                    }
+                    factUseTime = if (usage.factUseTime == -1L) currentDateTimeInSecond() else -1
                 )
                 setUsageFactTime(
                     usageState.value
@@ -512,7 +508,7 @@ private fun MainScreenButtonAccept(
     isDone: Boolean,
     setUsageFactTime: () -> Unit
 ) {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 
     val tint: Color
     val painter: Painter
@@ -575,7 +571,7 @@ private fun getMonthColor(page: Int, month: Int) = when (page) {
 // цвет рамки вокруг карточки
 @Composable
 private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 //TODO("проверить тут время, возможно в usageTime подменять дату или нет")
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
@@ -589,7 +585,7 @@ private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
 // цвет фона карточки 5%
 @Composable
 private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
@@ -603,7 +599,7 @@ private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
 // цвет рамки вокруг времени
 @Composable
 private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
@@ -617,7 +613,7 @@ private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStro
 // цвет фона времени 10% в карточке
 @Composable
 private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
@@ -631,7 +627,7 @@ private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
 // цвет времени в карточке
 @Composable
 private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTime().toEpochSecond()
+    val nowDate = currentDateTimeInSecond()
 
     return when {
         isDone -> MaterialTheme.colorScheme.onPrimary

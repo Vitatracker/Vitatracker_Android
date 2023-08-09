@@ -1,7 +1,6 @@
-package app.mybad.theme.utils
+package app.mybad.utils
 
-import android.util.Log
-import kotlinx.datetime.Clock.System.now
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -13,18 +12,21 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toJavaZoneOffset
 import kotlinx.datetime.toLocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 private const val SECONDS_IN_DAY = 86400L
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
+const val TOKEN_DATA_EXPIRATION = 1
+const val TOKEN_REFRESH_DATA_EXPIRATION = 30
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter
@@ -76,12 +78,8 @@ fun Instant.formatDay(): String = dayDisplayFormatter.format(this.toJavaInstant(
 private const val dateTimeIsoFormatter = "%04d-%02d-%02dT%02d:%02d:%02dZ"
 
 fun Long.toDateTimeIsoDisplay(): String {
-    Log.d("VTTAG", "DateTimeExtensions::toDateTimeIsoDisplay: date=$this")
     return if (this == 0L) ""
     else this.toLocalDateTime().formatISO()
-        .also {
-            Log.d("VTTAG", "DateTimeExtensions::toDateTimeIsoDisplay: date=$it")
-        }
 }
 
 fun LocalDateTime.formatISO() = dateTimeIsoFormatter.format(
@@ -266,8 +264,13 @@ fun LocalDateTime.plusMonths(months: Int): LocalDateTime {
 }
 
 // Получение даты + времени
-fun currentDateTime() = now().toLocalDateTime(TimeZone.UTC)
-fun systemDateTime() = now().toLocalDateTime(TimeZone.currentSystemDefault())
+fun currentDateTime() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+fun currentDateTimeInSecond() = currentDateTime().toEpochSecond()
+fun systemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+fun getDateTokenExpiration() = currentDateTime().plusDays(TOKEN_DATA_EXPIRATION).toEpochSecond()
+fun getDateTokenRefreshExpiration() =
+    currentDateTime().plusDays(TOKEN_REFRESH_DATA_EXPIRATION).toEpochSecond()
 
 // сегодня + 1 день, дата и время
 fun Long.dateTimeTomorrow() = currentDateTime().changeTime(this)
@@ -288,27 +291,15 @@ fun currentTimeInMinutes() = currentDateTime().timeInMinutes()
 
 fun Int.toSystemTimeInMinutes() = currentDateTime()
     .changeTime(hour = this.hour(), minute = this.minute())
-    .also {
-        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::toSystemTimeInMinutes: time=${it.timeInMinutes().minutesToHHmm()}")
-    }
     .toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
     .timeInMinutes()
-    .also {
-        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::toSystemTimeInMinutes: time=${it.minutesToHHmm()}")
-    }
 
 fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
     .changeTime(hour = hour, minute = minute)
-    .also {
-        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::systemTimeInMinutes: time=${it.timeInMinutes().minutesToHHmm()}")
-    }
     .toInstant(TimeZone.currentSystemDefault())
     .toLocalDateTime(TimeZone.UTC)
     .timeInMinutes()
-    .also {
-        Log.d("VTTAG", "TimeSelector::DateTimeExtensions::systemTimeInMinutes: time=${it.minutesToHHmm()}")
-    }
 
 fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
 
@@ -332,7 +323,16 @@ val Int.isLeapYear
 fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)
 
 fun String.toLocalDateTime(): LocalDateTime {
-    Log.d("VTTAG", "DateTimeExtensions::toLocalDateTime: date=$this")
     return if (this == "") currentDateTime()
     else LocalDateTime.parse(this)
+}
+
+// token date expires
+private val regexDateExp = """"exp":(\d+)""".toRegex()
+
+//"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4OGU0ODVhOC1lMDY1LTRiZDAtODlhZi1hMjk3OTY0ZTQ0NDYiLCJpYXQiOjE2OTE2MTEzNjgsImV4cCI6MTY5MTY5Nzc2OH0.Eo9XYAgODi_nycMFl-wgtf7sDeAdwVlu9_FZKZiz3JE"
+@OptIn(ExperimentalEncodingApi::class)
+fun String.decodeDateExp(): Long = if (this.isBlank()) 0L
+else String(Base64.decode(this.split(".")[1])).let {
+    regexDateExp.find(it)?.groupValues?.get(1)?.toLongOrNull() ?: 0
 }

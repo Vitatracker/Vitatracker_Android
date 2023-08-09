@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.calender
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,11 +44,11 @@ import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.TIME_IS_UP
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.toDayDisplay
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toTimeDisplay
+import app.mybad.utils.TIME_IS_UP
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.toDayDisplay
+import app.mybad.utils.toEpochSecond
+import app.mybad.utils.toTimeDisplay
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.absoluteValue
 
@@ -61,6 +62,7 @@ private fun SingleUsageItem(
     isTaken: Boolean = false,
     onTake: (Long) -> Unit
 ) {
+    Log.d("VTTAG", "CalendarSelector::BottomSheetUsages:SingleUsageItem: start")
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
     val now = currentDateTime().toEpochSecond()
@@ -199,6 +201,7 @@ fun DailyUsages(
     onNewDate: (LocalDateTime?) -> Unit = {},
     onUsed: (UsageDomainModel) -> Unit
 ) {
+    Log.d("VTTAG", "CalendarSelector::DailyUsages: start")
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         color = MaterialTheme.colorScheme.background,
@@ -239,6 +242,7 @@ fun DailyUsages(
                 date = date,
                 onSelect = onNewDate::invoke
             )
+            Log.d("VTTAG", "CalendarSelector::BottomSheetUsages:DailyUsages: LazyColumn")
             LazyColumn {
                 usages.sortedBy {
                     it.useTime
@@ -254,7 +258,7 @@ fun DailyUsages(
                             )
                             SingleUsageItem(
                                 date = usage.useTime,
-                                remedy = remedies.first { remedy -> remedy.id == usage.remedyId },
+                                remedy = remedies.firstOrNull { remedy -> remedy.id == usage.remedyId } ?: RemedyDomainModel(),
                                 quantity = usage.quantity,
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 isTaken = usage.factUseTime > 10L,

@@ -41,11 +41,11 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.atEndOfDay
-import app.mybad.theme.utils.atStartOfDay
-import app.mybad.theme.utils.toDateFullDisplay
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toLocalDateTime
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atStartOfDay
+import app.mybad.utils.toDateFullDisplay
+import app.mybad.utils.toEpochSecond
+import app.mybad.utils.toLocalDateTime
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)

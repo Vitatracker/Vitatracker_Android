@@ -38,6 +38,7 @@ kapt {
 }
 
 dependencies {
+    implementation project(path: ":core:utils")
     implementation project(path: ":core:theme")
     implementation project(path: ":domain")
 

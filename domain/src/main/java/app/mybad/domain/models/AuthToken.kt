@@ -18,13 +18,17 @@ object AuthToken {
             _isAuthorize.value = value.isNotBlank() && userId != -1L
             Log.w("VTTAG", "AuthToken::token: ${_isAuthorize.value} userId=${userId} token=$value")
         }
+    var tokenDate = 0L
 
     var tokenRefresh = ""
+    var tokenRefreshDate = 0L
 
     fun clear() {
         userId = -1L
-        token = ""
+        tokenDate = 0L
         tokenRefresh = ""
+        tokenRefreshDate = 0L
         email = ""
+        token = ""
     }
 }

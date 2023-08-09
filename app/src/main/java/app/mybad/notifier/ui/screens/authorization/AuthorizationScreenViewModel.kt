@@ -5,16 +5,14 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.usecases.user.CreateUserUseCase
-import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.authorization.LoginWithEmailUseCase
 import app.mybad.domain.usecases.authorization.LoginWithFacebookUseCase
 import app.mybad.domain.usecases.authorization.LoginWithGoogleUseCase
 import app.mybad.domain.usecases.authorization.RegistrationUserUseCase
+import app.mybad.domain.usecases.user.CreateUserUseCase
+import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.plusDays
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.toLocalDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,6 +38,9 @@ class AuthorizationScreenViewModel @Inject constructor(
 
     fun logIn(login: String, password: String) {
         viewModelScope.launch {
+            Log.w(
+                "VTTAG", "AuthorizationScreenViewModel::logIn: start"
+            )
             AuthToken.clear()
             // проверка почты на валидность
             if (!isEmailValid(email = login) || !isPasswordValid(password)) {
@@ -57,19 +58,23 @@ class AuthorizationScreenViewModel @Inject constructor(
                         email = login,
                         name = ""
                     )
-                    Log.w("VTTAG", "AuthorizationScreenViewModel::logIn: Ok: userId=$userId token=${result.token}")
-                    val currentDate = currentDateTime()
-                    //TODO("получить даты обносления с сервера")
+                    Log.w(
+                        "VTTAG",
+                        "AuthorizationScreenViewModel::logIn: Ok: userId=$userId token=${result.token} date=${result.tokenDate} exp=${result.tokenDate.toLocalDateTime()}"
+                    )
                     updateUserAuthTokenUseCase(
                         userId = userId,
                         token = result.token,
-                        tokenDate = currentDate.plusDays(1).toEpochSecond(),
-                        tokenRefresh = result.refreshToken,
-                        tokenRefreshDate = currentDate.plusDays(30).toEpochSecond(),
+                        tokenDate = result.tokenDate,
+                        tokenRefresh = result.tokenRefresh,
+                        tokenRefreshDate = result.tokenRefreshDate,
                     )
                 }
                 .onFailure { error ->
-                    AuthToken.clear()
+                    Log.w(
+                        "VTTAG",
+                        "AuthorizationScreenViewModel::logIn: Error", error
+                    )
                     error.message?.let { message ->
                         _uiEvent.emit(message)
                     } ?: error.localizedMessage?.let { message ->
@@ -81,6 +86,9 @@ class AuthorizationScreenViewModel @Inject constructor(
 
     fun registration(login: String, password: String, userName: String) {
         viewModelScope.launch {
+            Log.w(
+                "VTTAG", "AuthorizationScreenViewModel::registration: start"
+            )
             AuthToken.clear()
             // проверка почты на валидность
             if (!isEmailValid(email = login) || !isPasswordValid(password)) {
@@ -94,22 +102,23 @@ class AuthorizationScreenViewModel @Inject constructor(
             registrationUserUseCase(
                 login = login,
                 password = password,
-                userName = userName
+                userName = userName,
             ).onSuccess { result ->
                 // добавить в локальную db user и получим userId
                 val userId: Long = createUserUseCase(email = login, name = userName)
-                Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Ok: userId=$userId")
-                val currentDate = currentDateTime()
-                //TODO("получить даты обносления с сервера")
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationScreenViewModel::registration: Ok: userId=$userId token=${result.token} date=${result.tokenDate} exp=${result.tokenDate.toLocalDateTime()}"
+                )
                 updateUserAuthTokenUseCase(
                     userId = userId,
                     token = result.token,
-                    tokenDate = currentDate.plusDays(1).toEpochSecond(),
-                    tokenRefresh = result.refreshToken,
-                    tokenRefreshDate = currentDate.plusDays(30).toEpochSecond(),
+                    tokenDate = result.tokenDate,
+                    tokenRefresh = result.tokenRefresh,
+                    tokenRefreshDate = result.tokenRefreshDate,
                 )
             }.onFailure { error ->
-                AuthToken.clear()
+                Log.w("VTTAG", "AuthorizationScreenViewModel::registration: Error", error)
                 error.message?.let { message ->
                     _uiEvent.emit(message)
                 } ?: error.localizedMessage?.let { message ->

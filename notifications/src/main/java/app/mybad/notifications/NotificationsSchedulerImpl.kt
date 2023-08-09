@@ -14,9 +14,9 @@ import app.mybad.domain.repository.CourseRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.scheduler.NotificationsScheduler
-import app.mybad.theme.utils.MILES_SECONDS
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.MILES_SECONDS
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.toEpochSecond
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

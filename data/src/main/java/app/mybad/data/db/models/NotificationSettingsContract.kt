@@ -13,5 +13,6 @@ object NotificationSettingsContract {
 
         const val UPDATED_NETWORK_DATE = "updated_network" // дата последней передачи данных на бек
         const val UPDATED_LOCAL_DATE = "updated_local" // дата последнеого получения данных
+        const val DELETED_DATE = "deleted_local" // дата удаления
     }
 }

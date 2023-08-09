@@ -37,4 +37,6 @@ data class FactUsageModel(
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = FactUsageContract.Columns.UPDATED_LOCAL_DATE)
     val updateLocalDate: Long = 0,
+    @ColumnInfo(name = FactUsageContract.Columns.DELETED_DATE)
+    val deleteLocalDate: Long = 0,
 )

@@ -16,9 +16,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import app.mybad.theme.utils.changeDate
-import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.isLeapYear
+import app.mybad.utils.changeDate
+import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.isLeapYear
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 

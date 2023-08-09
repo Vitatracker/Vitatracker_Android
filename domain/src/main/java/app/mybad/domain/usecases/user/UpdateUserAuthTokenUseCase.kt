@@ -27,7 +27,9 @@ class UpdateUserAuthTokenUseCase @Inject constructor(
             Log.w("VTTAG", "UpdateUserAuthTokenUseCase:: Ok: userId=${user.id} token=${user.token}")
             AuthToken.userId = user.id
             AuthToken.token = user.token
+            AuthToken.tokenDate = user.tokenDate
             AuthToken.tokenRefresh = user.tokenRefresh
+            AuthToken.tokenRefreshDate = user.tokenRefreshDate
             AuthToken.email = user.email
         }
     }

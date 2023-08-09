@@ -69,6 +69,12 @@ class CourseRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun delete(courseId: Long, dateTime: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.delete(courseId,dateTime)
+        }
+    }
+
     override suspend fun deleteCourseById(courseId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.deleteCourseById(courseId)
@@ -78,6 +84,12 @@ class CourseRepositoryImpl @Inject constructor(
     override suspend fun getCoursesNotUpdateByUserId(userId: Long) = withContext(dispatcher) {
         Result.runCatching {
             db.getCoursesNotUpdateByUserId(userId).mapToDomain()
+        }
+    }
+
+    override suspend fun getCoursesDeletedByUserId(userId: Long) = withContext(dispatcher) {
+        Result.runCatching {
+            db.getCoursesDeletedByUserId(userId).mapToDomain()
         }
     }
 

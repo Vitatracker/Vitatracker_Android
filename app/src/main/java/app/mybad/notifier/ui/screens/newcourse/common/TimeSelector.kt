@@ -35,12 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.hour
-import app.mybad.theme.utils.minute
-import app.mybad.theme.utils.minutesToHHmm
-import app.mybad.theme.utils.systemTimeInMinutes
-import app.mybad.theme.utils.toSystemTimeInMinutes
-import app.mybad.theme.utils.toTimeDisplay
+import app.mybad.utils.hour
+import app.mybad.utils.minute
+import app.mybad.utils.minutesToHHmm
+import app.mybad.utils.systemTimeInMinutes
+import app.mybad.utils.toSystemTimeInMinutes
+import app.mybad.utils.toTimeDisplay
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)

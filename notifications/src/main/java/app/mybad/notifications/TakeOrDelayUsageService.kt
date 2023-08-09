@@ -9,8 +9,8 @@ import app.mybad.notifications.AlarmService.Companion.DELAY_INTENT
 import app.mybad.notifications.AlarmService.Companion.TAKE_INTENT
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.REMEDY_ID
 import app.mybad.notifications.NotificationsSchedulerImpl.Companion.Extras.USAGE_TIME
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.toEpochSecond
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -61,4 +61,6 @@ data class UsageModel(
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = UsageContract.Columns.UPDATED_LOCAL_DATE)
     val updateLocalDate: Long = 0,
+    @ColumnInfo(name = UsageContract.Columns.DELETED_DATE)
+    val deleteLocalDate: Long = 0,
 )

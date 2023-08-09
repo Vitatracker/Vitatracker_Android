@@ -11,8 +11,8 @@ import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.remedies.UpdateRemedyUseCase
 import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
 import app.mybad.notifier.ui.screens.common.generateUsages
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.toEpochSecond
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,12 +25,11 @@ import javax.inject.Inject
 class MyCoursesViewModel @Inject constructor(
     loadCourses: LoadCoursesUseCase,
 
-    private val updateCourseUseCase: UpdateCourseUseCase,
-    private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
-
     private val updateRemedyUseCase: UpdateRemedyUseCase,
-
+    private val updateCourseUseCase: UpdateCourseUseCase,
     private val updateUsagesInCourseUseCase: UpdateUsagesInCourseUseCase,
+
+    private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -62,6 +61,7 @@ class MyCoursesViewModel @Inject constructor(
                         "MyCoursesViewModel::Update: userId=${intent.course.userId} pattern=${intent.usagesPattern} "
                     )
                     updateUsagesInCourseUseCase(
+                        courseId = intent.course.id,
                         usages = generateUsages(
                             usagesByDay = intent.usagesPattern,
                             remedyId = intent.remedy.id,

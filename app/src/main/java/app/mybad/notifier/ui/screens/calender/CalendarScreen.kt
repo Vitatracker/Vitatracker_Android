@@ -41,17 +41,17 @@ import app.mybad.notifier.ui.screens.common.BottomSlideInDialog
 import app.mybad.notifier.ui.screens.common.MonthSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.DAYS_A_WEEK
-import app.mybad.theme.utils.atEndOfDay
-import app.mybad.theme.utils.atStartOfDay
-import app.mybad.theme.utils.atStartOfMonth
-import app.mybad.theme.utils.dayShortDisplay
-import app.mybad.theme.utils.currentDateTime
-import app.mybad.theme.utils.minusDays
-import app.mybad.theme.utils.plusDays
-import app.mybad.theme.utils.toDateFullDisplay
-import app.mybad.theme.utils.toEpochSecond
-import app.mybad.theme.utils.toSecondsLeftFromStartOfDay
+import app.mybad.utils.DAYS_A_WEEK
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atStartOfDay
+import app.mybad.utils.atStartOfMonth
+import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.currentDateTime
+import app.mybad.utils.minusDays
+import app.mybad.utils.plusDays
+import app.mybad.utils.toDateFullDisplay
+import app.mybad.utils.toEpochSecond
+import app.mybad.utils.toSecondsLeftFromStartOfDay
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)

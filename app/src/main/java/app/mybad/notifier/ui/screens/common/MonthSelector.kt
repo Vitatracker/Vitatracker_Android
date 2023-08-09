@@ -29,9 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.theme.utils.minusMonths
-import app.mybad.theme.utils.monthFullDisplay
-import app.mybad.theme.utils.plusMonths
+import app.mybad.utils.minusMonths
+import app.mybad.utils.monthFullDisplay
+import app.mybad.utils.plusMonths
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalAnimationApi::class)
