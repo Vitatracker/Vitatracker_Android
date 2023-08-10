@@ -11,5 +11,5 @@ sealed class SettingsScreens(val route: String) {
 
     object Notifications : SettingsScreens("settings_notifications")
     object About : SettingsScreens("settings_about")
-    object OurContacts : SettingsScreens("settings_about_our_contacts")
+    object AboutOurTeam : SettingsScreens("settings_about_our_team")
 }

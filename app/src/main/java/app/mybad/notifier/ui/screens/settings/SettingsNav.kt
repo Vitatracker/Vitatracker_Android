@@ -32,11 +32,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.mybad.notifier.MainActivityViewModel
-import app.mybad.notifier.ui.screens.settings.about.SettingsAbout
 import app.mybad.notifier.ui.screens.settings.about.SettingsOurContacts
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
 import app.mybad.notifier.ui.screens.settings.profile.SettingsPasswordEdit
-import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishes
 import app.mybad.notifier.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,13 +141,13 @@ fun SettingsNav(
                 }
             }
             composable(NavItemSettings.About.route) {
-                title = stringResource(NavItemSettings.About.stringId)
-                SettingsAbout(onContacts = {
-                    navController.navigate(NavItemSettings.OurContacts.route)
-                })
+//                title = stringResource(NavItemSettings.About.stringId)
+//                SettingsAbout(onContacts = {
+//                    navController.navigate(NavItemSettings.OurContacts.route)
+//                })
             }
-            composable(NavItemSettings.OurContacts.route) {
-                title = stringResource(NavItemSettings.OurContacts.stringId)
+            composable(NavItemSettings.AboutOurTeam.route) {
+                title = stringResource(NavItemSettings.AboutOurTeam.stringId)
                 SettingsOurContacts()
             }
         }

@@ -2,7 +2,7 @@ package app.mybad.notifier.ui.screens.settings.wishes
 
 import app.mybad.notifier.ui.base.BaseViewModel
 
-class SettingsLeaveWishesViewModel :
+class SettingsLeaveWishesScreenViewModel :
     BaseViewModel<SettingsLeaveWishesScreenContract.Event, SettingsLeaveWishesScreenContract.State, SettingsLeaveWishesScreenContract.Effect>() {
     override fun setInitialState(): SettingsLeaveWishesScreenContract.State = SettingsLeaveWishesScreenContract.State
 

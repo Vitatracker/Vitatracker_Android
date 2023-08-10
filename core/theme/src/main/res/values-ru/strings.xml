@@ -49,6 +49,7 @@
     <string name="settings_profile">Профиль</string>
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_about">О приложении</string>
+    <string name="settings_about_our_team">О команде</string>
     <string name="settings_quit">Выйти</string>
     <string name="settings_delete_account">Удалить учетную запись</string>
     <string name="settings_change_password">Изменить пароль</string>
@@ -186,4 +187,9 @@
     <string name="action_recover">Восстановить</string>
     <string name="password_recovery_dialog_body">Cсылка для восстановления пароля отправлена на электронную почту %s.</string>
     <string name="action_navigate">Перейти</string>
+    <string name="settings_version">Версия %s</string>
+    <string name="settings_about_our_team_hello">Здравствуйте!</string>
+    <string name="settings_about_our_team_body_1">Над приложением %s работала команда юных джунов айтишников, которые с заботой о людях создавали этот продукт.</string>
+    <string name="settings_about_our_team_body_2">По этой ссылке находится пост в линкедине о команде, где подробно рассказана история создания приложения и информация о каждом участнике.</string>
+    <string name="settings_about_our_team_end">С заботой о вас, команда %s!</string>
 </resources>
