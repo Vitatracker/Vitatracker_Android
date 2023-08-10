@@ -83,7 +83,9 @@ fun SettingsNotifications(
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.settings_notifications_setup_notifications_button,
-                onClick = {}
+                onClick = {
+                    onEventSent(SettingsNotificationsScreenContract.Event.SetupNotificationsClicked)
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -100,7 +102,9 @@ fun SettingsNotifications(
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.settings_notifications_sleep_regime_button,
-                onClick = {}
+                onClick = {
+                    onEventSent(SettingsNotificationsScreenContract.Event.SetupSleepRegimeClicked)
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -117,7 +121,9 @@ fun SettingsNotifications(
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.settings_notifications_check_settings_button,
-                onClick = {}
+                onClick = {
+                    onEventSent(SettingsNotificationsScreenContract.Event.CheckSettingsClicked)
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -134,7 +140,9 @@ fun SettingsNotifications(
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.settings_notifications_reload_settings_button,
-                onClick = {}
+                onClick = {
+                    onEventSent(SettingsNotificationsScreenContract.Event.ReloadSettingsClicked)
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
@@ -173,7 +181,9 @@ fun SettingsNotifications(
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.settings_notifications_contact_us_button,
-                onClick = {}
+                onClick = {
+                    onEventSent(SettingsNotificationsScreenContract.Event.ContactUsClicked)
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
