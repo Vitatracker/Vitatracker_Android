@@ -10,17 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
 
 @Composable
+@Preview
 fun NavigationRow(
     modifier: Modifier = Modifier,
     backLabel: String = stringResource(R.string.navigation_back),
     nextLabel: String = stringResource(R.string.navigation_next),
-    onBack: () -> Unit,
-    onNext: () -> Unit
+    onBack: () -> Unit = {},
+    onNext: () -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

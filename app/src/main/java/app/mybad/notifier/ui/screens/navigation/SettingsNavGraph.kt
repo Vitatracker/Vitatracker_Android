@@ -11,6 +11,9 @@ import app.mybad.notifier.ui.screens.settings.about.SettingsAboutViewModel
 import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScreen
 import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScreenContract
 import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScreenViewModel
+import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordScreenContract
+import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordScreenViewModel
+import app.mybad.notifier.ui.screens.settings.changepassword.SettingsPasswordEdit
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainViewModel
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
@@ -68,7 +71,10 @@ fun NavGraphBuilder.settingsNavGraph(navigationState: NavigationState, toAuthori
                 onNavigationRequested = { navigationEffect ->
                     when (navigationEffect) {
                         ProfileScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
-                        ProfileScreenContract.Effect.Navigation.ToChangePassword -> {}
+                        ProfileScreenContract.Effect.Navigation.ToChangePassword -> {
+                            navigationState.navigateSingleTo(SettingsScreens.PasswordChange.route)
+                        }
+
                         ProfileScreenContract.Effect.Navigation.ToAuthorization -> {
                             toAuthorizationRequested()
                         }
@@ -137,6 +143,19 @@ fun NavGraphBuilder.settingsNavGraph(navigationState: NavigationState, toAuthori
                 onNavigationRequested = { navigationEffect ->
                     when (navigationEffect) {
                         SettingsAboutOurTeamScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
+                    }
+                }
+            )
+        }
+        composable(SettingsScreens.PasswordChange.route) {
+            val viewModel: SettingsChangePasswordScreenViewModel = hiltViewModel()
+            SettingsPasswordEdit(
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationEffect ->
+                    when (navigationEffect) {
+                        SettingsChangePasswordScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
                     }
                 }
             )
