@@ -1,27 +1,26 @@
 package app.mybad.notifier.ui.screens.settings.notifications
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.domain.models.user.NotificationsUserDomainModel
-import app.mybad.notifier.BuildConfig
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
-import app.mybad.notifier.ui.screens.settings.about.SettingsAboutScreenContract
-import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScreenContract
-import app.mybad.notifier.ui.screens.settings.common.NotificationSettingItem
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
