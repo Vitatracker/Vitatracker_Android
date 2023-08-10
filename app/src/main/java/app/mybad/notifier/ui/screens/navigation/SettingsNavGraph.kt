@@ -11,6 +11,9 @@ import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
 import app.mybad.notifier.ui.screens.settings.profile.ProfileScreenContract
 import app.mybad.notifier.ui.screens.settings.profile.ProfileScreenViewModel
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileScreen
+import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishes
+import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishesScreenContract
+import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishesViewModel
 
 fun NavGraphBuilder.settingsNavGraph(navigationState: NavigationState, toAuthorizationRequested: () -> Unit) {
     navigation(startDestination = SettingsScreens.Navigation.route, route = MainScreens.Settings.route) {
@@ -71,6 +74,17 @@ fun NavGraphBuilder.settingsNavGraph(navigationState: NavigationState, toAuthori
 
         }
         composable(SettingsScreens.LeaveYourWishes.route) {
+            val viewModel: SettingsLeaveWishesViewModel = hiltViewModel()
+            SettingsLeaveWishes(
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationEffect ->
+                    when (navigationEffect) {
+                        SettingsLeaveWishesScreenContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
+                    }
+                }
+            )
 
         }
         composable(SettingsScreens.About.route) {

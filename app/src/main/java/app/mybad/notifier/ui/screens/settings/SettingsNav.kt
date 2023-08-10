@@ -123,8 +123,8 @@ fun SettingsNav(
 //                )
             }
             composable(NavItemSettings.LeaveYourWishes.route) {
-                title = stringResource(NavItemSettings.LeaveYourWishes.stringId)
-                SettingsLeaveWishes()
+//                title = stringResource(NavItemSettings.LeaveYourWishes.stringId)
+//                SettingsLeaveWishes()
             }
             composable(NavItemSettings.PasswordChange.route) {
                 title = stringResource(NavItemSettings.PasswordChange.stringId)
