@@ -1,80 +1,182 @@
 package app.mybad.notifier.ui.screens.settings.notifications
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.user.NotificationsUserDomainModel
+import app.mybad.notifier.BuildConfig
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
+import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
+import app.mybad.notifier.ui.screens.settings.about.SettingsAboutScreenContract
+import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScreenContract
 import app.mybad.notifier.ui.screens.settings.common.NotificationSettingItem
 import app.mybad.theme.R
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SettingsNotifications(
-    modifier: Modifier = Modifier,
-    init: NotificationsUserDomainModel = NotificationsUserDomainModel(),
-    onSwitch: (NotificationsUserDomainModel) -> Unit = {}
+    state: SettingsNotificationsScreenContract.State,
+    events: Flow<SettingsNotificationsScreenContract.Effect>? = null,
+    onEventSent: (event: SettingsNotificationsScreenContract.Event) -> Unit = {},
+    onNavigationRequested: (navigationEffect: SettingsNotificationsScreenContract.Effect.Navigation) -> Unit
 ) {
-    var newNotifications by remember { mutableStateOf(init) }
+    LaunchedEffect(key1 = true) {
+        events?.collect {
+            when (it) {
+                SettingsNotificationsScreenContract.Effect.CheckSettings -> {}
+                SettingsNotificationsScreenContract.Effect.ContactUs -> {}
+                SettingsNotificationsScreenContract.Effect.Navigation.Back -> {
+                    onNavigationRequested(SettingsNotificationsScreenContract.Effect.Navigation.Back)
+                }
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Spacer(Modifier.height(16.dp))
-        NotificationSettingItem(
-            label = stringResource(R.string.settings_enable_notifications),
-            description = stringResource(R.string.settings_enable_notifications_description),
-            isChecked = newNotifications.isEnabled
-        ) {
-            newNotifications = newNotifications.copy(isEnabled = it)
-            onSwitch(newNotifications)
+                SettingsNotificationsScreenContract.Effect.ReloadSettings -> {}
+                SettingsNotificationsScreenContract.Effect.SetupNotifications -> {}
+                SettingsNotificationsScreenContract.Effect.SetupSleepRegime -> {}
+            }
         }
-        Divider(
-            modifier = Modifier.padding(vertical = 16.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-        )
-
-        NotificationSettingItem(
-            label = stringResource(R.string.settings_enable_float_notifications),
-            description = stringResource(R.string.settings_enable_float_notifications_description),
-            isChecked = newNotifications.isFloat
-        ) {
-            newNotifications = newNotifications.copy(isFloat = it)
-            onSwitch(newNotifications)
+    }
+    Scaffold(
+        topBar = {
+            TopAppBarWithBackAction(
+                titleResId = R.string.settings_notifications,
+                onBackPressed = { onEventSent(SettingsNotificationsScreenContract.Event.ActionBack) }
+            )
         }
-        Divider(
-            modifier = Modifier.padding(vertical = 16.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-        )
-
-        NotificationSettingItem(
-            label = stringResource(R.string.settings_enable_medication_control),
-            description = stringResource(R.string.settings_enable_medication_control_description),
-            isChecked = newNotifications.medicationControl
+    ) { paddingValues ->
+        val appName: String = stringResource(id = R.string.app_name)
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(start = 16.dp, end = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            newNotifications = newNotifications.copy(medicationControl = it)
-            onSwitch(newNotifications)
-        }
-        Divider(
-            modifier = Modifier.padding(vertical = 16.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-        )
-
-        NotificationSettingItem(
-            label = stringResource(R.string.settings_enable_next_course_start),
-            description = stringResource(R.string.settings_enable_next_course_start_description),
-            isChecked = newNotifications.nextCourseStart
-        ) {
-            newNotifications = newNotifications.copy(nextCourseStart = it)
-            onSwitch(newNotifications)
+            Text(
+                text = stringResource(R.string.settings_notifications_setup_notifications_1),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_setup_notifications_2),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_setup_notifications_3),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.settings_notifications_setup_notifications_button,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_sleep_regime_1),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_sleep_regime_2),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.settings_notifications_sleep_regime_button,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_check_settings_1),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_check_settings_2),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.settings_notifications_check_settings_button,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_reload_settings_1),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_reload_settings_2),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.settings_notifications_reload_settings_button,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_contact_us_1),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = String.format(stringResource(R.string.settings_notifications_contact_us_2), appName),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_contact_us_3),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = String.format(stringResource(R.string.settings_notifications_contact_us_4), appName),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_contact_us_5),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.settings_notifications_contact_us_6),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.settings_notifications_contact_us_button,
+                onClick = {}
+            )
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

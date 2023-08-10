@@ -133,12 +133,12 @@ fun SettingsNav(
                 )
             }
             composable(NavItemSettings.Notifications.route) {
-                title = stringResource(NavItemSettings.Notifications.stringId)
-                SettingsNotifications(
-                    init = state.value.userModel.settings.notifications
-                ) {
-                    vm.reduce(SettingsIntent.SetNotifications(it))
-                }
+//                title = stringResource(NavItemSettings.Notifications.stringId)
+//                SettingsNotifications(
+//                    init = state.value.userModel.settings.notifications
+//                ) {
+//                    vm.reduce(SettingsIntent.SetNotifications(it))
+//                }
             }
             composable(NavItemSettings.About.route) {
 //                title = stringResource(NavItemSettings.About.stringId)

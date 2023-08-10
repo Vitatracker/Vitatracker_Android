@@ -71,7 +71,7 @@
     <string name="continue_with" translatable="false">Continue with</string>
     <!--SETTINGS-->
     <string name="settings_profile">Profile</string>
-    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications">Notification settings</string>
     <string name="settings_about">About application</string>
     <string name="settings_about_our_team">About team</string>
     <string name="settings_quit">Quit</string>
@@ -198,4 +198,24 @@
     <string name="settings_about_our_team_body_1">Над приложением %s работала команда юных джунов айтишников, которые с заботой о людях создавали этот продукт.</string>
     <string name="settings_about_our_team_body_2">По этой ссылке находится пост в линкедине о команде, где подробно рассказана история создания приложения и информация о каждом участнике.</string>
     <string name="settings_about_our_team_end">С заботой о вас, команда %s!</string>
+    <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
+    <string name="settings_notifications_setup_notifications_2">Уведомления отключены</string>
+    <string name="settings_notifications_setup_notifications_3">Убедитесь, что ваши уведомления включены</string>
+    <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
+    <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
+    <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
+    <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
+    <string name="settings_notifications_check_settings_1">Защищенные приложения</string>
+    <string name="settings_notifications_check_settings_2">Некоторые устройства могут иметь проблемы с получением уведомлений от неактивных приложений. Чтобы быть уверенным что вы получаете все уведомления, вы можете проверить настройки своего телефона. Некоторые производители могут вообще не иметь этих опций и получать все уведомления правильно, и в этом случае вам не нужно ничего делать.</string>
+    <string name="settings_notifications_check_settings_button">Проверить настройки</string>
+    <string name="settings_notifications_reload_settings_1">Уведомления были остановлены</string>
+    <string name="settings_notifications_reload_settings_2">Иногда уведомления могут быть остановлены системой по разным причинам. В этом случае вы должны перезапустить их.</string>
+    <string name="settings_notifications_reload_settings_button">Перезапустить уведомления</string>
+    <string name="settings_notifications_contact_us_1">Проверьте сторонние приложения</string>
+    <string name="settings_notifications_contact_us_2">Приложения для экономии батареи, анти-вирусы или убийцы задач, такие как Clean Master, 360 Security, CM Security, Fast Booster, могут прерывать работу напоминаний от %s и поставить ваше здоровье под угрозу. Пожалуйста, деактивируйте их, чтобы они не вмешивались в отправку уведомлений.</string>
+    <string name="settings_notifications_contact_us_3">Не «останавливайте принудительно» приложения</string>
+    <string name="settings_notifications_contact_us_4">Закрытие %s c помощью диспетчера задач (принудительная остановка) может блокировать ваши напоминания.</string>
+    <string name="settings_notifications_contact_us_5">Нужна дополнительная помощь?</string>
+    <string name="settings_notifications_contact_us_6">Свяжитесь со службой поддержки</string>
+    <string name="settings_notifications_contact_us_button">Связаться</string>
 </resources>

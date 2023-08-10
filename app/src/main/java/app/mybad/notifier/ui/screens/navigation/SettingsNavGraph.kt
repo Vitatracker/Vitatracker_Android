@@ -14,6 +14,9 @@ import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutOurTeamScr
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainViewModel
 import app.mybad.notifier.ui.screens.settings.main.SettingsNavScreen
+import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotifications
+import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsScreenContract
+import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsScreenViewModel
 import app.mybad.notifier.ui.screens.settings.profile.ProfileScreenContract
 import app.mybad.notifier.ui.screens.settings.profile.ProfileScreenViewModel
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileScreen
@@ -77,7 +80,19 @@ fun NavGraphBuilder.settingsNavGraph(navigationState: NavigationState, toAuthori
             }
         }
         composable(route = SettingsScreens.Notifications.route) {
-
+            val viewModel: SettingsNotificationsScreenViewModel = hiltViewModel()
+            SettingsNotifications(
+                state = viewModel.viewState.value,
+                events = viewModel.effect,
+                onEventSent = { viewModel.setEvent(it) },
+                onNavigationRequested = { navigationEffect ->
+                    when (navigationEffect) {
+                        SettingsNotificationsScreenContract.Effect.Navigation.Back -> {
+                            navigationState.navController.popBackStack()
+                        }
+                    }
+                }
+            )
         }
         composable(SettingsScreens.LeaveYourWishes.route) {
             val viewModel: SettingsLeaveWishesScreenViewModel = hiltViewModel()

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.MyBADTheme
 
 @Composable
-fun ReUseFilledButton(modifier: Modifier, textId: Int, isEnabled: Boolean = true, onClick: () -> Unit = {}) {
+fun ReUseFilledButton(modifier: Modifier = Modifier, textId: Int, isEnabled: Boolean = true, onClick: () -> Unit = {}) {
     Button(
         modifier = modifier,
         enabled = isEnabled,
