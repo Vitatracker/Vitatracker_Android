@@ -212,4 +212,7 @@
     <string name="settings_notifications_contact_us_5">Нужна дополнительная помощь?</string>
     <string name="settings_notifications_contact_us_6">Свяжитесь со службой поддержки</string>
     <string name="settings_notifications_contact_us_button">Связаться</string>
+    <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
+    <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
+    <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>
 </resources>

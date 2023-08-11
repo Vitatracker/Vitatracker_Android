@@ -10,22 +10,19 @@ class ProfileScreenContract {
         object ChangePassword : Event()
         object SignOut : Event()
         object DeleteAccount : Event()
-        object StartEdit : Event()
-        object SaveEdited : Event()
-        object CancelEdited : Event()
+        object EditAvatar : Event()
         data class OnUserNameChanged(val name: String) : Event()
-        data class OnEmailChanged(val email: String) : Event()
     }
 
     data class State(
         val userAvatar: String,
         val name: String,
         val email: String,
-        val isLoading: Boolean,
-        val isInEditMode: Boolean
+        val isLoading: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
+        object ShowDialog : Effect()
         sealed class Navigation : Effect() {
             object ToChangePassword : Navigation()
             object ToAuthorization : Navigation()

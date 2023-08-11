@@ -13,8 +13,7 @@ import javax.inject.Inject
 class ProfileScreenViewModel @Inject constructor(
     private val userSettingsUseCase: LoadUserSettingsUseCase,
     private val updateUserPersonalUseCase: UpdateUserPersonalUseCase
-) :
-    BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
+) : BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
     init {
         setModelFromSaved()
@@ -29,8 +28,7 @@ class ProfileScreenViewModel @Inject constructor(
                         userAvatar = model.avatar ?: "",
                         name = model.name ?: "",
                         email = model.email ?: "",
-                        isLoading = false,
-                        isInEditMode = false
+                        isLoading = false
                     )
                 }
             }
@@ -42,42 +40,33 @@ class ProfileScreenViewModel @Inject constructor(
             userAvatar = "",
             name = "",
             email = "",
-            isLoading = true,
-            isInEditMode = false
+            isLoading = true
         )
     }
 
     override fun handleEvents(event: ProfileScreenContract.Event) {
         when (event) {
             ProfileScreenContract.Event.ActionBack -> {
-                if (viewState.value.isInEditMode) {
-                    setModelFromSaved()
-                } else {
-                    setEffect { ProfileScreenContract.Effect.Navigation.Back }
-                }
+                setEffect { ProfileScreenContract.Effect.Navigation.Back }
             }
 
             ProfileScreenContract.Event.ChangePassword -> setEffect { ProfileScreenContract.Effect.Navigation.ToChangePassword }
-            ProfileScreenContract.Event.StartEdit -> setState { copy(isInEditMode = true) }
-            is ProfileScreenContract.Event.OnEmailChanged -> setState { copy(email = event.email) }
+            ProfileScreenContract.Event.EditAvatar -> setEffect { ProfileScreenContract.Effect.ShowDialog }
             is ProfileScreenContract.Event.OnUserNameChanged -> setState { copy(name = event.name) }
             ProfileScreenContract.Event.DeleteAccount -> deleteAccount()
             ProfileScreenContract.Event.SignOut -> signOut()
-            ProfileScreenContract.Event.CancelEdited -> {
-                setModelFromSaved()
-            }
-
-            ProfileScreenContract.Event.SaveEdited -> saveNewSettings()
         }
     }
 
     private fun saveNewSettings() {
+
+    }
+
+    override fun onCleared() {
         viewModelScope.launch(Dispatchers.IO) {
             val model = userSettingsUseCase.getUserPersonal()
             updateUserPersonalUseCase.execute(model.copy(name = viewState.value.name))
-            launch(Dispatchers.Main) {
-                setState { copy(isInEditMode = false) }
-            }
+            super.onCleared()
         }
     }
 
