@@ -165,16 +165,6 @@ class SynchronizationCourseWorker @AssistedInject constructor(
                 "SynchronizationCourseWorker::startSynchronization: End"
             )
             return workRequest
-            /*
-            //    private val workManager = WorkManager.getInstance(context)
-
-                        workManager.enqueueUniqueWork(
-                            SynchronizationCourseWorker.REMEDY_CHANNEL_ID,
-                            ExistingWorkPolicy.KEEP,
-                            workRequest
-                        )
-            */
-
         }
     }
 

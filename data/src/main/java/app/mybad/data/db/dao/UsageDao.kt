@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import app.mybad.data.db.models.UsageContract
 import app.mybad.data.db.models.UsageModel
+import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,26 +28,20 @@ interface UsageDao {
     suspend fun getUsagesByUserId(userId: Long): List<UsageModel>
 
     @Query(
-        "select * from ${UsageContract.TABLE_NAME} where ${
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.COURSE_ID
-        } = :courseId and ${UsageContract.Columns.DELETED_DATE} = 0"
+        } = :courseId"
     )
     suspend fun getUsagesByCourseId(courseId: Long): List<UsageModel>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUsage(usage: UsageModel)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUsages(usages: List<UsageModel>)
-
     @Query(
-        "select * from ${UsageContract.TABLE_NAME} where ${
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.COURSE_ID
-        } = :courseId  and ${UsageContract.Columns.DELETED_DATE} = 0 and ${
+        } = :courseId  and ${
             UsageContract.Columns.USE_TIME
         } between :startTime and :endTime"
     )
-    suspend fun getUsagesBetweenById(
+    suspend fun getUsagesBetweenByCourseId(
         courseId: Long,
         startTime: Long,
         endTime: Long
@@ -64,19 +59,90 @@ interface UsageDao {
             UsageContract.Columns.COURSE_ID
         } = :courseId and ${UsageContract.Columns.USE_TIME} >= :time"
     )
-    suspend fun getUsagesAfter(courseId: Long, time: Long): List<UsageModel>
+    suspend fun getUsagesAfterByCourseId(courseId: Long, time: Long): List<UsageModel>
+
+    //--------------------------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsage(usage: UsageModel)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsages(usages: List<UsageModel>)
+    //--------------------------------------------------
+
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.FACT_USE_TIME
+        } = :factTime, ${
+            UsageContract.Columns.UPDATED_NETWORK_DATE
+        } = 0, ${
+            UsageContract.Columns.UPDATED_LOCAL_DATE
+        } = 0 WHERE ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${
+            UsageContract.Columns.USE_TIME
+        } = :usageTime"
+    )
+    suspend fun setFactUseTime(courseId: Long, usageTime: Long, factTime: Long)
+
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${UsageContract.Columns.FACT_USE_TIME} > 0 limit 1"
+    )
+    suspend fun checkUseUsagesByCourseId(courseId: Long): UsageModel?
+
+    //--------------------------------------------------
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.DELETED_DATE
+        } = :date WHERE ${
+            UsageContract.Columns.ID
+        } = :usageId"
+    )
+    suspend fun markDeletionUsagesById(usageId: Long, date: Long = currentDateTimeInSecond())
 
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
             UsageContract.Columns.DELETED_DATE
-        } = :dateTime WHERE ${
+        } = :date WHERE ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId"
+    )
+    suspend fun markDeletionUsagesByCourseId(courseId: Long, date: Long = currentDateTimeInSecond())
+
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.DELETED_DATE
+        } = :date WHERE ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime"
+    )
+    suspend fun markDeletionUsagesBetweenByCourseId(
+        courseId: Long,
+        startTime: Long,
+        endTime: Long,
+        date: Long = currentDateTimeInSecond()
+    )
+
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.DELETED_DATE
+        } = :date WHERE ${
             UsageContract.Columns.COURSE_ID
         } = :courseId and ${
+            UsageContract.Columns.FACT_USE_TIME
+        } <= 0 and ${
             UsageContract.Columns.USE_TIME
         } >= :dateTime"
     )
-    suspend fun delete(courseId: Long, dateTime: Long)
+    suspend fun markDeletionUsagesAfterByCourseId(
+        courseId: Long,
+        dateTime: Long,
+        date: Long = currentDateTimeInSecond()
+    )
 
+    //--------------------------------------------------
+    // тут удаление физически, т.е. то, что было удалено через сервер
     @Query(
         "delete from ${UsageContract.TABLE_NAME} where ${
             UsageContract.Columns.ID
@@ -84,30 +150,17 @@ interface UsageDao {
     )
     suspend fun deleteUsagesById(usageId: Long)
 
+    @Query(
+        "delete from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.USER_ID
+        } = :userId"
+    )
+    suspend fun deleteUsagesByUserId(userId: Long)
+
     @Delete
     suspend fun deleteUsages(usages: List<UsageModel>)
 
-    @Query(
-        "delete from ${UsageContract.TABLE_NAME} where ${
-            UsageContract.Columns.COURSE_ID
-        } = :courseId"
-    )
-    suspend fun deleteUsagesByCourseId(courseId: Long)
-
-    @Query(
-        "delete from ${UsageContract.TABLE_NAME} where ${
-            UsageContract.Columns.COURSE_ID
-        } = :courseId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime"
-    )
-    suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long)
-
-    @Query(
-        "delete from ${UsageContract.TABLE_NAME} where ${
-            UsageContract.Columns.COURSE_ID
-        } = :courseId and ${UsageContract.Columns.USE_TIME} >= :time"
-    )
-    suspend fun deleteUsagesAfter(courseId: Long, time: Long)
-
+    //--------------------------------------------------
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.USER_ID

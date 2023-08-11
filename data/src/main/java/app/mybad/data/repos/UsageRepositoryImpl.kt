@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -23,13 +22,13 @@ class UsageRepositoryImpl @Inject constructor(
         .flowOn(dispatcher)
 
     override suspend fun getUsagesByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getUsagesByUserId(userId).mapToDomain()
         }
     }
 
     override suspend fun getUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getUsagesByCourseId(courseId).mapToDomain()
         }
     }
@@ -39,94 +38,121 @@ class UsageRepositoryImpl @Inject constructor(
         startTime: Long,
         endTime: Long
     ) = withContext(dispatcher) {
-        Result.runCatching {
-            db.getUsagesBetweenById(courseId, startTime, endTime).mapToDomain()
+        runCatching {
+            db.getUsagesBetweenByCourseId(
+                courseId = courseId,
+                startTime = startTime,
+                endTime = endTime
+            ).mapToDomain()
         }
     }
 
-    //TODO("не понятно что тут происходит")
+    override suspend fun getUsagesBetween(
+        startTime: Long,
+        endTime: Long
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getUsagesBetween(startTime = startTime, endTime = endTime).mapToDomain()
+        }
+    }
+
+    //--------------------------------------------------
+    override suspend fun checkUseUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.checkUseUsagesByCourseId(courseId) != null
+        }
+    }
+
+    // установить время использования таблетки
     override suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long) =
         withContext(dispatcher) {
-            Result.runCatching {
-                db.getUsagesByCourseId(courseId)
-                    .lastOrNull { usage ->
-                        usage.courseId == courseId && usage.useTime == usageTime
-                    }?.copy(factUseTime = factTime)?.let { usage ->
-                        // TODO("добавлять в другую базу")
-                        db.insertUsage(usage)
-                    }
+            runCatching {
+                db.setFactUseTime(
+                    courseId = courseId,
+                    usageTime = usageTime,
+                    factTime = factTime,
+                )
             }
         }
 
+    //--------------------------------------------------
     override suspend fun insertUsage(usage: UsageDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.insertUsage(usage.mapToData())
         }
     }
 
     override suspend fun insertUsage(usages: List<UsageDomainModel>) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.insertUsages(usages.mapToData())
         }
     }
 
     override suspend fun updateUsage(usage: UsageDomainModel) = insertUsage(usage)
 
-    override suspend fun delete(courseId: Long, dateTime: Long) = withContext(dispatcher) {
-        Result.runCatching {
-            db.delete(courseId, dateTime)
+    //--------------------------------------------------
+    override suspend fun markDeletionUsagesById(usageId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.markDeletionUsagesById(usageId)
         }
     }
 
+    override suspend fun markDeletionUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.markDeletionUsagesByCourseId(courseId)
+        }
+    }
+
+    override suspend fun markDeletionUsagesAfterByCourseId(courseId: Long, dateTime: Long) =
+        withContext(dispatcher) {
+            runCatching {
+                db.markDeletionUsagesAfterByCourseId(courseId = courseId, dateTime = dateTime)
+            }
+        }
+
+    override suspend fun markDeletionUsagesBetweenByCourseId(
+        courseId: Long,
+        startTime: Long,
+        endTime: Long
+    ) =
+        withContext(dispatcher) {
+            runCatching {
+                db.markDeletionUsagesBetweenByCourseId(
+                    courseId = courseId,
+                    startTime = startTime,
+                    endTime = endTime
+                )
+            }
+        }
+
+    //--------------------------------------------------
     override suspend fun deleteUsagesById(usageId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.deleteUsagesById(usageId)
         }
     }
 
+    override suspend fun deleteUsagesByUserId(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deleteUsagesByUserId(userId)
+        }
+    }
+
     override suspend fun deleteUsages(usages: List<UsageDomainModel>) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.deleteUsages(usages.mapToData())
         }
     }
 
-    override suspend fun deleteUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
-            db.deleteUsagesByCourseId(courseId)
-        }
-    }
-
-    override suspend fun deleteUsagesBetweenById(courseId: Long, startTime: Long, endTime: Long) =
-        withContext(dispatcher) {
-            Result.runCatching {
-                db.deleteUsagesBetweenById(courseId, startTime, endTime)
-            }
-        }
-
-    override suspend fun deleteUsagesAfter(courseId: Long, afterTime: Long) =
-        withContext(dispatcher) {
-            Result.runCatching {
-                db.deleteUsagesAfter(courseId, afterTime)
-            }
-        }
-
-    override suspend fun getUsagesBetween(
-        startTime: Long,
-        endTime: Long
-    ) = withContext(dispatcher) {
-        Result.runCatching {
-            db.getUsagesBetween(startTime = startTime, endTime = endTime).mapToDomain()
-        }
-    }
-
+    //--------------------------------------------------
     override suspend fun getUsagesNotUpdateByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getUsagesNotUpdateByUserId(userId).mapToDomain()
         }
     }
 
     override suspend fun getUsagesDeletedByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getUsagesDeletedByUserId(userId).mapToDomain()
         }
     }

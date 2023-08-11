@@ -16,19 +16,19 @@ class RemedyNetworkRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : RemedyNetworkRepository {
     override suspend fun getRemedies() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             remedyApi.getRemedies().mapToDomain()
         }
     }
 
     override suspend fun getRemedy(remedyId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             remedyApi.getRemedy(remedyId).mapToDomain()
         }
     }
 
     override suspend fun updateRemedy(remedy: RemedyDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             Log.d(
                 "VTTAG",
                 "SynchronizationCourseWorker::RemedyNetworkRepositoryImpl:updateRemedy: remedy id=${remedy.id}"
@@ -41,7 +41,7 @@ class RemedyNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteRemedy(remedyId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             remedyApi.deleteRemedy(remedyId).isSuccessful
         }
     }

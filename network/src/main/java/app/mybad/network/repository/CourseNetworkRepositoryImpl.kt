@@ -17,13 +17,13 @@ class CourseNetworkRepositoryImpl @Inject constructor(
 ) : CourseNetworkRepository {
 
     override suspend fun getCourses() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             courseApi.getCourses().mapToDomain()
         }
     }
 
     override suspend fun getCourse(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             courseApi.getCourse(courseId).mapToDomain()
         }
     }
@@ -32,7 +32,7 @@ class CourseNetworkRepositoryImpl @Inject constructor(
         remedyId: Long,
         remedyIdLoc: Long,
     ) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             courseApi.getCoursesByRemedyId(remedyId).mapToDomain(
                 remedyIdLoc = remedyIdLoc
             )
@@ -40,7 +40,7 @@ class CourseNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateCourse(course: CourseDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             Log.d(
                 "VTTAG",
                 "SynchronizationCourseWorker::CourseNetworkRepositoryImpl: course id=${course.id}"
@@ -56,7 +56,7 @@ class CourseNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCourse(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             courseApi.deleteCourse(courseId).isSuccessful
         }
     }

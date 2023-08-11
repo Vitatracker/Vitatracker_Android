@@ -17,7 +17,7 @@ class UsageNetworkRepositoryImpl @Inject constructor(
 ) : UsageNetworkRepository {
 
     override suspend fun getUsages() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             usageApi.getUsages().mapToDomain()
         }
     }
@@ -28,7 +28,7 @@ class UsageNetworkRepositoryImpl @Inject constructor(
         remedyIdNet: Long,
         remedyIdLoc: Long,
     ) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             usageApi.getUsagesByCourseId(courseId)
                 .mapToDomain(
                     remedyIdLoc = remedyIdLoc,
@@ -39,7 +39,7 @@ class UsageNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUsage(usage: UsageDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             Log.d(
                 "VTTAG",
                 "SynchronizationCourseWorker::UsageNetworkRepositoryImpl: usage id=${usage.id}"
@@ -57,7 +57,7 @@ class UsageNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteUsage(usageId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             usageApi.deleteUsage(usageId).isSuccessful
         }
     }

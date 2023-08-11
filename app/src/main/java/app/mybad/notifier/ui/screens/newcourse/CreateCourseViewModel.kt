@@ -10,7 +10,7 @@ import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
-import app.mybad.domain.usecases.courses.CreateUsageUseCase
+import app.mybad.domain.usecases.usages.CreateUsageUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.notifier.ui.screens.common.generateUsages
 import app.mybad.utils.atEndOfDay

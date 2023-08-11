@@ -11,6 +11,7 @@ import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.models.user.UserRulesDomainModel
+import app.mybad.utils.currentDateTimeInSecond
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -84,7 +85,7 @@ fun CourseDomainModel.mapToData() = CourseModel(
     idn = idn,
 
     createdDate = createdDate,
-    updateDate = updatedDate,
+    updateDate = currentDateTimeInSecond(),
 
     userId = userId,
     userIdn = userIdn,
@@ -147,7 +148,7 @@ fun RemedyDomainModel.mapToData() = RemedyModel(
     idn = idn,
 
     creationDate = createdDate,
-    updateDate = updatedDate,
+    updateDate = currentDateTimeInSecond(),
 
     userId = userId,
     userIdn = userIdn,
@@ -211,7 +212,7 @@ fun UsageDomainModel.mapToData() = UsageModel(
     remedyIdn = remedyIdn,
 
     creationDate = createdDate,
-    updatedDate = updatedDate,
+    updatedDate = currentDateTimeInSecond(),
 
     factUseTime = factUseTime,
     useTime = useTime,

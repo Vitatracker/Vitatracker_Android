@@ -38,7 +38,7 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
         courseRepository.getCoursesDeletedByUserId(AuthToken.userId).getOrNull()
             ?.forEach { course ->
                 courseNetworkRepository.deleteCourse(course.idn).getOrThrow()
-                courseRepository.deleteCourseById(course.id)
+                courseRepository.deleteCoursesById(course.id)
             }
     }
 

@@ -9,12 +9,17 @@ interface CourseRepository {
     suspend fun getCoursesByRemedyId(remedyId: Long): Result<List<CourseDomainModel>>
     suspend fun getCourseById(courseId: Long): Result<CourseDomainModel>
     suspend fun getCourseByIdn(courseIdn: Long): Result<CourseDomainModel>
-    suspend fun insertCourse(course: CourseDomainModel): Result<Long?>
+
+    suspend fun insertCourse(course: CourseDomainModel): Result<Long>
     suspend fun insertCourse(courses: List<CourseDomainModel>): Result<Unit>
-    suspend fun updateCourse(course: CourseDomainModel): Result<Long?>
-    suspend fun delete(courseId: Long, dateTime: Long): Result<Unit>
+    suspend fun updateCourse(course: CourseDomainModel): Result<Long>
+
+    suspend fun markDeletionCourseById(courseId: Long): Result<Unit>
+
+    suspend fun deleteCoursesById(courseId: Long): Result<Unit>
+    suspend fun deleteCoursesByUserId(userId: Long): Result<Unit>
     suspend fun deleteCourse(courses: List<CourseDomainModel>): Result<Unit>
-    suspend fun deleteCourseById(courseId: Long): Result<Unit>
+
     suspend fun getCoursesNotUpdateByUserId(userId: Long): Result<List<CourseDomainModel>>
     suspend fun getCoursesDeletedByUserId(userId: Long): Result<List<CourseDomainModel>>
 }

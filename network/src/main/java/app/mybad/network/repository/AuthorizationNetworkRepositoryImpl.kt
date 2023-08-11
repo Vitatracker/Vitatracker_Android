@@ -16,15 +16,14 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : AuthorizationNetworkRepository {
 
-    override suspend fun loginWithFacebook() = withContext(dispatcher)
-    {
-        Result.runCatching {
+    override suspend fun loginWithFacebook() = withContext(dispatcher) {
+        runCatching {
             TODO("Not yet implemented")
         }
     }
 
     override suspend fun loginWithGoogle() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             TODO("Not yet implemented")
         }
     }
@@ -33,7 +32,7 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         login: String,
         password: String
     ) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             authorizationApi.loginUser(
                 UserLoginRequestModel(
                     email = login,
@@ -48,7 +47,7 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         password: String,
         userName: String
     ) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             authorizationApi.registrationUser(
                 UserRegistrationRequestModel(
                     email = login,
@@ -60,7 +59,7 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshToken() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             AuthToken.token = AuthToken.tokenRefresh
             authorizationApi.refreshToken().mapToDomain()
         }

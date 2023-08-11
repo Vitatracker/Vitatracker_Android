@@ -21,7 +21,7 @@ interface UserDao {
     fun getUserByEmail(email: String): UserModel
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(user: UserModel): Long?
+    fun insert(user: UserModel): Long
 
     @Update
     fun updateUser(user: UserModel)

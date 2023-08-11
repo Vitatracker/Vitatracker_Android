@@ -19,6 +19,7 @@ class ClearDBUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke() {
+        // удаляем на удаленной базе
         usageNetworkRepository.getUsages().getOrNull()?.forEach { usage ->
             usageNetworkRepository.deleteUsage(usage.idn)
         }
@@ -28,16 +29,11 @@ class ClearDBUseCase @Inject constructor(
         remedyNetworkRepository.getRemedies().getOrNull()?.forEach { remedy ->
             remedyNetworkRepository.deleteRemedy(remedy.idn)
         }
+        // удаляем в локальной базе
         AuthToken.userId.takeIf { it > 0 }?.let { userId ->
-            usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
-                usageRepository.deleteUsagesById(usage.id)
-            }
-            courseRepository.getCoursesByUserId(userId).getOrNull()?.forEach { course ->
-                courseRepository.deleteCourseById(course.id)
-            }
-            remedyRepository.getRemediesByUserId(userId).getOrNull()?.forEach { remedy ->
-                remedyRepository.deleteRemedyById(remedy.id)
-            }
+            usageRepository.deleteUsagesByUserId(userId)
+            courseRepository.deleteCoursesByUserId(userId)
+            remedyRepository.deleteRemediesByUserId(userId)
         }
     }
 }

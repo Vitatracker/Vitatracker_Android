@@ -57,9 +57,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
             remediesNew.forEach { remedyNew ->
                 // запишем в локальную базу и получим id, загрузим все курсы с remedyNew.idn
                 remedyRepository.insertRemedy(remedyNew).onSuccess { remedyIdLoc ->
-                    remedyIdLoc?.let {
-                        syncCoursesFromNetwork(remedyIdNet = remedyNew.idn, remedyIdLoc = it)
-                    }
+                    syncCoursesFromNetwork(remedyIdNet = remedyNew.idn, remedyIdLoc = remedyIdLoc)
                 }
             }
         }.onFailure {
@@ -95,15 +93,13 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
             coursesNet.forEach { courseNet ->
                 // запишем в локальную базу, тут уже подставлен remedyIdLoc и userIdLoc
                 courseRepository.insertCourse(courseNet).onSuccess { courseIdLoc ->
-                    courseIdLoc?.let {
-                        // получим с бека usages для courseNet.idn
-                        syncUsagesFromNetwork(
-                            courseIdNet = courseNet.idn,
-                            courseIdLoc = it,
-                            remedyIdNet = courseNet.remedyIdn,
-                            remedyIdLoc = remedyIdLoc,
-                        )
-                    }
+                    // получим с бека usages для courseNet.idn
+                    syncUsagesFromNetwork(
+                        courseIdNet = courseNet.idn,
+                        courseIdLoc = courseIdLoc,
+                        remedyIdNet = courseNet.remedyIdn,
+                        remedyIdLoc = remedyIdLoc,
+                    )
                 }.onFailure {
                     TODO("реализовать обработку ошибок")
                 }
@@ -134,13 +130,11 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 remedyRepository.getRemedyByIdn(courseNew.idn).onSuccess { remedy ->
                     courseRepository.insertCourse(courseNew.copy(remedyId = remedy.id))
                         .onSuccess { courseIdLoc ->
-                            courseIdLoc?.let {
-                                syncUsagesFromNetwork(
-                                    courseIdNet = courseNew.idn,
-                                    remedyIdLoc = remedy.id,
-                                    courseIdLoc = it,
-                                )
-                            }
+                            syncUsagesFromNetwork(
+                                courseIdNet = courseNew.idn,
+                                remedyIdLoc = remedy.id,
+                                courseIdLoc = courseIdLoc,
+                            )
                         }
                 }
             }
@@ -174,27 +168,29 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private suspend fun deleteRemediesLoc(remedies: List<RemedyDomainModel>) {
         if (remedies.isEmpty()) return
         remedies.forEach { remedy ->
-            remedyRepository.deleteRemedyById(remedy.id)
             deleteCourseLoc(remedy.id)
+            remedyRepository.deleteRemedyById(remedy.id)
         }
     }
 
     private suspend fun deleteCourseLoc(courses: List<CourseDomainModel>) {
         if (courses.isEmpty()) return
         courses.forEach { course ->
-            courseRepository.deleteCourseById(course.id)
             deleteUsageLoc(course.id)
+            courseRepository.deleteCoursesById(course.id)
         }
     }
 
     private suspend fun deleteCourseLoc(remedyId: Long) {
         if (remedyId <= 0) return
-        val courses = courseRepository.getCoursesByRemedyId(remedyId).getOrThrow()
-        courses.forEach { course ->
-            courseRepository.deleteCourseById(course.id)
-            deleteUsageLoc(course.id)
+        courseRepository.getCoursesByRemedyId(remedyId).onSuccess { courses ->
+            courses.forEach { course ->
+                deleteUsageLoc(course.id)
+                courseRepository.deleteCoursesById(course.id)
+            }
+        }.onFailure {
+            TODO("реализовать обработку ошибок")
         }
-
     }
 
     private suspend fun deleteUsageLoc(courseId: Long) {

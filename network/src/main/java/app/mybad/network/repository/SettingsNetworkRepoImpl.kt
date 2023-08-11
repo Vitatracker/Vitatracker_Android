@@ -17,7 +17,7 @@ class SettingsNetworkRepoImpl @Inject constructor(
 ) : SettingsNetworkRepository {
 
     override suspend fun getUser() = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             //TODO("проверить что тут получать")
             settingsApi.getUser("").mapToDomain()
         }
@@ -25,7 +25,7 @@ class SettingsNetworkRepoImpl @Inject constructor(
 
     override suspend fun postUser(userDomainModel: UserSettingsDomainModel) {
         withContext(dispatcher) {
-            Result.runCatching {
+            runCatching {
                 settingsApi.addUser(userDomainModel.mapToNet())
             }
         }
@@ -33,7 +33,7 @@ class SettingsNetworkRepoImpl @Inject constructor(
 
     override suspend fun deleteUser(id: String) {
         withContext(dispatcher) {
-            Result.runCatching {
+            runCatching {
                 settingsApi.deleteUser(id = id)
             }
         }
@@ -41,7 +41,7 @@ class SettingsNetworkRepoImpl @Inject constructor(
 
     override suspend fun updateUser(userDomainModel: UserSettingsDomainModel) {
         withContext(dispatcher) {
-            Result.runCatching {
+            runCatching {
                 settingsApi.updateUser(userDomainModel.mapToNet())
             }
         }

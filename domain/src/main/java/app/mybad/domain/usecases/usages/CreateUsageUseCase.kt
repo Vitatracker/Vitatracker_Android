@@ -1,4 +1,4 @@
-package app.mybad.domain.usecases.courses
+package app.mybad.domain.usecases.usages
 
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.repository.UsageRepository

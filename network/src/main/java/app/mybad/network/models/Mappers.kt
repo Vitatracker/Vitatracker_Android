@@ -12,7 +12,7 @@ import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
-import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.decodeDateExp
 import app.mybad.utils.toDateTimeIsoDisplay
 import app.mybad.utils.toEpochSecond
@@ -48,7 +48,8 @@ fun UserNetworkModel.mapToDomain(userIdLoc: Long = 0) = UserDomainModel(
 
     notUsed = notUsed,
 
-    updateNetworkDate = if (userIdLoc > 0) currentDateTime().toEpochSecond() else 0,
+    // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
+    updateNetworkDate = currentDateTimeInSecond(),
 )
 
 fun CourseNetworkModel.mapToDomain(
@@ -80,7 +81,8 @@ fun CourseNetworkModel.mapToDomain(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
-    updateNetworkDate = if (courseIdLoc > 0) currentDateTime().toEpochSecond() else 0,
+    // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
+    updateNetworkDate = currentDateTimeInSecond(),
 )
 
 fun CourseDomainModel.mapToNet() = CourseNetworkModel(
@@ -133,7 +135,8 @@ fun RemedyNetworkModel.mapToDomain(remedyIdLoc: Long = 0) = RemedyDomainModel(
     beforeFood = beforeFood,
     notUsed = notUsed,
 
-    updateNetworkDate = if (remedyIdLoc > 0) currentDateTime().toEpochSecond() else 0,
+    // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
+    updateNetworkDate = currentDateTimeInSecond(),
 )
 
 fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
@@ -188,7 +191,8 @@ fun UsageNetworkModel.mapToDomain(
 
     notUsed = notUsed,
 
-    updateNetworkDate = if (usageIdLoc > 0) currentDateTime().toEpochSecond() else 0,
+    // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
+    updateNetworkDate = currentDateTimeInSecond(),
 )
 
 fun UsageDomainModel.mapToNet() = UsageNetworkModel(
@@ -203,7 +207,7 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
     createdDate = createdDate.toDateTimeIsoDisplay(),
     updatedDate = updatedDate.toDateTimeIsoDisplay(),
 
-    timestamp = createdDate.toDateTimeIsoDisplay(),// не понятно что это
+    timestamp = createdDate.toDateTimeIsoDisplay(),// не понятно что это, без этого на сервер не отправлялось
 
     factUseTime = factUseTime,
     useTime = useTime,

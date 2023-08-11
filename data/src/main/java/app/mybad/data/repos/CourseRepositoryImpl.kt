@@ -22,73 +22,75 @@ class CourseRepositoryImpl @Inject constructor(
         .flowOn(dispatcher)
 
     override suspend fun getCoursesByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCoursesByUserId(userId).mapToDomain()
         }
     }
 
     override suspend fun getCoursesByRemedyId(remedyId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCoursesByRemedyId(remedyId).mapToDomain()
         }
     }
 
     override suspend fun getCourseById(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCourseById(courseId).mapToDomain()
         }
     }
 
     override suspend fun getCourseByIdn(courseIdn: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCourseByIdn(courseIdn).mapToDomain()
         }
     }
 
     override suspend fun insertCourse(course: CourseDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.insertCourse(course.mapToData())
         }
     }
 
     override suspend fun insertCourse(courses: List<CourseDomainModel>) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.insertCourse(courses.mapToData())
         }
     }
 
-    override suspend fun updateCourse(course: CourseDomainModel) = withContext(dispatcher) {
-        Result.runCatching {
-            db.insertCourse(course.mapToData())
+    override suspend fun updateCourse(course: CourseDomainModel) = insertCourse(course)
+
+    override suspend fun markDeletionCourseById(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.markDeletionCourseById(courseId)
+        }
+    }
+
+    override suspend fun deleteCoursesByUserId(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deleteCoursesByUserId(userId)
+        }
+    }
+
+    override suspend fun deleteCoursesById(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deleteCoursesById(courseId)
         }
     }
 
     override suspend fun deleteCourse(courses: List<CourseDomainModel>) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.deleteCourse(courses.mapToData())
         }
     }
 
-    override suspend fun delete(courseId: Long, dateTime: Long) = withContext(dispatcher) {
-        Result.runCatching {
-            db.delete(courseId,dateTime)
-        }
-    }
-
-    override suspend fun deleteCourseById(courseId: Long) = withContext(dispatcher) {
-        Result.runCatching {
-            db.deleteCourseById(courseId)
-        }
-    }
-
     override suspend fun getCoursesNotUpdateByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCoursesNotUpdateByUserId(userId).mapToDomain()
         }
     }
 
     override suspend fun getCoursesDeletedByUserId(userId: Long) = withContext(dispatcher) {
-        Result.runCatching {
+        runCatching {
             db.getCoursesDeletedByUserId(userId).mapToDomain()
         }
     }

@@ -5,10 +5,10 @@ import app.mybad.domain.repository.RemedyRepository
 import javax.inject.Inject
 
 class UpdateRemedyUseCase @Inject constructor(
-    private val medsRepo: RemedyRepository
+    private val repository: RemedyRepository
 ) {
 
     suspend operator fun invoke(remedy: RemedyDomainModel) {
-        medsRepo.updateRemedy(remedy)
+        repository.updateRemedy(remedy)
     }
 }

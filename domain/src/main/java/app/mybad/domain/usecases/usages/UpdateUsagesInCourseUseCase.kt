@@ -11,7 +11,7 @@ class UpdateUsagesInCourseUseCase @Inject constructor(
 
     suspend operator fun invoke(courseId: Long, usages: List<UsageDomainModel>) {
         try {
-            repository.deleteUsagesByCourseId(courseId)
+            repository.markDeletionUsagesByCourseId(courseId)
             if (usages.isEmpty()) return
             repository.insertUsage(usages)
         } catch (e: Error) {

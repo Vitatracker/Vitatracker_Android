@@ -25,4 +25,41 @@ data class RemedyDomainModel(
 
     val updateNetworkDate: Long = 0,
     val updateLocalDate: Long = 0,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RemedyDomainModel
+
+        if (id != other.id) return false
+        if (userId != other.userId) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (comment != other.comment) return false
+        if (type != other.type) return false
+        if (icon != other.icon) return false
+        if (color != other.color) return false
+        if (dose != other.dose) return false
+        if (measureUnit != other.measureUnit) return false
+        if (photo != other.photo) return false
+        return beforeFood == other.beforeFood
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + userId.hashCode()
+        result = 31 * result + (name?.hashCode() ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (comment?.hashCode() ?: 0)
+        result = 31 * result + type
+        result = 31 * result + icon
+        result = 31 * result + color
+        result = 31 * result + dose
+        result = 31 * result + measureUnit
+        result = 31 * result + (photo?.hashCode() ?: 0)
+        result = 31 * result + beforeFood
+        return result
+    }
+}
+
