@@ -10,11 +10,11 @@ class RegistrationUserUseCase @Inject constructor(
     suspend operator fun invoke(
         login: String,
         password: String,
-        userName: String
+        userName: String = "",
     ) = repository.registrationUser(
         login = login,
         password = password,
-        userName = userName
+        userName = userName,
     )
 
 }

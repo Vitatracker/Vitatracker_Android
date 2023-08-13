@@ -1,26 +1,22 @@
 package app.mybad.notifier.ui.screens.newcourse
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
+import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.models.CourseDomainModel
-import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
-import app.mybad.domain.usecases.usages.CreateUsageUseCase
+import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
-import app.mybad.notifier.ui.screens.common.generateUsages
+import app.mybad.domain.usecases.usages.CreateUsagesUseCase
+import app.mybad.notifier.ui.base.BaseViewModel
+import app.mybad.notifier.ui.common.generateUsages
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTime
-import app.mybad.utils.toEpochSecond
+import app.mybad.utils.currentDateTimeInSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,183 +24,156 @@ import javax.inject.Inject
 class CreateCourseViewModel @Inject constructor(
     private val createRemedyUseCase: CreateRemedyUseCase,
     private val createCourseUseCase: CreateCourseUseCase,
-    private val createUsageUseCase: CreateUsageUseCase,
+    private val createUsagesUseCase: CreateUsagesUseCase,
     private val addNotifications: AddNotificationsUseCase,
+    private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
     private val workSync: WorkManager,
-) : ViewModel() {
+) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
 
-    private val _state = MutableStateFlow(newState())
-    val state = _state.asStateFlow()
+    init {
+        Log.w("VTTAG", "NewCourseNavGraph::CreateCourseViewModel: init")
+    }
 
-    fun reduce(intent: NewCourseIntent) {
-        Log.w("VTTAG", "CreateCourseViewModel::reduce: in")
+    override fun setInitialState() = CreateCourseContract.State(
+        dateLimit = DateCourseLimit(currentDateTimeInSecond())
+    )
+
+    override fun handleEvents(event: CreateCourseContract.Event) {
+        when (event) {
+            CreateCourseContract.Event.Drop -> newState()
+
+            CreateCourseContract.Event.Finish -> finishCreation()
+
+            is CreateCourseContract.Event.UpdateRemedy -> setState { copy(remedy = event.remedy) }
+
+            is CreateCourseContract.Event.UpdateCourse -> setState { copy(course = event.course) }
+
+            is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
+
+            is CreateCourseContract.Event.UpdateUsagesPattern -> setState { copy(usagesPattern = event.pattern) }
+
+            is CreateCourseContract.Event.UpdateRemedyName -> {
+                val newRemedy = viewState.value.remedy.copy(name = event.newName)
+                setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
+            }
+
+            CreateCourseContract.Event.CourseIntervalEntered -> {
+                setState { copy(courseIntervalEntered = true) }
+            }
+
+            is CreateCourseContract.Event.ActionNext -> {
+                if (viewState.value.remedy.name.isNullOrBlank()) {
+                    setState { copy(isError = true) }
+                } else {
+                    setEffect {
+                        CreateCourseContract.Effect.Navigation.Next
+                    }
+                }
+            }
+
+            CreateCourseContract.Event.UpdateCourseStartDateAndLimit -> {
+                if (viewState.value.course.startDate <= 0L) setCourseDate()
+            }
+
+            CreateCourseContract.Event.ActionBack -> setEffect { CreateCourseContract.Effect.Navigation.Back }
+
+            CreateCourseContract.Event.ActionCollapse -> setEffect { CreateCourseContract.Effect.Collapse }
+            CreateCourseContract.Event.ActionExpand -> setEffect { CreateCourseContract.Effect.Expand }
+        }
+    }
+
+    private fun finishCreation() {
         viewModelScope.launch {
-            when (intent) {
-                is NewCourseIntent.Drop -> {
-                    Log.w("VTTAG", "CreateCourseViewModel::reduce: Drop")
-                    _state.emit(newState())
-                }
-
-                is NewCourseIntent.Finish -> {
-                    Log.w(
-                        "VTTAG",
-                        "CreateCourseViewModel::Finish: medId=${
-                            _state.value.remedy.id
-                        } userId=${_state.value.remedy.userId}"
+            log(
+                "finishCreation: remedyId=${
+                    viewState.value.remedy.id
+                } userId=${viewState.value.remedy.userId}"
+            )
+            // записать remedy и получить remedyId
+            createRemedyUseCase(viewState.value.remedy).onSuccess { remedyId ->
+                log("finishCreation: remedyId=$remedyId")
+                setState {
+                    copy(
+                        remedy = viewState.value.remedy.copy(id = remedyId),
+                        course = viewState.value.course.copy(remedyId = remedyId),
                     )
-                    // записать remedy и получить remedyId
-                    createRemedyUseCase(_state.value.remedy).getOrNull()?.let { remedyId ->
-                        Log.w(
-                            "VTTAG",
-                            "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId"
+                }
+                // записать course и получить courseId
+                createCourseUseCase(viewState.value.course).onSuccess { courseId ->
+                    log("finishCreation: courseId=$courseId")
+                    setState {
+                        copy(
+                            course = viewState.value.course.copy(id = courseId),
                         )
-                        _state.update {
-                            it.copy(
-                                remedy = _state.value.remedy.copy(id = remedyId),
-                                course = _state.value.course.copy(remedyId = remedyId),
-                            )
-                        }
-                        // записать course и получить remedyId
-                        createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
-                            Log.w(
-                                "VTTAG",
-                                "CreateCourseViewModel::createCourseUseCase: courseId=$courseId"
-                            )
-                            _state.update {
-                                it.copy(
-                                    course = _state.value.course.copy(id = courseId),
-                                    usages = _state.value.usages.map { usage ->
-                                        usage.copy(
-                                            remedyId = remedyId,
-                                            courseId = courseId,
-                                        )
-                                    },
-                                )
-                            }
-                            createUsageUseCase(_state.value.usages)
-                            addNotifications(
-                                course = _state.value.course,
-                                usages = _state.value.usages,
-                            )
-                            // синхронизировать
-                            workSync.start()
-                        } ?: {
-                            Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: error")
-                        }
-                    } ?: {
-                        Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: error")
                     }
-                    _state.emit(newState())
-                }
-
-                is NewCourseIntent.UpdateMed -> {
-                    _state.update { it.copy(remedy = intent.remedy) }
-                }
-
-                is NewCourseIntent.UpdateCourse -> {
-                    _state.update { it.copy(course = intent.course) }
-                }
-
-                is NewCourseIntent.UpdateUsages -> {
-                    _state.update { it.copy(usages = intent.usages) }
-                }
-
-                is NewCourseIntent.UpdateUsagesPattern -> {
-                    launch {
-                        Log.w(
-                            "VTTAG",
-                            "CreateCourseViewModel::UpdateUsagesPattern: remedyId=${
-                                _state.value.remedy.id
-                            } userId=${_state.value.remedy.userId}"
-                        )
-                        // записать remedy и получить remedyId
-                        createRemedyUseCase(_state.value.remedy).getOrNull()?.let { remedyId ->
-                            Log.w(
-                                "VTTAG",
-                                "CreateCourseViewModel::createRemedyUseCase: remedyId=$remedyId"
+                    log("finishCreation: usages-generate=${viewState.value.usagesPattern.size}")
+                    val usages = generateUsages(
+                        usagesByDay = viewState.value.usagesPattern,
+                        remedyId = remedyId,
+                        courseId = courseId,
+                        userId = viewState.value.course.userId,
+                        startDate = viewState.value.course.startDate,
+                        endDate = viewState.value.course.endDate,
+                        regime = viewState.value.course.regime
+                    )
+                    log("finishCreation: usages=${usages.size}")
+                    createUsagesUseCase(usages).onSuccess {
+                        log("finishCreation: usages-ok")
+                        setState {
+                            copy(
+                                usages = usages,
                             )
-                            _state.update {
-                                it.copy(
-                                    remedy = _state.value.remedy.copy(id = remedyId),
-                                    course = _state.value.course.copy(remedyId = remedyId),
-                                )
-                            }
-                            // записать course и получить courseId
-                            createCourseUseCase(_state.value.course).getOrNull()?.let { courseId ->
-                                Log.w(
-                                    "VTTAG",
-                                    "CreateCourseViewModel::createCourseUseCase: courseId=$courseId"
-                                )
-                                _state.update {
-                                    it.copy(
-                                        course = _state.value.course.copy(id = courseId),
-                                    )
-                                }
-                                val usages = generateUsages(
-                                    usagesByDay = intent.pattern,
-                                    remedyId = remedyId,
-                                    courseId = courseId,
-                                    userId = _state.value.remedy.userId,
-                                    startDate = _state.value.course.startDate,
-                                    endDate = _state.value.course.endDate,
-                                    regime = _state.value.course.regime
-                                )
-                                createUsageUseCase(usages)
-                                Log.w(
-                                    "VTTAG",
-                                    "CreateCourseViewModel::createUsageUseCase: usages=${usages.size}"
-                                )
-                                _state.update {
-                                    it.copy(
-                                        remedy = _state.value.remedy,
-                                        course = _state.value.course,
-                                        usages = usages,
-                                    )
-                                }
-                                Log.w(
-                                    "VTTAG",
-                                    "CreateCourseViewModel::UpdateUsagesPattern: remedyId=${
-                                        _state.value.remedy.id
-                                    } userId=${_state.value.remedy.userId}"
-                                )
-                            } ?: {
-                                Log.w("VTTAG", "CreateCourseViewModel::createCourseUseCase: error")
-                            }
-                        } ?: {
-                            Log.w("VTTAG", "CreateCourseViewModel::createRemedyUseCase: error")
                         }
-                    }.invokeOnCompletion {
-                        launch {
-                            Log.w(
-                                "VTTAG",
-                                "CreateCourseViewModel::coursesNetworkRepo: userId=${_state.value.remedy.userId}"
-                            )
-                            //TODO("запустить воркер обновления на беке")
-                            _state.emit(newState())
-                            // синхронизировать
+                        // добавляем оповещение
+                        addNotifications(
+                            course = viewState.value.course,
+                            usages = viewState.value.usages,
+                        )
+                        newState()
+                        log("finishCreation: synchronizationCourseUseCase")
+                        // синхронизировать
+                        synchronizationCourseUseCase(currentDateTimeInSecond()).onFailure {
+                            // если ошибка то запустим воркер
                             workSync.start()
                         }
+                    }.onFailure {
+                        log("finishCreation: error createUsagesUseCase")
                     }
+                }.onFailure {
+                    log("finishCreation: error createCourseUseCase")
                 }
+            }.onFailure {
+                log("finishCreation: error createRemedyUseCase")
             }
         }
     }
 
-    private fun newState(): NewCourseState {
+    private fun setCourseDate() {
         val userId = AuthToken.userId
-        Log.w("VTTAG", "CreateCourseViewModel::newState: userId=${AuthToken.userId}")
-        val currentDateTime = currentDateTime()
-        return NewCourseState(
-            remedy = RemedyDomainModel(
-                createdDate = currentDateTime.toEpochSecond(),
-                userId = userId
-            ),
-            course = CourseDomainModel(
-                createdDate = currentDateTime.toEpochSecond(),
-                userId = userId,
-                startDate = currentDateTime.atStartOfDay().toEpochSecond(),
-                endDate = currentDateTime.atEndOfDay().toEpochSecond(),
+        val date = currentDateTimeInSecond()
+        setState {
+            copy(
+                dateLimit = DateCourseLimit(date),
+                remedy = viewState.value.remedy.copy(
+                    createdDate = date,
+                    userId = userId
+                ),
+                course = viewState.value.course.copy(
+                    createdDate = date,
+                    userId = userId,
+                    startDate = date.atStartOfDay(),
+                    endDate = date.atEndOfDay(),
+                ),
+                isError = false,
             )
-        )
+        }
+    }
+
+    private fun newState() {
+        setState { setInitialState() }
+    }
+
+    private fun log(text: String) {
+        Log.w("VTTAG", "CreateCourseViewModel::$text")
     }
 }

@@ -35,7 +35,7 @@ interface RemedyDao {
     suspend fun getRemedyByIdn(remedyIdn: Long): RemedyModel
 
     @Query("SELECT * FROM ${RemedyContract.TABLE_NAME} WHERE ${RemedyContract.Columns.ID} IN (:remedyIdList)")
-    suspend fun getRemediesByIds(remedyIdList: List<Long>): List<RemedyModel>
+    fun getRemediesByIds(remedyIdList: List<Long>): Flow<List<RemedyModel>>
 
     //--------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)

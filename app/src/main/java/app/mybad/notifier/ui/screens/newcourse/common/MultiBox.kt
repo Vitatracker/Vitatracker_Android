@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -31,7 +31,9 @@ fun MultiBox(
         Column {
             items.forEachIndexed { index, item ->
                 Box(Modifier.padding(itemsPadding)) { item() }
-                if (index < items.lastIndex) Divider(thickness = 1.dp, color = outlineColor)
+                if (index < items.lastIndex) {
+                    HorizontalDivider(thickness = 1.dp, color = outlineColor)
+                }
             }
         }
     }

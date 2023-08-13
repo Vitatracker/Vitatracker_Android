@@ -15,21 +15,25 @@ class UserRepositoryImpl @Inject constructor(
     private val db: UserDao,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UserRepository {
-    override suspend fun insertUser(name: String, email: String): Long? =
-        withContext(dispatcher) {
-            db.insert(UserModel(name = name, email = email))
+
+    override suspend fun getNumberOfUsers() = withContext(dispatcher) {
+        try {
+            db.getNumberOfUsers()
+        } catch (ignore: Error) {
+            0
         }
+    }
 
     override suspend fun getUserIdByEmail(email: String) = withContext(dispatcher) {
         try {
-            db.getUserByEmail(email).id
-        } catch (ignore: Throwable) {
+            db.getUserByEmail(email)?.id
+        } catch (ignore: Error) {
             null
         }
     }
 
     override suspend fun getUserByEmail(email: String): UserDomainModel = withContext(dispatcher) {
-        db.getUserByEmail(email).mapToDomain()
+        db.getUserByEmail(email)?.mapToDomain() ?: UserDomainModel()
     }
 
     override suspend fun getUserById(userId: Long): UserDomainModel = withContext(dispatcher) {
@@ -39,6 +43,10 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserLastEntrance(): UserDomainModel = withContext(dispatcher) {
         db.getUserLastEntrance()?.mapToDomain() ?: UserDomainModel()
     }
+
+    override suspend fun insertUser(name: String, email: String)= withContext(dispatcher) {
+            db.insert(UserModel(name = name, email = email))
+        }
 
     override suspend fun updateMail(userId: Long, email: String) {
         withContext(dispatcher) {
@@ -86,9 +94,15 @@ class UserRepositoryImpl @Inject constructor(
         user.mapToDomain()
     }
 
-    override suspend fun deleteUser(userId: Long) {
+    override suspend fun markDeletionUserById(userId: Long) {
         withContext(dispatcher) {
-            db.deleteByUserId(userId)
+            db.markDeletionUserById(userId)
+        }
+    }
+
+    override suspend fun deleteUserById(userId: Long) {
+        withContext(dispatcher) {
+            db.deleteUserById(userId)
         }
     }
 

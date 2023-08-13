@@ -40,14 +40,13 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
-import app.mybad.notifier.ui.PickColor
-import app.mybad.notifier.ui.screens.common.DaySelectorSlider
+import app.mybad.notifier.ui.common.DaySelectorSlider
+import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
-import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toDayDisplay
-import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toTimeDisplay
 import kotlinx.datetime.LocalDateTime
 import kotlin.math.absoluteValue
@@ -65,7 +64,7 @@ private fun SingleUsageItem(
     Log.d("VTTAG", "CalendarSelector::BottomSheetUsages:SingleUsageItem: start")
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
-    val now = currentDateTime().toEpochSecond()
+    val now = currentDateTimeInSecond()
     val outlineColor = if (now > date && !isTaken) MaterialTheme.colorScheme.error
     else MaterialTheme.colorScheme.primary
     val alpha = if ((now - date).absoluteValue > TIME_IS_UP) 0.6f else 1f
@@ -162,7 +161,7 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) currentDateTime().toEpochSecond()
+                                    val n = if (!isTaken) currentDateTimeInSecond()
                                     else -1L
                                     onTake(n)
                                 }
@@ -179,7 +178,7 @@ private fun SingleUsageItem(
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .clickable {
-                                    val n = if (!isTaken) currentDateTime().toEpochSecond()
+                                    val n = if (!isTaken) currentDateTimeInSecond()
                                     else -1L
                                     onTake(n)
                                 }
@@ -258,7 +257,8 @@ fun DailyUsages(
                             )
                             SingleUsageItem(
                                 date = usage.useTime,
-                                remedy = remedies.firstOrNull { remedy -> remedy.id == usage.remedyId } ?: RemedyDomainModel(),
+                                remedy = remedies.firstOrNull { remedy -> remedy.id == usage.remedyId }
+                                    ?: RemedyDomainModel(),
                                 quantity = usage.quantity,
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 isTaken = usage.factUseTime > 10L,

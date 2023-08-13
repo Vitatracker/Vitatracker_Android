@@ -20,8 +20,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,10 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.hour
@@ -53,11 +51,6 @@ fun TimeSelector(
     val hours = (0..23).toList()
     val minutes = (0..59).toList()
     val timeSystem = initTime.toSystemTimeInMinutes()
-    Log.w(
-        "VTTAG",
-        "TimeSelector::init: date time=${timeSystem.minutesToHHmm()} - ${initTime.minutesToHHmm()} - ${initTime.toTimeDisplay()}"
-    )
-
     val pagerStateHours = rememberPagerState(initialPage = timeSystem.hour()) { hours.size }
     val pagerStateMinutes = rememberPagerState(initialPage = timeSystem.minute()) { minutes.size }
 
@@ -87,11 +80,10 @@ fun TimeSelector(
             )
             Spacer(Modifier.width(0.dp))
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(10.dp),
+        ReUseFilledButton(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+            textId = R.string.settings_save,
             onClick = {
                 val newTime = systemTimeInMinutes(
                     hour = pagerStateHours.currentPage % hours.size,
@@ -102,8 +94,7 @@ fun TimeSelector(
                     "TimeSelector::onSelect: date time=${newTime.minutesToHHmm()} - ${newTime.toTimeDisplay()}"
                 )
                 onSelect(newTime)
-            },
-            content = { Text(text = stringResource(R.string.settings_save)) }
+            }
         )
     }
 
@@ -138,11 +129,13 @@ private fun NumberPicker(
         }
         val scale by animateFloatAsState(
             targetValue = ts,
-            animationSpec = tween(300, 0, LinearOutSlowInEasing)
+            animationSpec = tween(300, 0, LinearOutSlowInEasing),
+            label = "",
         )
         val alpha by animateFloatAsState(
             targetValue = a,
-            animationSpec = tween(300, 0, LinearOutSlowInEasing)
+            animationSpec = tween(300, 0, LinearOutSlowInEasing),
+            label = "",
         )
         Box(
             contentAlignment = Alignment.Center,

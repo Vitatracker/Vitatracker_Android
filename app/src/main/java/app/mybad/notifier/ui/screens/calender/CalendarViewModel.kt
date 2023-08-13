@@ -1,16 +1,12 @@
 package app.mybad.notifier.ui.screens.calender
 
-import androidx.lifecycle.ViewModel
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import app.mybad.data.models.MyCoursesState
-import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
+import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,25 +14,47 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val loadCoursesUseCase: LoadCoursesUseCase,
     private val updateUsageUseCase: UpdateUsageUseCase,
-) : ViewModel() {
+) : BaseViewModel<CalendarContract.Event, CalendarContract.State, CalendarContract.Effect>() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val state = loadCoursesUseCase(AuthToken.userId)
-        .mapLatest { (courses, meds, usages) ->
-            MyCoursesState(courses = courses, remedies = meds, usages = usages)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-            initialValue = MyCoursesState()
-        )
+    init {
+        Log.w("VTTAG", "CalendarViewModel::loadCourses: start")
+        loadCourses()
+    }
 
-    fun reducer(intent: CalendarIntent) {
-        when (intent) {
-            is CalendarIntent.SetUsage -> {
-                viewModelScope.launch {
-                    updateUsageUseCase(intent.usage)
+    private fun loadCourses() {
+        viewModelScope.launch {
+            loadCoursesUseCase().collectLatest { (courses, remedies, usages) ->
+                Log.w(
+                    "VTTAG",
+                    "CalendarViewModel::loadCourses: remedies=${remedies.size} courses=${
+                        courses.size
+                    } usages=${usages.size}"
+                )
+                setState {
+                    copy(
+                        courses = courses,
+                        remedies = remedies,
+                        usages = usages,
+                    )
                 }
             }
         }
     }
+
+    override fun setInitialState() = CalendarContract.State()
+
+    override fun handleEvents(event: CalendarContract.Event) {
+        when (event) {
+            is CalendarContract.Event.ActionBack -> {
+                setEffect { CalendarContract.Effect.Navigation.Back }
+            }
+
+            is CalendarContract.Event.SetUsage -> {
+                viewModelScope.launch {
+                    updateUsageUseCase(event.usage)
+                }
+            }
+        }
+    }
+
 }

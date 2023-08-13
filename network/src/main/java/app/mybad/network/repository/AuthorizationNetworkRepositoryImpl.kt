@@ -7,6 +7,7 @@ import app.mybad.network.models.mapToDomain
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -65,4 +66,10 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun restorePassword(email: String) = withContext(dispatcher) {
+        runCatching {
+            //TODO("Not yet implemented")
+            delay(1000L)
+        }
+    }
 }

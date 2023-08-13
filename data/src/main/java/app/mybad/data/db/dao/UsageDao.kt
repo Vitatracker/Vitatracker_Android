@@ -52,7 +52,7 @@ interface UsageDao {
             UsageContract.Columns.USE_TIME
         } BETWEEN :startTime AND :endTime"
     )
-    suspend fun getUsagesBetween(startTime: Long, endTime: Long): List<UsageModel>
+    fun getUsagesBetween(startTime: Long, endTime: Long): Flow<List<UsageModel>>
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${

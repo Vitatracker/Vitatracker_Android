@@ -7,13 +7,13 @@ import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserSettingsDomainModel
+import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.models.response.AuthorizationNetworkModel
 import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
 import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.decodeDateExp
 import app.mybad.utils.toDateTimeIsoDisplay
 import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toLocalDateTime
@@ -234,9 +234,9 @@ fun List<UsageNetworkModel>.mapToDomain(
 
 fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
     token = token,
-    tokenDate = token.decodeDateExp(),
+    tokenDate = AuthorizationApi.decodeTokenDateExp(token),
     tokenRefresh = refreshToken,
-    tokenRefreshDate = refreshToken.decodeDateExp(),
+    tokenRefreshDate = AuthorizationApi.decodeTokenDateExp(refreshToken),
 )
 
 fun UserSettingsDomainModel.mapToNet() = UserNetworkModel(
@@ -249,3 +249,25 @@ fun UserSettingsDomainModel.mapToNet() = UserNetworkModel(
     notUsed = false,
     password = null,
 )
+
+/*
+fun AuthorizationUserLoginDomainModel.mapToNet() = AuthorizationUserLogin(
+    email = email,
+    password = password,
+)
+
+fun AuthorizationUserLogin.mapToDomain() = AuthorizationUserLoginDomainModel(
+    email = email,
+    password = password,
+)
+
+fun AuthorizationUserRegistrationDomainModel.mapToNet() = AuthorizationUserRegistration(
+    email = email,
+    password = password
+)
+
+fun AuthorizationUserRegistration.mapToDomain() = AuthorizationUserRegistrationDomainModel(
+    email = email,
+    password = password
+)
+*/

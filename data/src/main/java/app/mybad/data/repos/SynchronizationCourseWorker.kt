@@ -17,11 +17,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import app.mybad.domain.usecases.courses.CheckCoursesLocalUseCase
-import app.mybad.domain.usecases.courses.SendCoursesDeletedToNetworkUseCase
-import app.mybad.domain.usecases.courses.SendCoursesToNetworkUseCase
-import app.mybad.domain.usecases.courses.SyncCoursesWithNetworkUseCase
-import app.mybad.domain.usecases.user.RefreshAuthTokenUseCase
+import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.utils.currentDateTimeInSecond
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -34,11 +30,7 @@ import javax.inject.Named
 class SynchronizationCourseWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted params: WorkerParameters,
-    private val refreshAuthTokenUseCase: RefreshAuthTokenUseCase,
-    private val sendCoursesDeletedToNetworkUseCase: SendCoursesDeletedToNetworkUseCase,
-    private val sendCoursesToNetworkUseCase: SendCoursesToNetworkUseCase,
-    private val syncCoursesWithNetworkUseCase: SyncCoursesWithNetworkUseCase,
-    private val checkCoursesLocalUseCase: CheckCoursesLocalUseCase,
+    private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : CoroutineWorker(appContext, params) {
 
@@ -54,30 +46,16 @@ class SynchronizationCourseWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result = withContext(dispatcher) {
-        try {
-            Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Start")
-            // проверим токен на окончание и если нужно обновить
-            if (refreshAuthTokenUseCase(currentDateTimeInSecond())) {
-                // удалим, что удалено в локальной базе
-                setInfo(REMEDY_CHANNEL_INFO_DELETED)
-                sendCoursesDeletedToNetworkUseCase()
-                // отправим новое на бек
-                setInfo(REMEDY_CHANNEL_INFO_COURSES)
-                sendCoursesToNetworkUseCase()
-                // синхронизируем локальную базу и бек
-                setInfo(REMEDY_CHANNEL_INFO_SYNC)
-                syncCoursesWithNetworkUseCase()
-                // проверить целостность базы локальной
-                setInfo(REMEDY_CHANNEL_INFO_CHECK)
-                checkCoursesLocalUseCase()
-                setInfo(REMEDY_CHANNEL_INFO_END)
-                Log.d("VTTAG", "SynchronizationCourseWorker::doWork: End")
-            }
-            Result.success()
-        } catch (t: Error) {
-            Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Error", t)
-            Result.retry()
+        Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Start")
+        synchronizationCourseUseCase(currentDateTimeInSecond()) { info ->
+            setInfo(info)
+        }.onSuccess {
+            return@withContext Result.success()
+        }.onFailure {
+            Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Error", it)
+            return@withContext Result.retry()
         }
+        return@withContext Result.success()
     }
 
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -104,11 +82,13 @@ class SynchronizationCourseWorker @AssistedInject constructor(
         const val REMEDY_CHANNEL_DESCRIPTION = "Vitatracker synchronize show"
         const val REMEDY_CHANNEL_TITLE = "Vitatracker synchronize"
         const val REMEDY_CHANNEL_GROUP = "Vitatracker"
-        private const val REMEDY_CHANNEL_INFO_COURSES = "courses"
-        private const val REMEDY_CHANNEL_INFO_SYNC = "synchronization"
-        private const val REMEDY_CHANNEL_INFO_CHECK = "check"
-        private const val REMEDY_CHANNEL_INFO_DELETED = "deleted"
-        private const val REMEDY_CHANNEL_INFO_END = "end"
+        /*
+                private const val REMEDY_CHANNEL_INFO_COURSES = "courses"
+                private const val REMEDY_CHANNEL_INFO_SYNC = "synchronization"
+                private const val REMEDY_CHANNEL_INFO_CHECK = "check"
+                private const val REMEDY_CHANNEL_INFO_DELETED = "deleted"
+                private const val REMEDY_CHANNEL_INFO_END = "end"
+        */
 
         fun createNotificationChannel(context: Context) {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add_med_h">Добавить лекарство</string>
+    <string name="add_med_title">Добавить лекарство</string>
     <string name="add_med_name">Наименование лекарства *</string>
     <string name="add_med_dose">Дозировка</string>
     <string name="add_med_unit">Единица измерения</string>
@@ -12,10 +12,13 @@
     <string name="add_med_icon_color">Выберите цвет иконки</string>
     <string name="add_med_icon">Выберите иконку</string>
     <string name="enter_med_name">Введите наименование лекарства</string>
+    <string name="add_med_reception">Прием</string>
+    <string name="edit_med_title">Редактирование лекарства</string>
+
     <string name="navigation_back">Назад</string>
     <string name="navigation_next">Далее</string>
 
-    <string name="add_course_h">Выбрать время</string>
+    <string name="add_course_title">Выбрать время</string>
     <string name="add_course_notifications_time">Добавить время</string>
     <string name="add_course_date_from">C </string>
     <string name="add_course_start_time">Начало приема</string>
@@ -30,6 +33,7 @@
     <string name="add_course_end_time">Окончание приема</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
+    <string name="add_course_reminder_completed">New course added</string>
     <string name="add_next_course_remind_time">Время напоминания</string>
 
     <!--START SCREEN-->
@@ -38,11 +42,6 @@
     <string name="start_screen_recomendation_1">Перед использованием приложения, </string>
     <string name="start_screen_recomendation_2">Вам нужно авторизоваться</string>
     <string name="start_screen_go">Продолжить</string>
-
-    <!--AUTHORIZATION-->
-    <string name="authorization_screen_login">Логин</string>
-    <string name="authorization_screen_registration">Регистрация</string>
-    <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
 
     <!--SETTINGS-->
     <string name="settings_profile">Профиль</string>
@@ -76,11 +75,47 @@
     <string name="settings_contacts_back_end_team">Back-end команда:</string>
     <string name="settings_contacts_front_end_team">Front-end команда:</string>
     <string name="settings_contacts_android_team">Android команда:</string>
-    <string name="version_code">"Версия "</string>1
+
+    <string name="settings_about_our_team">О команде</string>
+    <string name="version_code">"Версия "</string>
     <string name="text_continue">Продолжить</string>
+    <string name="settings_version">Версия %s</string>
+    <string name="settings_about_our_team_hello">Здравствуйте!</string>
+    <string name="settings_about_our_team_body_1">Над приложением %s работала команда юных джунов айтишников, которые с заботой о людях создавали этот продукт.</string>
+    <string name="settings_about_our_team_body_2">По этой ссылке находится пост в линкедине о команде, где подробно рассказана история создания приложения и информация о каждом участнике.</string>
+    <string name="settings_about_our_team_end">С заботой о вас, команда %s!</string>
+    <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
+    <string name="settings_notifications_setup_notifications_2">Уведомления отключены</string>
+    <string name="settings_notifications_setup_notifications_3">Убедитесь, что ваши уведомления включены</string>
+    <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
+    <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
+    <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
+    <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
+    <string name="settings_notifications_check_settings_1">Защищенные приложения</string>
+    <string name="settings_notifications_check_settings_2">Некоторые устройства могут иметь проблемы с получением уведомлений от неактивных приложений. Чтобы быть уверенным что вы получаете все уведомления, вы можете проверить настройки своего телефона. Некоторые производители могут вообще не иметь этих опций и получать все уведомления правильно, и в этом случае вам не нужно ничего делать.</string>
+    <string name="settings_notifications_check_settings_button">Проверить настройки</string>
+    <string name="settings_notifications_reload_settings_1">Уведомления были остановлены</string>
+    <string name="settings_notifications_reload_settings_2">Иногда уведомления могут быть остановлены системой по разным причинам. В этом случае вы должны перезапустить их.</string>
+    <string name="settings_notifications_reload_settings_button">Перезапустить уведомления</string>
+    <string name="settings_notifications_contact_us_1">Проверьте сторонние приложения</string>
+    <string name="settings_notifications_contact_us_2">Приложения для экономии батареи, анти-вирусы или убийцы задач, такие как Clean Master, 360 Security, CM Security, Fast Booster, могут прерывать работу напоминаний от %s и поставить ваше здоровье под угрозу. Пожалуйста, деактивируйте их, чтобы они не вмешивались в отправку уведомлений.</string>
+    <string name="settings_notifications_contact_us_3">Не «останавливайте принудительно» приложения</string>
+    <string name="settings_notifications_contact_us_4">Закрытие %s c помощью диспетчера задач (принудительная остановка) может блокировать ваши напоминания.</string>
+    <string name="settings_notifications_contact_us_5">Нужна дополнительная помощь?</string>
+    <string name="settings_notifications_contact_us_6">Свяжитесь со службой поддержки</string>
+    <string name="settings_notifications_contact_us_button">Связаться</string>
+    <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
+    <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
+    <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>
+
+    <!--AUTHORIZATION-->
+    <string name="authorization_screen_login">Логин</string>
+    <string name="authorization_screen_registration">Регистрация</string>
+    <string name="authorization_screen_text_recomendation">Войдите с помощью</string>
 
     <!--LOGIN-->
     <string name="sign_in">Вход</string>
+    <string name="sign_in_with_google">Войти с помощью Google</string>
     <string name="login_email">Электронная почта</string>
     <string name="login_password">Пароль</string>
     <string name="login_password_confirm">Подверждение пароля</string>
@@ -101,20 +136,26 @@
     <string name="navigation_notifications">Уведомления</string>
     <string name="navigation_calendar">Календарь</string>
 
-    <string name="my_course_h">Мои лекарства</string>
+    <string name="my_course_title">Мои лекарства</string>
     <string name="mycourse_duration">Продолжительность</string>
     <string name="mycourse_dosage_and_usage">Дозировка и приём</string>
     <string name="mycourse_per_day">Приёмов в день</string>
     <string name="mycourse_delete">Удалить</string>
 
     <!--CALENDAR -->
-    <string name="calendar_h">Мой календарь</string>
+    <string name="calendar_title">Мой календарь</string>
+
+    <!--MAIN SCREEN-->
     <string name="main_screen_text_category">Лекарства</string>
     <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
     <string name="add_notifications_time_set">Настроить напоминание *</string>
+
     <string name="mycourse_remaining">Старт через %s д.</string>
     <string name="mycourse_per_day_listitem">%1$d в день</string>
+
     <string name="mycourse_reminders">Напоминания *</string>
+    <string name="mycourse_edit_icon">Иконка</string>
+    <string name="mycourse_edit_icon_color">Цвет иконки</string>
 
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
@@ -166,5 +207,102 @@
     <string name="types_syrup">Сироп</string>
     <string name="types_spray">Спрей</string>
     <string name="types_suspension">Суспензия</string>
+
+    <string name="action_begin">Начать</string>
+    <string name="splash_welcome_text">Мы помогаем Вам заботиться\nо вашем здоровье</string>
+    <string name="splash_welcome_in">Добро пожаловать в\n</string>
+
+    <string name="continue_with">Продолжить с помощью</string>
+    <string name="action_confirm">Подтвердить</string>
+    <string name="password_recovery">Восстановление пароля</string>
+    <string name="password_recovery_enter_mail">Пожалуйста, введите ваш Email для отправки информации по восстановлению пароля</string>
+
+    <string name="incorrect_email">Некорректный email</string>
+    <string name="incorrect_password">Пустой пароль</string>
+    <string name="incorrect_credentials">Неверный email или пароль</string>
+    <string name="password_format">Должен содержать от 6 до 16 знаков, включая 1 заглавную и 1 строчную букву, 1 цифру и 1 символ</string>
+    <string name="registration_create_account">Создать аккаунт</string>
+    <string name="password_mismatch">Пароли не совпадают</string>
+    <string name="action_recover">Восстановить</string>
+    <string name="password_recovery_dialog_body">Cсылка для восстановления пароля отправлена на электронную почту %s.</string>
+
+    <string name="action_navigate">Перейти</string>
+
+    <plurals name="plurals_types_tablet">
+        <item quantity="one">%1$d таблетка</item>
+        <item quantity="few">%1$d таблетки</item>
+        <item quantity="many">%1$d таблеток</item>
+        <item quantity="other">%1$d таблеток</item>
+    </plurals>
+
+    <plurals name="plurals_types_pill">
+        <item quantity="one">%1$d капсула</item>
+        <item quantity="few">%1$d капсулы</item>
+        <item quantity="many">%1$d капсул</item>
+        <item quantity="other">%1$d капсул</item>
+    </plurals>
+
+    <plurals name="plurals_types_inhalator">
+        <item quantity="one">%1$d ингаляция</item>
+        <item quantity="few">%1$d ингаляции</item>
+        <item quantity="many">%1$d ингаляций</item>
+        <item quantity="other">%1$d ингаляций</item>
+    </plurals>
+
+    <plurals name="plurals_types_injection">
+        <item quantity="one">%1$d инъекция</item>
+        <item quantity="few">%1$d инъекции</item>
+        <item quantity="many">%1$d инъекций</item>
+        <item quantity="other">%1$d инъекций</item>
+    </plurals>
+
+    <plurals name="plurals_types_drops">
+        <item quantity="one">%1$d капля</item>
+        <item quantity="few">%1$d капли</item>
+        <item quantity="many">%1$d капель</item>
+        <item quantity="other">%1$d капель</item>
+    </plurals>
+
+    <plurals name="plurals_types_solution">
+        <item quantity="one">%1$d раствор</item>
+        <item quantity="few">%1$d раствора</item>
+        <item quantity="many">%1$d растворов</item>
+        <item quantity="other">%1$d растворов</item>
+    </plurals>
+
+    <plurals name="plurals_types_suppository">
+        <item quantity="one">%1$d суппозиторий</item>
+        <item quantity="few">%1$d суппозитория</item>
+        <item quantity="many">%1$d суппозиториев</item>
+        <item quantity="other">%1$d суппозиториев</item>
+    </plurals>
+
+    <plurals name="plurals_types_syrup">
+        <item quantity="one">%1$d сироп</item>
+        <item quantity="few">%1$d сиропа</item>
+        <item quantity="many">%1$d сиропов</item>
+        <item quantity="other">%1$d сиропов</item>
+    </plurals>
+
+    <plurals name="plurals_types_suspension">
+        <item quantity="one">%1$d спрей</item>
+        <item quantity="few">%1$d спрея</item>
+        <item quantity="many">%1$d спреев</item>
+        <item quantity="other">%1$d спреев</item>
+    </plurals>
+
+    <plurals name="plurals_types_spray">
+        <item quantity="one">%1$d суспензия</item>
+        <item quantity="few">%1$d суспензии</item>
+        <item quantity="many">%1$d суспензий</item>
+        <item quantity="other">%1$d суспензий</item>
+    </plurals>
+
+    <plurals name="plurals_days">
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+        <item quantity="other">%1$d дней</item>
+    </plurals>
 
 </resources>

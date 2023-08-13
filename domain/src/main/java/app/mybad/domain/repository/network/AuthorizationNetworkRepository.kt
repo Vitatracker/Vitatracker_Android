@@ -20,4 +20,6 @@ interface AuthorizationNetworkRepository {
     ): Result<AuthorizationDomainModel>
 
     suspend fun refreshToken(): Result<AuthorizationDomainModel>
+
+    suspend fun restorePassword(email: String): Result<Unit>
 }

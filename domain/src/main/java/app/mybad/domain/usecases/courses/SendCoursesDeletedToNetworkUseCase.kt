@@ -29,7 +29,7 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
 
     private suspend fun sendUsagesDeleted() {
         usageRepository.getUsagesDeletedByUserId(AuthToken.userId).getOrNull()?.forEach { usage ->
-            usageNetworkRepository.deleteUsage(usage.idn).getOrThrow()
+            if (usage.idn > 0) usageNetworkRepository.deleteUsage(usage.idn).getOrThrow()
             usageRepository.deleteUsagesById(usage.id)
         }
     }
@@ -37,14 +37,14 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
     private suspend fun sendCoursesDeleted() {
         courseRepository.getCoursesDeletedByUserId(AuthToken.userId).getOrNull()
             ?.forEach { course ->
-                courseNetworkRepository.deleteCourse(course.idn).getOrThrow()
+                if (course.idn > 0) courseNetworkRepository.deleteCourse(course.idn).getOrThrow()
                 courseRepository.deleteCoursesById(course.id)
             }
     }
 
     private suspend fun sendRemediesDeleted() {
         remedyRepository.getRemedyDeletedByUserId(AuthToken.userId).getOrNull()?.forEach { remedy ->
-            remedyNetworkRepository.deleteRemedy(remedy.idn).getOrThrow()
+            if (remedy.idn > 0) remedyNetworkRepository.deleteRemedy(remedy.idn).getOrThrow()
             remedyRepository.deleteRemedyById(remedy.id)
         }
     }

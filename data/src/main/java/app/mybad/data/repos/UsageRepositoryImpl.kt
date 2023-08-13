@@ -50,11 +50,9 @@ class UsageRepositoryImpl @Inject constructor(
     override suspend fun getUsagesBetween(
         startTime: Long,
         endTime: Long
-    ) = withContext(dispatcher) {
-        runCatching {
-            db.getUsagesBetween(startTime = startTime, endTime = endTime).mapToDomain()
-        }
-    }
+    ) = db.getUsagesBetween(startTime = startTime, endTime = endTime)
+        .map { it.mapToDomain() }
+        .flowOn(dispatcher)
 
     //--------------------------------------------------
     override suspend fun checkUseUsagesByCourseId(courseId: Long) = withContext(dispatcher) {

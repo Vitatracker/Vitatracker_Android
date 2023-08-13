@@ -31,11 +31,9 @@ class SettingsNetworkRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(id: String) {
-        withContext(dispatcher) {
-            runCatching {
-                settingsApi.deleteUser(id = id)
-            }
+    override suspend fun deleteUser(id: String) = withContext(dispatcher) {
+        runCatching {
+            settingsApi.deleteUser(id = id).isSuccessful
         }
     }
 

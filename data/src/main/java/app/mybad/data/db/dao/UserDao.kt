@@ -7,9 +7,13 @@ import androidx.room.Query
 import androidx.room.Update
 import app.mybad.data.db.models.UserContract
 import app.mybad.data.db.models.UserModel
+import app.mybad.utils.currentDateTimeInSecond
 
 @Dao
 interface UserDao {
+
+    @Query("SELECT COUNT(${UserContract.Columns.ID}) FROM ${UserContract.TABLE_NAME}")
+    fun getNumberOfUsers(): Long
 
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
     fun getUser(userId: Long): UserModel
@@ -18,22 +22,26 @@ interface UserDao {
     fun getUserLastEntrance(): UserModel?
 
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.EMAIL} = :email limit 1")
-    fun getUserByEmail(email: String): UserModel
+    fun getUserByEmail(email: String): UserModel?
 
+    //--------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(user: UserModel): Long
 
     @Update
     fun updateUser(user: UserModel)
 
+    //--------------------------------------------------
     @Query(
         "UPDATE ${UserContract.TABLE_NAME} SET ${
             UserContract.Columns.DELETED_DATE
-        } = :dateTime WHERE ${UserContract.Columns.ID} = :userId"
+        } = :date WHERE ${UserContract.Columns.ID} = :userId"
     )
-    suspend fun delete(userId: Long, dateTime: Long)
+    suspend fun markDeletionUserById(userId: Long, date: Long = currentDateTimeInSecond())
 
+    //--------------------------------------------------
+    // тут удаление физически, т.е. то, что было удалено через сервер
     @Query("delete from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId")
-    fun deleteByUserId(userId: Long)
+    fun deleteUserById(userId: Long)
 
 }

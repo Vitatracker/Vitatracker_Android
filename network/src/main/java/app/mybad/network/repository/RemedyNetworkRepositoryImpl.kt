@@ -34,7 +34,13 @@ class RemedyNetworkRepositoryImpl @Inject constructor(
                 "SynchronizationCourseWorker::RemedyNetworkRepositoryImpl:updateRemedy: remedy id=${remedy.id}"
             )
             var remedyNet = remedy.mapToNet()
-            remedyNet = if (remedyNet.id > 0) remedyApi.updateRemedy(remedyNet)
+            remedyNet = if (remedyNet.id > 0) {
+                // TODO("перед тем как отправить обновление, нужно проверить не удалено ли на сервере через web, проверить есть ли на сервере, если нет, то нужно удалить")
+                val isNotDeleted = try {
+                    remedyApi.getRemedy(remedyNet.id)
+                }catch (ignore: Error){}
+                remedyApi.updateRemedy(remedyNet)
+            }
             else remedyApi.addRemedy(remedyNet)
             remedyNet.mapToDomain(remedy.id)
         }

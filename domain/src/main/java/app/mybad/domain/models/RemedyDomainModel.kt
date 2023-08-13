@@ -1,5 +1,9 @@
 package app.mybad.domain.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class RemedyDomainModel(
     val id: Long = 0,
     var idn: Long = 0,
@@ -25,7 +29,7 @@ data class RemedyDomainModel(
 
     val updateNetworkDate: Long = 0,
     val updateLocalDate: Long = 0,
-) {
+) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

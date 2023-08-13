@@ -39,4 +39,16 @@
         <item>@drawable/syrup</item>
         <item>@drawable/jar</item>
     </integer-array>
+    <string-array name="my_meds_types">
+        <item>@string/types_tablet</item>
+        <item>@string/types_pill</item>
+        <item>@string/types_inhalator</item>
+        <item>@string/types_injection</item>
+        <item>@string/types_drops</item>
+        <item>@string/types_solution</item>
+        <item>@string/types_suppository</item>
+        <item>@string/types_syrup</item>
+        <item>@string/types_spray</item>
+        <item>@string/types_suspension</item>
+    </string-array>
 </resources>

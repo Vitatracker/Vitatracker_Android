@@ -5,14 +5,21 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,17 +30,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RollSelector(
     modifier: Modifier = Modifier,
-    onSelect: (Int) -> Unit = {},
     list: List<String>,
-    startOffset: Int = 0
+    startOffset: Int = 0,
+    onSelect: (Int) -> Unit = {},
 ) {
     val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset) { list.size }
 
@@ -61,11 +68,13 @@ fun RollSelector(
             }
             val scale by animateFloatAsState(
                 targetValue = ts,
-                animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                label = ""
             )
             val alpha by animateFloatAsState(
                 targetValue = a,
-                animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                label = ""
             )
             Surface(
                 color = MaterialTheme.colorScheme.background,

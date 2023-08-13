@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.PickColor
+import app.mybad.notifier.ui.theme.PickColor
 
 @Composable
 fun ColorSelector(

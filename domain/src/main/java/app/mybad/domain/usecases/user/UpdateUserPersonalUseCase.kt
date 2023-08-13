@@ -8,7 +8,7 @@ class UpdateUserPersonalUseCase @Inject constructor(
     private val userDataRepo: UserDataRepo
 ) {
 
-    suspend fun execute(personalDomainModel: UserPersonalDomainModel) {
+    suspend operator fun invoke(personalDomainModel: UserPersonalDomainModel) {
         userDataRepo.updateUserPersonal(personalDomainModel)
     }
 }

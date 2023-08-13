@@ -9,7 +9,7 @@ interface SettingsNetworkRepository {
 
     suspend fun postUser(userDomainModel: UserSettingsDomainModel)
 
-    suspend fun deleteUser(id: String)
+    suspend fun deleteUser(id: String): Result<Boolean>
 
     suspend fun updateUser(userDomainModel: UserSettingsDomainModel)
 }

@@ -7,7 +7,7 @@ class CreateUserUseCase @Inject constructor(
     private val repository: UserRepository,
 ) {
 
-    suspend operator fun invoke(name: String, email: String): Long =
-        repository.insertUser(name = name, email = email) ?: -1
+    suspend operator fun invoke(email: String, name: String = ""): Long =
+        repository.insertUser(name = name, email = email)
 
 }

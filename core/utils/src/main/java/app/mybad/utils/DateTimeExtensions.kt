@@ -17,16 +17,12 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 private const val SECONDS_IN_DAY = 86400L
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
-const val TOKEN_DATA_EXPIRATION = 1
-const val TOKEN_REFRESH_DATA_EXPIRATION = 30
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter
@@ -36,6 +32,17 @@ private val dateDisplayFormatter = DateTimeFormatter
 fun Long.toDateDisplay(): String = Instant.fromEpochSeconds(this).formatDate()
 
 fun Instant.formatDate(): String = dateDisplayFormatter.format(this.toJavaInstant())
+
+private val dateTimeDisplayFormatter = DateTimeFormatter
+    .ofPattern("dd.MM.yyyy HH:mm:ss")
+    .withZone(ZoneOffset.systemDefault())
+
+fun LocalDateTime.toDateTimeDisplay() = this.toInstant(TimeZone.currentSystemDefault())
+    .formatDateTime()
+
+fun Long.toDateTimeDisplay(): String = Instant.fromEpochSeconds(this).formatDateTime()
+
+fun Instant.formatDateTime(): String = dateTimeDisplayFormatter.format(this.toJavaInstant())
 
 private val dateFullDisplayFormatter
     get() = DateTimeFormatter
@@ -117,7 +124,7 @@ fun Int.dayFullDisplay(): String = DayOfWeek(this + 1).getDisplayName(
 ).replaceFirstChar { it.uppercase(Locale.getDefault()) }
 
 // Прибавление
-fun Long.plusDay(): Long = this + SECONDS_IN_DAY
+fun Long.plusDay(days: Int = 1): Long = this + SECONDS_IN_DAY * days
 
 fun Long.plusThreeDay(): Long = this + SECONDS_IN_DAY * 3 + 1
 
@@ -245,6 +252,10 @@ fun LocalDateTime.minusMonths(months: Int): LocalDateTime {
         .toLocalDateTime(TimeZone.UTC)
 }
 
+fun Long.minusMonths(months: Int) = this.toLocalDateTime()
+    .minusMonths(months)
+    .toEpochSecond()
+
 fun LocalDateTime.plus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
     .plus(period, TimeZone.UTC)
     .toLocalDateTime(TimeZone.UTC)
@@ -263,14 +274,14 @@ fun LocalDateTime.plusMonths(months: Int): LocalDateTime {
         .toLocalDateTime(TimeZone.UTC)
 }
 
+fun Long.plusMonths(months: Int) = this.toLocalDateTime()
+    .plusMonths(months)
+    .toEpochSecond()
+
 // Получение даты + времени
 fun currentDateTime() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 fun currentDateTimeInSecond() = currentDateTime().toEpochSecond()
 fun systemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-
-fun getDateTokenExpiration() = currentDateTime().plusDays(TOKEN_DATA_EXPIRATION).toEpochSecond()
-fun getDateTokenRefreshExpiration() =
-    currentDateTime().plusDays(TOKEN_REFRESH_DATA_EXPIRATION).toEpochSecond()
 
 // сегодня + 1 день, дата и время
 fun Long.dateTimeTomorrow() = currentDateTime().changeTime(this)
@@ -325,14 +336,4 @@ fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)
 fun String.toLocalDateTime(): LocalDateTime {
     return if (this == "") currentDateTime()
     else LocalDateTime.parse(this)
-}
-
-// token date expires
-private val regexDateExp = """"exp":(\d+)""".toRegex()
-
-//"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4OGU0ODVhOC1lMDY1LTRiZDAtODlhZi1hMjk3OTY0ZTQ0NDYiLCJpYXQiOjE2OTE2MTEzNjgsImV4cCI6MTY5MTY5Nzc2OH0.Eo9XYAgODi_nycMFl-wgtf7sDeAdwVlu9_FZKZiz3JE"
-@OptIn(ExperimentalEncodingApi::class)
-fun String.decodeDateExp(): Long = if (this.isBlank()) 0L
-else String(Base64.decode(this.split(".")[1])).let {
-    regexDateExp.find(it)?.groupValues?.get(1)?.toLongOrNull() ?: 0
 }

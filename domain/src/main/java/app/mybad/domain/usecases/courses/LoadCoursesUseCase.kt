@@ -1,6 +1,7 @@
 package app.mybad.domain.usecases.courses
 
 import android.util.Log
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.CourseRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
@@ -15,7 +16,7 @@ class LoadCoursesUseCase @Inject constructor(
 ) {
 
     operator fun invoke(
-        userId: Long
+        userId: Long= AuthToken.userId,
     ) =
         combine(
             courseRepository.getCourses(userId),

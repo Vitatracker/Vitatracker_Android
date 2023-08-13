@@ -10,7 +10,7 @@ interface RemedyRepository {
     suspend fun getRemedyByIdn(remedyIdn: Long): Result<RemedyDomainModel>
 
     //TODO("это зачем?")
-    suspend fun getRemediesByIds(remedyIdList: List<Long>): Result<List<RemedyDomainModel>>
+    suspend fun getRemediesByIds(remedyIdList: List<Long>): Flow<List<RemedyDomainModel>>
 
     suspend fun insertRemedy(remedy: RemedyDomainModel): Result<Long>
     suspend fun insertRemedy(remedies: List<RemedyDomainModel>): Result<Unit>

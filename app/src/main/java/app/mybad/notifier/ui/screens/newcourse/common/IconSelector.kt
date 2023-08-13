@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.PickColor
+import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.theme.R
 
 @SuppressLint("Recycle")

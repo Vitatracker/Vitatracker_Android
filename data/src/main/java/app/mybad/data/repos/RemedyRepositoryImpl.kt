@@ -39,11 +39,10 @@ class RemedyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRemediesByIds(remedyIdList: List<Long>) = withContext(dispatcher) {
-        runCatching {
-            db.getRemediesByIds(remedyIdList).mapToDomain()
-        }
-    }
+    override suspend fun getRemediesByIds(remedyIdList: List<Long>) =
+        db.getRemediesByIds(remedyIdList)
+            .map { it.mapToDomain() }
+            .flowOn(dispatcher)
 
     override suspend fun insertRemedy(remedy: RemedyDomainModel) = withContext(dispatcher) {
         runCatching {

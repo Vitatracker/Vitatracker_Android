@@ -43,7 +43,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
             remedies.forEach { remedy ->
                 Log.d(
                     "VTTAG",
-                    "SynchronizationCourseWorker::sendRemedies: remedyNetwork remedy=${remedy.id}"
+                    "SynchronizationCourseWorker::sendRemedies: remedyNetwork remedy=${remedy.id} ${remedy.idn}"
                 )
                 remedyNetworkRepository.updateRemedy(remedy).onSuccess { updatedRemedy ->
                     remedyRepository.updateRemedy(updatedRemedy).onFailure {
