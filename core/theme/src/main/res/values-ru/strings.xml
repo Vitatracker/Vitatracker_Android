@@ -163,10 +163,80 @@
     <string name="types_injection">Инъекция</string>
     <string name="types_drops">Капли</string>
     <string name="types_solution">Раствор</string>
-    <string name="types_suppository">Свеча</string>
+    <string name="types_suppository">Суппозиторий</string>
     <string name="types_syrup">Сироп</string>
     <string name="types_spray">Спрей</string>
     <string name="types_suspension">Суспензия</string>
+
+    <plurals name="plurals_types_tablet">
+        <item quantity="one">%1$d таблетка</item>
+        <item quantity="few">%1$d таблетки</item>
+        <item quantity="many">%1$d таблеток</item>
+        <item quantity="other">%1$d таблеток</item>
+    </plurals>
+
+    <plurals name="plurals_types_pill">
+        <item quantity="one">%1$d капсула</item>
+        <item quantity="few">%1$d капсулы</item>
+        <item quantity="many">%1$d капсул</item>
+        <item quantity="other">%1$d капсул</item>
+    </plurals>
+
+    <plurals name="plurals_types_inhalator">
+        <item quantity="one">%1$d ингаляция</item>
+        <item quantity="few">%1$d ингаляции</item>
+        <item quantity="many">%1$d ингаляций</item>
+        <item quantity="other">%1$d ингаляций</item>
+    </plurals>
+
+    <plurals name="plurals_types_injection">
+        <item quantity="one">%1$d инъекция</item>
+        <item quantity="few">%1$d инъекции</item>
+        <item quantity="many">%1$d инъекций</item>
+        <item quantity="other">%1$d инъекций</item>
+    </plurals>
+
+    <plurals name="plurals_types_drops">
+        <item quantity="one">%1$d капля</item>
+        <item quantity="few">%1$d капли</item>
+        <item quantity="many">%1$d капель</item>
+        <item quantity="other">%1$d капель</item>
+    </plurals>
+
+    <plurals name="plurals_types_solution">
+        <item quantity="one">%1$d раствор</item>
+        <item quantity="few">%1$d раствора</item>
+        <item quantity="many">%1$d растворов</item>
+        <item quantity="other">%1$d растворов</item>
+    </plurals>
+
+    <plurals name="plurals_types_suppository">
+        <item quantity="one">%1$d суппозиторий</item>
+        <item quantity="few">%1$d суппозитория</item>
+        <item quantity="many">%1$d суппозиториев</item>
+        <item quantity="other">%1$d суппозиториев</item>
+    </plurals>
+
+    <plurals name="plurals_types_syrup">
+        <item quantity="one">%1$d сироп</item>
+        <item quantity="few">%1$d сиропа</item>
+        <item quantity="many">%1$d сиропов</item>
+        <item quantity="other">%1$d сиропов</item>
+    </plurals>
+
+    <plurals name="plurals_types_suspension">
+        <item quantity="one">%1$d спрей</item>
+        <item quantity="few">%1$d спрея</item>
+        <item quantity="many">%1$d спреев</item>
+        <item quantity="other">%1$d спреев</item>
+    </plurals>
+
+    <plurals name="plurals_types_spray">
+        <item quantity="one">%1$d суспензия</item>
+        <item quantity="few">%1$d суспензии</item>
+        <item quantity="many">%1$d суспензий</item>
+        <item quantity="other">%1$d суспензий</item>
+    </plurals>
 
     <string name="action_begin">Начать</string>
     <string name="splash_welcome_text">Мы помогаем Вам заботиться\nо вашем здоровье</string>

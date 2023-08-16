@@ -47,58 +47,6 @@ fun MyCoursesMainScreen() {
             }
         )
     }
-//    LazyColumn {
-//        item {
-//            TopAppBar(
-//                title = {
-//                    CenterAlignedTopAppBar(title = {
-//                        TitleText(textStringRes = R.string.my_course_h)
-//                    })
-//                }
-//            )
-//        }
-//        item {
-//
-//            NavHost(
-//                navController = navHostController,
-//                startDestination = MyCoursesNavItem.Main.route
-//            ) {
-//                composable(MyCoursesNavItem.Main.route) {
-//
-//                }
-//                composable(MyCoursesNavItem.Course.route) {
-//                    if (state.value.meds.isEmpty()) selectedCourse = null
-//                    selectedCourse?.let { selected ->
-//                        CourseInfoScreen(
-//                            course = selected,
-//                            med = state.value.meds.firstOrNull { it.id == selected.medId }
-//                                ?: MedDomainModel(),
-//                            usagePattern = generatePattern(selected.medId, state.value.usages),
-//                            reducer = {
-//                                when (it) {
-//                                    is MyCoursesIntent.Update -> {
-//                                        vm.reduce(
-//                                            MyCoursesIntent.Update(
-//                                                it.course,
-//                                                it.med,
-//                                                it.usagesPattern
-//                                            )
-//                                        )
-//                                        navHostController.popBackStack()
-//                                    }
-//
-//                                    is MyCoursesIntent.Delete -> {
-//                                        vm.reduce(MyCoursesIntent.Delete(selected.id))
-//                                        navHostController.popBackStack()
-//                                    }
-//                                }
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
 
 private fun generatePattern(
