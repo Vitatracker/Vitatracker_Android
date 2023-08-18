@@ -2,7 +2,11 @@ package app.mybad.notifier.ui.screens.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -11,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
 
@@ -43,8 +47,7 @@ fun ParameterIndicator(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = value.toString(),
-                style = Typography.bodyMedium,
-                color = Color.Unspecified.copy(alpha = 0.6f)
+                style = Typography.bodyMedium
             )
             if (!name.isNullOrBlank()) {
                 Icon(
@@ -57,4 +60,10 @@ fun ParameterIndicator(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun IndicatorPreview() {
+    ParameterIndicator(name = "Name", value = "Value")
 }

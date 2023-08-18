@@ -11,16 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,13 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.notifier.ui.screens.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
+import app.mybad.notifier.ui.screens.common.SingleDayCalendarSelector
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseScreensContract
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
@@ -47,38 +48,58 @@ import app.mybad.notifier.utils.toDateFullDisplay
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toLocalDateTime
 import app.mybad.theme.R
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCourseMainScreen(
-    course: CourseDomainModel,
-    onNext: (CourseDomainModel) -> Unit,
-    onBackPressed: () -> Unit
+    state: CreateCourseScreensContract.State,
+    events: Flow<CreateCourseScreensContract.Effect>? = null,
+    onEventSent: (event: CreateCourseScreensContract.Event) -> Unit = {},
+    onNavigationRequested: (navigationEffect: CreateCourseScreensContract.Effect.Navigation) -> Unit
 ) {
     val regimeList = stringArrayResource(R.array.regime)
-    val startDate = course.startDate.toLocalDateTime().atStartOfDay()
-    val endDate = course.endDate.toLocalDateTime().atEndOfDay()
+    val startDate = state.course.startDate.toLocalDateTime().atStartOfDay()
+    val endDate = state.course.endDate.toLocalDateTime().atEndOfDay()
     var selectedInput by remember { mutableStateOf(-1) }
-    val bottomSheetState = rememberBottomSheetScaffoldState()
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    BottomSheetScaffold(
+    LaunchedEffect(key1 = true) {
+        events?.collect {
+            when (it) {
+                CreateCourseScreensContract.Effect.Navigation.ActionBack -> {
+                    onNavigationRequested(CreateCourseScreensContract.Effect.Navigation.ActionBack)
+                }
+
+                CreateCourseScreensContract.Effect.Navigation.ActionNext -> {
+                    onNavigationRequested(CreateCourseScreensContract.Effect.Navigation.ActionNext)
+                }
+            }
+        }
+    }
+    if (bottomSheetState.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { scope.launch { bottomSheetState.hide() } },
+            sheetState = bottomSheetState,
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            containerColor = MaterialTheme.colorScheme.secondary
+        ) {
+            RemindNewCourseBottomSheet(
+                modifier = Modifier.padding(16.dp),
+                course = state.course,
+                onSave = { scope.launch { bottomSheetState.hide() } }
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+    Scaffold(
         topBar = {
             TopAppBarWithBackAction(
                 titleResId = R.string.add_course_h,
-                onBackPressed = onBackPressed
-            )
-        },
-        scaffoldState = bottomSheetState,
-        sheetPeekHeight = 0.dp,
-        sheetGesturesEnabled = false,
-        sheetContent = {
-            RemindNewCourseBottomSheet(
-                modifier = Modifier.padding(16.dp),
-                course = course,
-                onSave = { scope.launch { bottomSheetState.bottomSheetState.collapse() } },
-                onCancel = { scope.launch { bottomSheetState.bottomSheetState.collapse() } },
+                onBackPressed = { onEventSent(CreateCourseScreensContract.Event.ActionBack) }
             )
         }
     ) {
@@ -108,7 +129,7 @@ fun AddCourseMainScreen(
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.medication_regime),
-                            value = regimeList[course.regime],
+                            value = regimeList[state.course.regime],
                             onClick = { selectedInput = 3 }
                         )
                     },
@@ -120,7 +141,7 @@ fun AddCourseMainScreen(
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                    onClick = { scope.launch { bottomSheetState.bottomSheetState.expand() } },
+                    onClick = { scope.launch { bottomSheetState.expand() } },
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     Icon(
@@ -138,64 +159,109 @@ fun AddCourseMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
-                onNext(course)
+                onEventSent(CreateCourseScreensContract.Event.UpdateCourse(state.course))
             }
         }
     }
 
     if (selectedInput != -1) {
-        Dialog(
-            onDismissRequest = { selectedInput = -1 },
-            properties = DialogProperties()
-        ) {
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.background,
-            ) {
-                when (selectedInput) {
-                    1 -> CalendarSelectorScreen(
-                        startDay = startDate,
-                        endDay = endDate,
-                        onSelect = { sd ->
-                            // TODO
-                            NewCourseIntent.UpdateCourse(
-                                course.copy(
-                                    startDate = sd?.atStartOfDay()?.toEpochSecond() ?: 0L,
-                                )
-                            )
-                            selectedInput = -1
-                        },
-                        onDismiss = { selectedInput = -1 },
-                        editStart = true
-                    )
-
-                    2 -> CalendarSelectorScreen(
-                        startDay = startDate,
-                        endDay = endDate,
-                        onSelect = { ed ->
-                            // TODO
-                            NewCourseIntent.UpdateCourse(
-                                course.copy(
-                                    endDate = ed?.atStartOfDay()?.toEpochSecond() ?: 0L,
-                                )
-                            )
-                            selectedInput = -1
-                        },
-                        onDismiss = { selectedInput = -1 },
-                        editStart = false
-                    )
-
-                    3 -> RollSelector(
-                        list = regimeList.toList(),
-                        startOffset = course.regime,
-                        onSelect = {
-                            // TODO
-                            NewCourseIntent.UpdateCourse(course.copy(regime = it))
-                            selectedInput = -1
-                        }
-                    )
-                }
+        when (selectedInput) {
+            1 -> {
+                DatePickerDialog(
+                    initDate = startDate,
+                    onDismissRequest = { selectedInput = -1 },
+                    onDatePicked = { newDate ->
+                        val newCourse = state.course.copy(startDate = newDate?.atStartOfDay()?.toEpochSecond() ?: 0L)
+                        onEventSent(CreateCourseScreensContract.Event.UpdateCourse(newCourse))
+                    }
+                )
             }
+
+            2 -> {
+                DatePickerDialog(
+                    initDate = endDate,
+                    onDismissRequest = { selectedInput = -1 },
+                    onDatePicked = { newDate ->
+                        val newCourse = state.course.copy(endDate = newDate?.atStartOfDay()?.toEpochSecond() ?: 0L)
+                        onEventSent(CreateCourseScreensContract.Event.UpdateCourse(newCourse))
+                    }
+                )
+            }
+
+            3 -> {
+                RegimeSelector(
+                    regimeList = regimeList.toList(),
+                    startOffset = state.course.regime,
+                    onDismissRequest = {
+                        selectedInput = -1
+                    },
+                    onRegimePicked = { newRegime ->
+                        val newCourse = state.course.copy(regime = newRegime)
+                        onEventSent(CreateCourseScreensContract.Event.UpdateCourse(newCourse))
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun DatePickerDialogPreview() {
+    DatePickerDialog(
+        initDate = LocalDateTime(2023, 5, 4, 5, 5, 5),
+        onDismissRequest = {},
+        onDatePicked = {}
+    )
+}
+
+@Composable
+fun DatePickerDialog(
+    initDate: LocalDateTime,
+    onDismissRequest: () -> Unit = {},
+    onDatePicked: (event: LocalDateTime?) -> Unit = {}
+) {
+    Dialog(
+        onDismissRequest = { onDismissRequest() }
+    ) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            SingleDayCalendarSelector(
+                initDay = initDate,
+                onSelect = {
+                    onDatePicked(it)
+                    onDismissRequest()
+                }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun RegimeSelector(
+    regimeList: List<String> = listOf("Regime 1, Regime 2, Regime 3"),
+    startOffset: Int = -1,
+    onDismissRequest: () -> Unit = {},
+    onRegimePicked: (Int) -> Unit = {}
+) {
+    Dialog(
+        onDismissRequest = { onDismissRequest() }
+    ) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            RollSelector(
+                list = regimeList,
+                startOffset = startOffset,
+                onSelect = {
+                    onRegimePicked(it)
+                    onDismissRequest()
+                }
+            )
         }
     }
 }

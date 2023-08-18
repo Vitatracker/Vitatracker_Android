@@ -24,7 +24,7 @@ fun MultiBox(
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.background,
+        color = MaterialTheme.colorScheme.secondary,
         border = BorderStroke(1.dp, outlineColor),
         modifier = modifier.fillMaxWidth()
     ) {

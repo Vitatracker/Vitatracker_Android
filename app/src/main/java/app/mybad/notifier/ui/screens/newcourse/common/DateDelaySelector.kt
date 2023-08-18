@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +29,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.theme.R
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 import kotlinx.datetime.DateTimePeriod
 import kotlin.math.absoluteValue
 
@@ -45,11 +44,11 @@ fun DateDelaySelector(
     onSelect: (DateTimePeriod) -> Unit
 ) {
     val days = (0..30).toList()
-    val months = (0..12).toList()
+    val months = (0..11).toList()
     val pagerStateMonths =
-        rememberPagerState(initialPage = months.size * 10000 + initValue.months) { months.size }
+        rememberPagerState(initialPage = initValue.months) { months.size }
     val pagerStateDays =
-        rememberPagerState(initialPage = days.size * 10000 + initValue.days) { days.size }
+        rememberPagerState(initialPage = initValue.days) { days.size }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -157,19 +156,18 @@ fun DateDelaySelector(
             }
             Spacer(Modifier.width(0.dp))
         }
-        Button(
+        ReUseFilledButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(10.dp),
+            textId = R.string.settings_save,
             onClick = {
                 val newTime = DateTimePeriod(
                     days = pagerStateDays.currentPage % days.size,
                     months = pagerStateMonths.currentPage % months.size,
                 )
                 onSelect(newTime)
-            },
-            content = { Text(text = stringResource(R.string.settings_save)) }
+            }
         )
     }
 }

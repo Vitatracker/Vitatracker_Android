@@ -19,12 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.domain.models.course.CourseDomainModel
-import app.mybad.notifier.ui.screens.common.NavigationRow
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
-import app.mybad.notifier.ui.screens.newcourse.NewCourseIntent
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.utils.changeTime
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.minus
@@ -40,13 +39,8 @@ import kotlinx.datetime.DateTimePeriod
 fun RemindNewCourseBottomSheet(
     modifier: Modifier = Modifier,
     course: CourseDomainModel = CourseDomainModel(),
-    reducer: (NewCourseIntent) -> Unit = {},
-    onSave: () -> Unit = {},
-    onCancel: () -> Unit = {}
+    onSave: (CourseDomainModel) -> Unit = {}
 ) {
-    val interval = stringResource(R.string.add_next_course_interval)
-    val remindBefore = stringResource(R.string.add_next_course_remind_before)
-    val remindTimeLabel = stringResource(R.string.add_next_course_remind_time)
     val courseStartDate = course.startDate.toLocalDateTime()
 
     var selectedInput by remember { mutableStateOf(-1) }
@@ -62,49 +56,42 @@ fun RemindNewCourseBottomSheet(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
-            MultiBox(
-                {
-                    ParameterIndicator(
-                        name = interval,
-                        value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
-                        onClick = { selectedInput = 1 }
-                    )
-                },
-                {
-                    ParameterIndicator(
-                        name = remindBefore,
-                        value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
-                        onClick = { selectedInput = 2 }
-                    )
-                },
-                {
-                    ParameterIndicator(
-                        name = remindTimeLabel,
-                        value = remindTime.toTimeDisplay(),
-                        onClick = { selectedInput = 3 }
-                    )
-                },
-                itemsPadding = PaddingValues(16.dp)
-            )
-        }
-        NavigationRow(
-            backLabel = stringResource(R.string.settings_cancel),
-            nextLabel = stringResource(R.string.settings_save),
-            onNext = {
-                val nextCourseStart = courseStartDate.plus(coursesInterval)
-                val reminder = nextCourseStart.minus(remindBeforePeriod).changeTime(remindTime)
-                onSave()
-                reducer(
-                    NewCourseIntent.UpdateCourse(
-                        course.copy(
-                            remindDate = reminder.toEpochSecond(), //TODO("проверить какую TimeZone тут нужно")
-                            interval = nextCourseStart.toEpochSecond() - course.startDate,
-                        )
-                    )
+        MultiBox(
+            {
+                ParameterIndicator(
+                    name = stringResource(R.string.add_next_course_interval),
+                    value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
+                    onClick = { selectedInput = 1 }
                 )
             },
-            onBack = onCancel::invoke
+            {
+                ParameterIndicator(
+                    name = stringResource(R.string.add_next_course_remind_before),
+                    value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
+                    onClick = { selectedInput = 2 }
+                )
+            },
+            {
+                ParameterIndicator(
+                    name = stringResource(R.string.add_next_course_remind_time),
+                    value = remindTime.toTimeDisplay(),
+                    onClick = { selectedInput = 3 }
+                )
+            },
+            itemsPadding = PaddingValues(16.dp)
+        )
+        ReUseFilledButton(
+            modifier = Modifier.fillMaxWidth(),
+            textId = R.string.settings_save,
+            onClick = {
+                val nextCourseStart = courseStartDate.plus(coursesInterval)
+                val reminder = nextCourseStart.minus(remindBeforePeriod).changeTime(remindTime)
+                val newCourse = course.copy(
+                    remindDate = reminder.toEpochSecond(),
+                    interval = nextCourseStart.toEpochSecond() - course.startDate,
+                )
+                onSave(newCourse)
+            }
         )
     }
 

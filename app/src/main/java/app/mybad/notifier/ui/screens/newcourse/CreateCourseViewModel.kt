@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.course.CourseDomainModel
@@ -11,15 +10,13 @@ import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.CreateUsagesUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.meds.CreateMedUseCase
+import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.ui.screens.common.generateCommonUsages
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,133 +27,165 @@ class CreateCourseViewModel @Inject constructor(
     private val createUsages: CreateUsagesUseCase,
     private val addNotifications: AddNotificationsUseCase,
     private val updateCourseAll: UpdateCourseAllUseCase,
-) : ViewModel() {
+) : BaseViewModel<CreateCourseScreensContract.Event, CreateCourseScreensContract.State, CreateCourseScreensContract.Effect>() {
 
-    private val _state = MutableStateFlow(newState())
-    val state = _state.asStateFlow()
+    override fun setInitialState(): CreateCourseScreensContract.State {
+        return newState()
+    }
 
-    fun reduce(intent: NewCourseIntent) {
-        Log.w("VTTAG", "CreateCourseViewModel::reduce: in")
-        viewModelScope.launch {
-            when (intent) {
-                is NewCourseIntent.Drop -> {
-                    Log.w("VTTAG", "CreateCourseViewModel::reduce: Drop")
-                    _state.emit(newState())
+    override fun handleEvents(event: CreateCourseScreensContract.Event) {
+        when (event) {
+            CreateCourseScreensContract.Event.Drop -> {
+                Log.w("VTTAG", "CreateCourseViewModel::reduce: Drop")
+                setState { newState() }
+            }
+
+            CreateCourseScreensContract.Event.Finish -> {
+                viewModelScope.launch {
+                    actionFinish()
                 }
+            }
 
-                is NewCourseIntent.Finish -> {
-                    Log.w(
-                        "VTTAG",
-                        "CreateCourseViewModel::Finish: medId=${_state.value.med.id} userId=${_state.value.med.userId}"
-                    )
-                    // записать med и получить medId
-                    val medId = createMed(_state.value.med)
-                    _state.update {
-                        it.copy(
-                            med = _state.value.med.copy(id = medId),
-                            course = _state.value.course.copy(medId = medId),
-                        )
-                    }
-                    // записать course и получить medId
-                    val courseId = createCourse(_state.value.course)
-                    _state.update {
-                        it.copy(
-                            course = _state.value.course.copy(id = courseId),
-                        )
-                    }
-                    _state.update {
-                        it.copy(
-                            usages = _state.value.usages.map { usages ->
-                                usages.copy(medId = medId)
-                            },
-                        )
-                    }
-                    createUsages(_state.value.usages)
-                    addNotifications(
-                        course = _state.value.course,
-                        usages = _state.value.usages,
-                    )
-                    _state.emit(newState())
-                }
+            is CreateCourseScreensContract.Event.UpdateCourse -> {
+                setState { copy(course = event.course) }
+            }
 
-                is NewCourseIntent.UpdateMed -> {
-                    _state.update { it.copy(med = intent.med) }
-                }
+            is CreateCourseScreensContract.Event.UpdateMed -> {
+                setState { copy(med = event.med) }
+            }
 
-                is NewCourseIntent.UpdateCourse -> {
-                    _state.update { it.copy(course = intent.course) }
-                }
+            is CreateCourseScreensContract.Event.UpdateUsages -> {
+                setState { copy(usages = event.usages) }
+            }
 
-                is NewCourseIntent.UpdateUsages -> {
-                    _state.update { it.copy(usages = intent.usages) }
-                }
+            is CreateCourseScreensContract.Event.UpdateUsagesPattern -> {
+                updateUsagesPattern(event.pattern)
+            }
 
-                is NewCourseIntent.UpdateUsagesPattern -> {
-                    launch {
-                        Log.w(
-                            "VTTAG",
-                            "CreateCourseViewModel::UpdateUsagesPattern: medId=${_state.value.med.id} userId=${_state.value.med.userId}"
-                        )
-                        // записать med и получить medId
-                        val medId = createMed(_state.value.med)
-                        _state.update {
-                            it.copy(
-                                med = _state.value.med.copy(id = medId),
-                                course = _state.value.course.copy(medId = medId),
-                            )
-                        }
-                        // записать course и получить medId
-                        val courseId = createCourse(_state.value.course)
-                        _state.update {
-                            it.copy(
-                                course = _state.value.course.copy(id = courseId),
-                            )
-                        }
-                        val usages = generateCommonUsages(
-                            usagesByDay = intent.pattern,
-                            medId = medId,
-                            userId = _state.value.med.userId,
-                            startDate = _state.value.course.startDate,
-                            endDate = _state.value.course.endDate,
-                            regime = _state.value.course.regime
-                        )
-                        createUsages(usages)
-                        _state.update {
-                            it.copy(
-                                med = _state.value.med,
-                                course = _state.value.course,
-                                usages = usages,
-                            )
-                        }
-                        Log.w(
-                            "VTTAG",
-                            "CreateCourseViewModel::UpdateUsagesPattern: medId=${_state.value.med.id} userId=${_state.value.med.userId}"
-                        )
-                    }.invokeOnCompletion {
-                        launch {
-                            Log.w(
-                                "VTTAG",
-                                "CreateCourseViewModel::coursesNetworkRepo: userId=${_state.value.med.userId}"
-                            )
-                            updateCourseAll(
-                                med = _state.value.med,
-                                course = _state.value.course,
-                                usages = _state.value.usages
-                            )
-                            _state.value = newState()
-                        }
+            CreateCourseScreensContract.Event.ActionBack -> setEffect {
+                CreateCourseScreensContract.Effect.Navigation.ActionBack
+            }
+
+            is CreateCourseScreensContract.Event.ActionNext -> {
+                if (viewState.value.med.name.isNullOrBlank()) {
+                    setState { copy(isError = true) }
+                } else {
+                    setEffect {
+                        CreateCourseScreensContract.Effect.Navigation.ActionNext
                     }
                 }
+            }
+
+            is CreateCourseScreensContract.Event.UpdateMedName -> {
+                val newMed = viewState.value.med.copy(name = event.newName)
+                setState { copy(med = newMed, isError = newMed.name.isNullOrBlank()) }
             }
         }
     }
 
-    private fun newState(): NewCourseState {
+    private suspend fun actionFinish() {
+        Log.w(
+            "VTTAG",
+            "CreateCourseViewModel::Finish: medId=${viewState.value.med.id} userId=${viewState.value.med.userId}"
+        )
+
+        // записать med и получить medId
+        val medId = createMed(viewState.value.med)
+        setState {
+            copy(
+                med = viewState.value.med.copy(id = medId),
+                course = viewState.value.course.copy(medId = medId),
+            )
+        }
+
+        // записать course и получить medId
+        val courseId = createCourse(viewState.value.course)
+        setState {
+            copy(
+                course = viewState.value.course.copy(id = courseId)
+            )
+        }
+        setState {
+            copy(
+                usages = viewState.value.usages.map { usages ->
+                    usages.copy(medId = medId)
+                },
+            )
+        }
+        createUsages(viewState.value.usages)
+        addNotifications(
+            course = viewState.value.course,
+            usages = viewState.value.usages,
+        )
+
+        setState { newState() }
+    }
+
+    private fun updateUsagesPattern(pattern: List<Pair<Long, Int>>) {
+        viewModelScope.launch {
+            val currentState = viewState.value
+            Log.w(
+                "VTTAG",
+                "CreateCourseViewModel::UpdateUsagesPattern: medId=${currentState.med.id} userId=${currentState.med.userId}"
+            )
+            // записать med и получить medId
+            val medId = createMed(currentState.med)
+            setState {
+                copy(
+                    med = currentState.med.copy(id = medId),
+                    course = currentState.course.copy(medId = medId),
+                )
+            }
+
+            // записать course и получить medId
+            val courseId = createCourse(currentState.course)
+            setState {
+                copy(
+                    course = currentState.course.copy(id = courseId),
+                )
+            }
+            val usages = generateCommonUsages(
+                usagesByDay = pattern,
+                medId = medId,
+                userId = currentState.med.userId,
+                startDate = currentState.course.startDate,
+                endDate = currentState.course.endDate,
+                regime = currentState.course.regime
+            )
+            createUsages(usages)
+            setState {
+                copy(
+                    med = currentState.med,
+                    course = currentState.course,
+                    usages = usages,
+                )
+            }
+            Log.w(
+                "VTTAG",
+                "CreateCourseViewModel::UpdateUsagesPattern: medId=${currentState.med.id} userId=${currentState.med.userId}"
+            )
+        }.invokeOnCompletion {
+            viewModelScope.launch {
+                val currentState = viewState.value
+                Log.w(
+                    "VTTAG",
+                    "CreateCourseViewModel::coursesNetworkRepo: userId=${currentState.med.userId}"
+                )
+                updateCourseAll(
+                    med = currentState.med,
+                    course = currentState.course,
+                    usages = currentState.usages
+                )
+                setState { newState() }
+            }
+        }
+    }
+
+    private fun newState(): CreateCourseScreensContract.State {
         val userId = AuthToken.userId
-        Log.w("VTTAG", "CreateCourseViewModel::newState: userId=${AuthToken.userId}")
+        Log.w("VTTAG", "CreateCourseViewModel::newState: userId=$userId")
         val currentDateTime = getCurrentDateTime()
-        return NewCourseState(
-//            userId = userId,
+        return CreateCourseScreensContract.State(
             med = MedDomainModel(
                 creationDate = currentDateTime.toEpochSecond(),
                 userId = userId
@@ -166,6 +195,7 @@ class CreateCourseViewModel @Inject constructor(
                 userId = userId,
                 startDate = currentDateTime.atStartOfDay().toEpochSecond(),
                 endDate = currentDateTime.atEndOfDay().toEpochSecond(),
+                regime = 0
             )
         )
     }

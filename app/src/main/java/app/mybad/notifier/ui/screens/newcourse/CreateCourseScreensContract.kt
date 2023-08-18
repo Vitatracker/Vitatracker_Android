@@ -1,0 +1,37 @@
+package app.mybad.notifier.ui.screens.newcourse
+
+import app.mybad.domain.models.course.CourseDomainModel
+import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.domain.models.usages.UsageCommonDomainModel
+import app.mybad.notifier.ui.base.ViewEvent
+import app.mybad.notifier.ui.base.ViewSideEffect
+import app.mybad.notifier.ui.base.ViewState
+
+class CreateCourseScreensContract {
+
+    sealed class Event : ViewEvent {
+        object ActionBack : Event()
+        object ActionNext : Event()
+        object Drop : Event()
+        object Finish : Event()
+        data class UpdateMedName(val newName: String) : Event()
+        data class UpdateMed(val med: MedDomainModel) : Event()
+        data class UpdateCourse(val course: CourseDomainModel) : Event()
+        data class UpdateUsagesPattern(val pattern: List<Pair<Long, Int>>) : Event()
+        data class UpdateUsages(val usages: List<UsageCommonDomainModel>) : Event()
+    }
+
+    data class State(
+        val med: MedDomainModel = MedDomainModel(),
+        val course: CourseDomainModel = CourseDomainModel(),
+        val usages: List<UsageCommonDomainModel> = emptyList(),
+        val isError: Boolean = false
+    ) : ViewState
+
+    sealed class Effect : ViewSideEffect {
+        sealed class Navigation : Effect() {
+            object ActionBack : Navigation()
+            object ActionNext : Navigation()
+        }
+    }
+}

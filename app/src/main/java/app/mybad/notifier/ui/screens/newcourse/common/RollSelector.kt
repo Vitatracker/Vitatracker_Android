@@ -11,7 +11,6 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,22 +19,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.theme.R
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
+@Preview
 @Composable
 fun RollSelector(
     modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit = {},
-    list: List<String>,
+    list: List<String> = listOf("Item 1, Item2 , Item 3, Item 4"),
     startOffset: Int = 0
 ) {
-    val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset) { list.size }
+    val pagerState = rememberPagerState(initialPage = startOffset) { list.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,11 +90,9 @@ fun RollSelector(
             }
         }
         Spacer(Modifier.height(16.dp))
-        Button(
-            onClick = { onSelect(pagerState.currentPage % list.size) },
-            shape = RoundedCornerShape(10.dp),
+        ReUseFilledButton(
             modifier = Modifier.fillMaxWidth(),
-            content = { Text(text = stringResource(R.string.settings_save)) }
-        )
+            textId = R.string.settings_save,
+            onClick = { onSelect(pagerState.currentPage % list.size) })
     }
 }

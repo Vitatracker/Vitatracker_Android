@@ -26,18 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.theme.R
+import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.DAYS_A_WEEK
+import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.atStartOfDaySystemToUTC
 import app.mybad.notifier.utils.atStartOfMonth
 import app.mybad.notifier.utils.dayShortDisplay
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.minusDays
 import app.mybad.notifier.utils.plusDays
+import app.mybad.theme.R
 import kotlinx.datetime.LocalDateTime
 
 @Composable
@@ -47,8 +48,7 @@ fun CalendarSelectorScreen(
     startDay: LocalDateTime,
     endDay: LocalDateTime,
     onSelect: (date: LocalDateTime?) -> Unit,
-    onDismiss: () -> Unit,
-    editStart: Boolean,
+    editStart: Boolean
 ) {
     var sDate by remember { mutableStateOf(date) }
     var selectedDiapason by remember { mutableStateOf(Pair(startDay, endDay)) }
@@ -78,16 +78,58 @@ fun CalendarSelectorScreen(
             )
         }
         Spacer(Modifier.height(16.dp))
-        NavigationRow(
-            backLabel = stringResource(R.string.settings_cancel),
-            nextLabel = stringResource(R.string.settings_save),
-            onBack = onDismiss::invoke,
-            onNext = {
+        ReUseFilledButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textId = R.string.settings_save,
+            onClick = {
                 if (editStart) {
                     onSelect(selectedDiapason.first)
                 } else {
                     onSelect(selectedDiapason.second)
                 }
+            }
+        )
+    }
+}
+
+@Composable
+fun SingleDayCalendarSelector(
+    modifier: Modifier = Modifier,
+    date: LocalDateTime = getCurrentDateTime(),
+    initDay: LocalDateTime,
+    onSelect: (date: LocalDateTime?) -> Unit
+) {
+    var sDate by remember { mutableStateOf(date) }
+    var selectedDay by remember { mutableStateOf(initDay) }
+
+    Column(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            MonthSelector(
+                date = sDate.atStartOfDaySystemToUTC(),
+                onSwitch = { sDate = it }
+            )
+            Spacer(Modifier.height(16.dp))
+            SingleDaySelector(
+                date = sDate,
+                startDay = selectedDay,
+                onSelect = { sd ->
+                    selectedDay = sd
+                }
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        ReUseFilledButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textId = R.string.settings_save,
+            onClick = {
+                onSelect(selectedDay)
             }
         )
     }
@@ -185,6 +227,88 @@ fun CalendarSelector(
                     }
                 } else if (w > 4) Spacer(Modifier.height(48.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun SingleDaySelector(
+    modifier: Modifier = Modifier,
+    date: LocalDateTime,
+    startDay: LocalDateTime,
+    onSelect: (date: LocalDateTime) -> Unit = {}
+) {
+    var selectedDate by remember { mutableStateOf(startDay) }
+    val cdr: Array<Array<LocalDateTime?>> = Array(6) {
+        Array(DAYS_A_WEEK) { null }
+    }
+    val fwd = date.atStartOfMonth()
+    repeat(6) { w ->
+        repeat(DAYS_A_WEEK) { d ->
+            if (w == 0 && d < fwd.dayOfWeek.value) {
+                cdr[w][d] = fwd.minusDays(fwd.dayOfWeek.ordinal - d)
+            } else {
+                cdr[w][d] = fwd.plusDays(w * DAYS_A_WEEK + d - fwd.dayOfWeek.ordinal)
+            }
+        }
+    }
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(0.5f)
+        ) {
+            repeat(DAYS_A_WEEK) {
+                Text(
+                    text = (it + 1).dayShortDisplay(),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, false)
+                )
+            }
+        }
+        Divider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+        )
+        val currentDateTime = getCurrentDateTime()
+        repeat(6) { w ->
+            if (cdr[w].any { it?.month == date.month }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    repeat(DAYS_A_WEEK) { d ->
+                        val thisDate = cdr[w][d]
+                        CalendarDayItem(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .fillMaxWidth()
+                                .weight(1f, false),
+                            date = thisDate,
+                            isInRange = thisDate?.atStartOfDay() == selectedDate.atStartOfDay(),
+                            isOtherMonth = thisDate?.month != date.month
+                        ) {
+                            selectedDate = it ?: currentDateTime
+                            onSelect(selectedDate)
+                        }
+                    }
+                }
+            } else if (w > 4) Spacer(Modifier.height(48.dp))
         }
     }
 }

@@ -313,7 +313,6 @@ fun CourseInfoScreen(
                             )
                             selectedInput = -1
                         },
-                        onDismiss = { selectedInput = -1 },
                         editStart = true
                     )
 
@@ -326,7 +325,6 @@ fun CourseInfoScreen(
                             )
                             selectedInput = -1
                         },
-                        onDismiss = { selectedInput = -1 },
                         editStart = false
                     )
 
