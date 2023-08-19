@@ -80,6 +80,10 @@ class CreateCourseViewModel @Inject constructor(
                 val newMed = viewState.value.med.copy(name = event.newName)
                 setState { copy(med = newMed, isError = newMed.name.isNullOrBlank()) }
             }
+
+            CreateCourseScreensContract.Event.CourseIntervalEntered -> {
+                setState { copy(courseIntervalEntered = true) }
+            }
         }
     }
 

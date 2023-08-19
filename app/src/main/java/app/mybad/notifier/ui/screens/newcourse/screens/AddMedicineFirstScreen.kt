@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseScreensContract
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
@@ -28,14 +29,14 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
+@Preview
 @Composable
 fun AddMedicineFirstScreen(
-    state: CreateCourseScreensContract.State,
+    state: CreateCourseScreensContract.State = CreateCourseScreensContract.State(),
     events: Flow<CreateCourseScreensContract.Effect>? = null,
     onEventSent: (event: CreateCourseScreensContract.Event) -> Unit = {},
-    onNavigationRequested: (navigationEffect: CreateCourseScreensContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (navigationEffect: CreateCourseScreensContract.Effect.Navigation) -> Unit = {}
 ) {
-
     LaunchedEffect(key1 = true) {
         events?.collect {
             when (it) {
@@ -64,61 +65,16 @@ fun AddMedicineFirstScreen(
                 .padding(16.dp)
         ) {
             Column {
-                Text(
-                    text = stringResource(R.string.add_med_name),
-                    style = Typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
                 ReUseOutlinedTextField(
                     value = state.med.name ?: "",
-                    label =stringResource(R.string.enter_med_name),
+                    label = stringResource(R.string.enter_med_name),
                     onValueChanged = {
                         onEventSent(CreateCourseScreensContract.Event.UpdateMedName(it))
                     },
                     isError = state.isError,
                     errorTextId = if (state.isError) R.string.add_med_error_empty_name else null
                 )
-//                MultiBox(
-//                    {
-//                        Row(
-//                            horizontalArrangement = Arrangement.SpaceBetween,
-//                            modifier = Modifier.fillMaxWidth(),
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            BasicKeyboardInput(
-//                                modifier = Modifier.width(300.dp),
-//                                label = stringResource(R.string.enter_med_name),
-//                                init = state.med.name,
-//                                hideOnGo = true,
-//                                onChange = {
-//                                    onEventSent(CreateCourseScreensContract.Event.UpdateMed(state.med.copy(name = it)))
-//                                    isError = it.isBlank()
-//                                }
-//                            )
-//                            if (isError) {
-//                                Icon(
-//                                    imageVector = Icons.Rounded.Error,
-//                                    contentDescription = null,
-//                                    tint = MaterialTheme.colorScheme.error
-//                                )
-//                            }
-//                        }
-//
-//                    },
-//                    itemsPadding = PaddingValues(16.dp),
-//                    outlineColor = if (isError) MaterialTheme.colorScheme.errorContainer
-//                    else MaterialTheme.colorScheme.primary,
-//                )
-//                if (isError) {
-//                    Text(
-//                        modifier = Modifier.padding(top = 4.dp),
-//                        style = Typography.bodyMedium,
-//                        color = MaterialTheme.colorScheme.error,
-//                        text = stringResource(id = R.string.add_med_error_empty_name)
-//                    )
-//                }
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.add_med_icon),
                     style = Typography.bodyLarge,
@@ -135,7 +91,7 @@ fun AddMedicineFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
                     outlineColor = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
@@ -154,7 +110,7 @@ fun AddMedicineFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
                     outlineColor = MaterialTheme.colorScheme.primary,
                 )
             }

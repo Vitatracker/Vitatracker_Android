@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.common.SingleDayCalendarSelector
@@ -42,6 +44,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
+import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.toDateFullDisplay
@@ -89,8 +92,13 @@ fun AddCourseMainScreen(
         ) {
             RemindNewCourseBottomSheet(
                 modifier = Modifier.padding(16.dp),
-                course = state.course,
-                onSave = { scope.launch { bottomSheetState.hide() } }
+                startDate = state.course.startDate,
+                onSave = { remindDate, interval ->
+                    val newCourse = state.course.copy(remindDate = remindDate, interval = interval)
+                    onEventSent(CreateCourseScreensContract.Event.UpdateCourse(newCourse))
+                    onEventSent(CreateCourseScreensContract.Event.CourseIntervalEntered)
+                    scope.launch { bottomSheetState.hide() }
+                }
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -111,6 +119,12 @@ fun AddCourseMainScreen(
                 .padding(16.dp)
         ) {
             Column {
+                Text(
+                    text = stringResource(R.string.mycourse_duration),
+                    style = Typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(8.dp))
                 MultiBox(
                     {
                         ParameterIndicator(
@@ -141,18 +155,32 @@ fun AddCourseMainScreen(
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                    onClick = { scope.launch { bottomSheetState.expand() } },
-                    contentPadding = PaddingValues(16.dp)
+                    onClick = {
+                        if (!state.courseIntervalEntered) {
+                            scope.launch { bottomSheetState.expand() }
+                        }
+                    },
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp)
                 ) {
+                    var icon = R.drawable.clock
+                    var buttonText = R.string.add_course_reminder
+                    if (state.courseIntervalEntered) {
+                        icon = R.drawable.done
+                        buttonText = R.string.add_course_reminder_completed
+                    }
                     Icon(
-                        painter = painterResource(R.drawable.clock),
+                        painter = painterResource(icon),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .size(24.dp)
                     )
-                    Text(text = stringResource(R.string.add_course_reminder))
+                    Text(
+                        text = stringResource(buttonText),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                 }
             }
             ReUseFilledButton(

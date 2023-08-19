@@ -186,7 +186,7 @@ private fun SecondScreenContent(
                 }
             },
             modifier = Modifier,
-            itemsPadding = PaddingValues(16.dp),
+            itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
             outlineColor = MaterialTheme.colorScheme.primary,
         )
     }

@@ -14,6 +14,7 @@ class CreateCourseScreensContract {
         object ActionNext : Event()
         object Drop : Event()
         object Finish : Event()
+        object CourseIntervalEntered : Event()
         data class UpdateMedName(val newName: String) : Event()
         data class UpdateMed(val med: MedDomainModel) : Event()
         data class UpdateCourse(val course: CourseDomainModel) : Event()
@@ -25,7 +26,8 @@ class CreateCourseScreensContract {
         val med: MedDomainModel = MedDomainModel(),
         val course: CourseDomainModel = CourseDomainModel(),
         val usages: List<UsageCommonDomainModel> = emptyList(),
-        val isError: Boolean = false
+        val isError: Boolean = false,
+        val courseIntervalEntered: Boolean = false
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
