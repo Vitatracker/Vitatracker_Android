@@ -187,7 +187,7 @@ fun AddCourseMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
-                onEventSent(CreateCourseScreensContract.Event.UpdateCourse(state.course))
+                onEventSent(CreateCourseScreensContract.Event.ActionNext)
             }
         }
     }

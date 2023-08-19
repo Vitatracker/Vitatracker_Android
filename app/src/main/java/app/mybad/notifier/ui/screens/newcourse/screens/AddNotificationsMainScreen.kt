@@ -45,7 +45,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.mybad.domain.models.med.MedDomainModel
+import app.mybad.notifier.ui.screens.newcourse.CreateCourseScreensContract
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
@@ -54,24 +54,40 @@ import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 @Preview
 fun AddNotificationsMainScreen(
-    med: MedDomainModel = MedDomainModel(),
-    onNext: () -> Unit = {},
-    onBackPressed: () -> Unit = {}
+    state: CreateCourseScreensContract.State = CreateCourseScreensContract.State(),
+    events: Flow<CreateCourseScreensContract.Effect>? = null,
+    onEventSent: (event: CreateCourseScreensContract.Event) -> Unit = {},
+    onNavigationRequested: (navigationEffect: CreateCourseScreensContract.Effect.Navigation) -> Unit = {}
 ) {
     val forms = stringArrayResource(R.array.types)
     var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
     var dialogIsShown by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
 
+    LaunchedEffect(key1 = true) {
+        events?.collect {
+            when (it) {
+                CreateCourseScreensContract.Effect.Navigation.ActionBack -> {
+                    onNavigationRequested(CreateCourseScreensContract.Effect.Navigation.ActionBack)
+                }
+
+                CreateCourseScreensContract.Effect.Navigation.ActionNext -> {
+                    onNavigationRequested(CreateCourseScreensContract.Effect.Navigation.ActionNext)
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBarWithBackAction(
                 titleResId = R.string.add_notifications_choose_time,
-                onBackPressed = onBackPressed
+                onBackPressed = { onEventSent(CreateCourseScreensContract.Event.ActionBack) }
             )
         }
     ) { paddingValues ->
@@ -89,7 +105,7 @@ fun AddNotificationsMainScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 AddNotificationButton(
-                    form = med.type,
+                    form = state.med.type,
                     forms = forms,
                     onClick = {
                         notificationsPattern = notificationsPattern.toMutableList().apply {
@@ -104,7 +120,7 @@ fun AddNotificationsMainScreen(
                             NotificationItem(
                                 time = item.first,
                                 quantity = item.second,
-                                form = med.type,
+                                form = state.med.type,
                                 forms = forms,
                                 onDelete = {
                                     notificationsPattern = notificationsPattern.toMutableList().apply {
@@ -133,7 +149,8 @@ fun AddNotificationsMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
-                onNext()
+                onEventSent(CreateCourseScreensContract.Event.Finish)
+                onEventSent(CreateCourseScreensContract.Event.ActionNext)
             }
         }
 
