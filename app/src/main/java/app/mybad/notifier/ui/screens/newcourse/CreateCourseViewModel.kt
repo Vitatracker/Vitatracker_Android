@@ -111,15 +111,15 @@ class CreateCourseViewModel @Inject constructor(
 
     private fun updatePattern(index: Int, pattern: Pair<Long, Int>) {
         val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList()
-        val foundItem = currentUsagesPatterns[index]
-        currentUsagesPatterns.replaceAll { oldItem ->
-            if (oldItem == foundItem) {
-                oldItem.copy(first = pattern.first, second = pattern.second)
-            } else
-                oldItem
-        }
-        currentUsagesPatterns.sortBy { it.first }
-        setState { copy(usagesPattern = currentUsagesPatterns) }
+        val newUsagesPatterns = currentUsagesPatterns.mapIndexed { oldItemIndex, pair ->
+            if (oldItemIndex == index) {
+                pair.copy(first = pattern.first, second = pattern.second)
+            } else {
+                pair
+            }
+        }.toMutableList()
+        newUsagesPatterns.sortBy { it.first }
+        setState { copy(usagesPattern = newUsagesPatterns) }
     }
 
     private suspend fun actionFinish() {
