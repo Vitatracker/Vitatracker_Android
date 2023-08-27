@@ -3,7 +3,6 @@ package app.mybad.notifier.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryBlue = Color(0xFF10D2D2)
-val primaryBorderBlue = Color(0x4010D2D2)
 val primaryContainerBlue = Color(0xFFC3F4F4)
 val secondaryContainerBlue = Color(0xFFF1F7F7)
 val primaryIndication = Color(0xFF203839)
@@ -68,3 +67,5 @@ val textColorFirst = Color.Black
 val textColorSecond = Color.Gray
 val textColorThird = Color.LightGray
 
+val primaryBorderBlue = Color(0x4010D2D2)
+val primaryBorderGray = Color(0x4098AFB0)

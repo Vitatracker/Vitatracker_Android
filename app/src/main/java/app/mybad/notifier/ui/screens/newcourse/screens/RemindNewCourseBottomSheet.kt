@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.common.DaysSelector
@@ -69,7 +70,8 @@ fun RemindNewCourseBottomSheet(
             Text(
                 text = stringResource(R.string.add_med_settings),
                 style = Typography.bodyLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(12.dp))
             MultiBox(

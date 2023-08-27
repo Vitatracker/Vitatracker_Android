@@ -58,10 +58,6 @@ class CreateCourseViewModel @Inject constructor(
                 setState { copy(usages = event.usages) }
             }
 
-            is CreateCourseScreensContract.Event.UpdateUsagesPattern -> {
-                updateUsagesPattern(event.pattern)
-            }
-
             CreateCourseScreensContract.Event.ActionBack -> setEffect {
                 CreateCourseScreensContract.Effect.Navigation.ActionBack
             }
@@ -84,7 +80,37 @@ class CreateCourseViewModel @Inject constructor(
             CreateCourseScreensContract.Event.CourseIntervalEntered -> {
                 setState { copy(courseIntervalEntered = true) }
             }
+
+            is CreateCourseScreensContract.Event.AddUsagesPattern -> {
+                val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList().apply {
+                    add(event.pattern)
+                    sortBy { it.first }
+                }
+                setState { copy(usagesPattern = currentUsagesPatterns) }
+            }
+
+            is CreateCourseScreensContract.Event.RemoveUsagesPattern -> {
+                val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList()
+                setState { copy(usagesPattern = currentUsagesPatterns - currentUsagesPatterns[event.index]) }
+            }
+
+            is CreateCourseScreensContract.Event.UpdateUsagePattern -> {
+                updatePattern(event.index, event.pattern)
+            }
         }
+    }
+
+    private fun updatePattern(index: Int, pattern: Pair<Long, Int>) {
+        val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList()
+        val foundItem = currentUsagesPatterns[index]
+        currentUsagesPatterns.replaceAll { oldItem ->
+            if (oldItem == foundItem) {
+                oldItem.copy(first = pattern.first, second = pattern.second)
+            } else
+                oldItem
+        }
+        currentUsagesPatterns.sortBy { it.first }
+        setState { copy(usagesPattern = currentUsagesPatterns) }
     }
 
     private suspend fun actionFinish() {
@@ -116,73 +142,20 @@ class CreateCourseViewModel @Inject constructor(
                 },
             )
         }
-        createUsages(viewState.value.usages)
-        addNotifications(
-            course = viewState.value.course,
-            usages = viewState.value.usages,
+        val currentState = viewState.value
+        val usages = generateCommonUsages(
+            usagesByDay = currentState.usagesPattern,
+            medId = medId,
+            userId = currentState.med.userId,
+            startDate = currentState.course.startDate,
+            endDate = currentState.course.endDate,
+            regime = currentState.course.regime
         )
-
-        setState { newState() }
-    }
-
-    private fun updateUsagesPattern(pattern: List<Pair<Long, Int>>) {
-        viewModelScope.launch {
-            val currentState = viewState.value
-            Log.w(
-                "VTTAG",
-                "CreateCourseViewModel::UpdateUsagesPattern: medId=${currentState.med.id} userId=${currentState.med.userId}"
-            )
-            // записать med и получить medId
-            val medId = createMed(currentState.med)
-            setState {
-                copy(
-                    med = currentState.med.copy(id = medId),
-                    course = currentState.course.copy(medId = medId),
-                )
-            }
-
-            // записать course и получить medId
-            val courseId = createCourse(currentState.course)
-            setState {
-                copy(
-                    course = currentState.course.copy(id = courseId),
-                )
-            }
-            val usages = generateCommonUsages(
-                usagesByDay = pattern,
-                medId = medId,
-                userId = currentState.med.userId,
-                startDate = currentState.course.startDate,
-                endDate = currentState.course.endDate,
-                regime = currentState.course.regime
-            )
-            createUsages(usages)
-            setState {
-                copy(
-                    med = currentState.med,
-                    course = currentState.course,
-                    usages = usages,
-                )
-            }
-            Log.w(
-                "VTTAG",
-                "CreateCourseViewModel::UpdateUsagesPattern: medId=${currentState.med.id} userId=${currentState.med.userId}"
-            )
-        }.invokeOnCompletion {
-            viewModelScope.launch {
-                val currentState = viewState.value
-                Log.w(
-                    "VTTAG",
-                    "CreateCourseViewModel::coursesNetworkRepo: userId=${currentState.med.userId}"
-                )
-                updateCourseAll(
-                    med = currentState.med,
-                    course = currentState.course,
-                    usages = currentState.usages
-                )
-                setState { newState() }
-            }
-        }
+        createUsages(usages)
+        addNotifications(
+            course = currentState.course,
+            usages = usages,
+        )
     }
 
     private fun newState(): CreateCourseScreensContract.State {

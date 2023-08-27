@@ -26,7 +26,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -68,7 +68,7 @@ fun AddCourseMainScreen(
     val regimeList = stringArrayResource(R.array.regime)
     val startDate = state.course.startDate.toLocalDateTime().atStartOfDay()
     val endDate = state.course.endDate.toLocalDateTime().atEndOfDay()
-    var selectedInput by remember { mutableStateOf(-1) }
+    var selectedInput by remember { mutableIntStateOf(-1) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
@@ -124,9 +124,10 @@ fun AddCourseMainScreen(
                 Text(
                     text = stringResource(R.string.mycourse_duration),
                     style = Typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(12.dp))
                 MultiBox(
                     {
                         ParameterIndicator(

@@ -18,7 +18,9 @@ class CreateCourseScreensContract {
         data class UpdateMedName(val newName: String) : Event()
         data class UpdateMed(val med: MedDomainModel) : Event()
         data class UpdateCourse(val course: CourseDomainModel) : Event()
-        data class UpdateUsagesPattern(val pattern: List<Pair<Long, Int>>) : Event()
+        data class UpdateUsagePattern(val index: Int, val pattern: Pair<Long, Int>) : Event()
+        data class AddUsagesPattern(val pattern: Pair<Long, Int>) : Event()
+        data class RemoveUsagesPattern(val index: Int) : Event()
         data class UpdateUsages(val usages: List<UsageCommonDomainModel>) : Event()
     }
 
@@ -26,6 +28,7 @@ class CreateCourseScreensContract {
         val med: MedDomainModel = MedDomainModel(),
         val course: CourseDomainModel = CourseDomainModel(),
         val usages: List<UsageCommonDomainModel> = emptyList(),
+        val usagesPattern: List<Pair<Long, Int>> = emptyList(),
         val isError: Boolean = false,
         val courseIntervalEntered: Boolean = false
     ) : ViewState

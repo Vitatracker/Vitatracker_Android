@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.screens.common.ParameterIndicator
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseScreensContract
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
@@ -94,9 +95,10 @@ private fun SecondScreenContent(
         Text(
             text = stringResource(R.string.add_med_reception),
             style = Typography.bodyLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         MultiBox(
             {
                 var exp by remember { mutableStateOf(false) }

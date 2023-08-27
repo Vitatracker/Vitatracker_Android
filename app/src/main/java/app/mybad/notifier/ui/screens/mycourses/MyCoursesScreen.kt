@@ -53,6 +53,7 @@ import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.cardBackground
+import app.mybad.notifier.utils.getFormsPluralsArray
 import app.mybad.notifier.utils.toDateDisplay
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +67,7 @@ fun MyCoursesScreen(
     onNavigationRequested: (navigationEffect: MyCoursesScreenContract.Effect.Navigation) -> Unit
 ) {
     val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
-    val pluralsArray = getPluralsArray()
+    val pluralsArray = getFormsPluralsArray()
     LaunchedEffect(key1 = true) {
         events?.collect {
             when (it) {
@@ -103,19 +104,6 @@ fun MyCoursesScreen(
         }
     }
 }
-
-fun getPluralsArray(): Array<Int> = arrayOf(
-    R.plurals.plurals_types_tablet,
-    R.plurals.plurals_types_pill,
-    R.plurals.plurals_types_inhalator,
-    R.plurals.plurals_types_injection,
-    R.plurals.plurals_types_drops,
-    R.plurals.plurals_types_solution,
-    R.plurals.plurals_types_suppository,
-    R.plurals.plurals_types_syrup,
-    R.plurals.plurals_types_spray,
-    R.plurals.plurals_types_suspension
-)
 
 @Composable
 private fun CourseItem(
@@ -291,7 +279,7 @@ private fun CourseItem(
 @Composable
 private fun CourseItemPreview() {
     MyBADTheme(darkTheme = false) {
-        val pluralsArray = getPluralsArray()
+        val pluralsArray = getFormsPluralsArray()
         val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
         val course = CoursePresenterItem(MedDomainModel(), CourseDomainModel(), listOf(UsageCommonDomainModel()))
         CourseItem(courseItem = course, r, pluralsArray)
@@ -302,7 +290,7 @@ private fun CourseItemPreview() {
 @Composable
 private fun CourseItemDarkPreview() {
     MyBADTheme(darkTheme = true) {
-        val pluralsArray = getPluralsArray()
+        val pluralsArray = getFormsPluralsArray()
         val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
         val course = CoursePresenterItem(MedDomainModel(), CourseDomainModel(), listOf(UsageCommonDomainModel()))
         CourseItem(courseItem = course, r, pluralsArray)

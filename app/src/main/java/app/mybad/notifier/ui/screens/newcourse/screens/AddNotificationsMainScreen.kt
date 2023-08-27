@@ -1,11 +1,10 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,28 +28,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseScreensContract
+import app.mybad.notifier.ui.screens.newcourse.common.BaseSelector
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.theme.primaryBorderGray
 import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
+import app.mybad.notifier.utils.getFormsPluralsArray
 import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
@@ -65,10 +65,11 @@ fun AddNotificationsMainScreen(
     onEventSent: (event: CreateCourseScreensContract.Event) -> Unit = {},
     onNavigationRequested: (navigationEffect: CreateCourseScreensContract.Effect.Navigation) -> Unit = {}
 ) {
-    val forms = stringArrayResource(R.array.types)
-    var notificationsPattern by remember { mutableStateOf(emptyList<Pair<Long, Int>>()) }
-    var dialogIsShown by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf<Pair<Long, Int>?>(null) }
+    val pluralsArray = getFormsPluralsArray()
+    var selectedItem by remember { mutableStateOf<Triple<Int, Long, Int>?>(null) }
+    var showDialog by remember {
+        mutableIntStateOf(-1)
+    }
 
     LaunchedEffect(key1 = true) {
         events?.collect {
@@ -99,104 +100,101 @@ fun AddNotificationsMainScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(modifier = Modifier.wrapContentHeight()) {
                 Text(
                     text = stringResource(id = R.string.add_notifications_time_set),
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    style = MaterialTheme.typography.bodyLarge
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
                 )
+                Spacer(Modifier.height(12.dp))
                 AddNotificationButton(
-                    form = state.med.type,
-                    forms = forms,
                     onClick = {
-                        notificationsPattern = notificationsPattern.toMutableList().apply {
-                            add(Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1))
-                        }
+                        val newPattern = Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1)
+                        onEventSent(CreateCourseScreensContract.Event.AddUsagesPattern(newPattern))
                     }
                 )
                 Spacer(Modifier.height(16.dp))
-                LazyColumn {
-                    notificationsPattern.forEachIndexed { index, item ->
-                        item {
-                            NotificationItem(
-                                time = item.first,
-                                quantity = item.second,
-                                form = state.med.type,
-                                forms = forms,
-                                onDelete = {
-                                    notificationsPattern = notificationsPattern.toMutableList().apply {
-                                        removeAt(index)
-                                    }.toList()
-                                },
-                                onDoseChange = { q ->
-                                    notificationsPattern = notificationsPattern.toMutableList()
-                                        .apply {
-                                            removeAt(index)
-                                            add(index, item.copy(second = q.toInt()))
-                                        }.toList()
-                                },
-                                onTimeClick = {
-                                    selectedItem = item
-                                    dialogIsShown = true
-                                }
-                            )
-                            Spacer(Modifier.height(16.dp))
-                        }
+                LazyColumn(contentPadding = PaddingValues(bottom = 72.dp)) {
+                    itemsIndexed(state.usagesPattern) { index, item ->
+                        NotificationItem(
+                            time = item.first,
+                            quantity = item.second,
+                            form = state.med.type,
+                            forms = pluralsArray,
+                            onDelete = {
+                                onEventSent(CreateCourseScreensContract.Event.RemoveUsagesPattern(index))
+                            },
+                            onDoseChange = { q ->
+                                val newPattern = item.copy(second = q.toInt())
+                                onEventSent(CreateCourseScreensContract.Event.UpdateUsagePattern(index, newPattern))
+                            },
+                            onTimeClick = {
+                                selectedItem = Triple(index, item.first, item.second)
+                                showDialog = 1
+                            },
+                            onDoseClicked = {
+                                selectedItem = Triple(index, item.first, item.second)
+                                showDialog = 2
+                            }
+                        )
+                        Spacer(Modifier.height(16.dp))
                     }
                 }
-                Spacer(Modifier.height(16.dp))
             }
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
-                Log.d("VTTAG", "new course ${state.course}")
-                Log.d("VTTAG", "new usages ${state.usages}")
-                Log.d("VTTAG", "new med ${state.med}")
                 onEventSent(CreateCourseScreensContract.Event.Finish)
                 onEventSent(CreateCourseScreensContract.Event.ActionNext)
             }
         }
 
-        if (dialogIsShown && selectedItem != null) {
-            Dialog(onDismissRequest = { dialogIsShown = false }) {
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    TimeSelector(
-                        initTime = selectedItem!!.first,
-                        onSelect = {
-                            val n = notificationsPattern.toMutableList()
-                            val i = n.indexOf(selectedItem!!)
-                            n.removeAt(i)
-                            selectedItem = selectedItem!!.copy(first = it)
-                            n.add(i, selectedItem!!)
-                            n.sortBy { item -> item.first }
-                            notificationsPattern = n.toList()
-                            dialogIsShown = false
-                        }
-                    )
+        if (showDialog != -1) {
+            when (showDialog) {
+                1 -> {
+                    selectedItem?.let {
+                        TimeSelectionDialog(
+                            selectedItem = it,
+                            onDismissRequest = {
+                                showDialog = -1
+                            },
+                            onEventSent = onEventSent
+                        )
+                    }
+                }
+
+                2 -> {
+                    selectedItem?.let {
+                        EnterDoseDialog(
+                            selectedItem = it,
+                            onDismissRequest = {
+                                showDialog = -1
+                            },
+                            onEventSent = onEventSent
+                        )
+                    }
                 }
             }
         }
     }
-
 }
 
+@Preview
 @Composable
 private fun NotificationItem(
     modifier: Modifier = Modifier,
-    time: Long,
-    quantity: Int,
-    form: Int,
-    forms: Array<String>,
-    onDelete: () -> Unit,
+    time: Long = 0L,
+    quantity: Int = 1,
+    form: Int = 0,
+    forms: Array<Int> = arrayOf(R.plurals.plurals_types_tablet),
+    onDelete: () -> Unit = {},
     onTimeClick: () -> Unit = {},
-    onDoseChange: (Float) -> Unit = { }
+    onDoseChange: (Float) -> Unit = { },
+    onDoseClicked: () -> Unit = { }
 ) {
-    val fm = LocalFocusManager.current
     var field by remember { mutableStateOf(TextFieldValue(quantity.toString())) }
+
     LaunchedEffect(quantity) {
         val q = quantity.toString()
         field = field.copy(
@@ -208,120 +206,137 @@ private fun NotificationItem(
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        border = BorderStroke(1.dp, primaryBorderGray),
         modifier = modifier,
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 12.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.RemoveCircleOutline,
+                imageVector = Icons.Default.RemoveCircle,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(16.dp)
+                    .size(24.dp)
                     .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = onDelete::invoke
+                        onClick = onDelete
                     )
             )
-            Text(
-                text = time.toTimeDisplay(),
-                style = Typography.bodyLarge,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onTimeClick
-                )
-            )
-            Row {
-                BasicTextField(
-                    value = field,
-                    onValueChange = {
-                        field = it
-                        val res = it.text.toFloatOrNull() ?: 0f
-                        onDoseChange(if (res > 10f) 10f else res)
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            fm.clearFocus()
-                            field = field.copy(selection = TextRange.Zero)
-                        }
-                    ),
+            Spacer(modifier = Modifier.width(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = time.toTimeDisplay(),
+                    style = Typography.bodyLarge,
                     modifier = Modifier
-                        .width(25.dp)
-                        .onFocusChanged {
-                            if (it.hasFocus || it.isFocused) {
-                                field = field.copy(selection = TextRange(0, field.text.length))
-                            }
-                        }
+                        .clickable(
+                            onClick = onTimeClick
+                        )
+                )
+                val textPlurals = LocalContext.current.resources.getQuantityString(
+                    forms[form],
+                    quantity,
+                    quantity
                 )
                 Text(
-                    text = forms[form],
-                    style = Typography.bodyMedium,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier
+                        .clickable(onClick = onDoseClicked),
+                    text = textPlurals,
+                    style = Typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
-            Spacer(Modifier.width(0.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AddNotificationButton(
+    onClick: () -> Unit = {},
+) {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.background,
+        border = BorderStroke(1.dp, primaryBorderGray),
+        modifier = Modifier
+            .clickable(
+                onClick = onClick
+            ),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 12.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.AddCircle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = stringResource(R.string.add_notifications_choose_time),
+                style = Typography.bodyLarge,
+            )
         }
     }
 }
 
 @Composable
-private fun AddNotificationButton(
-    modifier: Modifier = Modifier,
-    form: Int,
-    forms: Array<String>,
-    onClick: () -> Unit,
+private fun TimeSelectionDialog(
+    selectedItem: Triple<Int, Long, Int>,
+    onDismissRequest: () -> Unit = {},
+    onEventSent: (event: CreateCourseScreensContract.Event) -> Unit
 ) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        modifier = modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() },
-            onClick = onClick
-        ),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.background
         ) {
-            Icon(
-                imageVector = Icons.Default.AddCircleOutline,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(16.dp)
+            TimeSelector(
+                initTime = selectedItem.second,
+                onSelect = {
+                    val newPattern = Pair(first = it, second = selectedItem.third)
+                    onEventSent(CreateCourseScreensContract.Event.UpdateUsagePattern(selectedItem.first, newPattern))
+                    onDismissRequest()
+                }
             )
-            Text(
-                text = stringResource(R.string.add_notifications_choose_time),
-                style = Typography.bodyLarge,
+        }
+    }
+}
+
+@Composable
+private fun EnterDoseDialog(
+    selectedItem: Triple<Int, Long, Int>,
+    onDismissRequest: () -> Unit = {},
+    onEventSent: (event: CreateCourseScreensContract.Event) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest
+    ) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            BaseSelector(
+                initValue = selectedItem.third,
+                values = (0..1000).toList(),
+                headerResId = null,
+                onSelect = {
+                    val newPattern = Pair(first = selectedItem.second, second = it)
+                    onEventSent(CreateCourseScreensContract.Event.UpdateUsagePattern(selectedItem.first, newPattern))
+                    onDismissRequest()
+                }
             )
-            Row {
-                Text(
-                    text = "1 ${forms[form]}",
-                    style = Typography.bodyMedium,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-            Spacer(Modifier.width(0.dp))
         }
     }
 }

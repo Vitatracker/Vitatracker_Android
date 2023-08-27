@@ -122,7 +122,7 @@
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_meds_clear_start">Давайте начнем!</string>
     <string name="main_screen_meds_clear_add">Добавьте первое лекарство</string>
-    <string name="add_notifications_choose_time">Добавить время</string>
+    <string name="add_notifications_choose_time">Выберите время</string>
     <string name="add_med_error_empty_name">Наименование не заполнено</string>
 
     <!--LEAVE YOUR WISHES-->
