@@ -102,7 +102,7 @@ fun AddCourseMainScreen(
                     scope.launch { bottomSheetState.hide() }
                 }
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
     Scaffold(

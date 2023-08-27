@@ -249,6 +249,14 @@
         <item quantity="many">%1$d суспензий</item>
         <item quantity="other">%1$d суспензий</item>
     </plurals>
+
+    <plurals name="plurals_days">
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+        <item quantity="other">%1$d дней</item>
+    </plurals>
+
     <string name="action_begin">Begin</string>
     <string name="splash_welcome_text">We help you take care\nof your health</string>
     <string name="splash_welcome_in">Welcome to\n</string>
