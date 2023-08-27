@@ -187,7 +187,9 @@ fun AddCourseMainScreen(
                 }
             }
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
                 textId = R.string.navigation_next
             ) {
                 Log.d("VTTAG", "new course ${state.course}")

@@ -2,10 +2,8 @@ package app.mybad.notifier.ui.screens.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,9 +15,8 @@ import app.mybad.notifier.ui.screens.splash.SplashScreenViewModel
 @Composable
 fun AppNavGraph() {
     val navigationState = rememberNavigationState()
-    Scaffold { paddingValues ->
+    Surface {
         NavHost(
-            modifier = Modifier.padding(paddingValues),
             navController = navigationState.navController,
             startDestination = Screen.Splash.route,
             enterTransition = {

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,9 +49,7 @@ import app.mybad.notifier.ui.screens.reuse.ReUseFilledButton
 import app.mybad.notifier.ui.screens.reuse.TopAppBarWithBackAction
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.primaryBorderGray
-import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.getFormsPluralsArray
-import app.mybad.notifier.utils.toEpochSecond
 import app.mybad.notifier.utils.toTimeDisplay
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
@@ -86,6 +83,7 @@ fun AddNotificationsMainScreen(
     }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBarWithBackAction(
                 titleResId = R.string.add_notifications_choose_time,
@@ -100,7 +98,7 @@ fun AddNotificationsMainScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.wrapContentHeight()) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = R.string.add_notifications_time_set),
                     fontWeight = FontWeight.Bold,
@@ -109,8 +107,7 @@ fun AddNotificationsMainScreen(
                 Spacer(Modifier.height(12.dp))
                 AddNotificationButton(
                     onClick = {
-                        val newPattern = Pair(getCurrentDateTimeWithoutSecond().toEpochSecond(), 1)
-                        onEventSent(CreateCourseScreensContract.Event.AddUsagesPattern(newPattern))
+                        onEventSent(CreateCourseScreensContract.Event.AddUsagesPattern)
                     }
                 )
                 Spacer(Modifier.height(16.dp))
@@ -142,8 +139,11 @@ fun AddNotificationsMainScreen(
                 }
             }
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.navigation_next
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                textId = R.string.navigation_next,
+                isEnabled = state.nextAllowed
             ) {
                 onEventSent(CreateCourseScreensContract.Event.Finish)
                 onEventSent(CreateCourseScreensContract.Event.ActionNext)

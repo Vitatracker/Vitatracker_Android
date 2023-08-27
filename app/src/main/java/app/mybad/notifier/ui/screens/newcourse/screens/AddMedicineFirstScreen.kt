@@ -112,7 +112,9 @@ fun AddMedicineFirstScreen(
                 )
             }
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
                 textId = R.string.navigation_next
             ) {
                 onEventSent(CreateCourseScreensContract.Event.ActionNext)

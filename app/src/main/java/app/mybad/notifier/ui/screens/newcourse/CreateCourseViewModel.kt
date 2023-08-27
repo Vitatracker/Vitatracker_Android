@@ -8,13 +8,13 @@ import app.mybad.domain.models.med.MedDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.CreateUsagesUseCase
-import app.mybad.domain.usecases.courses.UpdateCourseAllUseCase
 import app.mybad.domain.usecases.meds.CreateMedUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.ui.screens.common.generateCommonUsages
 import app.mybad.notifier.utils.atEndOfDay
 import app.mybad.notifier.utils.atStartOfDay
 import app.mybad.notifier.utils.getCurrentDateTime
+import app.mybad.notifier.utils.getCurrentDateTimeWithoutSecond
 import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,8 +25,7 @@ class CreateCourseViewModel @Inject constructor(
     private val createMed: CreateMedUseCase,
     private val createCourse: CreateCourseUseCase,
     private val createUsages: CreateUsagesUseCase,
-    private val addNotifications: AddNotificationsUseCase,
-    private val updateCourseAll: UpdateCourseAllUseCase,
+    private val addNotifications: AddNotificationsUseCase
 ) : BaseViewModel<CreateCourseScreensContract.Event, CreateCourseScreensContract.State, CreateCourseScreensContract.Effect>() {
 
     override fun setInitialState(): CreateCourseScreensContract.State {
@@ -35,11 +34,6 @@ class CreateCourseViewModel @Inject constructor(
 
     override fun handleEvents(event: CreateCourseScreensContract.Event) {
         when (event) {
-            CreateCourseScreensContract.Event.Drop -> {
-                Log.w("VTTAG", "CreateCourseViewModel::reduce: Drop")
-                setState { newState() }
-            }
-
             CreateCourseScreensContract.Event.Finish -> {
                 viewModelScope.launch {
                     actionFinish()
@@ -63,7 +57,10 @@ class CreateCourseViewModel @Inject constructor(
             }
 
             is CreateCourseScreensContract.Event.ActionNext -> {
-                if (viewState.value.med.name.isNullOrBlank()) {
+                val currentState = viewState.value
+                if (currentState.med.name.isNullOrBlank()) {
+                    setState { copy(isError = true) }
+                } else if (currentState.course.startDate >= currentState.course.endDate) {
                     setState { copy(isError = true) }
                 } else {
                     setEffect {
@@ -82,22 +79,34 @@ class CreateCourseViewModel @Inject constructor(
             }
 
             is CreateCourseScreensContract.Event.AddUsagesPattern -> {
-                val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList().apply {
-                    add(event.pattern)
-                    sortBy { it.first }
-                }
-                setState { copy(usagesPattern = currentUsagesPatterns) }
+                addNewPattern()
             }
 
             is CreateCourseScreensContract.Event.RemoveUsagesPattern -> {
-                val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList()
-                setState { copy(usagesPattern = currentUsagesPatterns - currentUsagesPatterns[event.index]) }
+                val currentUsagesPatterns = viewState.value.usagesPattern.toMutableList().apply {
+                    removeAt(event.index)
+                }
+                setState { copy(usagesPattern = currentUsagesPatterns, nextAllowed = currentUsagesPatterns.isNotEmpty()) }
             }
 
             is CreateCourseScreensContract.Event.UpdateUsagePattern -> {
                 updatePattern(event.index, event.pattern)
             }
         }
+    }
+
+    private fun addNewPattern() {
+        val currentPatterns = viewState.value.usagesPattern.toMutableList()
+        val patternDate = if (currentPatterns.isEmpty()){
+            getCurrentDateTimeWithoutSecond().toEpochSecond()
+        } else {
+            currentPatterns.last().first
+        }
+        val currentUsagesPatterns = currentPatterns.apply {
+            add(Pair(patternDate, 1))
+            sortBy { it.first }
+        }
+        setState { copy(usagesPattern = currentUsagesPatterns, nextAllowed = true) }
     }
 
     private fun updatePattern(index: Int, pattern: Pair<Long, Int>) {

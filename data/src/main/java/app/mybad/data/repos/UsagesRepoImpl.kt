@@ -1,8 +1,9 @@
 package app.mybad.data.repos
 
+import android.util.Log
+import app.mybad.data.db.dao.MedDao
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
-import app.mybad.data.db.dao.MedDao
 import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.domain.repos.UsagesRepo
 import kotlinx.coroutines.CoroutineDispatcher
@@ -58,6 +59,7 @@ class UsagesRepoImpl @Inject constructor(
 
     override suspend fun addUsages(usages: List<UsageCommonDomainModel>) {
         withContext(dispatcher) {
+            Log.d("VTTAG", "UsagesRepoImpl addUsages $usages")
             db.addUsages(usages.mapToData())
         }
     }

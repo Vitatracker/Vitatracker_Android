@@ -229,7 +229,7 @@ private fun CourseItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val start = courseItem.course.startDate.toDateDisplay()
-                    val end = courseItem.course.startDate.toDateDisplay()
+                    val end = courseItem.course.endDate.toDateDisplay()
                     Text(
                         text = start,
                         fontSize = 12.sp,

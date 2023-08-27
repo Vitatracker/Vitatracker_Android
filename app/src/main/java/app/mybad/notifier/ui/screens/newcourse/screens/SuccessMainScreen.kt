@@ -28,7 +28,6 @@ import app.mybad.theme.R
 fun SuccessMainScreen(
     onGo: () -> Unit = {}
 ) {
-
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -69,7 +68,9 @@ private fun StartScreenBottom(
         )
         Spacer(Modifier.height(50.dp))
         ReUseFilledButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
             textId = R.string.start_screen_go
         ) {
             onGo()
