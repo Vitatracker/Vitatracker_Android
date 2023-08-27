@@ -1,11 +1,13 @@
 package app.mybad.notifier.di
 
 import app.mybad.data.repos.CourseRepositoryImpl
+import app.mybad.data.repos.PatternUsageRepositoryImpl
 import app.mybad.data.repos.RemedyRepositoryImpl
 import app.mybad.data.repos.UsageRepositoryImpl
 import app.mybad.data.repos.UserDataRepoImpl
 import app.mybad.data.repos.UserRepositoryImpl
 import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.PatternUsageRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.repository.UserDataRepo
@@ -39,5 +41,9 @@ interface DataModule {
     @Binds
     @Singleton
     fun provideUsageRepository(impl: UsageRepositoryImpl): UsageRepository
+
+    @Binds
+    @Singleton
+    fun providePatternUsageRepository(impl: PatternUsageRepositoryImpl): PatternUsageRepository
 
 }

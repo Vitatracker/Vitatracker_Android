@@ -13,7 +13,11 @@ interface UsageRepository {
         endTime: Long
     ): Result<List<UsageDomainModel>>
 
-    suspend fun getUsagesBetween(startTime: Long, endTime: Long): Flow<List<UsageDomainModel>>
+    suspend fun getUsagesBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageDomainModel>>
 
     suspend fun insertUsage(usage: UsageDomainModel): Result<Unit>
     suspend fun insertUsage(usages: List<UsageDomainModel>): Result<Unit>

@@ -6,10 +6,12 @@ import androidx.work.WorkManager
 import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
+import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
+import app.mybad.domain.usecases.usages.CreatePatternUsagesUseCase
 import app.mybad.domain.usecases.usages.CreateUsagesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.ui.common.generateUsages
@@ -25,7 +27,10 @@ class CreateCourseViewModel @Inject constructor(
     private val createRemedyUseCase: CreateRemedyUseCase,
     private val createCourseUseCase: CreateCourseUseCase,
     private val createUsagesUseCase: CreateUsagesUseCase,
+    private val createPatternUsagesUseCase: CreatePatternUsagesUseCase,
+
     private val addNotifications: AddNotificationsUseCase,
+
     private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
     private val workSync: WorkManager,
 ) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
@@ -107,6 +112,15 @@ class CreateCourseViewModel @Inject constructor(
                         )
                     }
                     log("finishCreation: usages-generate=${viewState.value.usagesPattern.size}")
+                    val patterns = viewState.value.usagesPattern.map {pattern->
+                        PatternUsageDomainModel(
+                            remedyId = remedyId,
+                            courseId = courseId,
+                            timeInMinutes = pattern.timeInMinutes,
+                            quantity = pattern.quantity,
+                        )
+                    }
+                    createPatternUsagesUseCase(patterns)
                     val usages = generateUsages(
                         usagesByDay = viewState.value.usagesPattern,
                         remedyId = remedyId,

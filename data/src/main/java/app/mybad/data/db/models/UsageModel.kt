@@ -10,9 +10,9 @@ import androidx.room.PrimaryKey
     tableName = UsageContract.TABLE_NAME,
     foreignKeys = [
         ForeignKey(
-            entity = UserModel::class,
-            parentColumns = [UserContract.Columns.ID],
-            childColumns = [UsageContract.Columns.USER_ID],
+            entity = CourseModel::class,
+            parentColumns = [CourseContract.Columns.ID],
+            childColumns = [UsageContract.Columns.COURSE_ID],
             onDelete = ForeignKey.NO_ACTION,
         ),
     ],

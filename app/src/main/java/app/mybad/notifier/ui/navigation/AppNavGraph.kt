@@ -67,6 +67,8 @@ fun AppNavGraph() {
             //route = AppScreens.AddCourse.route,
             newCourseNavGraph(navigationState)
             //route = AppScreens.EditCourse.route,
+            editCourseNavGraph(navigationState)
+/*
             composable(
                 route = AppScreens.EditCourse.routeWithArgs,
                 arguments = AppScreens.EditCourse.arguments,
@@ -100,6 +102,7 @@ fun AppNavGraph() {
                     }
                 )
             }
+*/
         }
     }
 

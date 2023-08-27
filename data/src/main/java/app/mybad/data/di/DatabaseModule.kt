@@ -5,6 +5,7 @@ import androidx.room.Room
 import app.mybad.data.db.MedDb
 import app.mybad.data.db.MedDbImpl
 import app.mybad.data.db.dao.CourseDao
+import app.mybad.data.db.dao.PatternUsageDao
 import app.mybad.data.db.dao.RemedyDao
 import app.mybad.data.db.dao.UsageDao
 import app.mybad.data.db.dao.UserDao
@@ -44,4 +45,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideUsageDao(db: MedDb): UsageDao = db.getUsageDao()
+
+    @Provides
+    @Singleton
+    fun providePatternUsageDao(db: MedDb): PatternUsageDao = db.getPatternUsageDao()
 }

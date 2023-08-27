@@ -1,5 +1,6 @@
 package app.mybad.domain.usecases.usages
 
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.UsageRepository
 import javax.inject.Inject
 
@@ -8,5 +9,5 @@ class GetUsagesBetweenUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(startTime: Long, endTime: Long) = repository
-        .getUsagesBetween(startTime = startTime, endTime = endTime)
+        .getUsagesBetween(userId = AuthToken.userId, startTime = startTime, endTime = endTime)
 }

@@ -1,10 +1,12 @@
 package app.mybad.data
 
 import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.RemedyModel
 import app.mybad.data.db.models.UsageModel
 import app.mybad.data.db.models.UserModel
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.models.user.NotificationSettingDomainModel
@@ -232,6 +234,60 @@ fun List<UsageModel>.mapToDomain() = this.map { it.mapToDomain() }
 @JvmName("listUdmToData")
 fun List<UsageDomainModel>.mapToData() = this.map { it.mapToData() }
 
+//----------------------------------------
+fun PatternUsageModel.mapToDomain() = PatternUsageDomainModel(
+    id = id,
+    idn = idn,
+
+    userId = userId,
+    userIdn = userIdn,
+
+    courseId = courseId,
+    courseIdn = courseIdn,
+
+    remedyId = remedyId,
+    remedyIdn = remedyIdn,
+
+    createdDate = creationDate,
+    updatedDate = updatedDate,
+
+    timeInMinutes = timeInMinutes,
+    quantity = quantity,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
+)
+
+fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
+    id = id,
+    idn = idn,
+
+    userId = userId,
+    userIdn = userIdn,
+
+    courseId = courseId,
+    courseIdn = courseIdn,
+
+    remedyId = remedyId,
+    remedyIdn = remedyIdn,
+
+    creationDate = if (createdDate > 0) createdDate else currentDateTimeInSecond(),
+    updatedDate = currentDateTimeInSecond(),
+
+    timeInMinutes = timeInMinutes,
+    quantity = quantity,
+
+    updateNetworkDate = updateNetworkDate,
+    updateLocalDate = updateLocalDate,
+)
+
+@JvmName("listPUmToDomain")
+fun List<PatternUsageModel>.mapToDomain() = this.map { it.mapToDomain() }
+
+@JvmName("listPUdmToData")
+fun List<PatternUsageDomainModel>.mapToData() = this.map { it.mapToData() }
+
+//------------------------
 fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     name = name,
     age = age,
