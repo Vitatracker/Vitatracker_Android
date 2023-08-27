@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -91,8 +90,7 @@ fun AddMedicineFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
-                    outlineColor = MaterialTheme.colorScheme.primary,
+                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
@@ -110,8 +108,7 @@ fun AddMedicineFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
-                    outlineColor = MaterialTheme.colorScheme.primary,
+                    itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp)
                 )
             }
             ReUseFilledButton(

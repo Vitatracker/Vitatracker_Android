@@ -58,7 +58,6 @@ fun AddMedicineMainScreen(
                     )
                 },
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = stringResource(R.string.add_med_icon_color),
@@ -75,7 +74,6 @@ fun AddMedicineMainScreen(
                         onSelect = { reducer(NewCourseIntent.UpdateMed(med.copy(color = it))) })
                 },
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = stringResource(R.string.add_med_details),
@@ -125,7 +123,6 @@ fun AddMedicineMainScreen(
                 },
                 modifier = Modifier,
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
         }
 

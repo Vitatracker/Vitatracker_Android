@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -149,6 +150,9 @@ fun AddNotificationsMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
+                Log.d("VTTAG", "new course ${state.course}")
+                Log.d("VTTAG", "new usages ${state.usages}")
+                Log.d("VTTAG", "new med ${state.med}")
                 onEventSent(CreateCourseScreensContract.Event.Finish)
                 onEventSent(CreateCourseScreensContract.Event.ActionNext)
             }

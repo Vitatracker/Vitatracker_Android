@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.navigation
 
-import androidx.activity.compose.BackHandler
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -86,9 +85,6 @@ fun NavGraphBuilder.addCourseNavGraph(navigationState: NavigationState) {
         composable(route = AddCourseScreens.CongratulationsScreen.route) {
             SuccessMainScreen {
                 navigationState.navController.popBackStack()
-            }
-            BackHandler {
-                // back press not allowed
             }
         }
     }

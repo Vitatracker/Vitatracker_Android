@@ -17,7 +17,7 @@
     <string name="navigation_back">Back</string>
     <string name="navigation_next">Next</string>
 
-    <string name="add_course_h">Choose time</string>
+    <string name="add_course_h">Add date</string>
     <string name="add_course_notifications_time">Time of notifications</string>
     <string name="add_course_date_from">From </string>
     <string name="add_course_start_time">Start time</string>
@@ -132,7 +132,7 @@
     <string name="mycourse_edit_icon_color" translatable="false">Edit icon color</string>
     <string name="main_screen_meds_clear_start">Lets start!</string>
     <string name="main_screen_meds_clear_add">Add the first medicines</string>
-    <string name="add_notifications_choose_time">Choose time</string>
+    <string name="add_notifications_choose_time">Add time</string>
     <string name="add_med_error_empty_name">Medicine name is blank</string>
     <string name="version_code">"Version "</string>
     <!--LEAVE YOUR WISHES-->

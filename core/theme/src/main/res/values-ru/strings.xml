@@ -16,10 +16,10 @@
     <string name="navigation_back">Назад</string>
     <string name="navigation_next">Далее</string>
 
-    <string name="add_course_h">Выбрать время</string>
+    <string name="add_course_h">Добавить даты</string>
     <string name="add_course_notifications_time">Добавить время</string>
     <string name="add_course_date_from">C </string>
-    <string name="add_course_start_time">Начало приема</string>
+    <string name="add_course_start_time">Начало</string>
     <string name="add_course_comment">Комментарий</string>
     <string name="add_next_course_remind_before">Напомнить за, дней</string>
     <string name="add_med_error_unfilled_fields">Нужно заполнить все поля</string>
@@ -28,7 +28,7 @@
     <string name="add_course_days">Дни</string>
     <string name="add_next_course_interval">Начать следующий курс через</string>
     <string name="add_course_repeatable">Повторяющийся курс</string>
-    <string name="add_course_end_time">Окончание приема</string>
+    <string name="add_course_end_time">Окончание</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
     <string name="add_course_reminder_completed">Новый курс добавлен</string>
@@ -122,7 +122,7 @@
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_meds_clear_start">Давайте начнем!</string>
     <string name="main_screen_meds_clear_add">Добавьте первое лекарство</string>
-    <string name="add_notifications_choose_time">Выберите время</string>
+    <string name="add_notifications_choose_time">Добавить время</string>
     <string name="add_med_error_empty_name">Наименование не заполнено</string>
 
     <!--LEAVE YOUR WISHES-->

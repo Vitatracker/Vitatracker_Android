@@ -18,6 +18,7 @@ import app.mybad.notifier.ui.screens.common.generateCommonUsages
 import app.mybad.notifier.utils.getCurrentDateTime
 import app.mybad.notifier.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -41,6 +42,7 @@ class MyCoursesViewModel @Inject constructor(
     private val getUsagesByMedIdUseCase: GetUsagesByMedIdUseCase,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state = loadCourses(AuthToken.userId)
         .mapLatest { (courses, meds, usages) ->
             Log.w("VTTAG", "MyCoursesViewModel::state: meds=${meds.size} usages=${usages.size}")

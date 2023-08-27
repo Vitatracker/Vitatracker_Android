@@ -36,6 +36,7 @@ class MyCoursesScreenViewModel @Inject constructor(
                 }
                 viewModelScope.launch(Dispatchers.Main) {
                     setState { copy(courseItems = result) }
+                    Log.w("VTTAG", "MyCoursesScreenViewModel::state: $viewState")
                 }
             }
         }

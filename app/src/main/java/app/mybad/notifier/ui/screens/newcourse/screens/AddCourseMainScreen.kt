@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -149,18 +151,18 @@ fun AddCourseMainScreen(
                     },
                     itemsPadding = PaddingValues(16.dp)
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(32.dp))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                     onClick = {
                         if (!state.courseIntervalEntered) {
                             scope.launch { bottomSheetState.expand() }
                         }
                     },
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp)
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
                 ) {
                     var icon = R.drawable.clock
                     var buttonText = R.string.add_course_reminder
@@ -173,9 +175,9 @@ fun AddCourseMainScreen(
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
-                            .padding(end = 16.dp)
                             .size(24.dp)
                     )
+                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = stringResource(buttonText),
                         fontWeight = FontWeight.Bold,
@@ -187,6 +189,9 @@ fun AddCourseMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next
             ) {
+                Log.d("VTTAG", "new course ${state.course}")
+                Log.d("VTTAG", "new usages ${state.usages}")
+                Log.d("VTTAG", "new med ${state.med}")
                 onEventSent(CreateCourseScreensContract.Event.ActionNext)
             }
         }

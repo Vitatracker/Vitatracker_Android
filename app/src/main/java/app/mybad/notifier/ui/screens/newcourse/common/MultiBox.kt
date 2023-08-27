@@ -14,12 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import app.mybad.notifier.ui.theme.primaryBorderBlue
 
 @Composable
 fun MultiBox(
     vararg items: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    outlineColor: Color = MaterialTheme.colorScheme.primary,
+    outlineColor: Color = primaryBorderBlue,
     itemsPadding: PaddingValues,
 ) {
     Surface(

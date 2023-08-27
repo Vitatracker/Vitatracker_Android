@@ -114,8 +114,7 @@ fun CourseInfoScreen(
                         onSelect = { medInternal = medInternal.copy(icon = it) }
                     )
                 },
-                itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
+                itemsPadding = PaddingValues(16.dp)
             )
             Text(
                 text = stringResource(R.string.mycourse_edit_icon_color),
@@ -130,7 +129,6 @@ fun CourseInfoScreen(
                     )
                 },
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = stringResource(R.string.mycourse_dosage_and_usage),
@@ -233,7 +231,6 @@ fun CourseInfoScreen(
                 },
                 modifier = Modifier,
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = stringResource(R.string.mycourse_duration),
@@ -282,7 +279,6 @@ fun CourseInfoScreen(
                     )
                 },
                 itemsPadding = PaddingValues(16.dp),
-                outlineColor = MaterialTheme.colorScheme.primary,
             )
         }
         Spacer(Modifier.height(16.dp))
