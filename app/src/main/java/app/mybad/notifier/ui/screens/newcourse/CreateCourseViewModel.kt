@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import app.mybad.data.models.DateCourseLimit
+import app.mybad.data.models.UsageFormat
 import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
@@ -55,29 +56,38 @@ class CreateCourseViewModel @Inject constructor(
 
             is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
 
-            is CreateCourseContract.Event.UpdateUsagesPattern -> setState { copy(usagesPattern = event.pattern) }
+            is CreateCourseContract.Event.UpdateUsagePatterns -> setState { copy(usagesPattern = event.patterns) }
 
-            is CreateCourseContract.Event.UpdateRemedyName -> {
-                val newRemedy = viewState.value.remedy.copy(name = event.newName)
-                setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
+            is CreateCourseContract.Event.DeleteUsagePattern -> setState {
+                copy(usagesPattern = usagesPattern.minus(event.pattern))
             }
+
+            CreateCourseContract.Event.AddUsagesPattern -> addUsagesPattern()
+
+            is CreateCourseContract.Event.ChangeQuantityUsagePattern -> {
+                changeQuantityUsagePattern(event.pattern, event.quantity)
+            }
+
+            is CreateCourseContract.Event.ChangeTimeUsagePattern -> {
+                changeTimeUsagePattern(event.pattern, event.time)
+            }
+
+            is CreateCourseContract.Event.UpdateRemedyName -> updateRemedyName(name = event.newName)
 
             CreateCourseContract.Event.CourseIntervalEntered -> {
                 setState { copy(courseIntervalEntered = true) }
+            }
+
+            CreateCourseContract.Event.UpdateCourseStartDateAndLimit -> {
+                if (viewState.value.course.startDate <= 0L) setCourseDate()
             }
 
             is CreateCourseContract.Event.ActionNext -> {
                 if (viewState.value.remedy.name.isNullOrBlank()) {
                     setState { copy(isError = true) }
                 } else {
-                    setEffect {
-                        CreateCourseContract.Effect.Navigation.Next
-                    }
+                    setEffect { CreateCourseContract.Effect.Navigation.Next }
                 }
-            }
-
-            CreateCourseContract.Event.UpdateCourseStartDateAndLimit -> {
-                if (viewState.value.course.startDate <= 0L) setCourseDate()
             }
 
             CreateCourseContract.Event.ActionBack -> setEffect { CreateCourseContract.Effect.Navigation.Back }
@@ -85,6 +95,43 @@ class CreateCourseViewModel @Inject constructor(
             CreateCourseContract.Event.ActionCollapse -> setEffect { CreateCourseContract.Effect.Collapse }
             CreateCourseContract.Event.ActionExpand -> setEffect { CreateCourseContract.Effect.Expand }
         }
+    }
+
+    private fun updateStateUsagesPatterns(usagesPattern: List<UsageFormat>) {
+        setState { copy(usagesPattern = usagesPattern, nextAllowed = usagesPattern.isNotEmpty()) }
+    }
+
+    private fun changeTimeUsagePattern(pattern: UsageFormat, time: Int) {
+        updateStateUsagesPatterns(
+            UsageFormat.changeTimeUsagePattern(
+                usagesPattern = viewState.value.usagesPattern,
+                pattern = pattern,
+                time = time
+            )
+        )
+    }
+
+    private fun changeQuantityUsagePattern(pattern: UsageFormat, quantity: Int) {
+        updateStateUsagesPatterns(
+            UsageFormat.changeQuantityUsagePattern(
+                usagesPattern = viewState.value.usagesPattern,
+                pattern = pattern,
+                quantity = quantity
+            )
+        )
+    }
+
+    private fun addUsagesPattern() {
+        updateStateUsagesPatterns(
+            UsageFormat.addUsagesPattern(
+                usagesPattern = viewState.value.usagesPattern
+            )
+        )
+    }
+
+    private fun updateRemedyName(name: String) {
+        val newRemedy = viewState.value.remedy.copy(name = name)
+        setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
     }
 
     private fun finishCreation() {
@@ -112,7 +159,7 @@ class CreateCourseViewModel @Inject constructor(
                         )
                     }
                     log("finishCreation: usages-generate=${viewState.value.usagesPattern.size}")
-                    val patterns = viewState.value.usagesPattern.map {pattern->
+                    val patterns = viewState.value.usagesPattern.map { pattern ->
                         PatternUsageDomainModel(
                             remedyId = remedyId,
                             courseId = courseId,

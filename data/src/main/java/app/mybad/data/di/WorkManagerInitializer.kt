@@ -26,7 +26,7 @@ object WorkManagerInitializer : Initializer<WorkManager> {
         val configuration = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
-        WorkManager.initialize(context, configuration)
+        if (!WorkManager.isInitialized()) WorkManager.initialize(context, configuration)
         Log.d("VTTAG", "SynchronizationCourseWorker: WorkManager initialized by Hilt this time")
         return WorkManager.getInstance(context)
     }

@@ -20,6 +20,9 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +33,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
@@ -149,6 +153,25 @@ private fun NumberPicker(
                 text = items[it % items.size].toDisplay(),
                 style = Typography.headlineLarge,
                 fontSize = 20.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun TimeSelectorDialog(
+    initTime: Int,
+    onDismiss: () -> Unit,
+    onSelect: (Int) -> Unit,
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            TimeSelector(
+                initTime = initTime,
+                onSelect = onSelect::invoke
             )
         }
     }

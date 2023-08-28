@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -33,14 +34,15 @@ class AlarmService : Service() {
         val types = resources.getStringArray(R.array.types)
         val units = resources.getStringArray(R.array.units)
         val icons = resources.obtainTypedArray(R.array.icons)
-        val channel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH)
-            .setName(CHANNEL_NAME)
-            .setDescription(baseContext.getString(R.string.notifications_channel_description))
-            .setVibrationEnabled(true)
-            .setVibrationPattern(longArrayOf(300L, 300L, 100L, 300L, 300L, 300L, 100L, 300L))
-            .setLightsEnabled(true)
-            .setShowBadge(true)
-            .build()
+        val channel =
+            NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_HIGH)
+                .setName(CHANNEL_NAME)
+                .setDescription(baseContext.getString(R.string.notifications_channel_description))
+                .setVibrationEnabled(true)
+                .setVibrationPattern(longArrayOf(300L, 300L, 100L, 300L, 300L, 300L, 100L, 300L))
+                .setLightsEnabled(true)
+                .setShowBadge(true)
+                .build()
         NotificationManagerCompat.from(applicationContext).createNotificationChannel(channel)
         when (intent?.action) {
             FORCE_CLOSE -> stopSelf()
@@ -57,9 +59,15 @@ class AlarmService : Service() {
                 val takeIntent = Intent(baseContext, AlarmReceiver::class.java).apply {
                     action = TAKE_INTENT
                     putExtra(Extras.REMEDY_ID.name, intent.getLongExtra(Extras.REMEDY_ID.name, 0L))
-                    putExtra(Extras.USAGE_TIME.name, intent.getLongExtra(Extras.USAGE_TIME.name, 0L))
+                    putExtra(
+                        Extras.USAGE_TIME.name,
+                        intent.getLongExtra(Extras.USAGE_TIME.name, 0L)
+                    )
                 }
-                val takePi = PendingIntent.getBroadcast(baseContext, 0, takeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val takePi = PendingIntent.getBroadcast(
+                    baseContext, 0, takeIntent,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+                )
                 val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                     .setSmallIcon(R.drawable.main_icon)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -71,14 +79,16 @@ class AlarmService : Service() {
                 startForeground(1, notification)
                 icons.recycle()
             }
+
             COURSE_NOTIFICATION_INTENT -> {
                 val type = intent.getIntExtra(Extras.TYPE.name, 0)
                 val unit = intent.getIntExtra(Extras.UNIT.name, 0)
                 val dose = intent.getIntExtra(Extras.DOSE.name, 0)
                 val name = intent.getStringExtra(Extras.REMEDY_NAME.name)
                 val dateLong = intent.getLongExtra(Extras.NEW_COURSE_START_DATE.name, 0L)
-                val date = LocalDateTime.ofInstant(Instant.ofEpochSecond(dateLong), ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                val date =
+                    LocalDateTime.ofInstant(Instant.ofEpochSecond(dateLong), ZoneId.systemDefault())
+                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 //                    .format(DateTimeFormatter.ISO_LOCAL_DATE)
 
                 val contentText = String.format(

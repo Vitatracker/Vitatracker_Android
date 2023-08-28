@@ -46,7 +46,7 @@ import kotlinx.datetime.DateTimePeriod
 @Preview
 fun RemindNewCourseBottomSheet(
     modifier: Modifier = Modifier,
-    startDate: Long = -1L,
+    endDate: Long = -1L,
     onSave: (remindDate: Long, interval: Long) -> Unit = { _, _ -> }
 ) {
     var selectedInput by remember { mutableStateOf(-1) }
@@ -102,9 +102,9 @@ fun RemindNewCourseBottomSheet(
             modifier = Modifier.fillMaxWidth(),
             textId = R.string.settings_save,
             onClick = {
-                val nextCourseStart = startDate.toLocalDateTime().plus(coursesInterval)
+                val nextCourseStart = endDate.toLocalDateTime().plus(coursesInterval)
                 val reminder = nextCourseStart.minus(remindBeforePeriod).changeTime(remindTime)
-                onSave(reminder.toEpochSecond(), nextCourseStart.toEpochSecond() - startDate)
+                onSave(reminder.toEpochSecond(), nextCourseStart.toEpochSecond() - endDate)
             }
         )
     }

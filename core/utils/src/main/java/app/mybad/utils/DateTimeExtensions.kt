@@ -18,7 +18,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-private const val SECONDS_IN_DAY = 86400L
+const val SECONDS_IN_DAY = 86400L
+const val SECONDS_IN_HOUR = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
@@ -314,9 +315,7 @@ fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
 
 fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
 
-fun Int.toTimeDisplay() = currentDateTime()
-    .changeTime(hour = this.hour(), minute = this.minute())
-    .toTimeDisplay()
+fun Int.toTimeDisplay() ="%02d:%02d".format(this.hour(), this.minute())
 
 // высокосный год
 val Int.isLeapYear

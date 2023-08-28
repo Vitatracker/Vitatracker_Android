@@ -113,7 +113,7 @@ fun AddMedCourseDetailsScreen(
         ) {
             RemindNewCourseBottomSheet(
                 modifier = Modifier.padding(16.dp),
-                startDate = state.course.startDate,
+                endDate = state.course.endDate,
                 onSave = { remindDate, interval ->
                     val newCourse = state.course.copy(remindDate = remindDate, interval = interval)
                     sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))

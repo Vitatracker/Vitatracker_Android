@@ -1,15 +1,13 @@
 package app.mybad.notifier.ui.navigation
 
 import android.util.Log
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import app.mybad.notifier.ui.screens.mycourses.MyCoursesContract
-import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
-import app.mybad.notifier.ui.screens.mycourses.edit.MyCourseEditNotificationScreen
-import app.mybad.notifier.ui.screens.mycourses.edit.MyCourseEditScreen
-import app.mybad.notifier.ui.screens.newcourse.CreateCourseViewModel
+import app.mybad.notifier.ui.screens.mycoursesedit.MyCourseEditNotificationScreen
+import app.mybad.notifier.ui.screens.mycoursesedit.MyCourseEditScreen
+import app.mybad.notifier.ui.screens.mycoursesedit.MyCoursesEditContract
+import app.mybad.notifier.ui.screens.mycoursesedit.MyCoursesEditViewModel
 
 fun NavGraphBuilder.editCourseNavGraph(navigationState: NavigationState) {
     navigation(
@@ -20,7 +18,7 @@ fun NavGraphBuilder.editCourseNavGraph(navigationState: NavigationState) {
 
         composable(route = EditCourseScreens.CourseEdit.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry
-                .sharedViewModel<MyCoursesViewModel>(navigationState.navController)
+                .sharedViewModel<MyCoursesEditViewModel>(navigationState.navController)
 
             val arguments = requireNotNull(navBackStackEntry.arguments)
             val courseId = arguments.getLong(AppScreens.EditCourse.courseIdArg)
@@ -37,12 +35,14 @@ fun NavGraphBuilder.editCourseNavGraph(navigationState: NavigationState) {
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationAction ->
                     when (navigationAction) {
-                        is MyCoursesContract.Effect.Navigation.ToCourseEditing -> {}
+                        MyCoursesEditContract.Effect.Navigation.NotificationEditing -> {
+                            navigationState.navigateTo(EditCourseScreens.NotificationEdit.route)
+                        }
 
-                        MyCoursesContract.Effect.Navigation.Back -> {
+                        MyCoursesEditContract.Effect.Navigation.Back -> {
                             Log.w(
                                 "VTTAG",
-                                "AppNavGraph::CourseInfoScreen: navigate->popBackStack"
+                                "AppNavGraph::MyCourseEditScreen: navigate->popBackStack"
                             )
                             navigationState.navController.popBackStack()
                         }
@@ -52,20 +52,20 @@ fun NavGraphBuilder.editCourseNavGraph(navigationState: NavigationState) {
         }
         composable(route = EditCourseScreens.NotificationEdit.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry
-                .sharedViewModel<MyCoursesViewModel>(navigationState.navController)
-
+                .sharedViewModel<MyCoursesEditViewModel>(navigationState.navController)
+            // state должен быть уже загружен
             MyCourseEditNotificationScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationAction ->
                     when (navigationAction) {
-                        is MyCoursesContract.Effect.Navigation.ToCourseEditing -> {}
+                        MyCoursesEditContract.Effect.Navigation.NotificationEditing -> {}
 
-                        MyCoursesContract.Effect.Navigation.Back -> {
+                        MyCoursesEditContract.Effect.Navigation.Back -> {
                             Log.w(
                                 "VTTAG",
-                                "AppNavGraph::CourseInfoScreen: navigate->popBackStack"
+                                "EditCourseNavGraph::MyCourseEditNotificationScreen: navigate->popBackStack"
                             )
                             navigationState.navController.popBackStack()
                         }

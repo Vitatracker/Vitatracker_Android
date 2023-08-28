@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.mycourses.edit
+package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -43,13 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.mybad.data.models.CourseSelectInput
-import app.mybad.data.models.EditCourseState
-import app.mybad.data.models.UsageFormat
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseTopAppBar
-import app.mybad.notifier.ui.screens.mycourses.MyCoursesContract
+import app.mybad.notifier.ui.common.usagesPatternPreview
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
@@ -66,32 +64,12 @@ import app.mybad.utils.toDateFullDisplay
 import app.mybad.utils.toEpochSecond
 import kotlinx.coroutines.flow.Flow
 
-private val usagesPattern = listOf(
-    UsageFormat(480, 1), //08:00
-    UsageFormat(720, 3), //12:00
-    UsageFormat(1080, 2),//18:00
-)
-
-@Preview
-@Composable
-fun MyCourseEditScreenPreview() {
-    MyBADTheme {
-        MyCourseEditScreen(
-            MyCoursesContract.State(
-                editCourse = EditCourseState(
-                    usagesPattern = usagesPattern,
-                )
-            )
-        )
-    }
-}
-
 @Composable
 fun MyCourseEditScreen(
-    state: MyCoursesContract.State,
-    effectFlow: Flow<MyCoursesContract.Effect>? = null,
-    sendEvent: (event: MyCoursesContract.Event) -> Unit = {},
-    navigation: (navigationEffect: MyCoursesContract.Effect.Navigation) -> Unit = {},
+    state: MyCoursesEditContract.State,
+    effectFlow: Flow<MyCoursesEditContract.Effect>? = null,
+    sendEvent: (event: MyCoursesEditContract.Event) -> Unit = {},
+    navigation: (navigationEffect: MyCoursesEditContract.Effect.Navigation) -> Unit = {},
 ) {
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
@@ -108,9 +86,8 @@ fun MyCourseEditScreen(
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
 
-    var remedyInternal by remember { mutableStateOf(state.editCourse.remedy) }
-    var courseInternal by remember { mutableStateOf(state.editCourse.course) }
-    var patternInternal by remember { mutableStateOf(state.editCourse.usagesPattern) }
+    var remedyInternal by remember { mutableStateOf(state.remedy) }
+    var courseInternal by remember { mutableStateOf(state.course) }
 
     var startDate by remember { mutableStateOf(courseInternal.startDate.atStartOfDaySystemToUTC()) }
     var endDate by remember { mutableStateOf(courseInternal.endDate.atEndOfDaySystemToUTC()) }
@@ -120,15 +97,14 @@ fun MyCourseEditScreen(
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
-                is MyCoursesContract.Effect.Navigation -> navigation(effect)
+                is MyCoursesEditContract.Effect.Navigation -> navigation(effect)
             }
         }
     }
 
-    LaunchedEffect(state.editCourse.course.id) {
-        remedyInternal = state.editCourse.remedy
-        courseInternal = state.editCourse.course
-        patternInternal = state.editCourse.usagesPattern
+    LaunchedEffect(state.course.id) {
+        remedyInternal = state.remedy
+        courseInternal = state.course
     }
 
     LaunchedEffect(courseInternal) {
@@ -138,16 +114,16 @@ fun MyCourseEditScreen(
 
     Log.w(
         "VTTAG",
-        "CourseInfoScreen::EditCourse: id=${state.editCourse.remedy.id} remedy=${remedyInternal.name} courseId=${
+        "CourseInfoScreen::EditCourse: id=${state.remedy.id} remedy=${remedyInternal.name} courseId=${
             courseInternal.id
-        } usages=${patternInternal.size}"
+        } usagesPattern=${state.usagesPatternEdit.size}"
     )
 
     Scaffold(
         topBar = {
             ReUseTopAppBar(
                 titleResId = R.string.edit_med_title,
-                onBackPressed = { sendEvent(MyCoursesContract.Event.ActionBack) }
+                onBackPressed = { sendEvent(MyCoursesEditContract.Event.ActionBack) }
             )
         },
     ) { paddingValues ->
@@ -210,7 +186,7 @@ fun MyCourseEditScreen(
                         var exp by remember { mutableStateOf(false) }
                         ParameterIndicator(
                             name = form,
-                            value = types[state.editCourse.remedy.type],
+                            value = types[state.remedy.type],
                             onClick = { exp = true }
                         )
                         DropdownMenu(
@@ -339,7 +315,9 @@ fun MyCourseEditScreen(
                             modifier = Modifier.clickable(
                                 indication = null,
                                 interactionSource = remember { MutableInteractionSource() },
-                                onClick = { }
+                                onClick = {
+                                    sendEvent(MyCoursesEditContract.Event.NotificationEditing)
+                                }
                             )
                         )
                     },
@@ -351,15 +329,14 @@ fun MyCourseEditScreen(
             SaveDecline(
                 onSave = {
                     sendEvent(
-                        MyCoursesContract.Event.Update(
+                        MyCoursesEditContract.Event.UpdateAndEnd(
                             courseInternal,
                             remedyInternal,
-                            patternInternal
                         )
                     )
                 },
                 onDelete = {
-                    sendEvent(MyCoursesContract.Event.Delete(courseInternal.id))
+                    sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id))
                 },
             )
         }
@@ -398,7 +375,7 @@ fun MyCourseEditScreen(
 
                         CourseSelectInput.SELECT_REGIME -> RollSelector(
                             list = regimeList.toList(),
-                            startOffset = state.editCourse.course.regime,
+                            startOffset = state.course.regime,
                         ) {
                             courseInternal = courseInternal.copy(regime = it)
                             selectedInput = null
@@ -454,5 +431,17 @@ private fun SaveDecline(
                 color = MaterialTheme.colorScheme.primary
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun MyCourseEditScreenPreview() {
+    MyBADTheme {
+        MyCourseEditScreen(
+            MyCoursesEditContract.State(
+                usagesPatternEdit = usagesPatternPreview,
+            )
+        )
     }
 }

@@ -3,6 +3,8 @@ package app.mybad.notifier.ui.common
 import android.util.Log
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.UsageDomainModel
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atStartOfDaySystemToUTC
 import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.daysBetween
@@ -21,7 +23,8 @@ fun generateUsages(
     endDate: Long,
     regime: Int,
 ): List<UsageDomainModel> {
-    val now = currentDateTimeInSecond()
+    val currentTime = currentDateTimeInSecond()
+    val startUsageTimeToDay = currentTime.atStartOfDaySystemToUTC().toEpochSecond()
     val interval = endDate.daysBetween(startDate).toInt()
     Log.w(
         "VTTAG",
@@ -44,13 +47,13 @@ fun generateUsages(
                     "VTTAG",
                     "generateUsages: useTime=${useTime.toLocalDateTime()}"
                 )
-                if (useTime > now) {
+                if (useTime > startUsageTimeToDay) {
                     usage.add(
                         UsageDomainModel(
                             remedyId = remedyId,
                             courseId = courseId,
                             userId = userId,
-                            createdDate = now,
+                            createdDate = currentTime,
                             useTime = useTime,
                             quantity = quantity,
                         )
@@ -68,21 +71,23 @@ fun generatePattern(
     regime: Int,
     usages: List<UsageDomainModel>
 ): List<UsageFormat> {
+    var usagesPattern: List<UsageFormat> = emptyList()
     if (usages.isNotEmpty()) {
         val list = usages.filter { it.courseId == courseId }
         if (list.isNotEmpty()) {
-            //TODO("тут нужно понять что нужно, время или дата и время")
-            // тут берется дата и время
-            val firstTimeTomorrow = list.minBy { it.useTime }.useTime.plusDay(regime + 1)
-            return list.mapNotNull { usage ->
-                if (usage.useTime < firstTimeTomorrow) {
+            //берем все usages между 2 приемами, берем только время приема в минутах и сортируем
+            val nextAdmissionDay = list.minBy { it.useTime }.useTime.plusDay(regime + 1)
+                .atEndOfDay()
+            usagesPattern = list.mapNotNull { usage ->
+                if (usage.useTime < nextAdmissionDay) {
                     UsageFormat(
                         timeInMinutes = usage.useTime.timeInMinutes(),
                         quantity = usage.quantity
                     )
                 } else null
-            }.toSet().toList()
+            }.toSortedSet(comparator = { uf1, uf2 -> uf1.timeInMinutes - uf2.timeInMinutes })
+                .toList()
         }
     }
-    return emptyList()
+    return usagesPattern
 }

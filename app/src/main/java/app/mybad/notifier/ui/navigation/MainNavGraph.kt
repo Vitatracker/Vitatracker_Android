@@ -41,8 +41,6 @@ fun MainNavGraph(
         composable(route = MainScreens.Courses.route) {
 
             val viewModel: MyCoursesViewModel = hiltViewModel()
-            // загрузим в стейт
-            viewModel.uploadCoursesInState()
 
             StartMyCoursesScreen(
                 state = viewModel.viewState.value,

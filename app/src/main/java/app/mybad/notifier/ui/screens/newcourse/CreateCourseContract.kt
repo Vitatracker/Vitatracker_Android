@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse
 
+import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
@@ -7,7 +8,6 @@ import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import app.mybad.data.models.DateCourseLimit
 
 class CreateCourseContract {
     sealed interface Event : ViewEvent {
@@ -15,8 +15,14 @@ class CreateCourseContract {
         data class UpdateRemedy(val remedy: RemedyDomainModel) : Event
         data class UpdateRemedyName(val newName: String) : Event
         data class UpdateCourse(val course: CourseDomainModel) : Event
-        data class UpdateUsagesPattern(val pattern: List<UsageFormat>) : Event
         data class UpdateUsages(val usages: List<UsageDomainModel>) : Event
+        data class UpdateUsagePatterns(val patterns: List<UsageFormat>) : Event
+
+        object AddUsagesPattern : Event
+        data class DeleteUsagePattern(val pattern: UsageFormat) : Event
+        data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Int) : Event
+        data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
+
         object CourseIntervalEntered : Event
         object UpdateCourseStartDateAndLimit : Event
         object Drop : Event
@@ -34,6 +40,7 @@ class CreateCourseContract {
         val usagesPattern: List<UsageFormat> = emptyList(),
         val isError: Boolean = false,
         val courseIntervalEntered: Boolean = false,
+        val nextAllowed: Boolean = false,
         val dateLimit: DateCourseLimit,
     ) : ViewState
 
