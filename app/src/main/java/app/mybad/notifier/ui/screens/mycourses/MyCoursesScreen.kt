@@ -90,7 +90,7 @@ fun MyCoursesScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues),
-            contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 72.dp),
+            contentPadding = PaddingValues(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 72.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(state.courseItems) { courseItem ->
