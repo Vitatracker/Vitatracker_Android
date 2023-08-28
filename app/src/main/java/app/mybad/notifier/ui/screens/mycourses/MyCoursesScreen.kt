@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.mycourses
 
 import android.content.res.TypedArray
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,7 +52,6 @@ import app.mybad.domain.models.usages.UsageCommonDomainModel
 import app.mybad.notifier.ui.PickColor
 import app.mybad.notifier.ui.screens.reuse.TitleText
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.cardBackground
 import app.mybad.notifier.utils.getFormsPluralsArray
 import app.mybad.notifier.utils.toDateDisplay
@@ -94,6 +94,7 @@ fun MyCoursesScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(state.courseItems) { courseItem ->
+                Log.d("MyCoursesScreen", "courseItem: $courseItem")
                 CourseItem(
                     courseItem = courseItem,
                     icons = icons,
@@ -148,10 +149,7 @@ private fun CourseItem(
                     }
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
+                Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -164,6 +162,28 @@ private fun CourseItem(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
+
+                        if (courseItem.startInDays > 0) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Spacer(Modifier.size(16.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(4.dp),
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                                ) {
+                                    val startsIn = String.format(
+                                        stringResource(R.string.mycourse_remaining),
+                                        courseItem.startInDays.toString()
+                                    )
+                                    Text(
+                                        text = startsIn,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight(500),
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                    )
+                                }
+                            }
+                        }
                         Image(
                             painter = painterResource(R.drawable.edit),
                             contentDescription = null,
@@ -249,26 +269,6 @@ private fun CourseItem(
                         fontWeight = FontWeight(700),
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                }
-                if (courseItem.startInDays > 0) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Spacer(Modifier.size(16.dp))
-                        Surface(
-                            shape = RoundedCornerShape(5.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                        ) {
-                            val startsIn = String.format(
-                                stringResource(R.string.mycourse_remaining),
-                                courseItem.startInDays.toString()
-                            )
-                            Text(
-                                text = startsIn,
-                                style = Typography.bodySmall,
-                                modifier = Modifier.padding(6.dp)
-                            )
-                        }
-                    }
                 }
             }
         }
