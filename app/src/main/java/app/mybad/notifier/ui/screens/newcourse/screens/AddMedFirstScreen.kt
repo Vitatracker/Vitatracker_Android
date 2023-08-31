@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -56,9 +55,7 @@ fun AddMedFirstScreen(
     navigation: (navigationEffect: CreateCourseContract.Effect.Navigation) -> Unit = {},
 ) {
 
-    Log.w("VTTAG", "NewCourseNavGraph::AddMedFirstScreen: start")
     LaunchedEffect(SIDE_EFFECTS_KEY) {
-        Log.w("VTTAG", "NewCourseNavGraph::AddMedFirstScreen: LaunchedEffect")
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)

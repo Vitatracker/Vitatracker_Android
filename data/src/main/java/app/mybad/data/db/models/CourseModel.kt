@@ -33,25 +33,26 @@ data class CourseModel(
     @ColumnInfo(name = CourseContract.Columns.USER_ID)
     val userId: Long,
     @ColumnInfo(name = CourseContract.Columns.USER_IDN)
-    val userIdn: String,
+    val userIdn: String = "",
 
     @ColumnInfo(name = CourseContract.Columns.COMMENT)
     val comment: String = "",
 
     @ColumnInfo(name = CourseContract.Columns.REMEDY_ID)
-    val remedyId: Long = -1L,
+    val remedyId: Long,
     @ColumnInfo(name = CourseContract.Columns.REMEDY_IDN)
     val remedyIdn: Long = 0,
 
     @ColumnInfo(name = CourseContract.Columns.START_DATE)
-    val startDate: Long = -1L,
+    val startDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.END_DATE)
-    val endDate: Long = -1L,
+    val endDate: Long = 0,
 
     @ColumnInfo(name = CourseContract.Columns.REMIND_DATE)
-    val remindDate: Long = -1L,
+    val remindDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.INTERVAL)
-    val interval: Long = -1L,
+    val interval: Long = 0,
+
     @ColumnInfo(name = CourseContract.Columns.REGIME)
     val regime: Int = 0,
     @ColumnInfo(name = CourseContract.Columns.SHOW_USAGE_TIME)

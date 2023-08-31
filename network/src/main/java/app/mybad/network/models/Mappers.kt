@@ -13,6 +13,7 @@ import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
+import app.mybad.utils.CORRECTION_SERVER_TIME
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toDateTimeIsoDisplay
 import app.mybad.utils.toEpochSecond
@@ -70,11 +71,12 @@ fun CourseNetworkModel.mapToDomain(
     remedyId = remedyIdLoc,
     remedyIdn = remedyId,
 
-    startDate = startDate,
-    endDate = endDate,
-    remindDate = remindDate,
+    startDate = if (startDate > 0) startDate / CORRECTION_SERVER_TIME else startDate,
+    endDate = if (endDate > 0) endDate / CORRECTION_SERVER_TIME else endDate,
 
+    remindDate = if (remindDate > 0) remindDate / CORRECTION_SERVER_TIME else remindDate,
     interval = interval,
+
     regime = regime,
 
     isFinished = isFinished,
@@ -97,9 +99,9 @@ fun CourseDomainModel.mapToNet() = CourseNetworkModel(
 
     remedyId = remedyIdn,
 
-    startDate = startDate,
-    endDate = endDate,
-    remindDate = remindDate,
+    startDate = startDate * CORRECTION_SERVER_TIME,
+    endDate = endDate * CORRECTION_SERVER_TIME,
+    remindDate = remindDate * CORRECTION_SERVER_TIME,
 
     interval = interval,
     regime = regime,

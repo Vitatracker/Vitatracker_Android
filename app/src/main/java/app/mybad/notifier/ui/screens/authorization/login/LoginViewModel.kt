@@ -22,6 +22,9 @@ class LoginViewModel @Inject constructor(
     private val createUserUseCase: CreateUserUseCase,
     private val updateUserAuthTokenUseCase: UpdateUserAuthTokenUseCase,
 ) : BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
+    init {
+        log("init")
+    }
     override fun setInitialState() = LoginContract.State()
 
     override fun handleEvents(event: LoginContract.Event) {
@@ -68,8 +71,6 @@ class LoginViewModel @Inject constructor(
                             result.token
                         } date=${result.tokenDate} exp=${result.tokenDate.toLocalDateTime()}"
                     )
-                    setState { copy(isError = false, isLoading = false) }
-                    setEffect { LoginContract.Effect.Navigation.ToMain }
                     updateUserAuthTokenUseCase(
                         userId = userId,
                         token = result.token,
@@ -77,6 +78,8 @@ class LoginViewModel @Inject constructor(
                         tokenRefresh = result.tokenRefresh,
                         tokenRefreshDate = result.tokenRefreshDate,
                     )
+                    setState { copy(isError = false, isLoading = false) }
+                    setEffect { LoginContract.Effect.Navigation.ToMain }
                 }
                 .onFailure { error ->
                     log("Error", error)

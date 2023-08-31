@@ -54,23 +54,12 @@ import app.mybad.theme.R
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.toDateDisplay
 import app.mybad.utils.toDateFullDisplay
 import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toLocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
-
-@Preview
-@Composable
-fun AddMedCourseDetailsScreenPreview() {
-    MyBADTheme {
-        AddMedCourseDetailsScreen(
-            state = CreateCourseContract.State(dateLimit = DateCourseLimit(currentDateTimeInSecond())),
-        )
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,15 +69,10 @@ fun AddMedCourseDetailsScreen(
     sendEvent: (event: CreateCourseContract.Event) -> Unit = {},
     navigation: (navigationEffect: CreateCourseContract.Effect.Navigation) -> Unit = {},
 ) {
-    Log.w("VTTAG", "NewCourseNavGraph::AddMedCourseDetailsScreen: start")
+    Log.w("VTTAG", "AddMedCourseDetailsScreen:: start")
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         // обновим начальную дату курса и пределы дат
         sendEvent(CreateCourseContract.Event.UpdateCourseStartDateAndLimit)
-        Log.w(
-            "VTTAG", "NewCourseNavGraph::AddMedCourseDetailsScreen: LaunchedEffect date=${
-                state.course.startDate.toDateDisplay()
-            }"
-        )
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
@@ -330,5 +314,15 @@ fun RegimeSelector(
                 }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun AddMedCourseDetailsScreenPreview() {
+    MyBADTheme {
+        AddMedCourseDetailsScreen(
+            state = CreateCourseContract.State(dateLimit = DateCourseLimit(currentDateTimeInSecond())),
+        )
     }
 }

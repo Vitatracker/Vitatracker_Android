@@ -1,5 +1,6 @@
 package app.mybad.network.repository
 
+import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import app.mybad.network.api.AuthorizationApi
@@ -61,6 +62,7 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken() = withContext(dispatcher) {
         runCatching {
+            Log.w("VTTAG", "AuthorizationNetworkRepositoryImpl::refreshToken  userId=${AuthToken.userId}")
             AuthToken.token = AuthToken.tokenRefresh
             authorizationApi.refreshToken().mapToDomain()
         }

@@ -17,6 +17,7 @@ class CloseCourseUseCase @Inject constructor(
                     updatedDate = dateTime,
                     endDate = dateTime,
                     notUsed = true,
+                    isFinished = true,
                     updateNetworkDate = 0,
                     updateLocalDate = 0,
                 )

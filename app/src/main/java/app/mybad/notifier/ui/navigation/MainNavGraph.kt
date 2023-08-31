@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import app.mybad.notifier.ui.screens.calender.CalendarContract
 import app.mybad.notifier.ui.screens.calender.CalendarScreen
 import app.mybad.notifier.ui.screens.calender.CalendarViewModel
+import app.mybad.notifier.ui.screens.main.MainContract
 import app.mybad.notifier.ui.screens.main.MainNotificationScreen
 import app.mybad.notifier.ui.screens.main.MainViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesContract
@@ -36,6 +37,13 @@ fun MainNavGraph(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
+                navigation = { navigationAction ->
+                    when (navigationAction) {
+                        is MainContract.Effect.Navigation.ToAuthorization -> {
+                            navigateUp(AppScreens.Authorization.route)
+                        }
+                    }
+                }
             )
         }
         composable(route = MainScreens.Courses.route) {

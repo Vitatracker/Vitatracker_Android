@@ -82,7 +82,7 @@ fun StartSplashScreen(
             ) {
                 NewUserGreeting(
                     isButtonVisible = state.startButtonVisible,
-                    onBeginClicked = { sendEvent(SplashScreenContract.Event.OnStartClicked) }
+                    onBeginClicked = { sendEvent(SplashScreenContract.Event.OnAuthorization) }
                 )
             }
         }
@@ -124,7 +124,7 @@ private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit
             ReUseFilledButton(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.action_begin,
-                onClick = { onBeginClicked() }
+                onClick = onBeginClicked
             )
         }
     }

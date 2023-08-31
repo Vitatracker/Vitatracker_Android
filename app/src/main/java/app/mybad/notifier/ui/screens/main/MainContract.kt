@@ -21,6 +21,8 @@ class MainContract {
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-        object Navigation : Effect
+        sealed interface Navigation : Effect {
+            object ToAuthorization : Navigation
+        }
     }
 }

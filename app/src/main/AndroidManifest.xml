@@ -74,7 +74,7 @@
                 android:value="androidx.startup" />
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup"
+                android:authorities="${applicationId}.workmanager-init"
                 tools:node="remove" />
         </provider>
     </application>

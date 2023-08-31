@@ -8,9 +8,13 @@ import androidx.room.Update
 import app.mybad.data.db.models.UserContract
 import app.mybad.data.db.models.UserModel
 import app.mybad.utils.currentDateTimeInSecond
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
+
+    @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
+    fun isDarkTheme(userId: Long): Flow<UserModel?>
 
     @Query("SELECT COUNT(${UserContract.Columns.ID}) FROM ${UserContract.TABLE_NAME}")
     fun getNumberOfUsers(): Long

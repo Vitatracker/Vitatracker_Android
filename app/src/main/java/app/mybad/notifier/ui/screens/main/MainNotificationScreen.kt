@@ -289,11 +289,11 @@ private fun NotificationLazyMedicines(
 ) {
     Log.w(
         "VTTAG",
-        "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}"
+        "MainNotificationScreen::NotificationLazyMedicines: usages=${usages.size}"
     )
     if (remedies.isNotEmpty() && usages.isNotEmpty()) {
         NotificationTextCategory()
-        Log.w("VTTAG", "StartMainScreen::MainScreenLazyMedicines: usages=${usages.size}")
+        Log.w("VTTAG", "MainNotificationScreen::NotificationLazyMedicines: usages=${usages.size}")
         LazyColumn(
             modifier = Modifier.padding(top = 10.dp),
             userScrollEnabled = true,

@@ -2,9 +2,7 @@ package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import app.mybad.data.models.UsageFormat
-import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.usecases.courses.CloseCourseUseCase
@@ -55,14 +53,13 @@ class MyCoursesEditViewModel @Inject constructor(
 
     private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
     private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
-    private val workSync: WorkManager,
 ) : BaseViewModel<MyCoursesEditContract.Event, MyCoursesEditContract.State, MyCoursesEditContract.Effect>() {
 
     init {
         Log.w("VTTAG", "MyCoursesViewModel: init")
     }
 
-    private var isCourseUploaded = false
+    private var courseId = 0L
 
     override fun setInitialState() = MyCoursesEditContract.State()
 
@@ -73,10 +70,10 @@ class MyCoursesEditViewModel @Inject constructor(
                 is MyCoursesEditContract.Event.Delete -> {
                     //TODO("проверить было ли использование")
                     deleteCourseFullUseCase(event.courseId, currentDateTimeInSecond())
-                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                     //TODO("запустить воркер удаления курса на беке")
                     // синхронизировать
                     syncCourseToServer()
+                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
                 MyCoursesEditContract.Event.AddUsagesPattern -> addUsagesPattern()
@@ -94,12 +91,11 @@ class MyCoursesEditViewModel @Inject constructor(
                 }
 
                 is MyCoursesEditContract.Event.UpdateAndEnd -> {
-                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
-
                     updateRemedyAndCourse(remedy = event.remedy, course = event.course)
                     saveCourse()
                     // синхронизировать
                     syncCourseToServer()
+                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
                 MyCoursesEditContract.Event.NotificationEditing -> setEffect {
@@ -107,18 +103,17 @@ class MyCoursesEditViewModel @Inject constructor(
                 }
 
                 is MyCoursesEditContract.Event.NotificationUpdateAndEnd -> {
-                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
-
                     updateReminder(
                         remindTime = event.remindTime,
                         coursesInterval = event.coursesInterval,
                         remindBeforePeriod = event.remindBeforePeriod
                     )
+                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
                 MyCoursesEditContract.Event.ActionBack -> {
-                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                     cancellation()
+                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
             }
         }
@@ -126,8 +121,8 @@ class MyCoursesEditViewModel @Inject constructor(
 
     fun uploadCourseForEditingInState(courseId: Long) {
         Log.w("VTTAG", "MyCoursesViewModel::loadEditCourseInState: courseId=$courseId")
-        if (isCourseUploaded) return
-        isCourseUploaded = true
+        if (this.courseId == courseId) return
+        this.courseId = courseId
         viewModelScope.launch {
             getCourseByIdUseCase(courseId).getOrNull()?.let { course ->
                 getRemedyByIdUseCase(course.remedyId).getOrNull()?.let { remedy ->
@@ -348,9 +343,12 @@ class MyCoursesEditViewModel @Inject constructor(
     }
 
     private suspend fun syncCourseToServer() {
-        synchronizationCourseUseCase(currentDateTimeInSecond()).onFailure {
-            // если ошибка то запустим воркер
-            workSync.start()
+        viewModelScope.launch {
+            synchronizationCourseUseCase(currentDateTimeInSecond()).onSuccess {
+
+            }.onFailure {
+
+            }
         }
     }
 

@@ -22,4 +22,5 @@ interface PatternUsageRepository {
     suspend fun insertPatternUsage(pattern: PatternUsageDomainModel): Result<Unit>
     suspend fun insertPatternUsage(patterns: List<PatternUsageDomainModel>): Result<Unit>
 
+    suspend fun deletePatternUsagesByUserId(userId: Long): Result<Unit>
 }

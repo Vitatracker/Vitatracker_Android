@@ -37,11 +37,17 @@ class RemedyNetworkRepositoryImpl @Inject constructor(
             remedyNet = if (remedyNet.id > 0) {
                 // TODO("перед тем как отправить обновление, нужно проверить не удалено ли на сервере через web, проверить есть ли на сервере, если нет, то нужно удалить")
                 val isNotDeleted = try {
-                    remedyApi.getRemedy(remedyNet.id)
-                }catch (ignore: Error){}
-                remedyApi.updateRemedy(remedyNet)
-            }
-            else remedyApi.addRemedy(remedyNet)
+                    remedyApi.getRemedy(remedyNet.id).id > 0
+                } catch (ignore: Error) {
+                    false
+                }
+                if (isNotDeleted) {
+                    remedyApi.updateRemedy(remedyNet)
+                } else {
+                    TODO("надо удалить и в локальной базе")
+                    error("remedyNet is deleted")
+                }
+            } else remedyApi.addRemedy(remedyNet)
             remedyNet.mapToDomain(remedy.id)
         }
     }

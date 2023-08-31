@@ -10,11 +10,10 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingWorkPolicy
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
@@ -46,19 +45,18 @@ class SynchronizationCourseWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result = withContext(dispatcher) {
-        Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Start")
+        log("doWork: Start")
         synchronizationCourseUseCase(currentDateTimeInSecond()) { info ->
             setInfo(info)
         }.onSuccess {
             return@withContext Result.success()
         }.onFailure {
-            Log.d("VTTAG", "SynchronizationCourseWorker::doWork: Error", it)
+            log("doWork: Error", it)
             return@withContext Result.retry()
         }
         return@withContext Result.success()
     }
 
-    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     private suspend fun setInfo(progress: String) {
         setForeground(createForegroundInfo("Synchronization: $progress"))
     }
@@ -82,13 +80,13 @@ class SynchronizationCourseWorker @AssistedInject constructor(
         const val REMEDY_CHANNEL_DESCRIPTION = "Vitatracker synchronize show"
         const val REMEDY_CHANNEL_TITLE = "Vitatracker synchronize"
         const val REMEDY_CHANNEL_GROUP = "Vitatracker"
-        /*
-                private const val REMEDY_CHANNEL_INFO_COURSES = "courses"
-                private const val REMEDY_CHANNEL_INFO_SYNC = "synchronization"
-                private const val REMEDY_CHANNEL_INFO_CHECK = "check"
-                private const val REMEDY_CHANNEL_INFO_DELETED = "deleted"
-                private const val REMEDY_CHANNEL_INFO_END = "end"
-        */
+
+        private const val WORK_NAME = "work_synchronization_remedy"
+        private const val WORK_TAG = "work_synchronization_remedy_tag"
+        private const val WORK_REPEAT_TIME = 40L
+        private const val WORK_FLEX_TIME = 20L
+        private const val WORK_INITIAL_TIME = 30L
+        private const val WORK_DELAY_TIME = 60L
 
         fun createNotificationChannel(context: Context) {
 
@@ -103,20 +101,23 @@ class SynchronizationCourseWorker @AssistedInject constructor(
         }
 
         fun WorkManager.start() {
-            Log.d("VTTAG", "SynchronizationCourseWorker::WorkManager.start: Start")
-            this.enqueueUniqueWork(
-                REMEDY_CHANNEL_ID,
-                ExistingWorkPolicy.KEEP,
-                createWorkRequest()
+            log("WorkManager.start: Start")
+            this.enqueueUniquePeriodicWork(
+                WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                createPeriodicWorkRequest()
             )
-            Log.d("VTTAG", "SynchronizationCourseWorker::WorkManager.start: End")
+            log("WorkManager.start: End")
         }
 
-        private fun createWorkRequest(): OneTimeWorkRequest {
-            Log.d(
-                "VTTAG",
-                "SynchronizationCourseWorker::createWorkRequest: Start"
-            )
+        fun WorkManager.cancel() {
+            log("WorkManager.cancel")
+            this.cancelUniqueWork(WORK_NAME)
+            this.cancelAllWorkByTag(WORK_TAG)
+        }
+
+        private fun createPeriodicWorkRequest(): PeriodicWorkRequest {
+            log("createPeriodicWorkRequest: Start")
             // критерии запуска синхронизации
             val workConstraints = Constraints.Builder()
                 // наличие интернета
@@ -127,24 +128,32 @@ class SynchronizationCourseWorker @AssistedInject constructor(
                 //NOT_REQUIRED — интернет не нужен.
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 // батарея заряжена
-                .setRequiresBatteryNotLow(true)
+//                .setRequiresBatteryNotLow(true)
                 // есть место на диске
 //                .setRequiresStorageNotLow(true)
                 .build()
 
-            val workRequest = OneTimeWorkRequestBuilder<SynchronizationCourseWorker>()
-//                .setInputData(workData)
-                .apply {
-                    setBackoffCriteria(BackoffPolicy.LINEAR, 60, TimeUnit.SECONDS)
-                }
+            val workRequest = PeriodicWorkRequest.Builder(
+                SynchronizationCourseWorker::class.java,
+                WORK_REPEAT_TIME,
+                TimeUnit.MINUTES,
+                WORK_FLEX_TIME,
+                TimeUnit.MINUTES,
+            )
                 .setConstraints(workConstraints)
+                .addTag(WORK_TAG)
+                .setInitialDelay(WORK_INITIAL_TIME, TimeUnit.SECONDS)
+                .apply {
+                    setBackoffCriteria(BackoffPolicy.LINEAR, WORK_DELAY_TIME, TimeUnit.SECONDS)
+                }
                 .build()
 
-            Log.d(
-                "VTTAG",
-                "SynchronizationCourseWorker::startSynchronization: End"
-            )
+            log("createPeriodicWorkRequest: End")
             return workRequest
+        }
+
+        private fun log(text: String, error: Throwable? = null) {
+            Log.d("VTTAG", "SynchronizationCourseWorker::$text", error)
         }
     }
 

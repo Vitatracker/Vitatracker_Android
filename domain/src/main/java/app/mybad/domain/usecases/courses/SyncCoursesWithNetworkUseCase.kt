@@ -38,22 +38,25 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 "VTTAG",
                 "SynchronizationCourseWorker::getCourses: remediesNet=${remediesNet.size} remediesLoc=${remediesLoc.size}"
             )
-            // remedies которых нет на беке, после отправки их туда и
-            // то, что нужно удалить, потому что были удалены удаленно
-            // но проверять была ли отправка на бек idn > 0 и updateNetworkDate > 0
-            val remediesOld = remediesNet.map { it.idn }.let { remediesNetIds ->
-                remediesLoc.filter { remedy ->
-                    remedy.idn > 0 && remedy.updateNetworkDate > 0 && remedy.idn !in remediesNetIds
+            var remediesNew: List<RemedyDomainModel> = emptyList()
+            if (remediesLoc.isNotEmpty()) {
+                // remedies которых нет на беке, после отправки их туда и
+                // то, что нужно удалить, потому что были удалены удаленно
+                // но проверять была ли отправка на бек idn > 0 и updateNetworkDate > 0
+                val remediesOld = remediesNet.map { it.idn }.let { remediesNetIds ->
+                    remediesLoc.filter { remedy ->
+                        remedy.idn > 0 && remedy.updateNetworkDate > 0 && remedy.idn !in remediesNetIds
+                    }
                 }
-            }
-            // удаляем старые записи remedies и нужно удалить courses и usages
-            deleteRemediesLoc(remediesOld)
-            // то что пришло с бека, но нет локально и ему еще нужно назначить id local
-            val remediesNew = remediesLoc.map { it.idn }.let { remediesLocIds ->
-                remediesNet.filter { remedyNet ->
-                    remedyNet.idn !in remediesLocIds
+                // удаляем старые записи remedies и нужно удалить courses и usages
+                deleteRemediesLoc(remediesOld)
+                // то что пришло с бека, но нет локально и ему еще нужно назначить id local
+                remediesNew = remediesLoc.map { it.idn }.let { remediesLocIds ->
+                    remediesNet.filter { remedyNet ->
+                        remedyNet.idn !in remediesLocIds
+                    }
                 }
-            }
+            } else remediesNew = remediesNet
             remediesNew.forEach { remedyNew ->
                 // запишем в локальную базу и получим id, загрузим все курсы с remedyNew.idn
                 remedyRepository.insertRemedy(remedyNew).onSuccess { remedyIdLoc ->
@@ -89,8 +92,16 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
             remedyId = remedyIdNet,
             remedyIdLoc = remedyIdLoc,
         ).onSuccess { coursesNet ->
+            Log.d(
+                "VTTAG",
+                "SynchronizationCourseWorker::syncCoursesFromNetwork: remedies idn=${remedyIdNet} id=${remedyIdLoc} size=${coursesNet.size}"
+            )
             // это новые курсы
             coursesNet.forEach { courseNet ->
+                Log.d(
+                    "VTTAG",
+                    "SynchronizationCourseWorker::syncCoursesFromNetwork: course idn=${courseNet.idn} id=${courseNet.id}"
+                )
                 // запишем в локальную базу, тут уже подставлен remedyIdLoc и userIdLoc
                 courseRepository.insertCourse(courseNet).onSuccess { courseIdLoc ->
                     // получим с бека usages для courseNet.idn
@@ -114,18 +125,22 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         courseNetworkRepository.getCourses().onSuccess { coursesNet ->
             // локальные курсы
             val coursesLoc = courseRepository.getCoursesByUserId(AuthToken.userId).getOrThrow()
-            val coursesOld = coursesNet.map { it.idn }.let { coursesNetIds ->
-                coursesLoc.filter { course ->
-                    course.idn > 0L && course.updateNetworkDate > 0 && course.idn !in coursesNetIds
+
+            var coursesNew: List<CourseDomainModel> = emptyList()
+            if (coursesLoc.isNotEmpty()) {
+                val coursesOld = coursesNet.map { it.idn }.let { coursesNetIds ->
+                    coursesLoc.filter { course ->
+                        course.idn > 0L && course.updateNetworkDate > 0 && course.idn !in coursesNetIds
+                    }
                 }
-            }
-            deleteCourseLoc(coursesOld)
-            // то что пришло с бека, но нет локально, проверить по idn и найти локальный id
-            val coursesNew = coursesLoc.map { it.idn }.let { courseLocIdns ->
-                coursesNet.filter { courseNew ->
-                    courseNew.idn !in courseLocIdns
+                deleteCourseLoc(coursesOld)
+                // то что пришло с бека, но нет локально, проверить по idn и найти локальный id
+                coursesNew = coursesLoc.map { it.idn }.let { courseLocIdns ->
+                    coursesNet.filter { courseNew ->
+                        courseNew.idn !in courseLocIdns
+                    }
                 }
-            }
+            } else coursesNew = coursesNet
             coursesNew.forEach { courseNew ->
                 remedyRepository.getRemedyByIdn(courseNew.idn).onSuccess { remedy ->
                     courseRepository.insertCourse(courseNew.copy(remedyId = remedy.id))

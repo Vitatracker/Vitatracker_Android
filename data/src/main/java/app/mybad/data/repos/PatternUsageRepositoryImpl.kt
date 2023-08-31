@@ -6,7 +6,6 @@ import app.mybad.data.mapToDomain
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.repository.PatternUsageRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -72,4 +71,11 @@ class PatternUsageRepositoryImpl @Inject constructor(
             db.insertPatternUsages(patterns.mapToData())
         }
     }
+
+    override suspend fun deletePatternUsagesByUserId(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deletePatternUsagesByUserId(userId)
+        }
+    }
+
 }

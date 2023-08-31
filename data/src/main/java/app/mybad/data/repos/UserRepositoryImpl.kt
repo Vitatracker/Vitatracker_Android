@@ -7,6 +7,9 @@ import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -15,6 +18,13 @@ class UserRepositoryImpl @Inject constructor(
     private val db: UserDao,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : UserRepository {
+
+    override fun isDarkTheme(userId: Long) = db.isDarkTheme(userId)
+        .map { it != null && it.isDarkTheme == 1L }
+        .catch {
+            Log.w("VTTAG", "UserRepositoryImpl::isDarkTheme: error userId=$userId", it)
+        }
+        .flowOn(dispatcher)
 
     override suspend fun getNumberOfUsers() = withContext(dispatcher) {
         try {
@@ -89,7 +99,7 @@ class UserRepositoryImpl @Inject constructor(
             tokenRefresh = tokenRefresh,
             tokenRefreshDate = tokenRefreshDate,
         )
-        Log.w("VTTAG", "UpdateUserAuthTokenUseCase:: Ok: userId=${user.id} token=${user.token}")
+        Log.w("VTTAG", "UserRepositoryImpl::updateTokenByUserId: Ok: userId=${user.id} token=${user.token}")
         db.updateUser(user)
         user.mapToDomain()
     }

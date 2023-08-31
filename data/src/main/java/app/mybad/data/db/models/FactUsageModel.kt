@@ -10,10 +10,10 @@ import androidx.room.PrimaryKey
     tableName = FactUsageContract.TABLE_NAME,
     foreignKeys = [
         ForeignKey(
-            entity = UsageModel::class,
-            parentColumns = [UsageContract.Columns.ID],
+            entity = PatternUsageModel::class,
+            parentColumns = [PatternUsageContract.Columns.ID],
             childColumns = [FactUsageContract.Columns.USAGE_ID],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.NO_ACTION,
         ),
     ],
     indices = [Index(FactUsageContract.Columns.USAGE_ID)],
@@ -28,7 +28,12 @@ data class FactUsageModel(
     @ColumnInfo(name = FactUsageContract.Columns.USAGE_ID)
     val usageId: Long,
     @ColumnInfo(name = FactUsageContract.Columns.USAGE_IDN)
-    val usageIdn: Long,
+    val usageIdn: Long = -1,
+
+    @ColumnInfo(name = CourseContract.Columns.USER_ID)
+    val userId: Long,
+    @ColumnInfo(name = CourseContract.Columns.USER_IDN)
+    val userIdn: String = "",
 
     @ColumnInfo(name = FactUsageContract.Columns.FACT_USE_TIME)
     val factUseTime: Long = 0,

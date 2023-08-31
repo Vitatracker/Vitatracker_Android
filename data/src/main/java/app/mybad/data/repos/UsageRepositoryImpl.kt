@@ -1,11 +1,13 @@
 package app.mybad.data.repos
 
+import android.util.Log
 import app.mybad.data.db.dao.UsageDao
 import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.repository.UsageRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -19,6 +21,9 @@ class UsageRepositoryImpl @Inject constructor(
 
     override fun getUsages(userId: Long) = db.getUsages(userId)
         .map { it.mapToDomain() }
+        .catch {
+            Log.w("VTTAG", "UsageRepositoryImpl::getUsages: error userId=$userId", it)
+        }
         .flowOn(dispatcher)
 
     override suspend fun getUsagesByUserId(userId: Long) = withContext(dispatcher) {
@@ -57,6 +62,9 @@ class UsageRepositoryImpl @Inject constructor(
         endTime = endTime
     )
         .map { it.mapToDomain() }
+        .catch {
+            Log.w("VTTAG", "UsageRepositoryImpl::getUsagesBetween: error userId=$userId", it)
+        }
         .flowOn(dispatcher)
 
     //--------------------------------------------------

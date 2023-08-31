@@ -13,17 +13,22 @@ class RefreshAuthTokenUseCase @Inject constructor(
 
     suspend operator fun invoke(currentDate: Long): Boolean {
         try {
-            Log.e(
+            Log.d(
                 "VTTAG",
-                "RefreshAuthTokenUseCase: date=$currentDate tokenDate=${AuthToken.tokenDate}"
+                "RefreshAuthTokenUseCase: date=$currentDate tokenDate=${AuthToken.tokenDate} token=${AuthToken.token}"
             )
+            // глюк сброса даты
+            if (AuthToken.tokenDate == 0L && AuthToken.token.isNotBlank()) {
+                Log.e("VTTAG", "RefreshAuthTokenUseCase: глюк сброса даты")
+            }
             // требуется релогин
-            if (AuthToken.userId == 0L || AuthToken.tokenRefreshDate <= currentDate || AuthToken.token == "") {
+            if (AuthToken.userId <= 0L || AuthToken.tokenRefreshDate <= currentDate || AuthToken.token.isBlank()) {
                 clearUserAuthTokenUseCase()
                 return false
             }
             // пока не требуется обновление токена
             if (AuthToken.tokenDate > currentDate + 600) return true
+            Log.e("VTTAG", "RefreshAuthTokenUseCase: authRepository.refreshToken")
             // обновим токен
             authRepository.refreshToken().onSuccess { auth ->
                 // обновим данные user db и AuthToken

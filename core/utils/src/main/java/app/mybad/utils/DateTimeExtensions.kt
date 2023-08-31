@@ -24,6 +24,7 @@ private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
+const val CORRECTION_SERVER_TIME = 1000
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter

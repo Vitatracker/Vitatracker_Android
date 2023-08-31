@@ -104,7 +104,7 @@ fun RemindNewCourseBottomSheet(
             onClick = {
                 val nextCourseStart = endDate.toLocalDateTime().plus(coursesInterval)
                 val reminder = nextCourseStart.minus(remindBeforePeriod).changeTime(remindTime)
-                onSave(reminder.toEpochSecond(), nextCourseStart.toEpochSecond() - endDate)
+                onSave(reminder.toEpochSecond(), remindBeforePeriod.days.toLong())
             }
         )
     }

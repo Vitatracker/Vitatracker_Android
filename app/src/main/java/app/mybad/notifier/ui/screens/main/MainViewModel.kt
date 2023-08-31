@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.screens.main
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.remedies.GetRemediesByListIdUseCase
 import app.mybad.domain.usecases.usages.GetUsagesBetweenUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
@@ -35,6 +36,18 @@ class MainViewModel @Inject constructor(
         when (event) {
             is MainContract.Event.ChangeDate -> changeData(event.date)
             is MainContract.Event.SetUsageFactTime -> setUsagesFactTime(event.usageId)
+        }
+    }
+
+    init {
+        observeAuthorization()
+    }
+
+    private fun observeAuthorization() {
+        viewModelScope.launch {
+            AuthToken.isAuthorize.collect { isAuthorize ->
+                if (!isAuthorize) setEffect { MainContract.Effect.Navigation.ToAuthorization }
+            }
         }
     }
 

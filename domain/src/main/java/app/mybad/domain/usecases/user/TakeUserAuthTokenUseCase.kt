@@ -18,14 +18,16 @@ class TakeUserAuthTokenUseCase @Inject constructor(
                 email.isNotBlank() -> repository.getUserByEmail(email)
                 else -> repository.getUserLastEntrance()
             }
-            Log.w("VTTAG", "TakeUserAuthTokenUseCase:: Ok: userId=${user.id}")
+            Log.w("VTTAG", "TakeUserAuthTokenUseCase:: userId=${user.id} token=\"${user.token}\" tokenDate=${user.tokenDate}")
             if (user.token.isNotBlank() && user.tokenDate > 0) {
                 AuthToken.userId = user.id
                 // проверить дату токена
                 if (user.tokenDate <= currentDate + 600 && user.tokenRefreshDate > currentDate) {
+                    Log.w("VTTAG", "TakeUserAuthTokenUseCase:: refreshAuthTokenUseCase")
                     // требуется обновить токен
                     refreshAuthTokenUseCase(currentDate)
                 } else if (user.tokenRefreshDate <= currentDate) {
+                    Log.w("VTTAG", "TakeUserAuthTokenUseCase:: clearUserAuthTokenUseCase")
                     // требуется релогин
                     clearUserAuthTokenUseCase()
                 } else {

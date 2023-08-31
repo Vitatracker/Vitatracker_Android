@@ -22,12 +22,15 @@ object WorkManagerInitializer : Initializer<WorkManager> {
     @Provides
     @Singleton
     override fun create(@ApplicationContext context: Context): WorkManager {
+        Log.d("VTTAG", "SynchronizationCourseWorker: WorkManager start work")
         val workerFactory = getWorkerFactory(context.applicationContext)
         val configuration = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
-        if (!WorkManager.isInitialized()) WorkManager.initialize(context, configuration)
-        Log.d("VTTAG", "SynchronizationCourseWorker: WorkManager initialized by Hilt this time")
+        if (!WorkManager.isInitialized()) {
+            WorkManager.initialize(context, configuration)
+            Log.d("VTTAG", "SynchronizationCourseWorker: WorkManager initialized by Hilt this time")
+        }
         return WorkManager.getInstance(context)
     }
 

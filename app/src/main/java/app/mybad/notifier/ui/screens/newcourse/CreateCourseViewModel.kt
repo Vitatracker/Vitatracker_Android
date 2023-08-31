@@ -2,10 +2,8 @@ package app.mybad.notifier.ui.screens.newcourse
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
-import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
@@ -33,7 +31,6 @@ class CreateCourseViewModel @Inject constructor(
     private val addNotifications: AddNotificationsUseCase,
 
     private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
-    private val workSync: WorkManager,
 ) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
 
     init {
@@ -167,7 +164,9 @@ class CreateCourseViewModel @Inject constructor(
                             quantity = pattern.quantity,
                         )
                     }
-                    createPatternUsagesUseCase(patterns)
+                    createPatternUsagesUseCase(patterns).onFailure {
+                        err("finishCreation: error createPatternUsagesUseCase", it)
+                    }
                     val usages = generateUsages(
                         usagesByDay = viewState.value.usagesPattern,
                         remedyId = remedyId,
@@ -194,17 +193,16 @@ class CreateCourseViewModel @Inject constructor(
                         log("finishCreation: synchronizationCourseUseCase")
                         // синхронизировать
                         synchronizationCourseUseCase(currentDateTimeInSecond()).onFailure {
-                            // если ошибка то запустим воркер
-                            workSync.start()
+                            err("finishCreation: error synchronizationCourseUseCase", it)
                         }
                     }.onFailure {
-                        log("finishCreation: error createUsagesUseCase")
+                        err("finishCreation: error createUsagesUseCase", it)
                     }
                 }.onFailure {
-                    log("finishCreation: error createCourseUseCase")
+                    err("finishCreation: error createCourseUseCase", it)
                 }
             }.onFailure {
-                log("finishCreation: error createRemedyUseCase")
+                err("finishCreation: error createRemedyUseCase", it)
             }
         }
     }
@@ -212,6 +210,7 @@ class CreateCourseViewModel @Inject constructor(
     private fun setCourseDate() {
         val userId = AuthToken.userId
         val date = currentDateTimeInSecond()
+        log("setCourseDate: userId=$userId date=$date")
         setState {
             copy(
                 dateLimit = DateCourseLimit(date),
@@ -236,5 +235,9 @@ class CreateCourseViewModel @Inject constructor(
 
     private fun log(text: String) {
         Log.w("VTTAG", "CreateCourseViewModel::$text")
+    }
+
+    private fun err(text: String, e: Throwable) {
+        Log.e("VTTAG", "CreateCourseViewModel::$text", e)
     }
 }

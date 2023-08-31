@@ -21,10 +21,7 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
         composable(route = NewCourseScreens.MedDetailsScreen.route) { navBackStackEntry ->
             val viewModel = navBackStackEntry
                 .sharedViewModel<CreateCourseViewModel>(navigationState.navController)
-            Log.w(
-                "VTTAG",
-                "NewCourseNavGraph::navigate: route=${NewCourseScreens.MedDetailsScreen.route}"
-            )
+
             AddMedFirstScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
@@ -32,10 +29,6 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
                 navigation = { navigationEffect ->
                     when (navigationEffect) {
                         CreateCourseContract.Effect.Navigation.Next -> {
-                            Log.w(
-                                "VTTAG",
-                                "NewCourseNavGraph::navigateTo: route=${NewCourseScreens.MedReceptionScreen.route}"
-                            )
                             navigationState.navigateSingleTo(NewCourseScreens.MedReceptionScreen.route)
                         }
 
@@ -49,10 +42,7 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
         composable(route = NewCourseScreens.MedReceptionScreen.route) { navBackStackEntry ->
             val viewModel =
                 navBackStackEntry.sharedViewModel<CreateCourseViewModel>(navigationState.navController)
-            Log.w(
-                "VTTAG",
-                "NewCourseNavGraph::navigate: route=${NewCourseScreens.MedReceptionScreen.route} viewModel=${viewModel}"
-            )
+
             AddMedSecondScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
@@ -77,12 +67,7 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
         composable(route = NewCourseScreens.CourseDetailsScreen.route) { navBackStackEntry ->
             val viewModel =
                 navBackStackEntry.sharedViewModel<CreateCourseViewModel>(navigationState.navController)
-            Log.w(
-                "VTTAG",
-                "NewCourseNavGraph::navigate: route=${
-                    NewCourseScreens.CourseDetailsScreen.route
-                } viewModel=${viewModel}"
-            )
+
             AddMedCourseDetailsScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
@@ -107,11 +92,7 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
         composable(route = NewCourseScreens.CourseDurationScreen.route) { navBackStackEntry ->
             val viewModel =
                 navBackStackEntry.sharedViewModel<CreateCourseViewModel>(navigationState.navController)
-            Log.w(
-                "VTTAG",
-                "NewCourseNavGraph::navigate: route=${
-                    NewCourseScreens.CourseDurationScreen.route} viewModel=${viewModel}"
-            )
+
             AddMedNotificationsScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
@@ -139,10 +120,6 @@ fun NavGraphBuilder.newCourseNavGraph(navigationState: NavigationState) {
             )
         }
         composable(route = NewCourseScreens.CongratulationsScreen.route) {
-            Log.w(
-                "VTTAG",
-                "NewCourseNavGraph::navigate: route=${NewCourseScreens.CongratulationsScreen.route}"
-            )
             AddMedSuccessScreen {
                 Log.w("VTTAG", "NewCourseNavGraph::navigateTo: route=popBackStack")
                 navigationState.navController.popBackStack()
