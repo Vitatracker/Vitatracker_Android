@@ -12,6 +12,7 @@ import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
 import app.mybad.utils.toLocalDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ class LoginViewModel @Inject constructor(
     init {
         log("init")
     }
+
     override fun setInitialState() = LoginContract.State()
 
     override fun handleEvents(event: LoginContract.Event) {
@@ -55,11 +57,12 @@ class LoginViewModel @Inject constructor(
 
     private fun signIn(login: String, password: String) {
         viewModelScope.launch {
-            AuthToken.clear()
+            setState { copy(isLoading = true) }
             // проверка почты и пароля на валидность
             log("isValidParams")
             if (!isValidParams(login, password)) return@launch
-
+            AuthToken.clear()
+            delay(5000)
             loginWithEmailUseCase(login = login, password = password)
                 .onSuccess { result ->
                     // тут не только получение id, но и если его нет, то создается
@@ -67,7 +70,8 @@ class LoginViewModel @Inject constructor(
                         email = login,
                         name = "",
                     )
-                    log("Ok: userId=$userId token=${
+                    log(
+                        "Ok: userId=$userId token=${
                             result.token
                         } date=${result.tokenDate} exp=${result.tokenDate.toLocalDateTime()}"
                     )
@@ -83,10 +87,16 @@ class LoginViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     log("Error", error)
-                    setState { copy(isError = true, isLoading = false, isLoginButtonEnabled = false) }
                     //TODO("отобразить всплывающую ошибку")
                     val errorMessage =
                         error.message ?: error.localizedMessage ?: "Error: Authorization"
+                    setState {
+                        copy(
+                            isError = true,
+                            isLoading = false,
+                            isLoginButtonEnabled = false
+                        )
+                    }
                 }
         }
     }

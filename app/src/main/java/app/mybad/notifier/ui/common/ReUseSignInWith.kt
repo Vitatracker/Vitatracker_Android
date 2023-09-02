@@ -25,6 +25,7 @@ import app.mybad.theme.R
 fun SignInWithGoogle(
     modifier: Modifier = Modifier,
     signInTextResource: Int = R.string.authorization_screen_text_recomendation,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Column(
@@ -43,7 +44,8 @@ fun SignInWithGoogle(
             modifier = Modifier
                 .height(50.dp)
                 .fillMaxWidth(),
-            onClick = { onClick() },
+            onClick = onClick,
+            enabled = enabled,
             shape = MaterialTheme.shapes.small,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant

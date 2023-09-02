@@ -77,6 +77,7 @@ fun ReUsePasswordOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String = "",
     label: String = "",
+    enabled: Boolean = true,
     isError: Boolean = false,
     onValueChanged: (String) -> Unit = {},
     errorTextId: Int? = null
@@ -90,6 +91,7 @@ fun ReUsePasswordOutlinedTextField(
             .fillMaxWidth(),
         singleLine = true,
         isError = isError,
+        enabled = enabled,
         supportingText = {
             if (errorTextId != null) {
                 Text(text = stringResource(id = errorTextId))

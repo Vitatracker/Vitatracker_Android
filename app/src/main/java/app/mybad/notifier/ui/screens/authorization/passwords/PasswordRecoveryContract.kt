@@ -19,7 +19,7 @@ class PasswordRecoveryContract {
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-        object MessageSent : Effect
+        data class MessageSent(val message: String) : Effect
         sealed interface Navigation : Effect {
             object ToAuthorization : Navigation
             object Back : Navigation

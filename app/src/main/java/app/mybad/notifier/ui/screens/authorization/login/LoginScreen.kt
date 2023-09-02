@@ -91,12 +91,14 @@ private fun LoginScreen(
             LoginScreenEnteredEmail(
                 login = state.email,
                 updateLogin = { sendEvent(LoginContract.Event.UpdateLogin(it)) },
+                enabled = !state.isLoading,
                 isError = state.isError
             )
             Spacer(modifier = Modifier.height(8.dp))
             LoginScreenEnteredPassword(
                 password = state.password,
                 updatePassword = { sendEvent(LoginContract.Event.UpdatePassword(it)) },
+                enabled = !state.isLoading,
                 isError = state.isError,
                 errorTextId = if (state.isError) R.string.incorrect_credentials else null
             )
@@ -107,10 +109,12 @@ private fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textId = R.string.sign_in,
                 onClick = { sendEvent(LoginContract.Event.SignIn(state.email, state.password)) },
-                isEnabled = state.isLoginButtonEnabled
+                isEnabled = state.isLoginButtonEnabled && !state.isLoading
             )
             Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle {
+            SignInWithGoogle(
+                enabled = state.isLoginButtonEnabled && !state.isLoading
+            ) {
                 sendEvent(LoginContract.Event.SignInWithGoogle)
             }
         }
@@ -121,12 +125,14 @@ private fun LoginScreen(
 private fun LoginScreenEnteredEmail(
     login: String,
     updateLogin: (String) -> Unit,
+    enabled: Boolean,
     isError: Boolean
 ) {
     ReUseOutlinedTextField(
         value = login,
         label = stringResource(id = R.string.login_email),
-        onValueChanged = { newLogin -> updateLogin(newLogin) },
+        onValueChanged = updateLogin::invoke,
+        enabled = enabled,
         isError = isError,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
@@ -139,13 +145,15 @@ private fun LoginScreenEnteredEmail(
 private fun LoginScreenEnteredPassword(
     password: String,
     updatePassword: (String) -> Unit,
+    enabled: Boolean,
     isError: Boolean,
     errorTextId: Int?
 ) {
     ReUsePasswordOutlinedTextField(
         value = password,
         label = stringResource(id = R.string.login_password),
-        onValueChanged = { newPassword -> updatePassword(newPassword) },
+        onValueChanged = updatePassword::invoke,
+        enabled = enabled,
         isError = isError,
         errorTextId = errorTextId
     )

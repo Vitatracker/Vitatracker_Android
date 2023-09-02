@@ -3,6 +3,7 @@ package app.mybad.network.models
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.PasswordDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.models.user.UserDomainModel
@@ -10,6 +11,7 @@ import app.mybad.domain.models.user.UserSettingsDomainModel
 import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.models.response.AuthorizationNetworkModel
 import app.mybad.network.models.response.CourseNetworkModel
+import app.mybad.network.models.response.PasswordNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
@@ -252,6 +254,9 @@ fun UserSettingsDomainModel.mapToNet() = UserNetworkModel(
     password = null,
 )
 
+fun PasswordNetworkModel.mapToDomain() = PasswordDomainModel(
+    message = message ?: "${violations?.fieldName}: ${violations?.message}"
+)
 /*
 fun AuthorizationUserLoginDomainModel.mapToNet() = AuthorizationUserLogin(
     email = email,

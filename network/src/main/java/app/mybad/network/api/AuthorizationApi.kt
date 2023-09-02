@@ -3,8 +3,11 @@ package app.mybad.network.api
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
 import app.mybad.network.models.response.AuthorizationNetworkModel
+import app.mybad.network.models.response.PasswordNetworkModel
 import retrofit2.http.Body
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -18,6 +21,21 @@ interface AuthorizationApi {
 
     @POST(value = "api/v1/auth/refresh-token")
     suspend fun refreshToken(): AuthorizationNetworkModel
+
+    @POST(value = "/api/v1/auth/password/reset")
+    suspend fun restorePassword(@Body email: String): PasswordNetworkModel
+
+    @PATCH(value = "/api/v1/auth/password/reset/{resetToken}")
+    suspend fun resetPassword(
+        @Path("resetToken") resetToken: String,
+        @Body email: String
+    ): PasswordNetworkModel
+
+    @PATCH(value = "/api/v1/auth/password/change")
+    suspend fun changePassword(
+        @Body oldPassword: String,
+        @Body newPassword: String
+    ): PasswordNetworkModel
 
     companion object {
         // token date expires

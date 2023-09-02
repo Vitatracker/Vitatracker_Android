@@ -70,8 +70,7 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
 
     override suspend fun restorePassword(email: String) = withContext(dispatcher) {
         runCatching {
-            //TODO("Not yet implemented")
-            delay(1000L)
+            authorizationApi.restorePassword(email).mapToDomain()
         }
     }
 }

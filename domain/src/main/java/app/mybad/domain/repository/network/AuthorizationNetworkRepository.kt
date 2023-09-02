@@ -1,6 +1,7 @@
 package app.mybad.domain.repository.network
 
 import app.mybad.domain.models.AuthorizationDomainModel
+import app.mybad.domain.models.PasswordDomainModel
 
 interface AuthorizationNetworkRepository {
 
@@ -21,5 +22,5 @@ interface AuthorizationNetworkRepository {
 
     suspend fun refreshToken(): Result<AuthorizationDomainModel>
 
-    suspend fun restorePassword(email: String): Result<Unit>
+    suspend fun restorePassword(email: String): Result<PasswordDomainModel>
 }

@@ -24,10 +24,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
+import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.SignInWithGoogle
 import app.mybad.theme.R
@@ -42,7 +42,7 @@ fun StartRegistrationScreen(
 ) {
 
     LaunchedEffect(key1 = true) {
-        effectFlow?.collect {effect->
+        effectFlow?.collect { effect ->
             when (effect) {
                 is RegistrationContract.Effect.Navigation -> navigation(effect)
             }
@@ -55,46 +55,46 @@ fun StartRegistrationScreen(
                 titleResId = R.string.authorization_screen_registration,
                 onBackPressed = { sendEvent(RegistrationContract.Event.ActionBack) }
             )
-        },
-        content = { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(contentPadding)
-                    .padding(16.dp)
-            ) {
-                RegistrationScreenBaseForSignIn(state, sendEvent)
-                Spacer(modifier = Modifier.height(16.dp))
-                ReUseFilledButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    textId = R.string.registration_create_account,
-                    isEnabled = state.isRegistrationButtonEnabled,
-                    onClick = {
-                        sendEvent(
-                            RegistrationContract.Event.CreateAccount(
-                                email = state.email,
-                                password = state.password,
-                                confirmationPassword = state.confirmationPassword
-                            )
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ClickableText(modifier = Modifier.fillMaxWidth(), text = getAgreementText()) {
-                    sendEvent(RegistrationContract.Event.ShowUserAgreement)
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                SignInWithGoogle(
-                    signInTextResource = R.string.continue_with,
-                    onClick = { sendEvent(RegistrationContract.Event.SignInWithGoogle) }
-                )
-            }
-            if (state.isLoading) {
-                ReUseProgressDialog()
-            }
         }
-    )
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(contentPadding)
+                .padding(16.dp)
+        ) {
+            RegistrationScreenBaseForSignIn(state, sendEvent)
+            Spacer(modifier = Modifier.height(16.dp))
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.registration_create_account,
+                isEnabled = state.isRegistrationButtonEnabled && !state.isLoading,
+                onClick = {
+                    sendEvent(
+                        RegistrationContract.Event.CreateAccount(
+                            email = state.email,
+                            password = state.password,
+                            confirmationPassword = state.confirmationPassword
+                        )
+                    )
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            ClickableText(modifier = Modifier.fillMaxWidth(), text = getAgreementText()) {
+                sendEvent(RegistrationContract.Event.ShowUserAgreement)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            SignInWithGoogle(
+                signInTextResource = R.string.continue_with,
+                enabled = !state.isLoading,
+                onClick = { sendEvent(RegistrationContract.Event.SignInWithGoogle) }
+            )
+        }
+        if (state.isLoading) {
+            ReUseProgressDialog()
+        }
+    }
 }
 
 @Composable
@@ -118,8 +118,10 @@ private fun RegistrationScreenBaseForSignIn(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val isEmailFormatError = state.error is RegistrationContract.RegistrationError.WrongEmailFormat
-        val isPasswordMismatch = state.error is RegistrationContract.RegistrationError.PasswordsMismatch
+        val isEmailFormatError =
+            state.error is RegistrationContract.RegistrationError.WrongEmailFormat
+        val isPasswordMismatch =
+            state.error is RegistrationContract.RegistrationError.PasswordsMismatch
 
         ReUseOutlinedTextField(
             value = state.email,
@@ -129,6 +131,7 @@ private fun RegistrationScreenBaseForSignIn(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
+            enabled = !state.isLoading,
             isError = isEmailFormatError,
             errorTextId = if (isEmailFormatError) R.string.incorrect_email else null
         )
@@ -138,6 +141,7 @@ private fun RegistrationScreenBaseForSignIn(
             value = state.password,
             label = stringResource(id = R.string.login_password),
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdatePassword(it)) },
+            enabled = !state.isLoading,
             isError = state.error is RegistrationContract.RegistrationError.WrongPassword,
             errorTextId = R.string.password_format
         )
@@ -147,6 +151,7 @@ private fun RegistrationScreenBaseForSignIn(
             value = state.confirmationPassword,
             label = stringResource(id = R.string.login_password_confirm),
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdateConfirmationPassword(it)) },
+            enabled = !state.isLoading,
             isError = isPasswordMismatch,
             errorTextId = if (isPasswordMismatch) R.string.password_mismatch else null
         )

@@ -40,7 +40,7 @@ class PasswordRecoveryViewModel @Inject constructor(
             setState { copy(isLoading = true) }
             recoveryPasswordUseCase(email).onSuccess {
                 setState { copy(isError = false, isLoading = false) }
-                setEffect { PasswordRecoveryContract.Effect.MessageSent }
+                setEffect { PasswordRecoveryContract.Effect.MessageSent(it.message) }
             }.onFailure {
                 setState { copy(isError = true, isLoading = false) }
             }
