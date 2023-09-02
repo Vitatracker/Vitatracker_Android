@@ -23,5 +23,6 @@ object UserContract {
         const val UPDATED_LOCAL_DATE = "updated_local" // дата последнеого получения данных
         const val DELETED_DATE = "deleted_local" // дата удаления
         const val IS_DARK_THEME = "is_dark_theme" // темная тема
+        const val SYNCHRONIZE_DATE = "synchronize_date" // дата синхронизации с сервером
     }
 }

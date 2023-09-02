@@ -36,6 +36,13 @@ interface UsageDao {
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
+            UsageContract.Columns.ID
+        } = :usageId  limit 1"
+    )
+    suspend fun getUsageById(usageId: Long): UsageModel?
+
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.COURSE_ID
         } = :courseId  and ${
             UsageContract.Columns.USE_TIME
@@ -68,21 +75,6 @@ interface UsageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsages(usages: List<UsageModel>)
     //--------------------------------------------------
-
-    @Query(
-        "UPDATE ${UsageContract.TABLE_NAME} SET ${
-            UsageContract.Columns.FACT_USE_TIME
-        } = :factTime, ${
-            UsageContract.Columns.UPDATED_NETWORK_DATE
-        } = 0, ${
-            UsageContract.Columns.UPDATED_LOCAL_DATE
-        } = 0 WHERE ${
-            UsageContract.Columns.COURSE_ID
-        } = :courseId and ${
-            UsageContract.Columns.USE_TIME
-        } = :usageTime"
-    )
-    suspend fun setFactUseTime(courseId: Long, usageTime: Long, factTime: Long)
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${

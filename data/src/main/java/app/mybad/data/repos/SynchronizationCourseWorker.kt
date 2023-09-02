@@ -48,8 +48,6 @@ class SynchronizationCourseWorker @AssistedInject constructor(
         log("doWork: Start")
         synchronizationCourseUseCase(currentDateTimeInSecond()) { info ->
             setInfo(info)
-        }.onSuccess {
-            return@withContext Result.success()
         }.onFailure {
             log("doWork: Error", it)
             return@withContext Result.retry()
@@ -83,8 +81,8 @@ class SynchronizationCourseWorker @AssistedInject constructor(
 
         private const val WORK_NAME = "work_synchronization_remedy"
         private const val WORK_TAG = "work_synchronization_remedy_tag"
-        private const val WORK_REPEAT_TIME = 40L
-        private const val WORK_FLEX_TIME = 20L
+        private const val WORK_REPEAT_TIME = 30L
+        private const val WORK_FLEX_TIME = 15L
         private const val WORK_INITIAL_TIME = 30L
         private const val WORK_DELAY_TIME = 60L
 

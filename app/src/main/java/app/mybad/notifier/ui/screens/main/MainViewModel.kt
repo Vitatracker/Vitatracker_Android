@@ -123,6 +123,8 @@ class MainViewModel @Inject constructor(
                         factUseTime = if (usage.factUseTime <= 0) currentDateTimeInSecond() else -1,
                     )
                 )
+                // Синхронизируем с сервером
+                AuthToken.requiredSetUsagesFactTime(usageId)
             }
         }
     }

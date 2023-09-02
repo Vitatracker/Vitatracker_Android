@@ -46,6 +46,9 @@ data class UserModel(
     val updateLocalDate: Long = 0,
     @ColumnInfo(name = UserContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
+
     @ColumnInfo(name = UserContract.Columns.IS_DARK_THEME)
     val isDarkTheme: Long = 0,
+    @ColumnInfo(name = UserContract.Columns.SYNCHRONIZE_DATE)
+    val synchronizeDate: Long = 0,
 )

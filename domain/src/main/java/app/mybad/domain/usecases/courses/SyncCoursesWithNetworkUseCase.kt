@@ -21,19 +21,20 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private val usageNetworkRepository: UsageNetworkRepository,
 
     ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::syncCourses: Start")
+        if (userId != AuthToken.userId) return
         // сначала отправить все то, что есть локально и получить id с бека, потом получить все с бека и дополнить информацию.
-        syncRemediesFromNetwork()
-        syncCoursesFromNetwork()
-        syncUsagesFromNetwork()
+        syncRemediesFromNetwork(userId)
+        syncCoursesFromNetwork(userId)
+        syncUsagesFromNetwork(userId)
         Log.d("VTTAG", "SynchronizationCourseWorker::syncCourses: End")
     }
 
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    private suspend fun syncRemediesFromNetwork() {
+    private suspend fun syncRemediesFromNetwork(userId: Long) {
         remedyNetworkRepository.getRemedies().onSuccess { remediesNet ->
-            val remediesLoc = remedyRepository.getRemediesByUserId(AuthToken.userId).getOrThrow()
+            val remediesLoc = remedyRepository.getRemediesByUserId(userId).getOrThrow()
             Log.d(
                 "VTTAG",
                 "SynchronizationCourseWorker::getCourses: remediesNet=${remediesNet.size} remediesLoc=${remediesLoc.size}"
@@ -121,10 +122,10 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
 
     }
 
-    private suspend fun syncCoursesFromNetwork() {
+    private suspend fun syncCoursesFromNetwork(userId: Long) {
         courseNetworkRepository.getCourses().onSuccess { coursesNet ->
             // локальные курсы
-            val coursesLoc = courseRepository.getCoursesByUserId(AuthToken.userId).getOrThrow()
+            val coursesLoc = courseRepository.getCoursesByUserId(userId).getOrThrow()
 
             var coursesNew: List<CourseDomainModel> = emptyList()
             if (coursesLoc.isNotEmpty()) {
@@ -156,9 +157,9 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         }
     }
 
-    private suspend fun syncUsagesFromNetwork() {
+    private suspend fun syncUsagesFromNetwork(userId: Long) {
         usageNetworkRepository.getUsages().onSuccess { usagesNet ->
-            val usagesLoc = usageRepository.getUsagesByUserId(AuthToken.userId).getOrThrow()
+            val usagesLoc = usageRepository.getUsagesByUserId(userId).getOrThrow()
             val usagesOld = usagesNet.map { it.idn }.let { usagesNetIds ->
                 usagesLoc.filter { usage ->
                     usage.idn > 0 && usage.updateNetworkDate > 0 && usage.idn !in usagesNetIds

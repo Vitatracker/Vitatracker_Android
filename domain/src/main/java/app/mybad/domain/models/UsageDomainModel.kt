@@ -17,7 +17,7 @@ data class UsageDomainModel(
     val updatedDate: Long = 0,
 
     val factUseTime: Long = -1,
-    val useTime: Long = 0, // тут полная дата со временем, но нужно только время
+    val useTime: Long = 0, // тут полная дата со временем
 
     val quantity: Int = 1,
 

@@ -8,11 +8,14 @@ import app.mybad.data.repos.SynchronizationCourseWorker.Companion.cancel
 import app.mybad.data.repos.SynchronizationCourseWorker.Companion.start
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
+import app.mybad.domain.usecases.usages.SendUsageToNetworkUseCase
 import app.mybad.domain.usecases.user.CheckDarkThemeUseCase
 import app.mybad.utils.currentDateTimeInSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val checkDarkThemeUseCase: CheckDarkThemeUseCase,
+    private val sendUsageToNetworkUseCase: SendUsageToNetworkUseCase,
     private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
     private val worker: WorkManager,
 ) : ViewModel() {
@@ -35,16 +39,39 @@ class MainActivityViewModel @Inject constructor(
         observeAuthorizationAndSynchronization()
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeAuthorizationAndSynchronization() {
         viewModelScope.launch {
             log("observeAuthorize: start")
-            AuthToken.isAuthorize.collectLatest { isAuthorize ->
-                log("observeAuthorize: isAuthorize=$isAuthorize")
-                if (isAuthorize) {
-                    startSynchronizationWithServer()
-                } else {
-                    cancelSynchronizationWithServer()
+            launch {
+                AuthToken.isAuthorize.collectLatest { isAuthorize ->
+                    log("observeAuthorize: isAuthorize=$isAuthorize")
+                    if (isAuthorize) {
+                        startSynchronizationWithServer()
+                    } else {
+                        cancelSynchronizationWithServer()
+                    }
                 }
+            }
+            launch {
+                AuthToken.synchronization
+                    .debounce(10000)
+                    .collectLatest { time ->
+                        log("synchronization: date=$time")
+                        synchronizationCourseUseCase(time).onFailure {
+                            // TODO("отобразить ошибку синхронизации")
+                        }
+                    }
+            }
+            launch {
+                AuthToken.updateUsage
+                    .debounce(30000)
+                    .collectLatest { (userId, usageId) ->
+                        log("updateUsage: userId=$userId usageId=$usageId")
+                        sendUsageToNetworkUseCase(userId, usageId).onFailure {
+                            // TODO("отобразить ошибку синхронизации")
+                        }
+                    }
             }
             log("observeAuthorize: end")
         }
@@ -52,8 +79,9 @@ class MainActivityViewModel @Inject constructor(
 
     private suspend fun startSynchronizationWithServer() {
         log("startSynchronizationWithServer: start tokenDate=${AuthToken.tokenDate} tokenRefreshDate=${AuthToken.tokenRefreshDate} token=${AuthToken.token}")
+        // первоначальная синхронизация
+        AuthToken.requiredSynchronize(currentDateTimeInSecond())
         worker.start()
-        synchronizationCourseUseCase(currentDateTimeInSecond())
     }
 
     private fun cancelSynchronizationWithServer() {

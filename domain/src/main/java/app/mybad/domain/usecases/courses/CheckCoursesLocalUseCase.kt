@@ -16,7 +16,7 @@ class CheckCoursesLocalUseCase @Inject constructor(
     // remedies->courses->usages
     // courses->usages
     // usages
-    suspend operator fun invoke() {
+    suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::CheckCoursesLocalUseCase: Start")
         // TODO("сделать проверку целостности локальной базы")
         Log.d("VTTAG", "SynchronizationCourseWorker::CheckCoursesLocalUseCase: End")

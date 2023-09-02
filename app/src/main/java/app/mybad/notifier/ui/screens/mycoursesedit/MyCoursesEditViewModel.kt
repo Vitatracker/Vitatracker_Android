@@ -2,14 +2,15 @@ package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
+import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.usecases.courses.CloseCourseUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.DeleteCourseFullUseCase
 import app.mybad.domain.usecases.courses.GetCourseByIdUseCase
-import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.domain.usecases.remedies.GetRemedyByIdUseCase
@@ -52,7 +53,6 @@ class MyCoursesEditViewModel @Inject constructor(
     private val updateUsagesInCourseUseCase: UpdateUsagesInCourseUseCase,
 
     private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
-    private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
 ) : BaseViewModel<MyCoursesEditContract.Event, MyCoursesEditContract.State, MyCoursesEditContract.Effect>() {
 
     init {
@@ -61,7 +61,9 @@ class MyCoursesEditViewModel @Inject constructor(
 
     private var courseId = 0L
 
-    override fun setInitialState() = MyCoursesEditContract.State()
+    override fun setInitialState() = MyCoursesEditContract.State(
+        dateLimit = DateCourseLimit(currentDateTimeInSecond()),
+    )
 
     override fun handleEvents(event: MyCoursesEditContract.Event) {
 //        TODO("Not yet implemented")
@@ -72,7 +74,7 @@ class MyCoursesEditViewModel @Inject constructor(
                     deleteCourseFullUseCase(event.courseId, currentDateTimeInSecond())
                     //TODO("запустить воркер удаления курса на беке")
                     // синхронизировать
-                    syncCourseToServer()
+                    AuthToken.requiredSynchronize(currentDateTimeInSecond())
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
@@ -94,7 +96,7 @@ class MyCoursesEditViewModel @Inject constructor(
                     updateRemedyAndCourse(remedy = event.remedy, course = event.course)
                     saveCourse()
                     // синхронизировать
-                    syncCourseToServer()
+                    AuthToken.requiredSynchronize(currentDateTimeInSecond())
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
@@ -340,16 +342,6 @@ class MyCoursesEditViewModel @Inject constructor(
                 regime = viewState.value.course.regime
             )
         )
-    }
-
-    private suspend fun syncCourseToServer() {
-        viewModelScope.launch {
-            synchronizationCourseUseCase(currentDateTimeInSecond()).onSuccess {
-
-            }.onFailure {
-
-            }
-        }
     }
 
 }

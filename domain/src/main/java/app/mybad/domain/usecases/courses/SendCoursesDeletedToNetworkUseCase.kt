@@ -17,33 +17,33 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
     private val remedyNetworkRepository: RemedyNetworkRepository,
     private val courseNetworkRepository: CourseNetworkRepository,
     private val usageNetworkRepository: UsageNetworkRepository,
+) {
 
-    ) {
-
-    suspend operator fun invoke() {
+    suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::SendCoursesDeletedToNetworkUseCase: Start")
-        sendUsagesDeleted()
-        sendCoursesDeleted()
-        sendRemediesDeleted()
+        if (userId != AuthToken.userId) return
+        sendUsagesDeleted(userId)
+        sendCoursesDeleted(userId)
+        sendRemediesDeleted(userId)
     }
 
-    private suspend fun sendUsagesDeleted() {
-        usageRepository.getUsagesDeletedByUserId(AuthToken.userId).getOrNull()?.forEach { usage ->
+    private suspend fun sendUsagesDeleted(userId: Long) {
+        usageRepository.getUsagesDeletedByUserId(userId).getOrNull()?.forEach { usage ->
             if (usage.idn > 0) usageNetworkRepository.deleteUsage(usage.idn).getOrThrow()
             usageRepository.deleteUsagesById(usage.id)
         }
     }
 
-    private suspend fun sendCoursesDeleted() {
-        courseRepository.getCoursesDeletedByUserId(AuthToken.userId).getOrNull()
+    private suspend fun sendCoursesDeleted(userId: Long) {
+        courseRepository.getCoursesDeletedByUserId(userId).getOrNull()
             ?.forEach { course ->
                 if (course.idn > 0) courseNetworkRepository.deleteCourse(course.idn).getOrThrow()
                 courseRepository.deleteCoursesById(course.id)
             }
     }
 
-    private suspend fun sendRemediesDeleted() {
-        remedyRepository.getRemedyDeletedByUserId(AuthToken.userId).getOrNull()?.forEach { remedy ->
+    private suspend fun sendRemediesDeleted(userId: Long) {
+        remedyRepository.getRemedyDeletedByUserId(userId).getOrNull()?.forEach { remedy ->
             if (remedy.idn > 0) remedyNetworkRepository.deleteRemedy(remedy.idn).getOrThrow()
             remedyRepository.deleteRemedyById(remedy.id)
         }

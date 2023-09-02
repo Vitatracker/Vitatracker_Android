@@ -7,6 +7,7 @@ interface UsageRepository {
     fun getUsages(userId: Long): Flow<List<UsageDomainModel>>
     suspend fun getUsagesByUserId(userId: Long): Result<List<UsageDomainModel>>
     suspend fun getUsagesByCourseId(courseId: Long): Result<List<UsageDomainModel>>
+    suspend fun getUsageById(usageId: Long): Result<UsageDomainModel?>
     suspend fun getUsagesBetweenByCourseId(
         courseId: Long,
         startTime: Long,
@@ -24,12 +25,6 @@ interface UsageRepository {
     suspend fun updateUsage(usage: UsageDomainModel): Result<Unit>
 
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
-    suspend fun updateUsageFactTimeById(
-        courseId: Long,
-        usageTime: Long,
-        factTime: Long
-    ): Result<Unit>
-
 
     suspend fun markDeletionUsagesById(usageId: Long): Result<Unit>
     suspend fun markDeletionUsagesByCourseId(courseId: Long): Result<Unit>

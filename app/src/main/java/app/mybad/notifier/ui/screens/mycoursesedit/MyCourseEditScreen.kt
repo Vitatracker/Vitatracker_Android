@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.mybad.data.models.CourseSelectInput
+import app.mybad.data.models.DateCourseLimit
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.CalendarSelectorScreen
 import app.mybad.notifier.ui.common.ParameterIndicator
@@ -60,6 +61,7 @@ import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atEndOfDaySystemToUTC
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.atStartOfDaySystemToUTC
+import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toDateFullDisplay
 import app.mybad.utils.toEpochSecond
 import kotlinx.coroutines.flow.Flow
@@ -441,6 +443,7 @@ fun MyCourseEditScreenPreview() {
         MyCourseEditScreen(
             MyCoursesEditContract.State(
                 usagesPatternEdit = usagesPatternPreview,
+                dateLimit = DateCourseLimit(currentDateTimeInSecond()),
             )
         )
     }

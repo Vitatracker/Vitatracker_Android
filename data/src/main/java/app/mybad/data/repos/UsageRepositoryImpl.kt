@@ -38,6 +38,12 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getUsageById(usageId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getUsageById(usageId)?.mapToDomain()
+        }
+    }
+
     override suspend fun getUsagesBetweenByCourseId(
         courseId: Long,
         startTime: Long,
@@ -73,18 +79,6 @@ class UsageRepositoryImpl @Inject constructor(
             db.checkUseUsagesByCourseId(courseId) != null
         }
     }
-
-    // установить время использования таблетки
-    override suspend fun updateUsageFactTimeById(courseId: Long, usageTime: Long, factTime: Long) =
-        withContext(dispatcher) {
-            runCatching {
-                db.setFactUseTime(
-                    courseId = courseId,
-                    usageTime = usageTime,
-                    factTime = factTime,
-                )
-            }
-        }
 
     //--------------------------------------------------
     override suspend fun insertUsage(usage: UsageDomainModel) = withContext(dispatcher) {

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.AddNotificationButton
@@ -45,6 +46,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelectorDialog
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
+import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toTimeDisplay
 import kotlinx.coroutines.flow.Flow
 
@@ -244,6 +246,7 @@ fun MyCourseEditNotificationScreenPreview() {
             state = MyCoursesEditContract.State(
                 usagesPattern = usagesPatternPreview,
                 usagesPatternEdit = usagesPatternPreview,
+                dateLimit = DateCourseLimit(currentDateTimeInSecond()),
             )
         )
     }

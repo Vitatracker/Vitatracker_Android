@@ -19,26 +19,26 @@ class SendCoursesToNetworkUseCase @Inject constructor(
     private val remedyNetworkRepository: RemedyNetworkRepository,
     private val courseNetworkRepository: CourseNetworkRepository,
     private val usageNetworkRepository: UsageNetworkRepository,
-
-    ) {
+) {
     /*
     //   отправить то что у нас локально еще не было отправлено, пройтись в цикле:
     //   remedies->courses->usages,
     //   courses->usages
      */
-    suspend operator fun invoke() {
+    suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::sendCoursesToNetwork: Start")
+        if (userId != AuthToken.userId) return
         // передать и получить id с бека: remedies->courses->usages
-        sendRemedies()
+        sendRemedies(userId)
         // передать и получить id с бека: courses->usages
-        sendCourses()
+        sendCourses(userId)
         // передать и получить id с бека: usages
-        sendUsages()
+        sendUsages(userId)
         Log.d("VTTAG", "SynchronizationCourseWorker::sendCoursesToNetwork: End")
     }
 
-    private suspend fun sendRemedies() {
-        remedyRepository.getRemedyNotUpdateByUserId(AuthToken.userId).onSuccess { remedies ->
+    private suspend fun sendRemedies(userId: Long) {
+        remedyRepository.getRemedyNotUpdateByUserId(userId).onSuccess { remedies ->
             Log.d("VTTAG", "SynchronizationCourseWorker::sendRemedies: remedies=${remedies.size}")
             remedies.forEach { remedy ->
                 Log.d(
@@ -84,8 +84,8 @@ class SendCoursesToNetworkUseCase @Inject constructor(
         }
     }
 
-    private suspend fun sendCourses() {
-        val courses = courseRepository.getCoursesNotUpdateByUserId(AuthToken.userId).getOrNull()
+    private suspend fun sendCourses(userId: Long) {
+        val courses = courseRepository.getCoursesNotUpdateByUserId(userId).getOrNull()
         Log.d(
             "VTTAG",
             "SynchronizationCourseWorker::sendCourses: courses=${courses?.size}"
@@ -136,8 +136,8 @@ class SendCoursesToNetworkUseCase @Inject constructor(
         }
     }
 
-    private suspend fun sendUsages() {
-        usageRepository.getUsagesNotUpdateByUserId(AuthToken.userId).onSuccess { usages ->
+    private suspend fun sendUsages(userId: Long) {
+        usageRepository.getUsagesNotUpdateByUserId(userId).onSuccess { usages ->
             Log.d(
                 "VTTAG",
                 "SynchronizationCourseWorker::sendUsages: usages=${usages.size}"

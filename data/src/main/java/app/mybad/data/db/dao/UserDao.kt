@@ -13,27 +13,31 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
 
-    @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
-    fun isDarkTheme(userId: Long): Flow<UserModel?>
+    @Query(
+        "select ${UserContract.Columns.IS_DARK_THEME} from ${UserContract.TABLE_NAME} where ${
+            UserContract.Columns.ID
+        } = :userId limit 1"
+    )
+    fun isDarkTheme(userId: Long): Flow<Long?>
 
     @Query("SELECT COUNT(${UserContract.Columns.ID}) FROM ${UserContract.TABLE_NAME}")
-    fun getNumberOfUsers(): Long
+    suspend fun getNumberOfUsers(): Long
 
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
-    fun getUser(userId: Long): UserModel
+    suspend fun getUser(userId: Long): UserModel
 
     @Query("select * from ${UserContract.TABLE_NAME} ORDER BY ${UserContract.Columns.TOKEN_DATE} DESC limit 1")
-    fun getUserLastEntrance(): UserModel?
+    suspend fun getUserLastEntrance(): UserModel?
 
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.EMAIL} = :email limit 1")
-    fun getUserByEmail(email: String): UserModel?
+    suspend fun getUserByEmail(email: String): UserModel?
 
     //--------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(user: UserModel): Long
+    suspend fun insert(user: UserModel): Long
 
     @Update
-    fun updateUser(user: UserModel)
+    suspend fun updateUser(user: UserModel)
 
     //--------------------------------------------------
     @Query(
@@ -46,6 +50,14 @@ interface UserDao {
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер
     @Query("delete from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId")
-    fun deleteUserById(userId: Long)
+    suspend fun deleteUserById(userId: Long)
+
+    //--------------------------------------------------
+    @Query(
+        "UPDATE ${UserContract.TABLE_NAME} SET ${
+            UserContract.Columns.SYNCHRONIZE_DATE
+        } = :date WHERE ${UserContract.Columns.ID} = :userId"
+    )
+    suspend fun synchronization(userId: Long, date: Long = currentDateTimeInSecond())
 
 }

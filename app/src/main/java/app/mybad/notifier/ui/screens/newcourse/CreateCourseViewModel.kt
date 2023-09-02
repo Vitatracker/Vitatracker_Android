@@ -8,7 +8,6 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
-import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.domain.usecases.usages.CreatePatternUsagesUseCase
 import app.mybad.domain.usecases.usages.CreateUsagesUseCase
@@ -29,8 +28,6 @@ class CreateCourseViewModel @Inject constructor(
     private val createPatternUsagesUseCase: CreatePatternUsagesUseCase,
 
     private val addNotifications: AddNotificationsUseCase,
-
-    private val synchronizationCourseUseCase: SynchronizationCourseUseCase,
 ) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
 
     init {
@@ -192,9 +189,7 @@ class CreateCourseViewModel @Inject constructor(
                         newState()
                         log("finishCreation: synchronizationCourseUseCase")
                         // синхронизировать
-                        synchronizationCourseUseCase(currentDateTimeInSecond()).onFailure {
-                            err("finishCreation: error synchronizationCourseUseCase", it)
-                        }
+                        AuthToken.requiredSynchronize(currentDateTimeInSecond())
                     }.onFailure {
                         err("finishCreation: error createUsagesUseCase", it)
                     }
@@ -231,6 +226,11 @@ class CreateCourseViewModel @Inject constructor(
 
     private fun newState() {
         setState { setInitialState() }
+    }
+
+    override fun onCleared() {
+        log("onCleared")
+        super.onCleared()
     }
 
     private fun log(text: String) {

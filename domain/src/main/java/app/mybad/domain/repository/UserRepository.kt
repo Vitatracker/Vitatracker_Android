@@ -27,4 +27,5 @@ interface UserRepository {
 
     suspend fun markDeletionUserById(userId: Long)
     suspend fun deleteUserById(userId: Long)
+    suspend fun updateDateSynchronize(userId: Long)
 }
