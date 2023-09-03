@@ -1,6 +1,7 @@
 package app.mybad.domain.repository
 
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
@@ -10,6 +11,7 @@ interface UserRepository {
     suspend fun getUserIdByEmail(email: String): Long?
     suspend fun getUserByEmail(email: String): UserDomainModel
     suspend fun getUserById(userId: Long): UserDomainModel
+    suspend fun getUserPersonal(userId: Long): UserPersonalDomainModel
     suspend fun getUserLastEntrance(): UserDomainModel
 
     suspend fun insertUser(name: String, email: String): Long

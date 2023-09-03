@@ -59,12 +59,12 @@ fun SettingsProfileScreen(
         }
     ) { paddingValues ->
         Column(
-            verticalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             SettingsProfileTop(state, sendEvent)
@@ -78,7 +78,7 @@ private fun SettingsProfileTop(
     state: SettingsProfileContract.State,
     sendEvent: (event: SettingsProfileContract.Event) -> Unit = {}
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column {
         ReUseOutlinedTextField(
             value = state.name,
             label = stringResource(id = R.string.settings_user_name),

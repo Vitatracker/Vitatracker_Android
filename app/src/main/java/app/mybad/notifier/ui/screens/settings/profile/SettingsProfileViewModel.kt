@@ -3,8 +3,8 @@ package app.mybad.notifier.ui.screens.settings.profile
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.usecases.user.ClearUserAuthTokenUseCase
 import app.mybad.domain.usecases.user.DeleteUserAccountUseCase
-import app.mybad.domain.usecases.user.GetUserPersonalUseCase
-import app.mybad.domain.usecases.user.UpdateUserPersonalUseCase
+import app.mybad.domain.usecases.user.GetUserPersonalDbUseCase
+import app.mybad.domain.usecases.user.UpdateUserNameDbUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsProfileViewModel @Inject constructor(
-    private val getUserPersonalUseCase: GetUserPersonalUseCase,
-    private val updateUserPersonalUseCase: UpdateUserPersonalUseCase,
+    private val getUserPersonalDbUseCase: GetUserPersonalDbUseCase,
+    private val updateUserNameDbUseCase: UpdateUserNameDbUseCase,
     private val clearUserAuthTokenUseCase: ClearUserAuthTokenUseCase,
     private val deleteUserAccountUseCase: DeleteUserAccountUseCase,
 ) : BaseViewModel<SettingsProfileContract.Event, SettingsProfileContract.State, SettingsProfileContract.Effect>() {
@@ -24,7 +24,7 @@ class SettingsProfileViewModel @Inject constructor(
 
     private fun setModelFromSaved() {
         viewModelScope.launch {
-            val model = getUserPersonalUseCase()
+            val model = getUserPersonalDbUseCase()
             setState {
                 copy(
                     name = model.name ?: "",
@@ -40,7 +40,10 @@ class SettingsProfileViewModel @Inject constructor(
     override fun handleEvents(event: SettingsProfileContract.Event) {
         when (event) {
             SettingsProfileContract.Event.ActionBack -> {
-                setEffect { SettingsProfileContract.Effect.Navigation.Back }
+                viewModelScope.launch {
+                    updateUserNameDbUseCase(userName = viewState.value.name)
+                    setEffect { SettingsProfileContract.Effect.Navigation.Back }
+                }
             }
 
             SettingsProfileContract.Event.ChangePassword -> {
@@ -53,14 +56,6 @@ class SettingsProfileViewModel @Inject constructor(
 
             SettingsProfileContract.Event.DeleteAccount -> deleteAccount()
             SettingsProfileContract.Event.SignOut -> signOut()
-        }
-    }
-
-    override fun onCleared() {
-        viewModelScope.launch {
-            val model = getUserPersonalUseCase()
-            updateUserPersonalUseCase(model.copy(name = viewState.value.name))
-            super.onCleared()
         }
     }
 
