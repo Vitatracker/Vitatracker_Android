@@ -5,6 +5,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.models.mapToDomain
+import app.mybad.network.models.request.UserChangePasswordRequestModel
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -71,6 +72,19 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
     override suspend fun restorePassword(email: String) = withContext(dispatcher) {
         runCatching {
             authorizationApi.restorePassword(email).mapToDomain()
+        }
+    }
+
+    override suspend fun changeUserPassword(oldPassword: String, newPassword: String) {
+        withContext(dispatcher) {
+            runCatching {
+                authorizationApi.changeUserPassword(
+                    UserChangePasswordRequestModel(
+                        oldPassword = oldPassword,
+                        newPassword = newPassword
+                    )
+                )
+            }
         }
     }
 }

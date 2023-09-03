@@ -31,11 +31,16 @@ interface AuthorizationApi {
         @Body email: String
     ): PasswordNetworkModel
 
+    @PATCH("/api/v1/auth/password/change")
+    suspend fun changeUserPassword(@Body userPasswordsModel: UserChangePasswordRequestModel): Response<Unit>
+
+/*
     @PATCH(value = "/api/v1/auth/password/change")
     suspend fun changePassword(
         @Body oldPassword: String,
         @Body newPassword: String
     ): PasswordNetworkModel
+*/
 
     companion object {
         // token date expires

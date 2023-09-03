@@ -9,8 +9,6 @@ class SettingsNotificationsContract {
         object ActionBack : Event()
         object SetupNotificationsClicked : Event()
         object SetupSleepRegimeClicked : Event()
-        object CheckSettingsClicked : Event()
-        object ReloadSettingsClicked : Event()
         object ContactUsClicked : Event()
     }
 
@@ -19,8 +17,6 @@ class SettingsNotificationsContract {
     sealed class Effect : ViewSideEffect {
         object SetupNotifications : Effect()
         object SetupSleepRegime : Effect()
-        object CheckSettings : Effect()
-        object ReloadSettings : Effect()
         object ContactUs : Effect()
 
         sealed class Navigation : Effect() {

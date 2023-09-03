@@ -5,6 +5,7 @@ import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.RemedyModel
 import app.mybad.data.db.models.UsageModel
 import app.mybad.data.db.models.UserModel
+import app.mybad.data.models.user.PersonalDataModel
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
@@ -289,6 +290,13 @@ fun List<PatternUsageDomainModel>.mapToData() = this.map { it.mapToData() }
 
 //------------------------
 fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(
+    name = name,
+    age = age,
+    avatar = avatar,
+    email = email,
+)
+
+fun PersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     name = name,
     age = age,
     avatar = avatar,

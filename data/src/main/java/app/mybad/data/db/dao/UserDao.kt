@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import app.mybad.data.db.models.UserContract
 import app.mybad.data.db.models.UserModel
+import app.mybad.data.models.user.PersonalDataModel
 import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
 
@@ -59,5 +60,8 @@ interface UserDao {
         } = :date WHERE ${UserContract.Columns.ID} = :userId"
     )
     suspend fun synchronization(userId: Long, date: Long = currentDateTimeInSecond())
+
+    @Query("SELECT *  from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
+    fun getUserPersonal(userId: Long): PersonalDataModel?
 
 }

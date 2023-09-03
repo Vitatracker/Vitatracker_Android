@@ -1,8 +1,8 @@
 package app.mybad.notifier.ui.screens.settings.changepassword
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.usecases.user.ChangePasswordUseCase
-import app.mybad.domain.usecases.user.GetUserPersonalUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,23 +11,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsChangePasswordViewModel @Inject constructor(
-    private val getUserPersonalUseCase: GetUserPersonalUseCase,
     private val changePasswordUseCase: ChangePasswordUseCase,
 ) : BaseViewModel<
     SettingsChangePasswordContract.Event,
     SettingsChangePasswordContract.State,
     SettingsChangePasswordContract.Effect>() {
-
-    init {
-        setModelFromSaved()
-    }
-
-    private fun setModelFromSaved() {
-        viewModelScope.launch {
-            val model = getUserPersonalUseCase()
-            setState { copy(userAvatarUrl = model.avatar ?: "") }
-        }
-    }
 
     override fun setInitialState() = SettingsChangePasswordContract.State()
 
@@ -70,7 +58,7 @@ class SettingsChangePasswordViewModel @Inject constructor(
         val newPassConfirmed = viewState.value.newPasswordRepeat
         val oldPass = viewState.value.currentPassword
 
-        if (oldPass.isEmpty()) {
+        if (!oldPass.isValidPassword()) {
             setState { copy(error = SettingsChangePasswordContract.StateErrors.OldPasswordIsInvalid) }
             return
         }
@@ -90,8 +78,9 @@ class SettingsChangePasswordViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            // TODO do password change
             changePasswordUseCase(oldPass = oldPass, newPass = newPass).onSuccess {
+                Log.w("VTTAG", "SettingsChangePasswordViewModel::changePasswordUseCase onSuccess: oldPass = $oldPass, newPass = $newPass")
+
                 setState {
                     copy(
                         error = SettingsChangePasswordContract.StateErrors.Empty,
@@ -99,7 +88,8 @@ class SettingsChangePasswordViewModel @Inject constructor(
                     )
                 }
                 setEffect { SettingsChangePasswordContract.Effect.Navigation.Back }
-            }.onFailure {
+            }.onFailure { throwable ->
+                Log.w("VTTAG", "SettingsChangePasswordViewModel::changePasswordUseCase onFailure: message =${throwable.message}")
                 setState {
                     copy(
                         error = SettingsChangePasswordContract.StateErrors.NewPasswordIsInvalid,

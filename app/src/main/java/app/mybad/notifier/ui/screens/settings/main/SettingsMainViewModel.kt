@@ -1,60 +1,35 @@
 package app.mybad.notifier.ui.screens.settings.main
 
-import androidx.lifecycle.viewModelScope
-import app.mybad.domain.usecases.user.ClearDBUseCase
-import app.mybad.domain.usecases.user.GetUserPersonalUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsMainViewModel @Inject constructor(
-    private val getUserPersonalUseCase: GetUserPersonalUseCase,
-    private val clearDBUseCase: ClearDBUseCase,
-) : BaseViewModel<
-        SettingsMainContract.Event,
-        SettingsMainContract.State,
-        SettingsMainContract.Effect>() {
+class SettingsMainViewModel @Inject constructor() : BaseViewModel<
+        SettingsMainScreenContract.Event,
+        SettingsMainScreenContract.State,
+        SettingsMainScreenContract.Effect>() {
 
-    init {
-        viewModelScope.launch {
-            val userModel = getUserPersonalUseCase()
-            setState { copy(userAvatar = userModel.avatar ?: "") }
-        }
-    }
+    override fun setInitialState() = SettingsMainScreenContract.State
 
-    override fun setInitialState() = SettingsMainContract.State()
-
-    override fun handleEvents(event: SettingsMainContract.Event) {
+    override fun handleEvents(event: SettingsMainScreenContract.Event) {
         when (event) {
-            SettingsMainContract.Event.EditAvatarClicked -> setEffect {
-                SettingsMainContract.Effect.Navigation.ToAvatarEdit
+            SettingsMainScreenContract.Event.ProfileClicked -> setEffect {
+                SettingsMainScreenContract.Effect.Navigation.ToProfile
             }
 
-            SettingsMainContract.Event.ProfileClicked -> setEffect {
-                SettingsMainContract.Effect.Navigation.ToProfile
+            SettingsMainScreenContract.Event.NotificationsSettingsClicked -> setEffect {
+                SettingsMainScreenContract.Effect.Navigation.ToNotificationsSettings
             }
 
-            SettingsMainContract.Event.NotificationsSettingsClicked -> setEffect {
-                SettingsMainContract.Effect.Navigation.ToNotificationsSettings
+            SettingsMainScreenContract.Event.LeaveWishesClicked -> setEffect {
+                SettingsMainScreenContract.Effect.Navigation.ToLeaveWishes
             }
 
-            SettingsMainContract.Event.LeaveWishesClicked -> setEffect {
-                SettingsMainContract.Effect.Navigation.ToLeaveWishes
+            SettingsMainScreenContract.Event.AboutClicked -> setEffect {
+                SettingsMainScreenContract.Effect.Navigation.ToAbout
             }
 
-            SettingsMainContract.Event.AboutClicked -> setEffect {
-                SettingsMainContract.Effect.Navigation.ToAbout
-            }
-
-            SettingsMainContract.Event.ClearDB -> clearDB()
-        }
-    }
-
-    private fun clearDB() {
-        viewModelScope.launch {
-            clearDBUseCase()
         }
     }
 }

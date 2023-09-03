@@ -75,17 +75,17 @@
 
     <!--SETTINGS-->
     <string name="settings_profile">Profile</string>
-    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications">Notification settings</string>
     <string name="settings_about">About application</string>
     <string name="settings_db_clear">Clear DB</string>
-    <string name="settings_quit">Quit</string>
+    <string name="settings_quit">Logout</string>
     <string name="settings_delete_account">Delete account</string>
     <string name="settings_change_password">Change password</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_save">Save</string>
     <string name="settings_current_password">Current password</string>
     <string name="settings_new_password">New password</string>
-    <string name="settings_repeat_new_password">Repeat new password</string>
+    <string name="settings_repeat_new_password">Repeat password</string>
     <string name="settings_enable_notifications">Global notifications</string>
     <string name="settings_enable_notifications_description">Enables and disables all notifications in this application. It will not change your courses settings.</string>
     <string name="settings_enable_float_notifications">Floating notifications</string>

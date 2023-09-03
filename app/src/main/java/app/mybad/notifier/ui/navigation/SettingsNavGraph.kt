@@ -15,8 +15,8 @@ import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutTeamViewMo
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordContract
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordScreen
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordViewModel
-import app.mybad.notifier.ui.screens.settings.main.SettingsMainContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreen
+import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainViewModel
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsContract
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsScreen
@@ -39,28 +39,24 @@ fun NavGraphBuilder.settingsNavGraph(
         composable(route = SettingsScreens.Navigation.route) {
             val viewModel: SettingsMainViewModel = hiltViewModel()
             SettingsMainScreen(
-                state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationEffect ->
                     when (navigationEffect) {
-                        SettingsMainContract.Effect.Navigation.ToProfile -> {
+                        SettingsMainScreenContract.Effect.Navigation.ToProfile -> {
                             navigationState.navigateSingleTo(SettingsScreens.Profile.route)
                         }
 
-                        SettingsMainContract.Effect.Navigation.ToNotificationsSettings -> {
+                        SettingsMainScreenContract.Effect.Navigation.ToNotificationsSettings -> {
                             navigationState.navigateSingleTo(SettingsScreens.Notifications.route)
                         }
 
-                        SettingsMainContract.Effect.Navigation.ToAbout -> {
+                        SettingsMainScreenContract.Effect.Navigation.ToAbout -> {
                             navigationState.navigateSingleTo(SettingsScreens.About.route)
                         }
 
-                        SettingsMainContract.Effect.Navigation.ToAvatarEdit -> {
-//                            navigationState.navigateSingleTo(SettingsScreens..route)
-                        }
 
-                        SettingsMainContract.Effect.Navigation.ToLeaveWishes -> {
+                        SettingsMainScreenContract.Effect.Navigation.ToLeaveWishes -> {
                             navigationState.navigateSingleTo(SettingsScreens.LeaveYourWishes.route)
                         }
                     }
@@ -98,7 +94,6 @@ fun NavGraphBuilder.settingsNavGraph(
         composable(route = SettingsScreens.Notifications.route) {
             val viewModel: SettingsNotificationsViewModel = hiltViewModel()
             SettingsNotificationsScreen(
-                state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationEffect ->

@@ -5,6 +5,7 @@ import app.mybad.data.db.dao.UserDao
 import app.mybad.data.db.models.UserModel
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.UserDomainModel
+import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.repository.UserRepository
 import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,13 +52,18 @@ class UserRepositoryImpl @Inject constructor(
         db.getUser(userId).mapToDomain()
     }
 
+    override suspend fun getUserPersonal(userId: Long): UserPersonalDomainModel =
+        withContext(dispatcher) {
+            db.getUserPersonal(userId)?.mapToDomain() ?: UserPersonalDomainModel()
+        }
+
     override suspend fun getUserLastEntrance(): UserDomainModel = withContext(dispatcher) {
         db.getUserLastEntrance()?.mapToDomain() ?: UserDomainModel()
     }
 
-    override suspend fun insertUser(name: String, email: String)= withContext(dispatcher) {
-            db.insert(UserModel(name = name, email = email, createdDate = currentDateTimeInSecond()))
-        }
+    override suspend fun insertUser(name: String, email: String) = withContext(dispatcher) {
+        db.insert(UserModel(name = name, email = email, createdDate = currentDateTimeInSecond()))
+    }
 
     override suspend fun updateMail(userId: Long, email: String) {
         withContext(dispatcher) {
@@ -70,6 +76,10 @@ class UserRepositoryImpl @Inject constructor(
         withContext(dispatcher) {
             val user = db.getUser(userId)
             db.updateUser(user.copy(name = name))
+            Log.w(
+                "VTTAG",
+                "UserRepositoryImpl::updateName: Ok: userId=${user.id} name=$name"
+            )
         }
     }
 
@@ -100,7 +110,10 @@ class UserRepositoryImpl @Inject constructor(
             tokenRefresh = tokenRefresh,
             tokenRefreshDate = tokenRefreshDate,
         )
-        Log.w("VTTAG", "UserRepositoryImpl::updateTokenByUserId: Ok: userId=${user.id} token=${user.token}")
+        Log.w(
+            "VTTAG",
+            "UserRepositoryImpl::updateTokenByUserId: Ok: userId=${user.id} token=${user.token}"
+        )
         db.updateUser(user)
         user.mapToDomain()
     }
@@ -117,7 +130,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateDateSynchronize(userId: Long)  {
+    override suspend fun updateDateSynchronize(userId: Long) {
         withContext(dispatcher) {
             runCatching {
                 db.synchronization(userId)
