@@ -1,9 +1,11 @@
 package app.mybad.network.api
 
+import app.mybad.network.models.request.UserChangePasswordRequestModel
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
 import app.mybad.network.models.response.AuthorizationNetworkModel
 import app.mybad.network.models.response.PasswordNetworkModel
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.POST

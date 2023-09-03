@@ -9,7 +9,6 @@ import app.mybad.network.models.request.UserChangePasswordRequestModel
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -63,7 +62,10 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken() = withContext(dispatcher) {
         runCatching {
-            Log.w("VTTAG", "AuthorizationNetworkRepositoryImpl::refreshToken  userId=${AuthToken.userId}")
+            Log.w(
+                "VTTAG",
+                "AuthorizationNetworkRepositoryImpl::refreshToken  userId=${AuthToken.userId}"
+            )
             AuthToken.token = AuthToken.tokenRefresh
             authorizationApi.refreshToken().mapToDomain()
         }
@@ -75,16 +77,17 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeUserPassword(oldPassword: String, newPassword: String) {
-        withContext(dispatcher) {
-            runCatching {
-                authorizationApi.changeUserPassword(
-                    UserChangePasswordRequestModel(
-                        oldPassword = oldPassword,
-                        newPassword = newPassword
-                    )
+    override suspend fun changeUserPassword(
+        oldPassword: String,
+        newPassword: String
+    ) = withContext(dispatcher) {
+        runCatching {
+            authorizationApi.changeUserPassword(
+                UserChangePasswordRequestModel(
+                    oldPassword = oldPassword,
+                    newPassword = newPassword
                 )
-            }
+            ).isSuccessful
         }
     }
 }

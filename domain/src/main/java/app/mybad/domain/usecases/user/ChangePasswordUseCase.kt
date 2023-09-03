@@ -7,10 +7,8 @@ class ChangePasswordUseCase @Inject constructor(
     private val repository: AuthorizationNetworkRepository,
 ) {
 
-    suspend operator fun invoke(oldPass: String, newPass: String) = runCatching {
-        repository.changeUserPassword(
-            oldPassword = oldPass,
-            newPassword = newPass
-        )
-    }
+    suspend operator fun invoke(oldPass: String, newPass: String) = repository.changeUserPassword(
+        oldPassword = oldPass,
+        newPassword = newPass
+    )
 }

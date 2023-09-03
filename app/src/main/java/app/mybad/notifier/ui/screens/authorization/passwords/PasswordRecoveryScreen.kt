@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.passwords
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,7 +52,11 @@ fun StartPasswordRecoveryScreen(
             when (effect) {
                 is PasswordRecoveryContract.Effect.Navigation -> navigation(effect)
 
-                PasswordRecoveryContract.Effect.MessageSent -> isShowDialog = true
+                is PasswordRecoveryContract.Effect.MessageSent -> {
+                    Log.d("VTTAG", "StartPasswordRecoveryScreen::Effect.MessageSent: message=${effect.message}")
+
+                    isShowDialog = true
+                }
             }
         }
     }
