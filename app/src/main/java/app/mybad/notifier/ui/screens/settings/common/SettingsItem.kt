@@ -3,10 +3,11 @@ package app.mybad.notifier.ui.screens.settings.common
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.theme.settingsIconTint
 import app.mybad.theme.R
 
 @Preview
@@ -44,25 +46,22 @@ fun SettingsItem(
             Icon(
                 imageVector = ImageVector.vectorResource(id = icon),
                 contentDescription = null,
-                //TODO("задать цвет")
-                tint = MaterialTheme.colorScheme.surfaceVariant,
+                tint = settingsIconTint,
                 modifier = Modifier
-                    .padding(end = 16.dp)
                     .size(24.dp)
             )
+            Spacer(modifier = Modifier.width(12.dp))
             Text(text = label, style = Typography.bodyLarge)
         }
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(end = 8.dp)
-                .size(24.dp)
+                .size(20.dp)
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = R.drawable.icon_settings_arrow_right),
                 contentDescription = null,
-                //TODO("проверить цвет")
                 tint = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.fillMaxSize()
             )

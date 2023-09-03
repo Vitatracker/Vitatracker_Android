@@ -75,7 +75,7 @@
 
     <!--SETTINGS-->
     <string name="settings_profile">Profile</string>
-    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications">Notification settings</string>
     <string name="settings_about">About application</string>
     <string name="settings_db_clear">Clear DB</string>
     <string name="settings_quit">Quit</string>

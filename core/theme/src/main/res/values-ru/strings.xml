@@ -45,7 +45,7 @@
 
     <!--SETTINGS-->
     <string name="settings_profile">Профиль</string>
-    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_notifications">Настройки уведомлений</string>
     <string name="settings_about">О приложении</string>
     <string name="settings_db_clear">Очистить DB</string>
     <string name="settings_quit">Выйти</string>

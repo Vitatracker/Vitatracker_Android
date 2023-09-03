@@ -69,3 +69,4 @@ val textColorThird = Color.LightGray
 
 val primaryBorderBlue = Color(0x4010D2D2)
 val primaryBorderGray = Color(0x4098AFB0)
+val settingsIconTint = Color(0xFF7B8A8A)
