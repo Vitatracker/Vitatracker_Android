@@ -15,8 +15,8 @@ import app.mybad.notifier.ui.screens.settings.about_team.SettingsAboutTeamViewMo
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordContract
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordScreen
 import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePasswordViewModel
-import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreen
+import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainViewModel
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsContract
 import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsScreen
@@ -94,7 +94,6 @@ fun NavGraphBuilder.settingsNavGraph(
         composable(route = SettingsScreens.Notifications.route) {
             val viewModel: SettingsNotificationsViewModel = hiltViewModel()
             SettingsNotificationsScreen(
-                state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationEffect ->

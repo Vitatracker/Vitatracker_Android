@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -129,12 +127,12 @@ private fun SettingsProfileBottom(
             tint = Color.Gray,
             onClick = { sendEvent(SettingsProfileContract.Event.SignOut) }
         )
-        SettingsProfileBottomElement(
-            text = R.string.settings_delete_account,
-            icon = Icons.Default.ErrorOutline,
-            tint = MaterialTheme.colorScheme.error,
-            onClick = { sendEvent(SettingsProfileContract.Event.DeleteAccount) }
-        )
+//        SettingsProfileBottomElement(
+//            text = R.string.settings_delete_account,
+//            icon = Icons.Default.ErrorOutline,
+//            tint = MaterialTheme.colorScheme.error,
+//            onClick = { sendEvent(SettingsProfileContract.Event.DeleteAccount) }
+//        )
     }
 }
 

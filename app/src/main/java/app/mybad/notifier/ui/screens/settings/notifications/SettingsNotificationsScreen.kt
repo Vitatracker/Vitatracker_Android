@@ -1,5 +1,12 @@
 package app.mybad.notifier.ui.screens.settings.notifications
 
+import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.getSystemService
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
@@ -27,22 +36,24 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SettingsNotificationsScreen(
-    state: SettingsNotificationsContract.State,
     effectFlow: Flow<SettingsNotificationsContract.Effect>? = null,
     sendEvent: (event: SettingsNotificationsContract.Event) -> Unit = {},
     navigation: (navigationEffect: SettingsNotificationsContract.Effect.Navigation) -> Unit
 ) {
+    val context = LocalContext.current
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
                 is SettingsNotificationsContract.Effect.Navigation -> navigation(effect)
 
-                SettingsNotificationsContract.Effect.CheckSettings -> {}
                 SettingsNotificationsContract.Effect.ContactUs -> {}
+                SettingsNotificationsContract.Effect.SetupNotifications -> {
+                    setupNotifications(context)
+                }
 
-                SettingsNotificationsContract.Effect.ReloadSettings -> {}
-                SettingsNotificationsContract.Effect.SetupNotifications -> {}
-                SettingsNotificationsContract.Effect.SetupSleepRegime -> {}
+                SettingsNotificationsContract.Effect.SetupSleepRegime -> {
+                    setupSleepRegime(context)
+                }
             }
         }
     }
@@ -64,134 +75,147 @@ fun SettingsNotificationsScreen(
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = stringResource(R.string.settings_notifications_setup_notifications_1),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_setup_notifications_2),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_setup_notifications_3),
-                fontSize = 14.sp
-            )
+            SetupNotifications(sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.settings_notifications_setup_notifications_button,
-                onClick = {
-                    sendEvent(SettingsNotificationsContract.Event.SetupNotificationsClicked)
-                }
-            )
+            SleepMode(sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_sleep_regime_1),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_sleep_regime_2),
-                fontSize = 14.sp
-            )
+            CheckApps(appName)
             Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.settings_notifications_sleep_regime_button,
-                onClick = {
-                    sendEvent(SettingsNotificationsContract.Event.SetupSleepRegimeClicked)
-                }
-            )
+            DonStopForcefully(appName)
             Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_check_settings_1),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_check_settings_2),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.settings_notifications_check_settings_button,
-                onClick = {
-                    sendEvent(SettingsNotificationsContract.Event.CheckSettingsClicked)
-                }
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_reload_settings_1),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_reload_settings_2),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.settings_notifications_reload_settings_button,
-                onClick = {
-                    sendEvent(SettingsNotificationsContract.Event.ReloadSettingsClicked)
-                }
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_contact_us_1),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = String.format(
-                    stringResource(R.string.settings_notifications_contact_us_2),
-                    appName
-                ),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_contact_us_3),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = String.format(
-                    stringResource(R.string.settings_notifications_contact_us_4),
-                    appName
-                ),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_contact_us_5),
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_notifications_contact_us_6),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
-                textId = R.string.settings_notifications_contact_us_button,
-                onClick = {
-                    sendEvent(SettingsNotificationsContract.Event.ContactUsClicked)
-                }
-            )
+            ContactUs(sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
+}
+
+@Composable
+private fun ContactUs(sendEvent: (event: SettingsNotificationsContract.Event) -> Unit) {
+    Text(
+        text = stringResource(R.string.settings_notifications_contact_us_5),
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = stringResource(R.string.settings_notifications_contact_us_6),
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(32.dp))
+    ReUseFilledButton(
+        modifier = Modifier.fillMaxWidth(),
+        textId = R.string.settings_notifications_contact_us_button,
+        onClick = {
+            sendEvent(SettingsNotificationsContract.Event.ContactUsClicked)
+        }
+    )
+}
+
+@Composable
+private fun DonStopForcefully(appName: String) {
+    Text(
+        text = stringResource(R.string.settings_notifications_contact_us_3),
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = String.format(
+            stringResource(R.string.settings_notifications_contact_us_4),
+            appName
+        ),
+        fontSize = 14.sp
+    )
+}
+
+@Composable
+private fun CheckApps(appName: String) {
+    Text(
+        text = stringResource(R.string.settings_notifications_contact_us_1),
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = String.format(
+            stringResource(R.string.settings_notifications_contact_us_2),
+            appName
+        ),
+        fontSize = 14.sp
+    )
+}
+
+private fun setupNotifications(context: Context) {
+    try {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        intent.data = Uri.parse("package:${context.packageName}")
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        // Обрабатываем если экрана нет
+    }
+}
+
+@SuppressLint("BatteryLife")
+private fun setupSleepRegime(context: Context) {
+    (context.getSystemService() as? PowerManager)?.let { powerManager ->
+        if (!powerManager.isIgnoringBatteryOptimizations(context.packageName)) {
+            try {
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                intent.data = Uri.parse("package:${context.packageName}")
+                context.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                // Обрабатываем если экрана нет
+                context.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+            }
+        }
+    }
+}
+
+@Composable
+private fun SetupNotifications(sendEvent: (event: SettingsNotificationsContract.Event) -> Unit) {
+    Text(
+        text = stringResource(R.string.settings_notifications_setup_notifications_1),
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(24.dp))
+    Text(
+        text = stringResource(R.string.settings_notifications_setup_notifications_2),
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = stringResource(R.string.settings_notifications_setup_notifications_3),
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(32.dp))
+    ReUseFilledButton(
+        modifier = Modifier.fillMaxWidth(),
+        textId = R.string.settings_notifications_setup_notifications_button,
+        onClick = {
+            sendEvent(SettingsNotificationsContract.Event.SetupNotificationsClicked)
+        }
+    )
+}
+
+@Composable
+private fun SleepMode(sendEvent: (event: SettingsNotificationsContract.Event) -> Unit) {
+    Text(
+        text = stringResource(R.string.settings_notifications_sleep_regime_1),
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = stringResource(R.string.settings_notifications_sleep_regime_2),
+        fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(32.dp))
+    ReUseFilledButton(
+        modifier = Modifier.fillMaxWidth(),
+        textId = R.string.settings_notifications_sleep_regime_button,
+        onClick = {
+            sendEvent(SettingsNotificationsContract.Event.SetupSleepRegimeClicked)
+        }
+    )
 }
