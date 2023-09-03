@@ -27,7 +27,6 @@ class SettingsProfileViewModel @Inject constructor(
             val model = getUserPersonalUseCase()
             setState {
                 copy(
-                    userAvatar = model.avatar ?: "",
                     name = model.name ?: "",
                     email = model.email ?: "",
                     isLoading = false
@@ -48,10 +47,6 @@ class SettingsProfileViewModel @Inject constructor(
                 setEffect { SettingsProfileContract.Effect.Navigation.ToChangePassword }
             }
 
-            SettingsProfileContract.Event.EditAvatar -> {
-                setEffect { SettingsProfileContract.Effect.ShowDialog }
-            }
-
             is SettingsProfileContract.Event.OnUserNameChanged -> {
                 setState { copy(name = event.name) }
             }
@@ -59,10 +54,6 @@ class SettingsProfileViewModel @Inject constructor(
             SettingsProfileContract.Event.DeleteAccount -> deleteAccount()
             SettingsProfileContract.Event.SignOut -> signOut()
         }
-    }
-
-    private fun saveNewSettings() {
-
     }
 
     override fun onCleared() {

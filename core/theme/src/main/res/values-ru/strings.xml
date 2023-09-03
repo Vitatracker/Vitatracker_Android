@@ -48,9 +48,9 @@
     <string name="settings_notifications">Настройки уведомлений</string>
     <string name="settings_about">О приложении</string>
     <string name="settings_db_clear">Очистить DB</string>
-    <string name="settings_quit">Выйти</string>
+    <string name="settings_quit">Выйти из учетной записи</string>
     <string name="settings_delete_account">Удалить учетную запись</string>
-    <string name="settings_change_password">Изменить пароль</string>
+    <string name="settings_change_password">Поменять пароль</string>
     <string name="settings_cancel">Отменить</string>
     <string name="settings_save">Сохранить</string>
     <string name="settings_current_password">Текущий пароль</string>
