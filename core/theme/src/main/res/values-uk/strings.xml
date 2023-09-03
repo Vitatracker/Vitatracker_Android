@@ -55,7 +55,7 @@
     <string name="settings_save">Зберегти</string>
     <string name="settings_current_password">Поточний пароль</string>
     <string name="settings_new_password">Новий пароль</string>
-    <string name="settings_repeat_new_password">Повторіть новий пароль</string>
+    <string name="settings_repeat_new_password">Повторіть пароль</string>
     <string name="navigation_settings_main">Налаштування</string>
     <string name="navigation_settings_profile">Профіль</string>
     <string name="settings_enable_notifications">Глобальні сповіщення</string>

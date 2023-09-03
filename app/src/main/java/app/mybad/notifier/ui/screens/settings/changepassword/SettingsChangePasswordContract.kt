@@ -16,12 +16,11 @@ class SettingsChangePasswordContract {
     }
 
     data class State(
-        val isLoading: Boolean=false,
+        val isLoading: Boolean = false,
         val error: StateErrors = StateErrors.Empty,
-        val userAvatarUrl: String="",
-        val currentPassword: String="",
-        val newPassword: String="",
-        val newPasswordRepeat: String=""
+        val currentPassword: String = "",
+        val newPassword: String = "",
+        val newPasswordRepeat: String = ""
     ) : ViewState {
         val oldPassIsInvalid: Boolean = error is StateErrors.OldPasswordIsInvalid
         val newPasswordFieldInvalid: Boolean = error is StateErrors.NewPasswordIsInvalid
