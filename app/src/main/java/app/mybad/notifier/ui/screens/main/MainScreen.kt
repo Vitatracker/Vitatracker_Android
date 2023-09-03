@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import app.mybad.notifier.ui.navigation.AppScreens
 import app.mybad.notifier.ui.navigation.BottomNavBar
 import app.mybad.notifier.ui.navigation.MainNavGraph
 import app.mybad.notifier.ui.navigation.rememberNavigationState
+import app.mybad.notifier.ui.theme.MyBADTheme
 
 @Composable
 fun MainScreen(

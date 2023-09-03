@@ -56,6 +56,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.RemedyDomainModel
@@ -63,6 +65,7 @@ import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.TitleText
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.textColorFirst
@@ -416,6 +419,16 @@ private fun NotificationTimeCourse(
     }
 }
 
+@Preview
+@Composable
+private fun NotificationCourseHeaderPreview() {
+    NotificationCourseHeader(
+        remedy = remedies[0],
+        usage = usages[0],
+        setUsageFactTime = {},
+    )
+}
+
 @SuppressLint("Recycle")
 @Composable
 private fun NotificationCourseHeader(
@@ -434,21 +447,32 @@ private fun NotificationCourseHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.padding(start = 8.dp)) {
-            Row(modifier = Modifier) {
-                // название препарата
-                Text(
-                    text = "${remedy.name}",
-                    style = Typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.width(10.dp))
+        Column(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(1f)
+        ) {
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 // иконка препарата
                 Icon(
                     painter = painterResource(r.getResourceId(remedy.icon, 0)),
                     contentDescription = null,
-                    modifier = Modifier.size(25.dp),
+                    modifier = Modifier
+                        .size(25.dp),
                     tint = PickColor.getColor(remedy.color)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                // название препарата
+                Text(
+                    text = "${remedy.name}",
+                    style = Typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Row(
@@ -615,3 +639,42 @@ private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
         else -> MaterialTheme.colorScheme.onPrimary
     }
 }
+
+@Preview
+@Composable
+fun MainNotificationScreenPreview() {
+    MyBADTheme {
+        MainNotificationScreen(
+            state = MainContract.State(
+                remedies = remedies,
+                usages = usages,
+            )
+        )
+    }
+}
+
+private val remedies = listOf(
+    RemedyDomainModel(
+        id = 1,
+        name = "Очень длинное лекарство для проверки макета и верстки",
+        dose = 1,
+    ),
+    RemedyDomainModel(
+        id = 2,
+        name = "Лекарство 2",
+        dose = 2,
+        icon = 1,
+        type = 1,
+    ),
+)
+
+private val usages = listOf(
+    UsageDomainModel(
+        id = 1,
+        remedyId = 1,
+    ),
+    UsageDomainModel(
+        id = 2,
+        remedyId = 2
+    ),
+)
