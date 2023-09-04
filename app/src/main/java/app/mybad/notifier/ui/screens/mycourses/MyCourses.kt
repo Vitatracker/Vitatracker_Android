@@ -23,11 +23,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -38,8 +38,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDomainModel
@@ -47,6 +49,7 @@ import app.mybad.notifier.ui.common.generatePattern
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.cardBackground
+import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.theme.R
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.plusDay
@@ -191,6 +194,7 @@ private fun CourseItem(
                         )
                     }
                 }
+                Spacer(Modifier.width(12.dp))
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -260,12 +264,11 @@ private fun CourseItem(
                     }
                 }
             }
+            Spacer(Modifier.height(12.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -275,16 +278,16 @@ private fun CourseItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         val start = course.startDate.toDateDisplay()
                         val end = course.endDate.toDateDisplay()
-                        Text(text = start, style = Typography.bodyLarge)
+                        Text(text = start, fontSize = 12.sp, fontWeight = FontWeight(500))
                         Icon(
                             painter = painterResource(R.drawable.arrow_right),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
-                                .padding(start = 8.dp, end = 8.dp, top = 2.dp)
+                                .padding(start = 12.dp, end = 12.dp)
                                 .height(10.dp)
                         )
-                        Text(text = end, style = Typography.bodyLarge)
+                        Text(text = end, fontSize = 12.sp, fontWeight = FontWeight(500))
                     }
                     if (startInDays > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -300,8 +303,9 @@ private fun CourseItem(
                                 )
                                 Text(
                                     text = startsIn,
+                                    color = textColorFirst,
                                     style = Typography.bodySmall,
-                                    modifier = Modifier.padding(6.dp)
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                                 )
                             }
                         }

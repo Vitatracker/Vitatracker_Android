@@ -130,7 +130,7 @@ fun Long.plusDay(days: Int = 1): Long = this + SECONDS_IN_DAY * days
 
 fun Long.plusThreeDay(): Long = this + SECONDS_IN_DAY * 3 + 1
 
-fun Long.secondsToDay() = (this % SECONDS_IN_DAY)
+fun Long.secondsToDay() = (this / SECONDS_IN_DAY)
 
 fun Long.daysBetween(date: Long) = Instant.fromEpochSeconds(this)
     .minus(Instant.fromEpochSeconds(date)).inWholeDays.plus(1)
