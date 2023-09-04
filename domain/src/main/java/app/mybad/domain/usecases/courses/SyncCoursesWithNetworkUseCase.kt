@@ -3,8 +3,10 @@ package app.mybad.domain.usecases.courses
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.PatternUsageRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.repository.network.CourseNetworkRepository
@@ -16,6 +18,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private val remedyRepository: RemedyRepository,
     private val courseRepository: CourseRepository,
     private val usageRepository: UsageRepository,
+    private val patternUsageRepository: PatternUsageRepository,
     private val remedyNetworkRepository: RemedyNetworkRepository,
     private val courseNetworkRepository: CourseNetworkRepository,
     private val usageNetworkRepository: UsageNetworkRepository,
@@ -82,7 +85,10 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
             remedyIdNet = remedyIdNet,
             remedyIdLoc = remedyIdLoc,
         ).onSuccess { usagesNet ->
-            if (usagesNet.isNotEmpty()) usageRepository.insertUsage(usagesNet)
+            if (usagesNet.isNotEmpty()) {
+                usageRepository.insertUsage(usagesNet)
+                //TODO("сохраним паттерн или новый патерн для courseIdLoc, передать usagesNet и в мапере уже переделать, но то что нам нужно")
+            }
         }.onFailure {
             TODO("реализовать обработку ошибок")
         }
@@ -192,6 +198,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private suspend fun deleteCourseLoc(courses: List<CourseDomainModel>) {
         if (courses.isEmpty()) return
         courses.forEach { course ->
+            deletePatternUsageLoc(course.id)
             deleteUsageLoc(course.id)
             courseRepository.deleteCoursesById(course.id)
         }
@@ -204,6 +211,15 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 deleteUsageLoc(course.id)
                 courseRepository.deleteCoursesById(course.id)
             }
+        }.onFailure {
+            TODO("реализовать обработку ошибок")
+        }
+    }
+
+    private suspend fun deletePatternUsageLoc(courseId: Long) {
+        if (courseId <= 0) return
+        patternUsageRepository.getPatternUsagesByCourseId(courseId).onSuccess { patterns ->
+            patternUsageRepository.deletePatternUsages(patterns)
         }.onFailure {
             TODO("реализовать обработку ошибок")
         }

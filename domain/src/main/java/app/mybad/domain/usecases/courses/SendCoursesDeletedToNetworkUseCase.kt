@@ -3,6 +3,7 @@ package app.mybad.domain.usecases.courses
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.PatternUsageRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.repository.network.CourseNetworkRepository
@@ -14,6 +15,8 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
     private val remedyRepository: RemedyRepository,
     private val courseRepository: CourseRepository,
     private val usageRepository: UsageRepository,
+    private val patternUsageRepository: PatternUsageRepository,
+
     private val remedyNetworkRepository: RemedyNetworkRepository,
     private val courseNetworkRepository: CourseNetworkRepository,
     private val usageNetworkRepository: UsageNetworkRepository,
@@ -23,6 +26,7 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
         Log.d("VTTAG", "SynchronizationCourseWorker::SendCoursesDeletedToNetworkUseCase: Start")
         if (userId != AuthToken.userId) return
         sendUsagesDeleted(userId)
+        sendPatternUsagesDeleted(userId)
         sendCoursesDeleted(userId)
         sendRemediesDeleted(userId)
     }
@@ -31,6 +35,14 @@ class SendCoursesDeletedToNetworkUseCase @Inject constructor(
         usageRepository.getUsagesDeletedByUserId(userId).getOrNull()?.forEach { usage ->
             if (usage.idn > 0) usageNetworkRepository.deleteUsage(usage.idn).getOrThrow()
             usageRepository.deleteUsagesById(usage.id)
+        }
+    }
+
+    private suspend fun sendPatternUsagesDeleted(userId: Long) {
+        patternUsageRepository.getPatternUsagesDeletedByUserId(userId).getOrNull()?.forEach { pattern ->
+            //TODO("если реализовывать patternUsage и factUseTimeUsage")
+//            if (pattern.idn > 0) patternUsageNetworkRepository.deleteUsage(pattern.idn).getOrThrow()
+            patternUsageRepository.deletePatternUsage(pattern.id)
         }
     }
 

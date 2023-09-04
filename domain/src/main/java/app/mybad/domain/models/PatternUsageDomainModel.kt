@@ -16,6 +16,7 @@ data class PatternUsageDomainModel(
     val createdDate: Long = 0,
     val updatedDate: Long = 0,
 
+    val useTime: Long = 0,
     val timeInMinutes: Int = 0, // тут только время HH:mm в минутах
     val quantity: Int = 1,
 

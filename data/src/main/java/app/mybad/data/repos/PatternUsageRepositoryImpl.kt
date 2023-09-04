@@ -28,6 +28,18 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPatternUsagesNotUpdateByUserId(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getPatternUsagesNotUpdateByUserId(userId).mapToDomain()
+        }
+    }
+
+    override suspend fun getPatternUsagesDeletedByUserId(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getPatternUsagesDeletedByUserId(userId).mapToDomain()
+        }
+    }
+
     override suspend fun getPatternUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
         runCatching {
             db.getPatternUsagesByCourseId(courseId).mapToDomain()
@@ -72,9 +84,33 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun markDeletionPatternUsage(id: Long) = withContext(dispatcher) {
+        runCatching {
+            db.markDeletionPatternUsage(id)
+        }
+    }
+
+    override suspend fun markDeletionPatternUsageByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.markDeletionPatternUsagesByCourseId(courseId)
+        }
+    }
+
     override suspend fun deletePatternUsagesByUserId(userId: Long) = withContext(dispatcher) {
         runCatching {
             db.deletePatternUsagesByUserId(userId)
+        }
+    }
+
+    override suspend fun deletePatternUsage(id: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deletePatternUsage(id)
+        }
+    }
+
+    override suspend fun deletePatternUsages(patterns: List<PatternUsageDomainModel>) = withContext(dispatcher) {
+        runCatching {
+            db.deletePatternUsages(patterns.mapToData())
         }
     }
 
