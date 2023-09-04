@@ -134,8 +134,6 @@ fun MyCourseEditNotificationScreen(
                 }
                 Spacer(Modifier.height(16.dp))
                 AddNotificationButton(
-                    form = state.remedy.type,
-                    forms = forms,
                     onClick = { sendEvent(MyCoursesEditContract.Event.AddUsagesPattern) }
                 )
             }

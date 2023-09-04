@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.ui.theme.primaryBorderGray
 import app.mybad.utils.toTimeDisplay
 
 @Composable
@@ -60,47 +60,51 @@ fun NotificationItem(
     }
 
     Surface(
+        modifier = modifier,
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        modifier = modifier,
+        border = BorderStroke(1.dp, primaryBorderGray),
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 12.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.RemoveCircleOutline,
+                imageVector = Icons.Default.RemoveCircle,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(16.dp)
+                    .size(24.dp)
                     .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = onDelete::invoke
+                        onClick = onDelete
                     )
             )
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
+                modifier = Modifier
+                    .clickable(onClick = onTimeClick),
                 text = time.toTimeDisplay(),
                 style = Typography.bodyLarge,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onTimeClick
-                )
             )
-            Row {
+            Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {
                 BasicTextField(
+                    modifier = Modifier
+                        .clickable(
+                            onClick = onTimeClick
+                        )
+                        .width(25.dp)
+                        .onFocusChanged {
+                            if (it.hasFocus || it.isFocused) {
+                                field = field.copy(selection = TextRange(0, field.text.length))
+                            }
+                        },
                     value = field,
                     onValueChange = {
-                        field = it
-                        val res = it.text.toFloatOrNull() ?: 0f
-                        onDoseChange(if (res > 10f) 10f else res)
+                        val countValue = it.text.toFloatOrNull() ?: 0f
+                        field = if (countValue > 10f) field else it
+                        onDoseChange(if (countValue > 10f) 10f else countValue)
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -112,14 +116,8 @@ fun NotificationItem(
                             fm.clearFocus()
                             field = field.copy(selection = TextRange.Zero)
                         }
-                    ),
-                    modifier = Modifier
-                        .width(25.dp)
-                        .onFocusChanged {
-                            if (it.hasFocus || it.isFocused) {
-                                field = field.copy(selection = TextRange(0, field.text.length))
-                            }
-                        }
+                    )
+
                 )
                 Text(
                     text = forms[form],
@@ -127,7 +125,6 @@ fun NotificationItem(
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }
-            Spacer(Modifier.width(0.dp))
         }
     }
 }

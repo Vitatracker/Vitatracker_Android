@@ -17,7 +17,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,9 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlin.math.absoluteValue
@@ -98,11 +97,10 @@ fun RollSelector(
             }
         }
         Spacer(Modifier.height(16.dp))
-        Button(
-            onClick = { onSelect(pagerState.currentPage % list.size) },
-            shape = RoundedCornerShape(10.dp),
+        ReUseFilledButton(
             modifier = Modifier.fillMaxWidth(),
-            content = { Text(text = stringResource(R.string.settings_save)) }
+            textId = R.string.settings_save,
+            onClick = { onSelect(pagerState.currentPage % list.size) }
         )
     }
 }
