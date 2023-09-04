@@ -3,7 +3,6 @@ package app.mybad.domain.usecases.courses
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
-import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.repository.CourseRepository
 import app.mybad.domain.repository.PatternUsageRepository
@@ -22,8 +21,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private val remedyNetworkRepository: RemedyNetworkRepository,
     private val courseNetworkRepository: CourseNetworkRepository,
     private val usageNetworkRepository: UsageNetworkRepository,
-
-    ) {
+) {
     suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::syncCourses: Start")
         if (userId != AuthToken.userId) return

@@ -54,7 +54,7 @@ interface RemedyDao {
 
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер
-    @Query("delete from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.USER_ID} = :remedyId")
+    @Query("delete from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.ID} = :remedyId")
     suspend fun deleteRemedyById(remedyId: Long)
 
     @Query("delete from ${RemedyContract.TABLE_NAME} where ${RemedyContract.Columns.USER_ID} = :userId")

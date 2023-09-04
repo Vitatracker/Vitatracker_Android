@@ -51,7 +51,6 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                     }
                     // передать и получить id с бека: courses->usages
                     sendCourses(updatedRemedy)
-
                 }.onFailure {
                     TODO("реализовать обработку ошибок")
                 }
@@ -63,26 +62,30 @@ class SendCoursesToNetworkUseCase @Inject constructor(
 
     // курс без remedyId может быть, если remedies уже ранее оправлялся на бек
     private suspend fun sendCourses(remedy: RemedyDomainModel) {
-        val courses = courseRepository.getCoursesByRemedyId(remedy.id).getOrNull()
-        Log.d(
-            "VTTAG",
-            "SynchronizationCourseWorker::sendCourses: remedyId=${remedy.id} courses=${courses?.size}"
-        )
-        courses?.forEach { course ->
-            courseNetworkRepository.updateCourse(
-                course.copy(
-                    remedyIdn = remedy.idn,
-                )
-            ).onSuccess { updatedCourse ->
-                courseRepository.updateCourse(updatedCourse).onFailure {
-                    TODO("реализовать обработку ошибок")
-                }
-                sendUsages(updatedCourse)
-            }.onFailure {
+        courseRepository.getCoursesByRemedyId(remedy.id).onSuccess { courses ->
+            Log.d(
+                "VTTAG",
+                "SynchronizationCourseWorker::sendCourses: remedyId=${remedy.id} courses=${courses?.size}"
+            )
+            courses.forEach { course ->
+                courseNetworkRepository.updateCourse(
+                    course.copy(
+                        remedyIdn = remedy.idn,
+                    )
+                ).onSuccess { updatedCourse ->
+                    courseRepository.updateCourse(updatedCourse).onFailure {
+                        TODO("реализовать обработку ошибок")
+                    }
+                    sendUsages(updatedCourse)
+                }.onFailure {
 //                TODO("реализовать обработку ошибок")
+                }
             }
+        }.onFailure {
+//                TODO("реализовать обработку ошибок")
         }
     }
+
 
     private suspend fun sendCourses(userId: Long) {
         val courses = courseRepository.getCoursesNotUpdateByUserId(userId).getOrNull()

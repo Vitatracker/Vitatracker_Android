@@ -48,7 +48,7 @@ class RemedyNetworkRepositoryImpl @Inject constructor(
                     error("remedyNet is deleted")
                 }
             } else remedyApi.addRemedy(remedyNet)
-            remedyNet.mapToDomain(remedy.id)
+            remedyNet.mapToDomain(remedyIdLoc = remedy.id)
         }
     }
 
