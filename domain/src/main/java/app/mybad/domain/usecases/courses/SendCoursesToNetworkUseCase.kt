@@ -26,7 +26,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
     //   courses->usages
      */
     suspend operator fun invoke(userId: Long) {
-        Log.d("VTTAG", "SynchronizationCourseWorker::sendCoursesToNetwork: Start")
+        log("sendCoursesToNetwork: Start")
         if (userId != AuthToken.userId) return
         // передать и получить id с бека: remedies->courses->usages
         sendRemedies(userId)
@@ -34,18 +34,16 @@ class SendCoursesToNetworkUseCase @Inject constructor(
         sendCourses(userId)
         // передать и получить id с бека: usages
         sendUsages(userId)
-        Log.d("VTTAG", "SynchronizationCourseWorker::sendCoursesToNetwork: End")
+        log("sendCoursesToNetwork: End")
     }
 
     private suspend fun sendRemedies(userId: Long) {
         remedyRepository.getRemedyNotUpdateByUserId(userId).onSuccess { remedies ->
-            Log.d("VTTAG", "SynchronizationCourseWorker::sendRemedies: remedies=${remedies.size}")
+            log("sendRemedies: remedies=${remedies.size}")
             remedies.forEach { remedy ->
-                Log.d(
-                    "VTTAG",
-                    "SynchronizationCourseWorker::sendRemedies: remedyNetwork remedy=${remedy.id} ${remedy.idn}"
-                )
+                log("sendRemedies: remedyNetwork remedy=${remedy.id} ${remedy.idn}")
                 remedyNetworkRepository.updateRemedy(remedy).onSuccess { updatedRemedy ->
+                    log("sendCourses: to net ok remedy update=${updatedRemedy.updateNetworkDate}")
                     remedyRepository.updateRemedy(updatedRemedy).onFailure {
                         TODO("реализовать обработку ошибок")
                     }
@@ -63,16 +61,14 @@ class SendCoursesToNetworkUseCase @Inject constructor(
     // курс без remedyId может быть, если remedies уже ранее оправлялся на бек
     private suspend fun sendCourses(remedy: RemedyDomainModel) {
         courseRepository.getCoursesByRemedyId(remedy.id).onSuccess { courses ->
-            Log.d(
-                "VTTAG",
-                "SynchronizationCourseWorker::sendCourses: remedyId=${remedy.id} courses=${courses?.size}"
-            )
+            log("sendCourses: remedyId=${remedy.id} courses=${courses.size}")
             courses.forEach { course ->
                 courseNetworkRepository.updateCourse(
                     course.copy(
                         remedyIdn = remedy.idn,
                     )
                 ).onSuccess { updatedCourse ->
+                    log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
                     courseRepository.updateCourse(updatedCourse).onFailure {
                         TODO("реализовать обработку ошибок")
                     }
@@ -88,38 +84,36 @@ class SendCoursesToNetworkUseCase @Inject constructor(
 
 
     private suspend fun sendCourses(userId: Long) {
-        val courses = courseRepository.getCoursesNotUpdateByUserId(userId).getOrNull()
-        Log.d(
-            "VTTAG",
-            "SynchronizationCourseWorker::sendCourses: courses=${courses?.size}"
-        )
-        courses?.forEach { course ->
-            remedyRepository.getRemedyById(course.remedyId).onSuccess { remedy ->
-                if (remedy.idn > 0) {
-                    courseNetworkRepository.updateCourse(
-                        course.copy(
-                            remedyIdn = remedy.idn
-                        )
-                    ).onSuccess { updatedCourse ->
-                        courseRepository.updateCourse(updatedCourse).onFailure {
-                            TODO("реализовать обработку ошибок")
-                        }
-                        sendUsages(updatedCourse)
-                    }.onFailure {
+        courseRepository.getCoursesNotUpdateByUserId(userId).onSuccess { courses ->
+            log("sendCourses: courses=${courses.size}")
+            courses.forEach { course ->
+                remedyRepository.getRemedyById(course.remedyId).onSuccess { remedy ->
+                    if (remedy.idn > 0) {
+                        courseNetworkRepository.updateCourse(
+                            course.copy(
+                                remedyIdn = remedy.idn
+                            )
+                        ).onSuccess { updatedCourse ->
+                            log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
+                            courseRepository.updateCourse(updatedCourse).onFailure {
+                                TODO("реализовать обработку ошибок")
+                            }
+                            sendUsages(updatedCourse)
+                        }.onFailure {
 //                        TODO("реализовать обработку ошибок")
+                        }
                     }
                 }
             }
+        }.onFailure {
+//                        TODO("реализовать обработку ошибок")
         }
     }
 
     // usage без coursa не может быть
     private suspend fun sendUsages(course: CourseDomainModel) {
         usageRepository.getUsagesByCourseId(course.id).onSuccess { usages ->
-            Log.d(
-                "VTTAG",
-                "SynchronizationCourseWorker::sendUsages: courseId=${course.id} usages=${usages.size}"
-            )
+            log("sendUsages: courseId=${course.id} usages=${usages.size}")
             usages.forEach { usage ->
                 usageNetworkRepository.updateUsage(
                     usage.copy(
@@ -127,6 +121,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                         remedyIdn = course.remedyIdn,
                     )
                 ).onSuccess { updatedUsage ->
+                    log("sendCourses: to net ok usage update=${updatedUsage.updateNetworkDate}")
                     usageRepository.updateUsage(updatedUsage).onFailure {
                         TODO("реализовать обработку ошибок")
                     }
@@ -141,10 +136,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
 
     private suspend fun sendUsages(userId: Long) {
         usageRepository.getUsagesNotUpdateByUserId(userId).onSuccess { usages ->
-            Log.d(
-                "VTTAG",
-                "SynchronizationCourseWorker::sendUsages: usages=${usages.size}"
-            )
+            log("sendUsages: usages=${usages.size}")
             usages.forEach { usage ->
                 courseRepository.getCourseById(usage.courseId).onSuccess { course ->
                     if (course.remedyIdn > 0 && course.idn > 0) {
@@ -154,6 +146,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                                 courseIdn = course.idn,
                             )
                         ).onSuccess { updatedUsage ->
+                            log("sendCourses: to net ok usage update=${updatedUsage.updateNetworkDate}")
                             usageRepository.updateUsage(updatedUsage).onFailure {
                                 TODO("реализовать обработку ошибок")
                             }
@@ -167,4 +160,9 @@ class SendCoursesToNetworkUseCase @Inject constructor(
             TODO("реализовать обработку ошибок")
         }
     }
+
+    private fun log(text: String) {
+        Log.d("VTTAG", "SendCoursesToNetworkUseCase::$text")
+    }
+
 }

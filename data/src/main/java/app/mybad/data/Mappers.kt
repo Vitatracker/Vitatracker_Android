@@ -109,7 +109,7 @@ fun CourseDomainModel.mapToData() = CourseModel(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
-    updateNetworkDate = 0, // при обновлении для передачи на сервер
+    updateNetworkDate = updateNetworkDate,
     updateLocalDate = updateLocalDate,
 )
 
@@ -169,7 +169,7 @@ fun RemedyDomainModel.mapToData() = RemedyModel(
     beforeFood = beforeFood,
     notUsed = notUsed,
 
-    updateNetworkDate = 0, // при обновлении для передачи на сервер
+    updateNetworkDate = updateNetworkDate,
     updateLocalDate = updateLocalDate,
 )
 
@@ -225,7 +225,7 @@ fun UsageDomainModel.mapToData() = UsageModel(
     isDeleted = isDeleted,
     notUsed = notUsed,
 
-    updateNetworkDate = 0, // при обновлении для передачи на сервер
+    updateNetworkDate = updateNetworkDate,
     updateLocalDate = updateLocalDate,
 )
 

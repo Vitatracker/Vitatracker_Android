@@ -161,7 +161,7 @@
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
     <string name="add_notifications_time_set">Set up notification time *</string>
 
-    <string name="mycourse_remaining">Remains days: %s</string>
+    <string name="mycourse_remaining">Remains days: %d</string>
     <string name="mycourse_per_day_listitem">%1$d per day</string>
     <string name="mycourse_reminders">Reminders *</string>
     <string name="mycourse_edit_icon">Edit icon</string>

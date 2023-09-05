@@ -51,6 +51,7 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.cardBackground
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.theme.R
+import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.plusDay
 import app.mybad.utils.plusThreeDay
@@ -100,18 +101,21 @@ fun MyCoursesScreen(
                     )
 //                    Spacer(Modifier.height(16.dp))
                 }
-                // Отображение нового курса
+//                TODO(" исправить даты")
+                // Отображение планируемого нового курса remindDate > 0
                 courses.forEach { newCourse ->
-                    if (
-                        newCourse.interval > 0 &&
-                        newCourse.startDate + newCourse.interval > now &&
-                        newCourse.startDate + newCourse.interval < now.plusThreeDay()
-                    ) {
+                    if (newCourse.remindDate > 0 && newCourse.remindDate >= now) {
                         item {
+                            val startDate = newCourse.endDate + newCourse.interval
+                            val endDate = startDate + (newCourse.endDate - newCourse.startDate)
                             CourseItem(
                                 course = newCourse.copy(
-                                    startDate = newCourse.startDate + newCourse.interval,
-                                    endDate = newCourse.endDate + newCourse.interval,
+                                    id = 0,
+                                    idn = 0,
+                                    startDate = startDate,
+                                    endDate = endDate,
+                                    remindDate = 0,
+                                    interval = 0,
                                 ),
                                 remedy = remedies.first { it.id == newCourse.remedyId },
                                 usages = usages.filter { usage ->
@@ -119,11 +123,32 @@ fun MyCoursesScreen(
                                             usage.useTime >= newCourse.startDate &&
                                             usage.useTime < newCourse.startDate.plusDay()
                                 }.take(10),
-                                startInDays = (newCourse.startDate + newCourse.interval - now).secondsToDay()
-                                    .toInt(),
+                                startInDays = (startDate - now).secondsToDay().toInt(),
                             )
                         }
                     }
+//                    if (
+//                        newCourse.interval > 0 &&
+//                        newCourse.startDate + newCourse.interval > now &&
+//                        newCourse.startDate + newCourse.interval < now.plusThreeDay()
+//                    ) {
+//                        item {
+//                            CourseItem(
+//                                course = newCourse.copy(
+//                                    startDate = newCourse.startDate + newCourse.interval,
+//                                    endDate = newCourse.endDate + newCourse.interval,
+//                                ),
+//                                remedy = remedies.first { it.id == newCourse.remedyId },
+//                                usages = usages.filter { usage ->
+//                                    usage.courseId == newCourse.id &&
+//                                            usage.useTime >= newCourse.startDate &&
+//                                            usage.useTime < newCourse.startDate.plusDay()
+//                                }.take(10),
+//                                startInDays = (newCourse.startDate + newCourse.interval - now).secondsToDay()
+//                                    .toInt(),
+//                            )
+//                        }
+//                    }
                 }
             }
         }
@@ -241,25 +266,27 @@ private fun CourseItem(
                             }
                         }
                     }
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable {
-                                onSelect(course.id)
-                            }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                    if (startInDays == -1) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    onSelect(course.id)
+                                }
                         ) {
-                            Image(
-                                painter = painterResource(R.drawable.icon_pencil),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(16.dp)
-                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.icon_pencil),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -297,10 +324,8 @@ private fun CourseItem(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                             ) {
-                                val startsIn = String.format(
-                                    stringResource(R.string.mycourse_remaining),
-                                    startInDays.toString()
-                                )
+                                val startsIn =
+                                    stringResource(R.string.mycourse_remaining, startInDays)
                                 Text(
                                     text = startsIn,
                                     color = textColorFirst,

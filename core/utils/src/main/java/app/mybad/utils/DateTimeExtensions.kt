@@ -141,10 +141,10 @@ fun Long.toLocalDateTime() = Instant.fromEpochSeconds(this)
 fun Long.toSystemDateTime() = Instant.fromEpochSeconds(this)
     .toLocalDateTime(TimeZone.currentSystemDefault())
 
-fun Long.toSecondsLeftFromStartOfDay() = this - this.secondsToDay()
+fun Long.toSecondsLeftFromStartOfDay() = this - (this % SECONDS_IN_DAY)
 
-fun LocalDateTime.toSecondsLeftFromStartOfDay() =
-    this.toEpochSecond().toSecondsLeftFromStartOfDay()
+fun LocalDateTime.toSecondsLeftFromStartOfDay() = this.toEpochSecond()
+    .toSecondsLeftFromStartOfDay()
 
 fun LocalDateTime.toEpochSecond(isUTC: Boolean = true) = this.toInstant(
     if (isUTC) TimeZone.UTC else TimeZone.currentSystemDefault()
@@ -316,7 +316,7 @@ fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
 
 fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
 
-fun Int.toTimeDisplay() ="%02d:%02d".format(this.hour(), this.minute())
+fun Int.toTimeDisplay() = "%02d:%02d".format(this.hour(), this.minute())
 
 // высокосный год
 val Int.isLeapYear
