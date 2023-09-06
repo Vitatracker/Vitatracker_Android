@@ -47,9 +47,7 @@ fun StartMyCoursesScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp),
-            remedies = state.remedies,
-            courses = state.courses,
-            usages = state.usages,
+            state = state,
             onSelect = {
                 sendEvent(MyCoursesContract.Event.CourseEditing(it))
             },

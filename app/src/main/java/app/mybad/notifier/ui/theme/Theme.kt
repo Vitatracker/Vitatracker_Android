@@ -29,7 +29,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = tertiary80,
     onTertiary = tertiary20,
 
-    tertiaryContainer = tertiary30,
+    // для border Настроить напоминание
+    tertiaryContainer = tertiaryBorderGray,
     onTertiaryContainer = tertiary90,
 
     error = errorRed,
@@ -67,7 +68,8 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = tertiary80,
     onTertiary = tertiary20,
 
-    tertiaryContainer = tertiary30,
+    // для border Настроить напоминание
+    tertiaryContainer = tertiaryBorderBlue,
     onTertiaryContainer = tertiary90,
 
     error = error80,

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -72,8 +71,12 @@ fun AddMedNotificationsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -84,12 +87,12 @@ fun AddMedNotificationsScreen(
                 )
                 Spacer(Modifier.height(12.dp))
                 AddNotificationButton(
+                    form = state.remedy.type,
+                    forms = forms,
                     onClick = { sendEvent(CreateCourseContract.Event.AddUsagesPattern) }
                 )
                 Spacer(Modifier.height(16.dp))
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight(0.84f),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(bottom = 72.dp)
                 ) {
@@ -121,12 +124,11 @@ fun AddMedNotificationsScreen(
                         )
                     }
                 }
-                Spacer(Modifier.height(16.dp))
             }
             ReUseFilledButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp),
+                    .padding(top = 16.dp),
                 textId = R.string.navigation_next,
                 isEnabled = state.nextAllowed,
             ) {

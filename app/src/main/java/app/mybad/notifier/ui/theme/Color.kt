@@ -1,7 +1,8 @@
 package app.mybad.notifier.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
+// при изменении цвета, подписать для каких элементов цвет
+// не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы
 val primaryBlue = Color(0xFF10D2D2)
 val primaryContainerBlue = Color(0xFFC3F4F4)
 val secondaryContainerBlue = Color(0xFFF1F7F7)
@@ -67,6 +68,11 @@ val textColorFirst = Color.Black
 val textColorSecond = Color.Gray
 val textColorThird = Color.LightGray
 
-val primaryBorderBlue = Color(0x4010D2D2)
-val primaryBorderGray = Color(0x4098AFB0)
 val settingsIconTint = Color(0xFF7B8A8A)
+
+// для border Настроить напоминание
+val tertiaryBorderGray = Color(0x4098AFB0)
+val tertiaryBorderBlue = Color(0x40C3F4F4)
+
+// при изменении цвета, подписать для каких элементов цвет
+// не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы

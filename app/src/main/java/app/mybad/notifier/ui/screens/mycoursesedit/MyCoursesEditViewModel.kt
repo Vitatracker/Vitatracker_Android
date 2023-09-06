@@ -21,7 +21,7 @@ import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.ui.common.generatePattern
 import app.mybad.notifier.ui.common.generateUsages
-import app.mybad.utils.SECONDS_IN_DAY
+import app.mybad.utils.atStartOfDay
 import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.hour
@@ -29,6 +29,7 @@ import app.mybad.utils.minus
 import app.mybad.utils.minute
 import app.mybad.utils.plus
 import app.mybad.utils.plusDay
+import app.mybad.utils.secondsToDay
 import app.mybad.utils.timeInMinutes
 import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toLocalDateTime
@@ -78,11 +79,11 @@ class MyCoursesEditViewModel @Inject constructor(
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
-                MyCoursesEditContract.Event.AddUsagesPattern -> addUsagesPattern()
-
-                is MyCoursesEditContract.Event.DeleteUsagePattern -> setState {
-                    copy(usagesPatternEdit = usagesPatternEdit.minus(event.pattern))
+                is MyCoursesEditContract.Event.DeleteUsagePattern -> {
+                    updateStateUsagesPatterns(viewState.value.usagesPatternEdit.minus(event.pattern))
                 }
+
+                MyCoursesEditContract.Event.AddUsagesPattern -> addUsagesPattern()
 
                 is MyCoursesEditContract.Event.ChangeQuantityUsagePattern -> {
                     changeQuantityUsagePattern(event.pattern, event.quantity)
@@ -133,8 +134,11 @@ class MyCoursesEditViewModel @Inject constructor(
 
                     // начало нового курса + интервал за сколько дней сообщить - последний день курса, который может быть больше
                     val beforeDay = if (course.remindDate > 0) {
-                        course.remindDate.plusDay(course.interval.toInt())
-                            .minus(course.endDate) / SECONDS_IN_DAY
+                        val startDate = course.endDate
+                            .plusDay(course.interval.secondsToDay().toInt())
+                            .atStartOfDay()
+                        val days = (startDate - course.remindDate).secondsToDay()
+                        if (days > 0) days else 0
                     } else 0
 
                     setState {
@@ -144,6 +148,7 @@ class MyCoursesEditViewModel @Inject constructor(
                             usagesPattern = usagesPattern,
 
                             usagesPatternEdit = usagesPattern,
+                            nextAllowed = usagesPattern.isNotEmpty(),
                             remindTime = viewState.value.course.remindDate.timeInMinutes(),
                             coursesInterval = DateTimePeriod(days = course.interval.toInt()),
                             remindBeforePeriod = DateTimePeriod(days = beforeDay.toInt()),
@@ -161,7 +166,7 @@ class MyCoursesEditViewModel @Inject constructor(
     }
 
     private fun updateStateUsagesPatterns(usagesPattern: List<UsageFormat>) {
-        setState { copy(usagesPatternEdit = usagesPattern) }
+        setState { copy(usagesPatternEdit = usagesPattern, nextAllowed = usagesPattern.isNotEmpty()) }
     }
 
     private fun changeTimeUsagePattern(pattern: UsageFormat, time: Int) {
@@ -196,23 +201,17 @@ class MyCoursesEditViewModel @Inject constructor(
         remedy: RemedyDomainModel,
         course: CourseDomainModel,
     ) {
-        val remindDate = course.endDate.toLocalDateTime()
-            .plus(viewState.value.coursesInterval)
-            .minus(viewState.value.remindBeforePeriod)
-            .changeTime(
-                hour = viewState.value.remindTime.hour(),
-                minute = viewState.value.remindTime.minute()
-            )
-            .toEpochSecond()
         setState {
             copy(
                 remedy = remedy,
-                course = course.copy(
-                    remindDate = remindDate,
-                    interval = viewState.value.remindBeforePeriod.days.toLong()
-                ),
+                course = course,
             )
         }
+        updateReminder(
+            remindTime = viewState.value.remindTime,
+            coursesInterval = viewState.value.coursesInterval,
+            remindBeforePeriod = viewState.value.remindBeforePeriod,
+        )
     }
 
     private fun updateReminder(
@@ -220,7 +219,8 @@ class MyCoursesEditViewModel @Inject constructor(
         coursesInterval: DateTimePeriod,
         remindBeforePeriod: DateTimePeriod,
     ) {
-        val remindDate = viewState.value.course.endDate.toLocalDateTime()
+        val startDate = viewState.value.course.endDate.toLocalDateTime()
+        val remindDate = startDate
             .plus(coursesInterval)
             .minus(remindBeforePeriod)
             .changeTime(
@@ -237,7 +237,8 @@ class MyCoursesEditViewModel @Inject constructor(
 
                 course = viewState.value.course.copy(
                     remindDate = remindDate,
-                    interval = remindBeforePeriod.days.toLong()
+                    interval = startDate.atStartOfDay()
+                        .toEpochSecond() - viewState.value.course.endDate,
                 ),
             )
         }

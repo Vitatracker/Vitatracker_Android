@@ -51,19 +51,15 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.cardBackground
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.theme.R
-import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.plusDay
-import app.mybad.utils.plusThreeDay
 import app.mybad.utils.secondsToDay
 import app.mybad.utils.toDateDisplay
 
 @Composable
 fun MyCoursesScreen(
     modifier: Modifier = Modifier,
-    remedies: List<RemedyDomainModel>,
-    courses: List<CourseDomainModel>,
-    usages: List<UsageDomainModel>,
+    state: MyCoursesContract.State,
     onSelect: (Long) -> Unit = {},
 ) {
     val height = LocalConfiguration.current.screenHeightDp
@@ -72,11 +68,13 @@ fun MyCoursesScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        val now = currentDateTimeInSecond()
-        courses.forEach {
+        val date = currentDateTimeInSecond()
+        state.courses.forEach {
             Log.w("VTTAG", "MyCourses:: $it")
         }
-        if (courses.isNotEmpty() && remedies.isNotEmpty() && validate(remedies, courses)) {
+        if (state.courses.isNotEmpty() && state.remedies.isNotEmpty()
+            && validate(state.remedies, state.courses)
+        ) {
             LazyColumn(
                 Modifier.heightIn(max = height.dp),
                 contentPadding = PaddingValues(
@@ -88,67 +86,17 @@ fun MyCoursesScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 // Отображение текущих курсов таблеток
-                items(courses) { course ->
+                items(state.courses) { course ->
                     CourseItem(
                         course = course,
-                        remedy = remedies.first { it.id == course.remedyId },
-                        usages = usages.filter { usage ->
+                        remedy = state.remedies.first { it.id == course.remedyId },
+                        usages = state.usages.filter { usage ->
                             usage.courseId == course.id &&
                                     usage.useTime >= course.startDate &&
                                     usage.useTime < course.endDate.plusDay()
                         },
                         onSelect = onSelect::invoke,
                     )
-//                    Spacer(Modifier.height(16.dp))
-                }
-//                TODO(" исправить даты")
-                // Отображение планируемого нового курса remindDate > 0
-                courses.forEach { newCourse ->
-                    if (newCourse.remindDate > 0 && newCourse.remindDate >= now) {
-                        item {
-                            val startDate = newCourse.endDate + newCourse.interval
-                            val endDate = startDate + (newCourse.endDate - newCourse.startDate)
-                            CourseItem(
-                                course = newCourse.copy(
-                                    id = 0,
-                                    idn = 0,
-                                    startDate = startDate,
-                                    endDate = endDate,
-                                    remindDate = 0,
-                                    interval = 0,
-                                ),
-                                remedy = remedies.first { it.id == newCourse.remedyId },
-                                usages = usages.filter { usage ->
-                                    usage.courseId == newCourse.id &&
-                                            usage.useTime >= newCourse.startDate &&
-                                            usage.useTime < newCourse.startDate.plusDay()
-                                }.take(10),
-                                startInDays = (startDate - now).secondsToDay().toInt(),
-                            )
-                        }
-                    }
-//                    if (
-//                        newCourse.interval > 0 &&
-//                        newCourse.startDate + newCourse.interval > now &&
-//                        newCourse.startDate + newCourse.interval < now.plusThreeDay()
-//                    ) {
-//                        item {
-//                            CourseItem(
-//                                course = newCourse.copy(
-//                                    startDate = newCourse.startDate + newCourse.interval,
-//                                    endDate = newCourse.endDate + newCourse.interval,
-//                                ),
-//                                remedy = remedies.first { it.id == newCourse.remedyId },
-//                                usages = usages.filter { usage ->
-//                                    usage.courseId == newCourse.id &&
-//                                            usage.useTime >= newCourse.startDate &&
-//                                            usage.useTime < newCourse.startDate.plusDay()
-//                                }.take(10),
-//                                startInDays = (newCourse.startDate + newCourse.interval - now).secondsToDay()
-//                                    .toInt(),
-//                            )
-//                        }
-//                    }
                 }
             }
         }
@@ -166,8 +114,6 @@ private fun CourseItem(
     course: CourseDomainModel,
     usages: List<UsageDomainModel>,
     remedy: RemedyDomainModel,
-    modifier: Modifier = Modifier,
-    startInDays: Int = -1,
     onSelect: (Long) -> Unit = {},
 ) {
     Log.w("MC_usages_in_item", "$usages")
@@ -266,7 +212,7 @@ private fun CourseItem(
                             }
                         }
                     }
-                    if (startInDays == -1) {
+                    if (course.remindDate != -1L) {
                         Surface(
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.primary,
@@ -316,7 +262,7 @@ private fun CourseItem(
                         )
                         Text(text = end, fontSize = 12.sp, fontWeight = FontWeight(500))
                     }
-                    if (startInDays > 0) {
+                    if (course.remindDate == -1L && course.interval > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(Modifier.size(16.dp))
                             Surface(
@@ -324,8 +270,10 @@ private fun CourseItem(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                             ) {
-                                val startsIn =
-                                    stringResource(R.string.mycourse_remaining, startInDays)
+                                val startsIn = stringResource(
+                                    R.string.mycourse_remaining,
+                                    course.interval.secondsToDay()
+                                )
                                 Text(
                                     text = startsIn,
                                     color = textColorFirst,

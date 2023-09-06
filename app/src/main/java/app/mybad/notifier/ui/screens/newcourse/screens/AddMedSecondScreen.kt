@@ -61,7 +61,6 @@ fun AddMedSecondScreen(
 ) {
     Log.w("VTTAG", "NewCourseNavGraph::AddMedSecondScreen: start")
     LaunchedEffect(SIDE_EFFECTS_KEY) {
-        Log.w("VTTAG", "NewCourseNavGraph::AddMedSecondScreen: LaunchedEffect")
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)

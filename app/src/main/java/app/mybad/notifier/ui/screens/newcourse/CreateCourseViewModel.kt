@@ -50,10 +50,12 @@ class CreateCourseViewModel @Inject constructor(
 
             is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
 
-            is CreateCourseContract.Event.UpdateUsagePatterns -> setState { copy(usagesPattern = event.patterns) }
+            is CreateCourseContract.Event.UpdateUsagePatterns ->{
+                updateStateUsagesPatterns(usagesPattern = event.patterns)
+            }
 
-            is CreateCourseContract.Event.DeleteUsagePattern -> setState {
-                copy(usagesPattern = usagesPattern.minus(event.pattern))
+            is CreateCourseContract.Event.DeleteUsagePattern -> {
+                updateStateUsagesPatterns(viewState.value.usagesPattern.minus(event.pattern))
             }
 
             CreateCourseContract.Event.AddUsagesPattern -> addUsagesPattern()
@@ -219,6 +221,7 @@ class CreateCourseViewModel @Inject constructor(
                     startDate = date.atStartOfDay(),
                     endDate = date.atEndOfDay(),
                 ),
+                nextAllowed = viewState.value.usagesPattern.isNotEmpty(),
                 isError = false,
             )
         }

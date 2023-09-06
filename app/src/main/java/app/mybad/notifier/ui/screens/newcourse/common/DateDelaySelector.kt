@@ -31,9 +31,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.theme.R
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.theme.R
 import kotlinx.datetime.DateTimePeriod
 import kotlin.math.absoluteValue
 
@@ -46,10 +46,8 @@ fun DateDelaySelector(
 ) {
     val days = (0..30).toList()
     val months = (0..12).toList()
-    val pagerStateMonths =
-        rememberPagerState(initialPage = months.size * 10000 + initValue.months) { months.size }
-    val pagerStateDays =
-        rememberPagerState(initialPage = days.size * 10000 + initValue.days) { days.size }
+    val pagerStateMonths = rememberPagerState(initialPage = initValue.months) { months.size }
+    val pagerStateDays = rememberPagerState(initialPage = initValue.days) { days.size }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -75,13 +73,13 @@ fun DateDelaySelector(
                     pageSpacing = 8.dp,
                     contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
                     pageSize = PageSize.Fixed(32.dp)
-                ) {
-                    val ts = when ((pagerStateMonths.currentPage - it).absoluteValue) {
+                ) { month ->
+                    val ts = when ((pagerStateMonths.currentPage - month).absoluteValue) {
                         0 -> 1f
                         1 -> 0.85f
                         else -> 0.7f
                     }
-                    val a = when ((pagerStateMonths.currentPage - it).absoluteValue) {
+                    val a = when ((pagerStateMonths.currentPage - month).absoluteValue) {
                         0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
@@ -101,11 +99,7 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if (months[it % months.size] < 10) {
-                            "${months[it % months.size]}"
-                        } else {
-                            "${months[it % months.size]}"
-                        }
+                        val t = String.format("%02d", months[month % months.size])
                         Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
@@ -123,13 +117,13 @@ fun DateDelaySelector(
                     pageSpacing = 8.dp,
                     contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
                     pageSize = PageSize.Fixed(32.dp)
-                ) {
-                    val ts = when ((pagerStateDays.currentPage - it).absoluteValue) {
+                ) { day ->
+                    val ts = when ((pagerStateDays.currentPage - day).absoluteValue) {
                         0 -> 1f
                         1 -> 0.85f
                         else -> 0.7f
                     }
-                    val a = when ((pagerStateDays.currentPage - it).absoluteValue) {
+                    val a = when ((pagerStateDays.currentPage - day).absoluteValue) {
                         0 -> 1f; 1 -> 0.5f; 2 -> 0.3f
                         else -> 0f
                     }
@@ -149,9 +143,8 @@ fun DateDelaySelector(
                             .wrapContentWidth()
                             .scale(scale)
                     ) {
-                        val t = if (days[it % days.size] < 10) "${days[it % days.size]}"
-                        else "${days[it % days.size]}"
-                        Text(text = t, style = Typography.headlineLarge, fontSize = 20.sp)
+                        val t = String.format("%02d", days[day % days.size])
+                        Text(text = t,style = Typography.headlineLarge, fontSize = 20.sp)
                     }
                 }
             }
@@ -178,7 +171,7 @@ fun DateDelaySelector(
 @Composable
 fun DateSelectorPreview() {
     MyBADTheme {
-        DateDelaySelector(initValue = DateTimePeriod(),
+        DateDelaySelector(initValue = DateTimePeriod(days = 5, months = 4),
             onSelect = {}
         )
     }

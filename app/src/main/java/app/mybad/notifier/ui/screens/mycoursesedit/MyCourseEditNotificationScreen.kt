@@ -40,6 +40,7 @@ import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.usagesPatternPreview
+import app.mybad.notifier.ui.common.usagesPatternPreview3
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
@@ -85,26 +86,31 @@ fun MyCourseEditNotificationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding())
-                .padding(16.dp),
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.64f),
-                verticalArrangement = Arrangement.Top
-            ) {
+                modifier = Modifier.weight(0.5f),
+            ){
                 Text(
                     text = stringResource(id = R.string.add_notifications_time_set),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(Modifier.height(8.dp))
+                AddNotificationButton(
+                    form = state.remedy.type,
+                    forms = forms,
+                ) { sendEvent(MyCoursesEditContract.Event.AddUsagesPattern) }
+                Spacer(Modifier.height(8.dp))
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight(0.84f),
                     state = rememberLazyListState(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
                     items(state.usagesPatternEdit) { pattern ->
@@ -132,10 +138,6 @@ fun MyCourseEditNotificationScreen(
                         )
                     }
                 }
-                Spacer(Modifier.height(16.dp))
-                AddNotificationButton(
-                    onClick = { sendEvent(MyCoursesEditContract.Event.AddUsagesPattern) }
-                )
             }
             Column {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -170,18 +172,19 @@ fun MyCourseEditNotificationScreen(
                     itemsPadding = PaddingValues(16.dp)
                 )
                 Spacer(Modifier.height(16.dp))
-                ReUseFilledButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    textId = R.string.navigation_next
-                ) {
-                    sendEvent(
-                        MyCoursesEditContract.Event.NotificationUpdateAndEnd(
-                            remindTime = remindTime,
-                            coursesInterval = coursesInterval,
-                            remindBeforePeriod = remindBeforePeriod,
-                        )
+            }
+            ReUseFilledButton(
+                modifier = Modifier.fillMaxWidth(),
+                textId = R.string.navigation_next,
+                isEnabled = state.nextAllowed,
+            ) {
+                sendEvent(
+                    MyCoursesEditContract.Event.NotificationUpdateAndEnd(
+                        remindTime = remindTime,
+                        coursesInterval = coursesInterval,
+                        remindBeforePeriod = remindBeforePeriod,
                     )
-                }
+                )
             }
         }
     }

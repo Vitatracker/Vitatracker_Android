@@ -312,19 +312,17 @@ fun MyCourseEditScreen(
                 )
                 MultiBox(
                     {
-                        Text(
-                            text = stringResource(R.string.add_notifications_time_set),
-                            modifier = Modifier.clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                                onClick = {
-                                    sendEvent(MyCoursesEditContract.Event.NotificationEditing)
-                                }
-                            )
-                        )
+                        Text(text = stringResource(R.string.add_notifications_time_set))
                     },
                     itemsPadding = PaddingValues(16.dp),
                     outlineColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = {
+                            sendEvent(MyCoursesEditContract.Event.NotificationEditing)
+                        }
+                    )
                 )
             }
             Spacer(Modifier.height(16.dp))

@@ -16,3 +16,9 @@ val usagesPatternPreview = listOf(
     UsageFormat(1080, 3), //12:00
     UsageFormat(1140, 2),//18:00
 )
+
+val usagesPatternPreview3 = listOf(
+    UsageFormat(480, 1), //08:00
+    UsageFormat(540, 3), //12:00
+    UsageFormat(600, 2),//18:00
+)

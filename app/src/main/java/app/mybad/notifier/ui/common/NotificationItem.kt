@@ -33,9 +33,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.ui.theme.primaryBorderGray
 import app.mybad.utils.toTimeDisplay
 
 @Composable
@@ -45,9 +45,9 @@ fun NotificationItem(
     quantity: Int,
     form: Int,
     forms: Array<String>,
-    onDelete: () -> Unit,
+    onDelete: () -> Unit = {},
     onTimeClick: () -> Unit = {},
-    onDoseChange: (Float) -> Unit = { }
+    onDoseChange: (Float) -> Unit = {}
 ) {
     val fm = LocalFocusManager.current
     var field by remember { mutableStateOf(TextFieldValue(quantity.toString())) }
@@ -63,13 +63,13 @@ fun NotificationItem(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, primaryBorderGray),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiaryContainer),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 12.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.RemoveCircle,
@@ -127,4 +127,15 @@ fun NotificationItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun NotificationItemPreview() {
+    NotificationItem(
+        time = 140,
+        quantity = 1,
+        form = 0,
+        forms = arrayOf("Таблетка"),
+    )
 }
