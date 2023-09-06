@@ -12,7 +12,6 @@ import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
 import app.mybad.utils.toLocalDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,12 +56,14 @@ class LoginViewModel @Inject constructor(
 
     private fun signIn(login: String, password: String) {
         viewModelScope.launch {
-            setState { copy(isLoading = true) }
+            // тут обязательно в launch
+            launch {
+                setState { copy(isLoading = true) }
+            }
             // проверка почты и пароля на валидность
             log("isValidParams")
             if (!isValidParams(login, password)) return@launch
             AuthToken.clear()
-            delay(5000)
             loginWithEmailUseCase(login = login, password = password)
                 .onSuccess { result ->
                     // тут не только получение id, но и если его нет, то создается

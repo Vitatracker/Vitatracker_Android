@@ -116,7 +116,7 @@ private fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             SignInWithGoogle(
-                enabled = state.isLoginButtonEnabled && !state.isLoading
+                enabled = !state.isLoading
             ) {
                 sendEvent(LoginContract.Event.SignInWithGoogle)
             }

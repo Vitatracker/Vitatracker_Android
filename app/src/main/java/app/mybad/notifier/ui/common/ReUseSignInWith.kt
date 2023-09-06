@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,12 +55,14 @@ fun SignInWithGoogle(
             Image(
                 painter = painterResource(id = R.drawable.ic_logo_google),
                 contentDescription = stringResource(id = R.string.sign_in_with_google),
+                alpha = if (enabled) DefaultAlpha else 0.3f,
                 modifier = Modifier.size(ButtonDefaults.IconSize)
             )
             Spacer(Modifier.size(ButtonDefaults.IconSize))
             Text(
                 text = stringResource(id = R.string.google),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = if (enabled) MaterialTheme.colorScheme.onPrimary
+                else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 16.sp
             )
         }

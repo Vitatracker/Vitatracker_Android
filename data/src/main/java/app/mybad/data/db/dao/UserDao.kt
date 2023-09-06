@@ -34,7 +34,7 @@ interface UserDao {
     suspend fun getUserByEmail(email: String): UserModel?
 
     //--------------------------------------------------
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserModel): Long
 
     @Update

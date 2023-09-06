@@ -64,7 +64,10 @@ class RegistrationViewModel @Inject constructor(
     fun registration(login: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
             log("start")
-            setState { copy(error = null, isLoading = true) }
+            // для обновления состояния необходимо запускать в launch
+            launch {
+                setState { copy(error = null, isLoading = true) }
+            }
             // проверка почты на валидность
             if (!isValidParams(login, password, confirmPassword)) return@launch
             AuthToken.clear()
