@@ -8,7 +8,6 @@ class UpdateCourseUseCase @Inject constructor(
     private val coursesRepo: CourseRepository
 ) {
 
-    suspend operator fun invoke(updatedCourse: CourseDomainModel) {
+    suspend operator fun invoke(updatedCourse: CourseDomainModel) =
         coursesRepo.updateCourse(updatedCourse)
-    }
 }

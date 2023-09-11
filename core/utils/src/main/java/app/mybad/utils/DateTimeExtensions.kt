@@ -127,8 +127,7 @@ fun Int.dayFullDisplay(): String = DayOfWeek(this + 1).getDisplayName(
 
 // Прибавление
 fun Long.plusDay(days: Int = 1): Long = this + SECONDS_IN_DAY * days
-
-fun Long.plusThreeDay(): Long = this + SECONDS_IN_DAY * 3 + 1
+fun Long.plusDay(days: Long): Long = this.plusDay(days.toInt())
 
 fun Long.secondsToDay() = (this / SECONDS_IN_DAY)
 
@@ -151,6 +150,10 @@ fun LocalDateTime.toEpochSecond(isUTC: Boolean = true) = this.toInstant(
 ).epochSeconds
 
 // Преобразование и замена даты и времени
+fun Long.changeTime(minute: Int, hour: Int = 0) = this.toLocalDateTime()
+    .changeTime(hour = hour, minute = minute)
+    .toEpochSecond()
+
 fun LocalDateTime.changeTime(
     hour: Int? = null,
     minute: Int? = null,
@@ -159,7 +162,7 @@ fun LocalDateTime.changeTime(
 ): LocalDateTime {
     var h = hour
     var m = minute ?: this.minute
-    if (h == null && m > 59) {
+    if ((h == null || h == 0) && m > 59) {
         h = m / MINUTES_IN_HOUR
         m %= MINUTES_IN_HOUR
     }
@@ -336,4 +339,60 @@ fun LocalDateTime.getDaysOfMonth() = month.length(year.isLeapYear)
 fun String.toLocalDateTime(): LocalDateTime {
     return if (this == "") currentDateTime()
     else LocalDateTime.parse(this)
+}
+
+// интервал и дата оповещения
+// endDate
+fun Long.nextCourseStart(
+    coursesInterval: DateTimePeriod,
+    remindBeforePeriod: DateTimePeriod,
+    remindTime: Int
+): Pair<Long, Long> {
+    return try {
+        val nextCourseStart = this.toLocalDateTime()
+            .plus(coursesInterval)
+            .atStartOfDay()
+        val remindDate = if (coursesInterval.months > 0 || coursesInterval.days > 0
+            || remindBeforePeriod.months > 0 || remindBeforePeriod.days > 0
+        ) {
+            nextCourseStart
+                .minus(remindBeforePeriod)
+                .changeTime(minute = remindTime, hour = 0)
+                .toEpochSecond()
+        } else 0L
+        val interval = if (remindDate > 0) {
+            (nextCourseStart.toEpochSecond() - this).secondsToDay() + 1 // +1 день, значит следующий день
+        } else 0L
+        remindDate to interval
+    } catch (_: Error) {
+        0L to 0L
+    }
+}
+
+//remindDate
+fun Long.nextCourseIntervals(
+    remindDate: Long,
+    interval: Long,
+): Triple<Int, Int, Int> {
+    // начало нового курса + интервал за сколько дней сообщить - последний день курса, который может быть больше
+    // remindTime, coursesInterval (day), remindBeforePeriod (day)
+    if (remindDate <= 0) return Triple(840, 0, 0)
+
+    return try {
+        val remindTime = remindDate.timeInMinutes()
+        val nextCourseStart = this
+            .plusDay(interval)
+            .atStartOfDay()
+        val days = (nextCourseStart - remindDate.atStartOfDay()).secondsToDay()
+            .toInt()
+        // не больше 12 месяцев и 30 дней
+        val beforeDay = if (days in 0..390) days else 0
+        val intervalCorrect = if (interval in 0..390) {
+            interval.toInt() - 1 // -1 день, значит следующий день
+        } else 0
+
+        Triple(remindTime, intervalCorrect, beforeDay)
+    } catch (_: Error) {
+        Triple(840, 0, 0)
+    }
 }

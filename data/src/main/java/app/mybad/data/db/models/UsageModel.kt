@@ -30,37 +30,30 @@ data class UsageModel(
     @ColumnInfo(name = UsageContract.Columns.COURSE_IDN)
     val courseIdn: Long,
 
-    @ColumnInfo(name = UsageContract.Columns.REMEDY_ID)
-    val remedyId: Long,
-    @ColumnInfo(name = UsageContract.Columns.REMEDY_IDN)
-    val remedyIdn: Long,
-
     @ColumnInfo(name = UsageContract.Columns.USER_ID)
     val userId: Long,
     @ColumnInfo(name = UsageContract.Columns.USER_IDN)
     val userIdn: String,
+
+    @ColumnInfo(name = UsageContract.Columns.USE_TIME)
+    val useTime: Long, // тут полная дата со временем, но нужно только время
+    @ColumnInfo(name = UsageContract.Columns.FACT_USE_TIME)
+    val factUseTime: Long = -1, // дата фактического приема
+    @ColumnInfo(name = UsageContract.Columns.QUANTITY)
+    val quantity: Float = 1f, // количество вещества за раз
+
+    @ColumnInfo(name = UsageContract.Columns.IS_DELETED)
+    val isDeleted: Boolean = false,
+    @ColumnInfo(name = UsageContract.Columns.NOT_USED)
+    val notUsed: Boolean = false,
 
     @ColumnInfo(name = UsageContract.Columns.CREATION_DATE)
     val creationDate: Long = 0,
     @ColumnInfo(name = UsageContract.Columns.UPDATED_DATE)
     val updatedDate: Long = 0,
 
-    @ColumnInfo(name = UsageContract.Columns.USE_TIME)
-    val useTime: Long, // тут полная дата со временем, но нужно только время
-    @ColumnInfo(name = UsageContract.Columns.FACT_USE_TIME)
-    val factUseTime: Long = 0,
-
-    @ColumnInfo(name = UsageContract.Columns.QUANTITY)
-    val quantity: Int = 1,
-    @ColumnInfo(name = UsageContract.Columns.IS_DELETED)
-    val isDeleted: Boolean = false,
-    @ColumnInfo(name = UsageContract.Columns.NOT_USED)
-    val notUsed: Boolean = false,
-
     @ColumnInfo(name = UsageContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,
-    @ColumnInfo(name = UsageContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0,
     @ColumnInfo(name = UsageContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
 )

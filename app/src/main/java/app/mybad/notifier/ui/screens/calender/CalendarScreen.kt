@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.calender
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.BottomSlideInDialog
 import app.mybad.notifier.ui.common.MonthSelector
@@ -43,15 +42,11 @@ import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
-import app.mybad.utils.atEndOfDay
-import app.mybad.utils.atStartOfDay
 import app.mybad.utils.atStartOfMonth
 import app.mybad.utils.currentDateTime
 import app.mybad.utils.dayShortDisplay
 import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
-import app.mybad.utils.toDateFullDisplay
-import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toSecondsLeftFromStartOfDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDateTime
@@ -64,13 +59,13 @@ fun CalendarScreen(
     sendEvent: (event: CalendarContract.Event) -> Unit = {},
     navigation: (navigationEffect: CalendarContract.Effect.Navigation) -> Unit,
 ) {
-    var date by remember { mutableStateOf(currentDateTime()) }
-    var selectedDate by remember { mutableStateOf<LocalDateTime?>(date) }
+//    var date by remember { mutableStateOf(currentDateTime()) }
+//    var selectedDate by remember { mutableStateOf<LocalDateTime?>(date) }
     var dialogIsShown by remember { mutableStateOf(false) }
-    var usagesDaily = collectUsagesToday(
-        date = selectedDate,
-        usages = state.usages
-    )
+//    var usagesDaily = collectUsagesToday(
+//        date = selectedDate,
+//        usages = state.patternUsage
+//    )
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow.collect { effect ->
             when (effect) {
@@ -94,31 +89,28 @@ fun CalendarScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             MonthSelector(
-                date = date,
-                onSwitch = { date = it }
+                date = state.date,
+                onSwitch = { sendEvent(CalendarContract.Event.ChangeDate(date = it)) }
             )
             Spacer(Modifier.height(16.dp))
             CalendarItem(
-                date = date,
-                usages = state.usages,
+                date = state.date,
+                usages = state.patternUsage,
                 onSelect = {
-                    selectedDate = it
+                    sendEvent(CalendarContract.Event.SelectDate(date = it))
                     dialogIsShown = true
                 }
             )
             if (dialogIsShown) {
                 BottomSlideInDialog(onDismissRequest = { dialogIsShown = false }) {
                     DailyUsages(
-                        date = selectedDate,
-                        usages = usagesDaily,
-                        remedies = state.remedies,
+                        date = state.selectedDate,
+                        usages = state.usagesDaily,
                         onDismiss = { dialogIsShown = false },
                         onNewDate = {
-                            selectedDate = it
-                            usagesDaily = collectUsagesToday(
-                                date = selectedDate,
-                                usages = state.usages
-                            )
+                            sendEvent(CalendarContract.Event.SelectDate(date = it))
+                            //TODO("изменить реализацию, загружать usagesDaily при изменении selectedDate")
+                            sendEvent(CalendarContract.Event.ChangeUsagesDaily)
                         },
                         onUsed = { sendEvent(CalendarContract.Event.SetUsage(it)) }
                     )
@@ -131,7 +123,7 @@ fun CalendarScreen(
 @Composable
 private fun CalendarItem(
     date: LocalDateTime,
-    usages: List<UsageDomainModel>,
+    usages: List<UsageDisplayDomainModel>,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
     val currentDate = currentDateTime()
@@ -139,8 +131,9 @@ private fun CalendarItem(
         Array(DAYS_A_WEEK) { null }
     }
     val usgs = Array(6) {
-        Array(DAYS_A_WEEK) { listOf<UsageDomainModel>() }
+        Array(DAYS_A_WEEK) { listOf<UsageDisplayDomainModel>() }
     }
+    TODO("епределать реализацию")
     // не понятно что это, начало месяца или что или последний день предыдущего месяца
     // minusDays(date.dayOfMonth.toLong())
     val fwd = date.atStartOfMonth()
@@ -204,7 +197,7 @@ private fun CalendarItem(
                             date = cdr[w][day],
                             usages = usgs[w][day].size,
                             isSelected = cdr[w][day]?.dayOfYear == currentDate.dayOfYear &&
-                                cdr[w][day]?.year == currentDate.year,
+                                    cdr[w][day]?.year == currentDate.year,
                             isOtherMonth = date.month.value != cdr[w][day]?.month?.value
                         ) { onSelect(it) }
                     }
@@ -263,6 +256,7 @@ private fun CalendarDayItem(
     }
 }
 
+/*
 private fun collectUsagesToday(
     date: LocalDateTime?,
     usages: List<UsageDomainModel>,
@@ -282,3 +276,4 @@ private fun collectUsagesToday(
         )
     }
 }
+*/

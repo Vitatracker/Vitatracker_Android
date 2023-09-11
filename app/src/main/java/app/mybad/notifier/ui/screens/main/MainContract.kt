@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.main
 
-import app.mybad.domain.models.RemedyDomainModel
-import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
@@ -11,13 +10,13 @@ import kotlinx.datetime.LocalDateTime
 class MainContract {
     sealed interface Event : ViewEvent {
         data class ChangeDate(val date: LocalDateTime) : Event
-        data class SetUsageFactTime(val usageId: Long) : Event
+        data class SetUsageFactTime(val usageKey: String) : Event
     }
 
     data class State(
-        val remedies: List<RemedyDomainModel> = emptyList(),
-        val usages: List<UsageDomainModel> = emptyList(),
-        val date: LocalDateTime = currentDateTime()
+        val patternsAndUsages: Map<String, UsageDisplayDomainModel> = emptyMap(),
+
+        val selectedDate: LocalDateTime = currentDateTime()
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {

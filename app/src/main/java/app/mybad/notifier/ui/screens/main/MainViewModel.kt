@@ -3,17 +3,18 @@ package app.mybad.notifier.ui.screens.main
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.usecases.remedies.GetRemediesByListIdUseCase
-import app.mybad.domain.usecases.usages.GetUsagesBetweenUseCase
-import app.mybad.domain.usecases.usages.UpdateUsageUseCase
+import app.mybad.domain.models.UsageDisplayDomainModel
+import app.mybad.domain.usecases.usages.GetPatternUsagesWithNameAndDateBetweenUseCase
+import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
+import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTime
 import app.mybad.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,9 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getRemediesByListIdUseCase: GetRemediesByListIdUseCase,
-    private val getUsagesBetweenUseCase: GetUsagesBetweenUseCase,
-    private val updateUsageUseCase: UpdateUsageUseCase,
+    private val getPatternUsagesWithNameAndDateBetweenUseCase: GetPatternUsagesWithNameAndDateBetweenUseCase,
+    private val getUsagesWithNameAndDateBetweenUseCase: GetUsagesWithNameAndDateBetweenUseCase,
+    private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     override fun setInitialState() = MainContract.State()
@@ -34,13 +35,37 @@ class MainViewModel @Inject constructor(
     override fun handleEvents(event: MainContract.Event) {
         Log.d("VTTAG", "MainViewModel::handleEvents: event=$event")
         when (event) {
-            is MainContract.Event.ChangeDate -> changeData(event.date)
-            is MainContract.Event.SetUsageFactTime -> setUsagesFactTime(event.usageId)
+            is MainContract.Event.ChangeDate -> changeDate(event.date)
+            is MainContract.Event.SetUsageFactTime -> setUsagesFactTime(event.usageKey)
         }
     }
 
+    private val dateTime = MutableStateFlow(viewState.value.selectedDate)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val patternsAndUsages = dateTime.flatMapLatest { date ->
+        Log.w("VTTAG", "MainViewModel::receivingCourses: pattern + usages date=$date")
+        combine(
+            getPatternUsagesWithNameAndDateBetweenUseCase(
+                startTime = date.atStartOfDay().toEpochSecond(),
+                endTime = date.atEndOfDay().toEpochSecond(),
+            ),
+            getUsagesWithNameAndDateBetweenUseCase(
+                startTime = date.atStartOfDay().toEpochSecond(),
+                endTime = date.atEndOfDay().toEpochSecond(),
+            ),
+        ) { p, u ->
+            p.plus(u)
+        }
+    }
+        .distinctUntilChanged()
+        .onEach {
+            Log.w("VTTAG", "MainViewModel::receivingCourses: pattern + usages=${it.size}")
+        }
+
     init {
         observeAuthorization()
+        receivingCourses()
     }
 
     private fun observeAuthorization() {
@@ -51,80 +76,41 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private val startAndEndDate = MutableSharedFlow<LocalDateTime>()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val usages = startAndEndDate.flatMapLatest { date ->
-        Log.w("VTTAG", "MainViewModel::receivingCourses: usages date=$date")
-        getUsagesBetweenUseCase(
-            date.atStartOfDay().toEpochSecond(),
-            date.atEndOfDay().toEpochSecond(),
-        )
-    }
-        .distinctUntilChanged()
-        .onEach {
-            Log.w("VTTAG", "MainViewModel::receivingCourses: usages=${it.size}")
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val remedies = usages.flatMapLatest { usages ->
-        Log.w("VTTAG", "MainViewModel::receivingCourses: remedies")
-        val remedyIds = usages.map { usage ->
-            usage.remedyId
-        }.toSet().toList()
-        getRemediesByListIdUseCase(remedyIds)
-    }
-        .distinctUntilChanged()
-        .onEach {
-            Log.w("VTTAG", "MainViewModel::receivingCourses: remedies=${it.size}")
-        }
-
-    init {
-        Log.w("VTTAG", "MainViewModel::receivingCourses: init")
-        receivingCourses()
-    }
-
     private fun receivingCourses() {
         viewModelScope.launch {
-            combine(
-                remedies,
-                usages,
-                ::Pair
-            ).collect {
-                Log.w(
-                    "VTTAG",
-                    "MainViewModel::receivingCourses: combine usages=${it.second.size} remedies=${it.first.size}"
+            patternsAndUsages.collect(::changeState)
+        }
+    }
+
+    private fun changeState(pu: Map<String, UsageDisplayDomainModel>) {
+        viewModelScope.launch {
+            Log.w("VTTAG", "MainViewModel::receivingCourses: changeState=${pu.size}")
+            setState {
+                copy(
+                    patternsAndUsages = pu,
+                    selectedDate = dateTime.value,
                 )
-                setState {
-                    copy(
-                        remedies = it.first,
-                        usages = it.second,
-                    )
-                }
             }
         }
     }
 
-    private fun changeData(date: LocalDateTime) {
+    private fun changeDate(date: LocalDateTime) {
         viewModelScope.launch {
-            setState {
-                copy(date = date)
-            }
-            startAndEndDate.emit(date)
+            dateTime.value = date
             Log.d("VTTAG", "MainViewModel::changeData: date=$date")
         }
     }
 
-    private fun setUsagesFactTime(usageId: Long) {
+    private fun setUsagesFactTime(usageKey: String) {
         viewModelScope.launch {
-            viewState.value.usages.firstOrNull { it.id == usageId }?.let { usage ->
-                updateUsageUseCase(
-                    usage.copy(
-                        factUseTime = if (usage.factUseTime <= 0) currentDateTimeInSecond() else -1,
-                    )
-                )
-                // Синхронизируем с сервером
-                AuthToken.requiredSetUsagesFactTime(usageId)
+            viewState.value.patternsAndUsages[usageKey]?.let { usageDisplay ->
+                val dateTime = currentDateTime()
+                setFactUseTimeOrInsertUsageUseCase(
+                    usageDisplay = usageDisplay,
+                    currentDateTime = dateTime.toEpochSecond(),
+                ).onFailure {
+                    TODO("setUsagesFactTime: сделать обработку ошибок")
+                }
             }
         }
     }

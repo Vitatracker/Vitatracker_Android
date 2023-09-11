@@ -39,10 +39,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.RemedyDomainModel
-import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.currentDateTimeInSecond
@@ -56,7 +57,7 @@ import kotlin.math.absoluteValue
 private fun SingleUsageItem(
     date: Long,
     remedy: RemedyDomainModel,
-    quantity: Int,
+    quantity: Float,
     modifier: Modifier = Modifier,
     isTaken: Boolean = false,
     onTake: (Long) -> Unit
@@ -133,7 +134,7 @@ private fun SingleUsageItem(
                                 .width(1.dp)
                         )
                         Text(
-                            text = "$quantity ${types[remedy.type]}",
+                            text = "${quantity.toText()} ${types[remedy.type]}",
                             style = Typography.labelMedium
                         )
                     }
@@ -193,18 +194,16 @@ private fun SingleUsageItem(
 @Composable
 fun DailyUsages(
     date: LocalDateTime?,
-    remedies: List<RemedyDomainModel>,
-    usages: List<UsageDomainModel>,
-    modifier: Modifier = Modifier,
+    usages: List<UsageDisplayDomainModel>,
     onDismiss: () -> Unit = {},
     onNewDate: (LocalDateTime?) -> Unit = {},
-    onUsed: (UsageDomainModel) -> Unit
+    onUsed: (UsageDisplayDomainModel) -> Unit
 ) {
     Log.d("VTTAG", "CalendarSelector::DailyUsages: start")
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         color = MaterialTheme.colorScheme.background,
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.8f)
     ) {
@@ -257,8 +256,9 @@ fun DailyUsages(
                             )
                             SingleUsageItem(
                                 date = usage.useTime,
-                                remedy = remedies.firstOrNull { remedy -> remedy.id == usage.remedyId }
-                                    ?: RemedyDomainModel(),
+                                remedy = RemedyDomainModel(), //TODO("тут нужна реализация")
+//                                remedy = remedies.firstOrNull { remedy -> remedy.id == usage.remedyId }
+//                                    ?: RemedyDomainModel(),
                                 quantity = usage.quantity,
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 isTaken = usage.factUseTime > 10L,

@@ -24,7 +24,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(userId: Long) {
         Log.d("VTTAG", "SynchronizationCourseWorker::syncCourses: Start")
-        if (userId != AuthToken.userId) return
+        if (userId != AuthToken.userId) error("Error: corrupted user!")
         // сначала отправить все то, что есть локально и получить id с бека, потом получить все с бека и дополнить информацию.
         syncRemediesFromNetwork(userId)
         syncCoursesFromNetwork(userId)
@@ -74,14 +74,10 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
     private suspend fun syncUsagesFromNetwork(
         courseIdNet: Long,
         courseIdLoc: Long = 0,
-        remedyIdLoc: Long = 0,
-        remedyIdNet: Long = 0,
     ) {
         usageNetworkRepository.getUsagesByCourseId(
             courseId = courseIdNet,
             courseIdLoc = courseIdLoc,
-            remedyIdNet = remedyIdNet,
-            remedyIdLoc = remedyIdLoc,
         ).onSuccess { usagesNet ->
             if (usagesNet.isNotEmpty()) {
                 usageRepository.insertUsage(usagesNet)
@@ -113,8 +109,6 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                     syncUsagesFromNetwork(
                         courseIdNet = courseNet.idn,
                         courseIdLoc = courseIdLoc,
-                        remedyIdNet = courseNet.remedyIdn,
-                        remedyIdLoc = remedyIdLoc,
                     )
                 }.onFailure {
                     TODO("реализовать обработку ошибок")
@@ -131,8 +125,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
             // локальные курсы
             val coursesLoc = courseRepository.getCoursesByUserId(userId).getOrThrow()
 
-            var coursesNew: List<CourseDomainModel> = emptyList()
-            if (coursesLoc.isNotEmpty()) {
+            val coursesNew = if (coursesLoc.isNotEmpty()) {
                 val coursesOld = coursesNet.map { it.idn }.let { coursesNetIds ->
                     coursesLoc.filter { course ->
                         course.idn > 0L && course.updateNetworkDate > 0 && course.idn !in coursesNetIds
@@ -140,19 +133,18 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 }
                 deleteCourseLoc(coursesOld)
                 // то что пришло с бека, но нет локально, проверить по idn и найти локальный id
-                coursesNew = coursesLoc.map { it.idn }.let { courseLocIdns ->
+                coursesLoc.map { it.idn }.let { courseLocIdns ->
                     coursesNet.filter { courseNew ->
                         courseNew.idn !in courseLocIdns
                     }
                 }
-            } else coursesNew = coursesNet
+            } else coursesNet
             coursesNew.forEach { courseNew ->
                 remedyRepository.getRemedyByIdn(courseNew.idn).onSuccess { remedy ->
                     courseRepository.insertCourse(courseNew.copy(remedyId = remedy.id))
                         .onSuccess { courseIdLoc ->
                             syncUsagesFromNetwork(
                                 courseIdNet = courseNew.idn,
-                                remedyIdLoc = remedy.id,
                                 courseIdLoc = courseIdLoc,
                             )
                         }
@@ -216,11 +208,12 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
 
     private suspend fun deletePatternUsageLoc(courseId: Long) {
         if (courseId <= 0) return
-        patternUsageRepository.getPatternUsagesByCourseId(courseId).onSuccess { patterns ->
-            patternUsageRepository.deletePatternUsages(patterns)
-        }.onFailure {
-            TODO("реализовать обработку ошибок")
-        }
+        patternUsageRepository.getPatternUsagesByCourseId(courseId = courseId)
+            .onSuccess { patterns ->
+                patternUsageRepository.deletePatternUsages(patterns)
+            }.onFailure {
+                TODO("реализовать обработку ошибок")
+            }
     }
 
     private suspend fun deleteUsageLoc(courseId: Long) {

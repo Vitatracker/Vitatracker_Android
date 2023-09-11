@@ -6,7 +6,6 @@ import app.mybad.domain.usecases.courses.LoadCoursesUseCase
 import app.mybad.domain.usecases.usages.UpdateUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,21 +22,24 @@ class CalendarViewModel @Inject constructor(
 
     private fun loadCourses() {
         viewModelScope.launch {
-            loadCoursesUseCase().collectLatest { (courses, remedies, usages) ->
+/*
+            loadCoursesUseCase().collectLatest { (courses, remedies, patternUsage) ->
                 Log.w(
                     "VTTAG",
                     "CalendarViewModel::loadCourses: remedies=${remedies.size} courses=${
                         courses.size
-                    } usages=${usages.size}"
+                    } usages=${patternUsage.size}"
                 )
+                TODO("требуется реализация")
                 setState {
                     copy(
                         courses = courses,
                         remedies = remedies,
-                        usages = usages,
+                        patternUsage = emptyList()//patternUsage,
                     )
                 }
             }
+*/
         }
     }
 
@@ -51,9 +53,14 @@ class CalendarViewModel @Inject constructor(
 
             is CalendarContract.Event.SetUsage -> {
                 viewModelScope.launch {
-                    updateUsageUseCase(event.usage)
+                    TODO("скорей всего чек поставить")
+//                    updateUsageUseCase(event.usage)
                 }
             }
+
+            is CalendarContract.Event.ChangeDate -> TODO()
+            is CalendarContract.Event.SelectDate -> TODO()
+            CalendarContract.Event.ChangeUsagesDaily -> TODO()
         }
     }
 

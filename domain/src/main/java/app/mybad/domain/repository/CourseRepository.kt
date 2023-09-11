@@ -1,9 +1,11 @@
 package app.mybad.domain.repository
 
+import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.models.CourseDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface CourseRepository {
+    fun getCoursesWithParams(userId: Long): Flow<List<CourseDisplayDomainModel>>
     fun getCourses(userId: Long): Flow<Pair<List<CourseDomainModel>, Long>>
     suspend fun getCoursesByUserId(userId: Long): Result<List<CourseDomainModel>>
     suspend fun getCoursesByRemedyId(remedyId: Long): Result<List<CourseDomainModel>>

@@ -1,5 +1,6 @@
 package app.mybad.domain.repository
 
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import kotlinx.coroutines.flow.Flow
 
@@ -20,9 +21,16 @@ interface UsageRepository {
         endTime: Long
     ): Flow<List<UsageDomainModel>>
 
-    suspend fun insertUsage(usage: UsageDomainModel): Result<Unit>
+    suspend fun getUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageDisplayDomainModel>>
+
+    suspend fun insertUsage(usage: UsageDomainModel): Result<Long>
     suspend fun insertUsage(usages: List<UsageDomainModel>): Result<Unit>
-    suspend fun updateUsage(usage: UsageDomainModel): Result<Unit>
+    suspend fun updateUsage(usage: UsageDomainModel): Result<Long>
+    suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long): Result<Unit>
 
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
 

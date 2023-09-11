@@ -30,30 +30,26 @@ data class PatternUsageModel(
     @ColumnInfo(name = PatternUsageContract.Columns.COURSE_IDN)
     val courseIdn: Long,
 
-    @ColumnInfo(name = PatternUsageContract.Columns.REMEDY_ID)
-    val remedyId: Long,
-    @ColumnInfo(name = PatternUsageContract.Columns.REMEDY_IDN)
-    val remedyIdn: Long,
-
     @ColumnInfo(name = PatternUsageContract.Columns.USER_ID)
     val userId: Long,
     @ColumnInfo(name = PatternUsageContract.Columns.USER_IDN)
     val userIdn: String,
+
+    @ColumnInfo(name = PatternUsageContract.Columns.TIME_MINUTES)
+    val timeInMinutes: Int, // тут только время HH:mm в минутах
+    @ColumnInfo(name = PatternUsageContract.Columns.QUANTITY)
+    val quantity: Float = 1f,
+
+    @ColumnInfo(name = PatternUsageContract.Columns.IS_FINISHED)
+    val finished: Boolean = false,
 
     @ColumnInfo(name = PatternUsageContract.Columns.CREATION_DATE)
     val creationDate: Long = 0,
     @ColumnInfo(name = PatternUsageContract.Columns.UPDATED_DATE)
     val updatedDate: Long = 0,
 
-    @ColumnInfo(name = PatternUsageContract.Columns.USE_TIME)
-    val timeInMinutes: Int, // тут только время HH:mm в минутах
-    @ColumnInfo(name = PatternUsageContract.Columns.QUANTITY)
-    val quantity: Int = 1,
-
     @ColumnInfo(name = PatternUsageContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,
-    @ColumnInfo(name = PatternUsageContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0,
     @ColumnInfo(name = PatternUsageContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
 )

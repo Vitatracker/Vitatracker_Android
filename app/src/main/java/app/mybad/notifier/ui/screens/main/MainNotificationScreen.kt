@@ -60,8 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.domain.models.RemedyDomainModel
-import app.mybad.domain.models.UsageDomainModel
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.TitleText
@@ -133,14 +132,12 @@ private fun NotificationScreen(
             modifier = Modifier
         ) {
             NotificationMonthPager(
-                date = state.date,
+                date = state.selectedDate,
                 changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
             )
             NotificationLazyMedicines(
-                remedies = state.remedies,
-                usages = state.usages,
-                setUsageFactTime = { sendEvent(MainContract.Event.SetUsageFactTime(it)) },
-            )
+                usagesDisplay = state.patternsAndUsages,
+            ) { sendEvent(MainContract.Event.SetUsageFactTime(it)) }
         }
     }
 }
@@ -286,28 +283,23 @@ private fun NotificationTextCategory() {
 
 @Composable
 private fun NotificationLazyMedicines(
-    remedies: List<RemedyDomainModel>,
-    usages: List<UsageDomainModel>,
-    setUsageFactTime: (Long) -> Unit,
+    usagesDisplay: Map<String, UsageDisplayDomainModel>,
+    setUsageFactTime: (String) -> Unit,
 ) {
-    Log.w(
-        "VTTAG",
-        "MainNotificationScreen::NotificationLazyMedicines: usages=${usages.size}"
-    )
-    if (remedies.isNotEmpty() && usages.isNotEmpty()) {
+    if (usagesDisplay.isNotEmpty()) {
         NotificationTextCategory()
-        Log.w("VTTAG", "MainNotificationScreen::NotificationLazyMedicines: usages=${usages.size}")
+        Log.w(
+            "VTTAG",
+            "MainNotificationScreen::NotificationLazyMedicines: usages=${usagesDisplay.size}"
+        )
         LazyColumn(
             modifier = Modifier.padding(top = 10.dp),
             userScrollEnabled = true,
         ) {
-            items(usages.sortedBy { it.useTime }) { usage ->
-                val remedy = remedies.firstOrNull { it.id == usage.remedyId } ?: RemedyDomainModel()
+            items(usagesDisplay.entries.toList()) { usageEntry ->
                 NotificationCourseItem(
-                    usage = usage,
-                    remedy = remedy,
-                    setUsageFactTime = setUsageFactTime,
-                )
+                    usage = usageEntry.value,
+                ) { setUsageFactTime(usageEntry.key) }
             }
         }
     } else NotificationRemedyClear()
@@ -361,9 +353,8 @@ private fun NotificationRemedyClearImage() {
 
 @Composable
 private fun NotificationCourseItem(
-    remedy: RemedyDomainModel,
-    usage: UsageDomainModel,
-    setUsageFactTime: (Long) -> Unit,
+    usage: UsageDisplayDomainModel,
+    onClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -385,12 +376,11 @@ private fun NotificationCourseItem(
         ) {
             NotificationTimeCourse(
                 usageTime = usage.useTime,
-                isDone = usage.factUseTime != -1L
+                isDone = usage.factUseTime > 0
             )
             NotificationCourseHeader(
-                remedy = remedy,
                 usage = usage,
-                setUsageFactTime = setUsageFactTime,
+                onClick = onClick,
             )
         }
     }
@@ -423,18 +413,16 @@ private fun NotificationTimeCourse(
 @Composable
 private fun NotificationCourseHeaderPreview() {
     NotificationCourseHeader(
-        remedy = remedies[0],
-        usage = usages[0],
-        setUsageFactTime = {},
+        usage = patternsAndUsages[0],
+        onClick = {},
     )
 }
 
 @SuppressLint("Recycle")
 @Composable
 private fun NotificationCourseHeader(
-    remedy: RemedyDomainModel,
-    usage: UsageDomainModel,
-    setUsageFactTime: (Long) -> Unit,
+    usage: UsageDisplayDomainModel,
+    onClick: () -> Unit,
 ) {
     val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
     val types = stringArrayResource(R.array.types)
@@ -459,16 +447,16 @@ private fun NotificationCourseHeader(
             ) {
                 // иконка препарата
                 Icon(
-                    painter = painterResource(r.getResourceId(remedy.icon, 0)),
+                    painter = painterResource(r.getResourceId(usage.icon, 0)),
                     contentDescription = null,
                     modifier = Modifier
                         .size(25.dp),
-                    tint = PickColor.getColor(remedy.color)
+                    tint = PickColor.getColor(usage.color)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 // название препарата
                 Text(
-                    text = "${remedy.name}",
+                    text = "${usage.name}",
                     style = Typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
@@ -479,7 +467,7 @@ private fun NotificationCourseHeader(
                 modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             ) {
                 Text(
-                    text = "${remedy.dose} ${types[remedy.type]}",
+                    text = "${usage.dose} ${types[usage.type]}",
                     style = Typography.labelMedium
                 )
                 Text(
@@ -490,7 +478,7 @@ private fun NotificationCourseHeader(
                     fontSize = 12.sp
                 )
                 Text(
-                    text = relations[remedy.beforeFood],
+                    text = relations[usage.beforeFood],
                     style = Typography.labelMedium,
                     modifier = Modifier.padding(end = 8.dp)
                 )
@@ -498,8 +486,10 @@ private fun NotificationCourseHeader(
         }
         NotificationButtonAccept(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime.toInt() != -1,
-            onClick = { setUsageFactTime(usage.id) },
+            isDone = usage.factUseTime > 0,
+            modifier = Modifier.clickable {
+                onClick()
+            }
         )
     }
 }
@@ -508,7 +498,7 @@ private fun NotificationCourseHeader(
 private fun NotificationButtonAccept(
     usageTime: Long,
     isDone: Boolean,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier,
 ) {
     val nowDate = currentDateTimeInSecond()
 
@@ -546,13 +536,10 @@ private fun NotificationButtonAccept(
         painter = painter,
         contentDescription = null,
         tint = tint,
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 8.dp)
             .size(40.dp)
             .clip(CircleShape)
-            .clickable {
-                onClick()
-            }
     )
 }
 
@@ -562,6 +549,7 @@ private fun getFontWeight(page: Int, month: Int) = when (page) {
     else -> FontWeight.Normal
 }
 
+// разобраться с цветами, сделать из темы
 @Composable
 private fun getMonthColor(page: Int, month: Int) = when (page) {
     month -> MaterialTheme.colorScheme.primary
@@ -646,35 +634,31 @@ fun MainNotificationScreenPreview() {
     MyBADTheme {
         MainNotificationScreen(
             state = MainContract.State(
-                remedies = remedies,
-                usages = usages,
+                patternsAndUsages = sortedMapOf<String, UsageDisplayDomainModel>().apply { patternsAndUsages.map { it.toUsageKey() to it } },
             )
         )
     }
 }
 
-private val remedies = listOf(
-    RemedyDomainModel(
+private val patternsAndUsages = listOf(
+    UsageDisplayDomainModel(
         id = 1,
+        courseId = 1,
+        remedyId = 1,
+        timeInMinutes = 200,
         name = "Очень длинное лекарство для проверки макета и верстки",
-        dose = 1,
-    ),
-    RemedyDomainModel(
-        id = 2,
-        name = "Лекарство 2",
         dose = 2,
         icon = 1,
         type = 1,
     ),
-)
-
-private val usages = listOf(
-    UsageDomainModel(
-        id = 1,
-        remedyId = 1,
-    ),
-    UsageDomainModel(
+    UsageDisplayDomainModel(
         id = 2,
-        remedyId = 2
+        courseId = 2,
+        remedyId = 2,
+        timeInMinutes = 300,
+        name = "Лекарство 2",
+        dose = 2,
+        icon = 1,
+        type = 1,
     ),
 )

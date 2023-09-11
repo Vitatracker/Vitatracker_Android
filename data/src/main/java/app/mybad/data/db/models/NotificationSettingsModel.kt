@@ -24,8 +24,6 @@ data class NotificationSettingsModel(
 
     @ColumnInfo(name = NotificationSettingsContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0L,
-    @ColumnInfo(name = NotificationSettingsContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0L,
     @ColumnInfo(name = NotificationSettingsContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
 )

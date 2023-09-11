@@ -73,6 +73,25 @@ class UsageRepositoryImpl @Inject constructor(
         }
         .flowOn(dispatcher)
 
+    override suspend fun getUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ) = db.getUsagesWithNameAndDateBetween(
+        userId = userId,
+        startTime = startTime,
+        endTime = endTime
+    )
+        .map { it.mapToDomain() }
+        .catch {
+            Log.w(
+                "VTTAG",
+                "UsageRepositoryImpl::getUsagesWithNameAndDateBetween: error userId=$userId",
+                it
+            )
+        }
+        .flowOn(dispatcher)
+
     //--------------------------------------------------
     override suspend fun checkUseUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
         runCatching {
@@ -94,6 +113,13 @@ class UsageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUsage(usage: UsageDomainModel) = insertUsage(usage)
+
+    override suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long) =
+        withContext(dispatcher) {
+            runCatching {
+                db.setFactUseTimeUsage(usageId = usageId, factUseTime = factUseTime)
+            }
+        }
 
     //--------------------------------------------------
     override suspend fun markDeletionUsagesById(usageId: Long) = withContext(dispatcher) {

@@ -1,44 +1,38 @@
 package app.mybad.domain.usecases.courses
 
-import android.util.Log
 import app.mybad.domain.models.AuthToken
-import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.repository.CourseRepository
-import app.mybad.domain.repository.RemedyRepository
-import app.mybad.domain.repository.UsageRepository
+import app.mybad.domain.repository.PatternUsageRepository
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class LoadCoursesUseCase @Inject constructor(
     private val courseRepository: CourseRepository,
-    private val remedyRepository: RemedyRepository,
-    private val usageRepository: UsageRepository,
+    private val patternUsageRepository: PatternUsageRepository,
 ) {
 
     operator fun invoke(
+        date: Long,
         userId: Long = AuthToken.userId,
     ) =
         combine(
-            courseRepository.getCourses(userId).map { (courses, date) ->
-                addRemindCourse(courses, date)
-            },
-            remedyRepository.getRemedies(userId),
-            usageRepository.getUsages(userId),
-            ::Triple
-        ).onEach { (courses, remedies, usages) ->
-            Log.w(
-                "VTTAG",
-                "LoadCoursesUseCase: courses=${courses.size} remedies=${remedies.size} usages=${usages.size}"
-            )
-        }
+            courseRepository.getCoursesWithParams(userId)
+                .distinctUntilChanged()
+                .map { courses ->
+                    addRemindCourse(courses, date)
+                },
+            patternUsageRepository.getPatternUsages(userId),
+            ::Pair
+        )
 
     private fun addRemindCourse(
-        courses: List<CourseDomainModel>,
+        courses: List<CourseDisplayDomainModel>,
         date: Long
-    ): List<CourseDomainModel> {
-        val newCourses = mutableListOf<CourseDomainModel>()
+    ): List<CourseDisplayDomainModel> {
+        val newCourses = mutableListOf<CourseDisplayDomainModel>()
         courses.forEach { newCourse ->
             if (newCourse.remindDate > 0) {
                 val startDate = newCourse.endDate + newCourse.interval
@@ -56,36 +50,6 @@ class LoadCoursesUseCase @Inject constructor(
                 }
             }
         }
-        return if (newCourses.isNotEmpty()) courses.plus(newCourses) else courses
+        return courses.plus(newCourses)
     }
 }
-
-/*
-                // Отображение планируемого нового курса remindDate > 0
-                state.courses.forEach { newCourse ->
-                    if (newCourse.remindDate > 0 && newCourse.remindDate >= now) {
-                        item {
-                            val startDate = newCourse.endDate + newCourse.interval
-                            val endDate = startDate + (newCourse.endDate - newCourse.startDate)
-                            CourseItem(
-                                course = newCourse.copy(
-                                    id = 0,
-                                    idn = 0,
-                                    startDate = startDate,
-                                    endDate = endDate,
-                                    remindDate = 0,
-                                    interval = 0,
-                                ),
-                                remedy = state.remedies.first { it.id == newCourse.remedyId },
-                                usages = state.usages.filter { usage ->
-                                    usage.courseId == newCourse.id &&
-                                            usage.useTime >= newCourse.startDate &&
-                                            usage.useTime < newCourse.startDate.plusDay()
-                                }.take(10),
-                                startInDays = (startDate - now).secondsToDay().toInt(),
-                            )
-                        }
-                    }
-                }
-
- */

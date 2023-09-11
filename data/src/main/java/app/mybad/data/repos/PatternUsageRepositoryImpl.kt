@@ -17,8 +17,8 @@ class PatternUsageRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : PatternUsageRepository {
 
-//--------------------------------------------------
-    override fun getPatternUsages(userId: Long)= db.getPatternUsages(userId)
+    //--------------------------------------------------
+    override fun getPatternUsages(userId: Long) = db.getPatternUsages(userId)
         .map { it.mapToDomain() }
         .flowOn(dispatcher)
 
@@ -42,45 +42,65 @@ class PatternUsageRepositoryImpl @Inject constructor(
 
     override suspend fun getPatternUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
         runCatching {
-            db.getPatternUsagesByCourseId(courseId).mapToDomain()
+            db.getPatternUsagesByCourseId(courseId = courseId).mapToDomain()
         }
     }
 
-    override suspend fun getPatternUsagesBetweenByCourseId(
-        courseId: Long,
-        startTime: Long,
-        endTime: Long
-    ) = withContext(dispatcher) {
-        runCatching {
-            db.getPatternUsagesBetweenByCourseId(
-                courseId = courseId,
-                startTime = startTime,
-                endTime = endTime
-            ).mapToDomain()
-        }
-    }
-
-    override suspend fun getPatternUsagesBetween(
+//    override suspend fun getPatternUsagesBetweenByCourseId(
+//        courseId: Long,
+//        startTime: Long,
+//        endTime: Long
+//    ) = withContext(dispatcher) {
+//        runCatching {
+//            db.getPatternUsagesBetweenByCourseId(
+//                courseId = courseId,
+//                startTime = startTime,
+//                endTime = endTime
+//            ).mapToDomain()
+//        }
+//    }
+//
+//    override suspend fun getPatternUsagesBetween(
+//        userId: Long,
+//        startTime: Long,
+//        endTime: Long
+//    ) = db.getPatternUsagesBetween(
+//        userId = userId,
+//        startTime = startTime,
+//        endTime = endTime
+//    )
+//        .map { it.mapToDomain() }
+//        .flowOn(dispatcher)
+//
+    override suspend fun getPatternUsagesWithNameAndDateBetween(
         userId: Long,
         startTime: Long,
         endTime: Long
-    ) = db.getPatternUsagesBetween(
+    ) = db.getPatternUsagesWithNameAndDateBetween(
         userId = userId,
         startTime = startTime,
         endTime = endTime
     )
-        .map { it.mapToDomain() }
+        .map { it.mapToDomain(startTime) }
         .flowOn(dispatcher)
 
-    override suspend fun insertPatternUsage(pattern: PatternUsageDomainModel) = withContext(dispatcher) {
-        runCatching {
-            db.insertPatternUsage(pattern.mapToData())
+    override suspend fun insertPatternUsage(pattern: PatternUsageDomainModel) =
+        withContext(dispatcher) {
+            runCatching {
+                db.insertPatternUsage(pattern.mapToData())
+            }
         }
-    }
 
-    override suspend fun insertPatternUsage(patterns: List<PatternUsageDomainModel>) = withContext(dispatcher) {
+    override suspend fun insertPatternUsage(patterns: List<PatternUsageDomainModel>) =
+        withContext(dispatcher) {
+            runCatching {
+                db.insertPatternUsages(patterns.mapToData())
+            }
+        }
+
+    override suspend fun finishedPatternUsageByCourseId(courseId: Long) = withContext(dispatcher) {
         runCatching {
-            db.insertPatternUsages(patterns.mapToData())
+            db.finishedPatternUsageByCourseId(courseId)
         }
     }
 
@@ -90,11 +110,12 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun markDeletionPatternUsageByCourseId(courseId: Long) = withContext(dispatcher) {
-        runCatching {
-            db.markDeletionPatternUsagesByCourseId(courseId)
+    override suspend fun markDeletionPatternUsageByCourseId(courseId: Long) =
+        withContext(dispatcher) {
+            runCatching {
+                db.markDeletionPatternUsagesByCourseId(courseId)
+            }
         }
-    }
 
     override suspend fun deletePatternUsagesByUserId(userId: Long) = withContext(dispatcher) {
         runCatching {
@@ -102,16 +123,24 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deletePatternUsagesByCourseId(userId: Long, courseId: Long) =
+        withContext(dispatcher) {
+            runCatching {
+                db.deletePatternUsagesByCourseId(userId = userId, courseId = courseId)
+            }
+        }
+
     override suspend fun deletePatternUsage(id: Long) = withContext(dispatcher) {
         runCatching {
             db.deletePatternUsage(id)
         }
     }
 
-    override suspend fun deletePatternUsages(patterns: List<PatternUsageDomainModel>) = withContext(dispatcher) {
-        runCatching {
-            db.deletePatternUsages(patterns.mapToData())
+    override suspend fun deletePatternUsages(patterns: List<PatternUsageDomainModel>) =
+        withContext(dispatcher) {
+            runCatching {
+                db.deletePatternUsages(patterns.mapToData())
+            }
         }
-    }
 
 }

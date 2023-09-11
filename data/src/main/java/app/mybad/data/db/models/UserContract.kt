@@ -20,8 +20,8 @@ object UserContract {
         const val TOKEN_REFRESH_DATE = "token_refresh_date" //
 
         const val UPDATED_NETWORK_DATE = "updated_network" // дата последней передачи данных на бек
-        const val UPDATED_LOCAL_DATE = "updated_local" // дата последнеого получения данных
         const val DELETED_DATE = "deleted_local" // дата удаления
+
         const val IS_DARK_THEME = "is_dark_theme" // темная тема
         const val SYNCHRONIZE_DATE = "synchronize_date" // дата синхронизации с сервером
     }

@@ -6,6 +6,7 @@ import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.usecases.courses.CloseCourseUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
@@ -15,24 +16,14 @@ import app.mybad.domain.usecases.courses.UpdateCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.domain.usecases.remedies.GetRemedyByIdUseCase
 import app.mybad.domain.usecases.remedies.UpdateRemedyUseCase
-import app.mybad.domain.usecases.usages.GetUsagesByCourseIdUseCase
+import app.mybad.domain.usecases.usages.GetPatternUsagesByCourseIdUseCase
 import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
-import app.mybad.domain.usecases.usages.UpdateUsagesInCourseUseCase
+import app.mybad.domain.usecases.usages.UpdatePatternUsagesByCourseIdUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.notifier.ui.common.generatePattern
-import app.mybad.notifier.ui.common.generateUsages
-import app.mybad.utils.atStartOfDay
-import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.hour
-import app.mybad.utils.minus
-import app.mybad.utils.minute
-import app.mybad.utils.plus
-import app.mybad.utils.plusDay
-import app.mybad.utils.secondsToDay
-import app.mybad.utils.timeInMinutes
-import app.mybad.utils.toEpochSecond
-import app.mybad.utils.toLocalDateTime
+import app.mybad.utils.nextCourseIntervals
+import app.mybad.utils.nextCourseStart
+import app.mybad.utils.toDateTimeDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimePeriod
@@ -49,9 +40,10 @@ class MyCoursesEditViewModel @Inject constructor(
     private val updateCourseUseCase: UpdateCourseUseCase,
     private val closeCourseUseCase: CloseCourseUseCase,
 
-    private val getUsagesByCourseIdUseCase: GetUsagesByCourseIdUseCase,
+    private val getPatternUsagesByCourseIdUseCase: GetPatternUsagesByCourseIdUseCase,
+    private val updatePatternUsagesByCourseIdUseCase: UpdatePatternUsagesByCourseIdUseCase,
+
     private val getUseUsagesInCourseUseCase: GetUseUsagesInCourseUseCase,
-    private val updateUsagesInCourseUseCase: UpdateUsagesInCourseUseCase,
 
     private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
 ) : BaseViewModel<MyCoursesEditContract.Event, MyCoursesEditContract.State, MyCoursesEditContract.Effect>() {
@@ -129,18 +121,19 @@ class MyCoursesEditViewModel @Inject constructor(
         viewModelScope.launch {
             getCourseByIdUseCase(courseId).getOrNull()?.let { course ->
                 getRemedyByIdUseCase(course.remedyId).getOrNull()?.let { remedy ->
-                    val usages = getUsagesByCourseIdUseCase(courseId).getOrNull() ?: emptyList()
-                    val usagesPattern = generatePattern(course.id, course.regime, usages)
+                    // загрузим паттерн для курса
+                    val usagesPattern = getPatternUsagesByCourseIdUseCase(courseId)
+                        .getOrNull()?.map { pattern ->
+                            UsageFormat(
+                                timeInMinutes = pattern.timeInMinutes,
+                                quantity = pattern.quantity,
+                            )
+                        } ?: emptyList()
 
-                    // начало нового курса + интервал за сколько дней сообщить - последний день курса, который может быть больше
-                    val beforeDay = if (course.remindDate > 0) {
-                        val startDate = course.endDate
-                            .plusDay(course.interval.secondsToDay().toInt())
-                            .atStartOfDay()
-                        val days = (startDate - course.remindDate).secondsToDay()
-                        if (days > 0) days else 0
-                    } else 0
-
+                    val (remindTime, interval, beforeDay) = course.endDate.nextCourseIntervals(
+                        remindDate = course.remindDate,
+                        interval = course.interval,
+                    )
                     setState {
                         copy(
                             course = course,
@@ -149,9 +142,9 @@ class MyCoursesEditViewModel @Inject constructor(
 
                             usagesPatternEdit = usagesPattern,
                             nextAllowed = usagesPattern.isNotEmpty(),
-                            remindTime = viewState.value.course.remindDate.timeInMinutes(),
-                            coursesInterval = DateTimePeriod(days = course.interval.toInt()),
-                            remindBeforePeriod = DateTimePeriod(days = beforeDay.toInt()),
+                            remindTime = remindTime,
+                            coursesInterval = DateTimePeriod(days = interval),
+                            remindBeforePeriod = DateTimePeriod(days = beforeDay),
                         )
                     }
                 }
@@ -166,7 +159,12 @@ class MyCoursesEditViewModel @Inject constructor(
     }
 
     private fun updateStateUsagesPatterns(usagesPattern: List<UsageFormat>) {
-        setState { copy(usagesPatternEdit = usagesPattern, nextAllowed = usagesPattern.isNotEmpty()) }
+        setState {
+            copy(
+                usagesPatternEdit = usagesPattern,
+                nextAllowed = usagesPattern.isNotEmpty()
+            )
+        }
     }
 
     private fun changeTimeUsagePattern(pattern: UsageFormat, time: Int) {
@@ -179,7 +177,7 @@ class MyCoursesEditViewModel @Inject constructor(
         )
     }
 
-    private fun changeQuantityUsagePattern(pattern: UsageFormat, quantity: Int) {
+    private fun changeQuantityUsagePattern(pattern: UsageFormat, quantity: Float) {
         updateStateUsagesPatterns(
             UsageFormat.changeQuantityUsagePattern(
                 usagesPattern = viewState.value.usagesPatternEdit,
@@ -219,15 +217,11 @@ class MyCoursesEditViewModel @Inject constructor(
         coursesInterval: DateTimePeriod,
         remindBeforePeriod: DateTimePeriod,
     ) {
-        val startDate = viewState.value.course.endDate.toLocalDateTime()
-        val remindDate = startDate
-            .plus(coursesInterval)
-            .minus(remindBeforePeriod)
-            .changeTime(
-                hour = remindTime.hour(),
-                minute = remindTime.minute()
-            )
-            .toEpochSecond()
+        val (remindDate, interval) = viewState.value.course.endDate.nextCourseStart(
+            remindTime = remindTime,
+            coursesInterval = coursesInterval,
+            remindBeforePeriod = remindBeforePeriod,
+        )
         setState {
             copy(
                 remindTime = remindTime,
@@ -237,11 +231,14 @@ class MyCoursesEditViewModel @Inject constructor(
 
                 course = viewState.value.course.copy(
                     remindDate = remindDate,
-                    interval = startDate.atStartOfDay()
-                        .toEpochSecond() - viewState.value.course.endDate,
+                    interval = interval,
                 ),
             )
         }
+        Log.w(
+            "VTTAG",
+            "MyCoursesViewModel::updateReminder: endDay=${viewState.value.course.endDate.toDateTimeDisplay()} remindDate=${remindDate.toDateTimeDisplay()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=${viewState.value.course.interval}"
+        )
     }
 
     private fun cancellation() {
@@ -294,55 +291,90 @@ class MyCoursesEditViewModel @Inject constructor(
         val remedyIdn = if (remedyId == viewState.value.remedy.id) viewState.value.remedy.idn else 0
         val course = CourseDomainModel(
             id = 0,
+
             remedyId = remedyId,
             remedyIdn = remedyIdn,
-            createdDate = dateNew,
+
             userId = viewState.value.course.userId,
             userIdn = viewState.value.course.userIdn,
+
             comment = viewState.value.course.comment,
+
             startDate = viewState.value.course.startDate,
             endDate = viewState.value.course.endDate,
+
             remindDate = viewState.value.course.remindDate,
             interval = viewState.value.course.interval,
+
+            patternUsages = viewState.value.course.patternUsages,
             regime = viewState.value.course.regime,
-            isFinished = false,
             isInfinite = false,
+            isFinished = false,
             notUsed = viewState.value.course.notUsed,
+
+            createdDate = dateNew,
         )
         // закроем курс
         closeCourseUseCase(courseId = viewState.value.course.id, dateTime = dateNew)
         // создадим новый курс
         createCourseUseCase(course).onSuccess { courseId ->
-            updateUsagesInCourseUseCase(
+            // создадим паттерн
+            updatePatternUsagesByCourseIdUseCase(
                 courseId = courseId,
-                usages = generateUsages(
-                    usagesByDay = viewState.value.usagesPattern,
-                    remedyId = remedyId,
-                    courseId = courseId,
-                    userId = course.userId,
-                    startDate = course.startDate,
-                    endDate = course.endDate,
-                    regime = course.regime
-                )
+                patterns = viewState.value.usagesPatternEdit.map { pattern ->
+                    PatternUsageDomainModel(
+                        courseId = courseId,
+                        timeInMinutes = pattern.timeInMinutes,
+                        quantity = pattern.quantity,
+                    )
+                }
             )
+            /*
+                        updateUsagesInCourseUseCase(
+                            courseId = courseId,
+                            usages = generateUsages(
+                                usagesByDay = viewState.value.usagesPattern,
+                                remedyId = remedyId,
+                                courseId = courseId,
+                                userId = course.userId,
+                                startDate = course.startDate,
+                                endDate = course.endDate,
+                                regime = course.regime
+                            )
+                        )
+            */
         }
     }
 
     private suspend fun updateCourse() {
         updateRemedyUseCase(viewState.value.remedy)
         updateCourseUseCase(viewState.value.course)
-        updateUsagesInCourseUseCase(
-            courseId = viewState.value.course.id,
-            usages = generateUsages(
-                usagesByDay = viewState.value.usagesPattern,
-                remedyId = viewState.value.remedy.id,
-                courseId = viewState.value.course.id,
-                userId = viewState.value.course.userId,
-                startDate = viewState.value.course.startDate,
-                endDate = viewState.value.course.endDate,
-                regime = viewState.value.course.regime
-            )
+        // обновим паттерн
+        updatePatternUsagesByCourseIdUseCase(
+            courseId = courseId,
+            patterns = viewState.value.usagesPatternEdit.map { pattern ->
+                PatternUsageDomainModel(
+                    courseId = courseId,
+                    timeInMinutes = pattern.timeInMinutes,
+                    quantity = pattern.quantity,
+                )
+            }
         )
+
+        /*
+                updateUsagesInCourseUseCase(
+                    courseId = viewState.value.course.id,
+                    usages = generateUsages(
+                        usagesByDay = viewState.value.usagesPattern,
+                        remedyId = viewState.value.remedy.id,
+                        courseId = viewState.value.course.id,
+                        userId = viewState.value.course.userId,
+                        startDate = viewState.value.course.startDate,
+                        endDate = viewState.value.course.endDate,
+                        regime = viewState.value.course.regime
+                    )
+                )
+        */
     }
 
 }

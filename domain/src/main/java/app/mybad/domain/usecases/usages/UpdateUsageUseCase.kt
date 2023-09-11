@@ -8,7 +8,5 @@ class UpdateUsageUseCase @Inject constructor(
     private val usageRepository: UsageRepository,
 ) {
 
-    suspend operator fun invoke(usage: UsageDomainModel) {
-        usageRepository.updateUsage(usage)
-    }
+    suspend operator fun invoke(usage: UsageDomainModel) = usageRepository.updateUsage(usage)
 }

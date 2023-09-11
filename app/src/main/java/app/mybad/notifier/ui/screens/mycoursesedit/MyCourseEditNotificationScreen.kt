@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +39,6 @@ import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.usagesPatternPreview
-import app.mybad.notifier.ui.common.usagesPatternPreview3
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
@@ -96,7 +94,7 @@ fun MyCourseEditNotificationScreen(
         ) {
             Column(
                 modifier = Modifier.weight(0.5f),
-            ){
+            ) {
                 Text(
                     text = stringResource(id = R.string.add_notifications_time_set),
                     style = MaterialTheme.typography.bodyLarge,
@@ -130,7 +128,7 @@ fun MyCourseEditNotificationScreen(
                                 sendEvent(
                                     MyCoursesEditContract.Event.ChangeQuantityUsagePattern(
                                         pattern = pattern,
-                                        quantity = it.toInt()
+                                        quantity = it
                                     )
                                 )
                             },
@@ -151,14 +149,22 @@ fun MyCourseEditNotificationScreen(
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.add_next_course_interval),
-                            value = "${coursesInterval.months} m. ${coursesInterval.days} d.",
+                            value = stringResource(
+                                R.string.period_m_d,
+                                coursesInterval.months,
+                                coursesInterval.days
+                            ),
                             onClick = { selectedInput = 1 }
                         )
                     },
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.add_next_course_remind_before),
-                            value = "${remindBeforePeriod.months} m. ${remindBeforePeriod.days} d.",
+                            value = stringResource(
+                                R.string.period_m_d,
+                                remindBeforePeriod.months,
+                                remindBeforePeriod.days
+                            ),
                             onClick = { selectedInput = 2 }
                         )
                     },

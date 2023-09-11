@@ -23,8 +23,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = secondary100,
     onSecondary = secondary20,
 
-    secondaryContainer = secondary100,
-    onSecondaryContainer = secondary20,
+    secondaryContainer = cardBackgroundLight,
+    onSecondaryContainer = cardTextLight,
 
     tertiary = tertiary80,
     onTertiary = tertiary20,
@@ -45,7 +45,7 @@ private val LightColorScheme = lightColorScheme(
     surface = neutral99,
     onSurface = neutral10,
 
-    surfaceVariant = secondaryContainerBlue,
+    surfaceVariant = surfaceVariantBlue,
     onSurfaceVariant = neutralVariant30,
 
     background = neutral99,
@@ -62,8 +62,8 @@ private val DarkColorScheme = darkColorScheme(
     secondary = secondary80,
     onSecondary = secondary20,
 
-    secondaryContainer = secondary30,
-    onSecondaryContainer = secondary90,
+    secondaryContainer = cardBackgroundDark,
+    onSecondaryContainer = cardTextDark,
 
     tertiary = tertiary80,
     onTertiary = tertiary20,

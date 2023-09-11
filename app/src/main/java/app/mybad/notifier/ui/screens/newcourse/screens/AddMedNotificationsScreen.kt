@@ -116,7 +116,7 @@ fun AddMedNotificationsScreen(
                                 sendEvent(
                                     CreateCourseContract.Event.ChangeQuantityUsagePattern(
                                         pattern = pattern,
-                                        quantity = it.toInt()
+                                        quantity = it
                                     )
                                 )
                             },

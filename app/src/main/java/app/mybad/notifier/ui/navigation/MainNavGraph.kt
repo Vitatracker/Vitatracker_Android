@@ -16,7 +16,7 @@ import app.mybad.notifier.ui.screens.main.MainNotificationScreen
 import app.mybad.notifier.ui.screens.main.MainViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesContract
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
-import app.mybad.notifier.ui.screens.mycourses.StartMyCoursesScreen
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesScreen
 
 @Composable
 fun MainNavGraph(
@@ -50,7 +50,7 @@ fun MainNavGraph(
 
             val viewModel: MyCoursesViewModel = hiltViewModel()
 
-            StartMyCoursesScreen(
+            MyCoursesScreen(
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,

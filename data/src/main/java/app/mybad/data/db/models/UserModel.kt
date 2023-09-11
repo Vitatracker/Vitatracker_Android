@@ -17,10 +17,6 @@ data class UserModel(
     val idn: String = "",
     @ColumnInfo(name = UserContract.Columns.AVATAR)
     val avatar: String = "",
-    @ColumnInfo(name = UserContract.Columns.CREATION_DATE)
-    val createdDate: Long = 0,
-    @ColumnInfo(name = UserContract.Columns.UPDATED_DATE)
-    val updatedDate: Long = 0,
     @ColumnInfo(name = UserContract.Columns.NAME)
     val name: String = "",
     @ColumnInfo(name = UserContract.Columns.EMAIL)
@@ -40,10 +36,13 @@ data class UserModel(
     @ColumnInfo(name = UserContract.Columns.TOKEN_REFRESH_DATE)
     val tokenRefreshDate: Long = 0,
 
+    @ColumnInfo(name = UserContract.Columns.CREATION_DATE)
+    val createdDate: Long = 0,
+    @ColumnInfo(name = UserContract.Columns.UPDATED_DATE)
+    val updatedDate: Long = 0,
+
     @ColumnInfo(name = UserContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,
-    @ColumnInfo(name = UserContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0,
     @ColumnInfo(name = UserContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
 

@@ -16,7 +16,7 @@ class MyCoursesEditContract {
 
         object AddUsagesPattern : Event
         data class DeleteUsagePattern(val pattern: UsageFormat) : Event
-        data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Int) : Event
+        data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
         data class UpdateAndEnd(
@@ -26,7 +26,7 @@ class MyCoursesEditContract {
 
         object NotificationEditing : Event
         data class NotificationUpdateAndEnd(
-            val remindTime: Int,
+            val remindTime: Int,// тут в минутах HH:mm
             val coursesInterval: DateTimePeriod,
             val remindBeforePeriod: DateTimePeriod,
         ) : Event
@@ -38,9 +38,9 @@ class MyCoursesEditContract {
         val usagesPattern: List<UsageFormat> = emptyList(),
 
         val usagesPatternEdit: List<UsageFormat> = emptyList(),
-        val remindTime: Int = 0,// тут только время в минутах
-        val coursesInterval: DateTimePeriod = DateTimePeriod(days = 3),
-        val remindBeforePeriod: DateTimePeriod = DateTimePeriod(days = 3),
+        val remindTime: Int = 840,// тут только время в минутах 14:00
+        val coursesInterval: DateTimePeriod = DateTimePeriod(days = 0),
+        val remindBeforePeriod: DateTimePeriod = DateTimePeriod(days = 0),
 
         val nextAllowed: Boolean = false,
         val dateLimit: DateCourseLimit,

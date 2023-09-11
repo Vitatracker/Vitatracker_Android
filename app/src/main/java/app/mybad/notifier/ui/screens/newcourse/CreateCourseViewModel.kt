@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
+import app.mybad.data.models.UsageFormat.Companion.toPattern
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.usecases.courses.AddNotificationsUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.domain.usecases.usages.CreatePatternUsagesUseCase
-import app.mybad.domain.usecases.usages.CreateUsagesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.notifier.ui.common.generateUsages
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeInSecond
@@ -24,7 +23,6 @@ import javax.inject.Inject
 class CreateCourseViewModel @Inject constructor(
     private val createRemedyUseCase: CreateRemedyUseCase,
     private val createCourseUseCase: CreateCourseUseCase,
-    private val createUsagesUseCase: CreateUsagesUseCase,
     private val createPatternUsagesUseCase: CreatePatternUsagesUseCase,
 
     private val addNotifications: AddNotificationsUseCase,
@@ -50,7 +48,7 @@ class CreateCourseViewModel @Inject constructor(
 
             is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
 
-            is CreateCourseContract.Event.UpdateUsagePatterns ->{
+            is CreateCourseContract.Event.UpdateUsagePatterns -> {
                 updateStateUsagesPatterns(usagesPattern = event.patterns)
             }
 
@@ -107,7 +105,7 @@ class CreateCourseViewModel @Inject constructor(
         )
     }
 
-    private fun changeQuantityUsagePattern(pattern: UsageFormat, quantity: Int) {
+    private fun changeQuantityUsagePattern(pattern: UsageFormat, quantity: Float) {
         updateStateUsagesPatterns(
             UsageFormat.changeQuantityUsagePattern(
                 usagesPattern = viewState.value.usagesPattern,
@@ -146,6 +144,13 @@ class CreateCourseViewModel @Inject constructor(
                         course = viewState.value.course.copy(remedyId = remedyId),
                     )
                 }
+                // сформировать паттерн usages
+                val patternUsages = viewState.value.usagesPattern.toPattern()
+                setState {
+                    copy(
+                        course = viewState.value.course.copy(patternUsages = patternUsages),
+                    )
+                }
                 // записать course и получить courseId
                 createCourseUseCase(viewState.value.course).onSuccess { courseId ->
                     log("finishCreation: courseId=$courseId")
@@ -157,44 +162,56 @@ class CreateCourseViewModel @Inject constructor(
                     log("finishCreation: usages-generate=${viewState.value.usagesPattern.size}")
                     val patterns = viewState.value.usagesPattern.map { pattern ->
                         PatternUsageDomainModel(
-                            remedyId = remedyId,
                             courseId = courseId,
                             timeInMinutes = pattern.timeInMinutes,
                             quantity = pattern.quantity,
                         )
                     }
-                    createPatternUsagesUseCase(patterns).onFailure {
-                        err("finishCreation: error createPatternUsagesUseCase", it)
-                    }
-                    val usages = generateUsages(
-                        usagesByDay = viewState.value.usagesPattern,
-                        remedyId = remedyId,
-                        courseId = courseId,
-                        userId = viewState.value.course.userId,
-                        startDate = viewState.value.course.startDate,
-                        endDate = viewState.value.course.endDate,
-                        regime = viewState.value.course.regime
-                    )
-                    log("finishCreation: usages=${usages.size}")
-                    createUsagesUseCase(usages).onSuccess {
-                        log("finishCreation: usages-ok")
-                        setState {
-                            copy(
-                                usages = usages,
-                            )
-                        }
+                    createPatternUsagesUseCase(patterns).onSuccess {
+                        // TODO("изменить и добавляем оповещение, расчитать usages")
                         // добавляем оповещение
                         addNotifications(
                             course = viewState.value.course,
                             usages = viewState.value.usages,
                         )
                         newState()
-                        log("finishCreation: synchronizationCourseUseCase")
                         // синхронизировать
                         AuthToken.requiredSynchronize(currentDateTimeInSecond())
                     }.onFailure {
-                        err("finishCreation: error createUsagesUseCase", it)
+                        err("finishCreation: error createPatternUsagesUseCase", it)
                     }
+                    // usages не создаем
+                    /*
+                                        val usages = generateUsages(
+                                            usagesByDay = viewState.value.usagesPattern,
+                                            remedyId = remedyId,
+                                            courseId = courseId,
+                                            userId = viewState.value.course.userId,
+                                            startDate = viewState.value.course.startDate,
+                                            endDate = viewState.value.course.endDate,
+                                            regime = viewState.value.course.regime
+                                        )
+                                        log("finishCreation: usages=${usages.size}")
+                                        createUsagesUseCase(usages).onSuccess {
+                                            log("finishCreation: usages-ok")
+                                            setState {
+                                                copy(
+                                                    usages = usages,
+                                                )
+                                            }
+                                            // добавляем оповещение
+                                            addNotifications(
+                                                course = viewState.value.course,
+                                                usages = viewState.value.usages,
+                                            )
+                                            newState()
+                                            log("finishCreation: synchronizationCourseUseCase")
+                                            // синхронизировать
+                                            AuthToken.requiredSynchronize(currentDateTimeInSecond())
+                                        }.onFailure {
+                                            err("finishCreation: error createUsagesUseCase", it)
+                                        }
+                    */
                 }.onFailure {
                     err("finishCreation: error createCourseUseCase", it)
                 }

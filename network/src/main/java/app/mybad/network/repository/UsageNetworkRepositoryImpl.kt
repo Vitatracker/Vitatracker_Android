@@ -25,14 +25,10 @@ class UsageNetworkRepositoryImpl @Inject constructor(
     override suspend fun getUsagesByCourseId(
         courseId: Long,
         courseIdLoc: Long,
-        remedyIdNet: Long,
-        remedyIdLoc: Long,
     ) = withContext(dispatcher) {
         runCatching {
             usageApi.getUsagesByCourseId(courseId)
                 .mapToDomain(
-                    remedyIdLoc = remedyIdLoc,
-                    remedyIdNet = remedyIdNet,
                     courseIdLoc = courseIdLoc,
                 )
         }
@@ -48,8 +44,6 @@ class UsageNetworkRepositoryImpl @Inject constructor(
             usageNet = if (usageNet.id > 0) usageApi.updateUsage(usageNet)
             else usageApi.addUsage(usageNet)
             usageNet.mapToDomain(
-                remedyIdLoc = usage.remedyId,
-                remedyIdNet = usage.remedyIdn,
                 courseIdLoc = usage.courseId,
                 usageIdLoc = usage.id,
             )

@@ -36,13 +36,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.toText
 import app.mybad.utils.toTimeDisplay
 
 @Composable
 fun NotificationItem(
     modifier: Modifier = Modifier,
     time: Int,
-    quantity: Int,
+    quantity: Float,
     form: Int,
     forms: Array<String>,
     onDelete: () -> Unit = {},
@@ -50,12 +51,12 @@ fun NotificationItem(
     onDoseChange: (Float) -> Unit = {}
 ) {
     val fm = LocalFocusManager.current
-    var field by remember { mutableStateOf(TextFieldValue(quantity.toString())) }
+    var field by remember { mutableStateOf(TextFieldValue(quantity.toText())) }
     LaunchedEffect(quantity) {
-        val q = quantity.toString()
+        val q = quantity.toText()
         field = field.copy(
             text = q,
-            selection = if (quantity == 0) TextRange(0, 1) else TextRange(q.length, q.length),
+            selection = if (quantity == 0f) TextRange(0, 1) else TextRange(q.length, q.length),
         )
     }
 
@@ -134,7 +135,7 @@ fun NotificationItem(
 fun NotificationItemPreview() {
     NotificationItem(
         time = 140,
-        quantity = 1,
+        quantity = 1f,
         form = 0,
         forms = arrayOf("Таблетка"),
     )

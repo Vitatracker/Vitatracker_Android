@@ -20,7 +20,7 @@ class CreateCourseContract {
 
         object AddUsagesPattern : Event
         data class DeleteUsagePattern(val pattern: UsageFormat) : Event
-        data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Int) : Event
+        data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
         object CourseIntervalEntered : Event
@@ -37,10 +37,13 @@ class CreateCourseContract {
         val remedy: RemedyDomainModel = RemedyDomainModel(),
         val course: CourseDomainModel = CourseDomainModel(),
         val usages: List<UsageDomainModel> = emptyList(),
+
         val usagesPattern: List<UsageFormat> = emptyList(),
+
         val isError: Boolean = false,
         val courseIntervalEntered: Boolean = false,
         val nextAllowed: Boolean = false,
+
         val dateLimit: DateCourseLimit,
     ) : ViewState
 

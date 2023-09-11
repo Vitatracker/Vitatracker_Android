@@ -54,6 +54,8 @@ abstract class BaseViewModel<Event : ViewEvent, UiState : ViewState, Effect : Vi
     protected fun setState(reducer: UiState.() -> UiState) {
         val newState = viewState.value.reducer()
         _viewState.value = newState
+        Log.d("VTTAG", "BaseViewModel::setState: state=${newState}")
+//        Log.w("VTTAG", "BaseViewModel::setState: state=${viewState.value}")
     }
 
     protected fun setEffect(builder: () -> Effect) {

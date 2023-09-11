@@ -5,9 +5,8 @@ import androidx.compose.ui.graphics.Color
 // не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы
 val primaryBlue = Color(0xFF10D2D2)
 val primaryContainerBlue = Color(0xFFC3F4F4)
-val secondaryContainerBlue = Color(0xFFF1F7F7)
+val surfaceVariantBlue = Color(0xFFF1F7F7)
 val primaryIndication = Color(0xFF203839)
-val cardBackground = Color(0xFFF0FCFD)
 val errorBackground = Color(0xFFFFF1F1)
 val notAvailableBackground = Color(0xFFEFEFEF)
 val backgroundCard = Color(0xFFEDF2F0)
@@ -73,6 +72,12 @@ val settingsIconTint = Color(0xFF7B8A8A)
 // для border Настроить напоминание
 val tertiaryBorderGray = Color(0x4098AFB0)
 val tertiaryBorderBlue = Color(0x40C3F4F4)
-
+// карточка курса, поверхность
+val cardBackgroundLight = Color(0xFFF0FCFD)
+val cardBackgroundDark = Color(0xFF0E4E4E)
+val cardTextLight = Color(0xFF203839)
+val cardTextDark = Color(0xFFFFFFFF)
+// иконка редактирования курса, всегда белая
+val iconEditing = Color(0xFFFFFFFF)
 // при изменении цвета, подписать для каких элементов цвет
 // не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы

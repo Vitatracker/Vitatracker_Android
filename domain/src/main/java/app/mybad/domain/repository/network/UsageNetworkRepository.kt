@@ -8,8 +8,6 @@ interface UsageNetworkRepository {
     suspend fun getUsagesByCourseId(
         courseId: Long,
         courseIdLoc: Long = 0,
-        remedyIdNet: Long = 0,
-        remedyIdLoc: Long = 0,
     ): Result<List<UsageDomainModel>>
 
     suspend fun updateUsage(usage: UsageDomainModel): Result<UsageDomainModel>

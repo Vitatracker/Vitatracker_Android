@@ -25,11 +25,6 @@ data class RemedyModel(
     @ColumnInfo(name = RemedyContract.Columns.IDN)
     val idn: Long = 0,
 
-    @ColumnInfo(name = RemedyContract.Columns.CREATION_DATE)
-    val creationDate: Long = 0,
-    @ColumnInfo(name = RemedyContract.Columns.UPDATE_DATE)
-    val updateDate: Long = 0,
-
     @ColumnInfo(name = RemedyContract.Columns.USER_ID)
     val userId: Long,
     @ColumnInfo(name = RemedyContract.Columns.USER_IDN)
@@ -52,17 +47,20 @@ data class RemedyModel(
     val dose: Int = 0,
     @ColumnInfo(name = RemedyContract.Columns.MEASURE_UNIT)
     val measureUnit: Int = 0,
-    @ColumnInfo(name = RemedyContract.Columns.PHOTO)
-    val photo: String? = null,
     @ColumnInfo(name = RemedyContract.Columns.BEFORE_FOOD)
     val beforeFood: Int = 5,
+    @ColumnInfo(name = RemedyContract.Columns.PHOTO)
+    val photo: String? = null,
     @ColumnInfo(name = RemedyContract.Columns.NOT_USED)
     val notUsed: Boolean = false,
 
+    @ColumnInfo(name = RemedyContract.Columns.CREATION_DATE)
+    val creationDate: Long = 0,
+    @ColumnInfo(name = RemedyContract.Columns.UPDATE_DATE)
+    val updateDate: Long = 0,
+
     @ColumnInfo(name = RemedyContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,
-    @ColumnInfo(name = RemedyContract.Columns.UPDATED_LOCAL_DATE)
-    val updateLocalDate: Long = 0,
     @ColumnInfo(name = RemedyContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
 )

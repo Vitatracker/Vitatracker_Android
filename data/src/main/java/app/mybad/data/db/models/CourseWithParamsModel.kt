@@ -1,24 +1,9 @@
 package app.mybad.data.db.models
 
 import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = CourseContract.TABLE_NAME,
-    foreignKeys = [
-        ForeignKey(
-            entity = RemedyModel::class,
-            parentColumns = [RemedyContract.Columns.ID],
-            childColumns = [CourseContract.Columns.REMEDY_ID],
-            onDelete = ForeignKey.NO_ACTION,
-        ),
-    ],
-    indices = [Index(CourseContract.Columns.REMEDY_ID)],
-)
-data class CourseModel(
+data class CourseWithParamsModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = CourseContract.Columns.ID)
     var id: Long = 0,
@@ -71,4 +56,26 @@ data class CourseModel(
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = CourseContract.Columns.DELETED_DATE)
     val deleteLocalDate: Long = 0,
+
+    // из remedy
+    @ColumnInfo(name = RemedyContract.Columns.NAME)
+    val name: String? = null,
+    @ColumnInfo(name = RemedyContract.Columns.DESCRIPTION)
+    val description: String? = null,
+
+    @ColumnInfo(name = RemedyContract.Columns.TYPE)
+    val type: Int = 0,
+    @ColumnInfo(name = RemedyContract.Columns.ICON)
+    val icon: Int = 0,
+    @ColumnInfo(name = RemedyContract.Columns.COLOR)
+    val color: Int = 0,
+    @ColumnInfo(name = RemedyContract.Columns.DOSE)
+    val dose: Int = 0,
+    @ColumnInfo(name = RemedyContract.Columns.BEFORE_FOOD)
+    val beforeFood: Int = 5,
+
+    @ColumnInfo(name = RemedyContract.Columns.MEASURE_UNIT)
+    val measureUnit: Int = 0,
+    @ColumnInfo(name = RemedyContract.Columns.PHOTO)
+    val photo: String? = null,
 )

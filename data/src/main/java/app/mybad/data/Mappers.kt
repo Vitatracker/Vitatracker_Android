@@ -1,20 +1,27 @@
 package app.mybad.data
 
 import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.CourseWithParamsModel
 import app.mybad.data.db.models.PatternUsageModel
+import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyModel
 import app.mybad.data.db.models.UsageModel
+import app.mybad.data.db.models.UsageWithNameAndDateModel
 import app.mybad.data.db.models.UserModel
 import app.mybad.data.models.user.PersonalDataModel
+import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.models.user.UserRulesDomainModel
+import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.timeInMinutes
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -41,11 +48,49 @@ fun UserModel.mapToDomain() = UserDomainModel(
     tokenRefreshDate = tokenRefreshDate,
 
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate
 )
 
 @JvmName("listUrmToDomain")
 fun List<UserModel>.mapToDomain() = this.map { it.mapToDomain() }
+
+fun CourseWithParamsModel.mapToDomain() = CourseDisplayDomainModel(
+    id = id,
+    idn = idn,
+    userId = userId,
+    userIdn = userIdn,
+    remedyId = remedyId,
+    remedyIdn = remedyIdn,
+
+    startDate = startDate,
+    endDate = endDate,
+    isInfinite = isInfinite,
+
+    regime = regime,
+    isFinished = isFinished,
+    notUsed = notUsed,
+    patternUsages = patternUsages,
+    comment = comment,
+
+    remindDate = remindDate,
+    interval = interval,
+
+    createdDate = createdDate,
+    updatedDate = updateDate,
+    updateNetworkDate = updateNetworkDate,
+
+    name = name ?: "",
+    description = description ?: "",
+    type = type,
+    icon = icon,
+    color = color,
+    dose = dose,
+    beforeFood = beforeFood,
+    measureUnit = measureUnit,
+    photo = photo
+)
+
+@JvmName("listCPmToDomain")
+fun List<CourseWithParamsModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 fun CourseModel.mapToDomain() = CourseDomainModel(
     id = id,
@@ -73,8 +118,9 @@ fun CourseModel.mapToDomain() = CourseDomainModel(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
+    patternUsages = patternUsages,
+
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listCmToDomain")
@@ -109,8 +155,9 @@ fun CourseDomainModel.mapToData() = CourseModel(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
+    patternUsages = patternUsages,
+
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 fun RemedyModel.mapToDomain() = RemedyDomainModel(
@@ -137,7 +184,6 @@ fun RemedyModel.mapToDomain() = RemedyDomainModel(
     notUsed = notUsed,
 
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listRmToDomain")
@@ -170,7 +216,6 @@ fun RemedyDomainModel.mapToData() = RemedyModel(
     notUsed = notUsed,
 
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 fun UsageModel.mapToDomain() = UsageDomainModel(
@@ -183,22 +228,17 @@ fun UsageModel.mapToDomain() = UsageDomainModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    remedyId = remedyId,
-    remedyIdn = remedyIdn,
-
-    createdDate = creationDate,
-    updatedDate = updatedDate,
-
-    factUseTime = factUseTime,
     useTime = useTime,
-
+    factUseTime = factUseTime,
     quantity = quantity,
 
     isDeleted = isDeleted,
     notUsed = notUsed,
 
+    createdDate = creationDate,
+    updatedDate = updatedDate,
+
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 fun UsageDomainModel.mapToData() = UsageModel(
@@ -211,22 +251,17 @@ fun UsageDomainModel.mapToData() = UsageModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    remedyId = remedyId,
-    remedyIdn = remedyIdn,
-
-    creationDate = createdDate,
-    updatedDate = currentDateTimeInSecond(),
-
-    factUseTime = factUseTime,
     useTime = useTime,
-
+    factUseTime = factUseTime,
     quantity = quantity,
 
     isDeleted = isDeleted,
     notUsed = notUsed,
 
+    creationDate = createdDate,
+    updatedDate = currentDateTimeInSecond(),
+
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listUmToDomain")
@@ -246,9 +281,6 @@ fun PatternUsageModel.mapToDomain() = PatternUsageDomainModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    remedyId = remedyId,
-    remedyIdn = remedyIdn,
-
     createdDate = creationDate,
     updatedDate = updatedDate,
 
@@ -256,7 +288,6 @@ fun PatternUsageModel.mapToDomain() = PatternUsageDomainModel(
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
@@ -269,9 +300,6 @@ fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    remedyId = remedyId,
-    remedyIdn = remedyIdn,
-
     creationDate = if (createdDate > 0) createdDate else currentDateTimeInSecond(),
     updatedDate = currentDateTimeInSecond(),
 
@@ -279,7 +307,6 @@ fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
-    updateLocalDate = updateLocalDate,
 )
 
 @JvmName("listPUmToDomain")
@@ -287,6 +314,79 @@ fun List<PatternUsageModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 @JvmName("listPUdmToData")
 fun List<PatternUsageDomainModel>.mapToData() = this.map { it.mapToData() }
+
+//----------------------------------------
+fun PatternUsageWithNameAndDateModel.mapToDomain(date: Long) = UsageDisplayDomainModel(
+    id = id,
+    courseId = courseId,
+    userId = userId,
+
+    isPattern = true, // pattern
+    timeInMinutes = timeInMinutes,
+    useTime = date.changeTime(minute = timeInMinutes),// для правильного отображения
+    quantity = quantity,
+
+    remedyId = remedyId,
+
+    startDate = startDate,
+    endDate = endDate,
+    isInfinite = isInfinite,
+
+    regime = regime,
+    showUsageTime = showUsageTime,
+    isFinished = isFinished,
+    notUsed = notUsed,
+
+    name = name ?: "",
+    description = description ?: "",
+    type = type,
+    icon = icon,
+    color = color,
+    dose = dose,
+    beforeFood = beforeFood,
+    measureUnit = measureUnit,
+    photo = photo,
+)
+
+@JvmName("listPUNDmToDomain")
+fun List<PatternUsageWithNameAndDateModel>.mapToDomain(date: Long) =
+    this.map { it.mapToDomain(date) }
+
+fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
+    id = id,
+    courseId = courseId,
+    userId = userId,
+
+    isPattern = false, // usage
+    timeInMinutes = useTime.timeInMinutes(),// берем только время в минутах, для сортировки и сопоставления с паттерном
+    quantity = quantity,
+    useTime = useTime,
+    factUseTime = factUseTime,
+
+    remedyId = remedyId,
+
+    startDate = startDate,
+    endDate = endDate,
+    isInfinite = isInfinite,
+
+    regime = regime,
+    showUsageTime = showUsageTime,
+    isFinished = isFinished,
+    notUsed = notUsed,
+
+    name = name ?: "",
+    description = description ?: "",
+    type = type,
+    icon = icon,
+    color = color,
+    dose = dose,
+    beforeFood = beforeFood,
+    measureUnit = measureUnit,
+    photo = photo,
+)
+
+@JvmName("listUNDmToDomain")
+fun List<UsageWithNameAndDateModel>.mapToDomain() = this.map { it.mapToDomain() }
 
 //------------------------
 fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(

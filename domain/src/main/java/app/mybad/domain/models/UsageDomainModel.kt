@@ -10,20 +10,15 @@ data class UsageDomainModel(
     val courseId: Long = -1,
     val courseIdn: Long = 0,
 
-    val remedyId: Long = -1,
-    val remedyIdn: Long = 0,
-
     val createdDate: Long = 0,
     val updatedDate: Long = 0,
 
     val factUseTime: Long = -1,
     val useTime: Long = 0, // тут полная дата со временем
-
-    val quantity: Int = 1,
+    val quantity: Float = 1f,
 
     val isDeleted: Boolean = false,
     val notUsed: Boolean = false,
 
     val updateNetworkDate: Long = 0,
-    val updateLocalDate: Long = 0,
 )

@@ -5,8 +5,11 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import app.mybad.data.db.models.CourseContract
+import app.mybad.data.db.models.RemedyContract
 import app.mybad.data.db.models.UsageContract
 import app.mybad.data.db.models.UsageModel
+import app.mybad.data.db.models.UsageWithNameAndDateModel
 import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
 
@@ -59,7 +62,66 @@ interface UsageDao {
             UsageContract.Columns.USER_ID
         } = :userId and ${UsageContract.Columns.USE_TIME} BETWEEN :startTime AND :endTime"
     )
-    fun getUsagesBetween(userId: Long, startTime: Long, endTime: Long): Flow<List<UsageModel>>
+    fun getUsagesBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageModel>>
+
+    @Query(
+        "select A.${UsageContract.Columns.ID}, A.${
+            UsageContract.Columns.COURSE_ID
+        }, A.${UsageContract.Columns.USER_ID}, A.${
+            UsageContract.Columns.USE_TIME
+        }, A.${UsageContract.Columns.FACT_USE_TIME}, A.${
+            UsageContract.Columns.QUANTITY
+        }, B.${CourseContract.Columns.REMEDY_ID}, B.${
+            CourseContract.Columns.START_DATE
+        }, B.${
+            CourseContract.Columns.END_DATE
+        }, B.${CourseContract.Columns.IS_INFINITE}, B.${
+            CourseContract.Columns.REGIME
+        }, B.${
+            CourseContract.Columns.SHOW_USAGE_TIME
+        }, B.${CourseContract.Columns.IS_FINISHED}, B.${
+            CourseContract.Columns.NOT_USED
+        }, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            UsageContract.TABLE_NAME
+        } A LEFT JOIN ${
+            CourseContract.TABLE_NAME
+        } B ON A.${UsageContract.Columns.COURSE_ID} = B.${CourseContract.Columns.ID} LEFT JOIN ${
+            RemedyContract.TABLE_NAME
+        } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
+            RemedyContract.Columns.ID
+        } where A.${UsageContract.Columns.USER_ID} = :userId and B.${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and B.${CourseContract.Columns.IS_FINISHED} = 0 and B.${
+            CourseContract.Columns.NOT_USED
+        } = 0 and A.${UsageContract.Columns.USE_TIME} between :startTime and :endTime order by A.${
+            UsageContract.Columns.USE_TIME
+        }, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageWithNameAndDateModel>>
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
@@ -70,10 +132,28 @@ interface UsageDao {
 
     //--------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUsage(usage: UsageModel)
+    suspend fun insertUsage(usage: UsageModel): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsages(usages: List<UsageModel>)
+
+
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.FACT_USE_TIME
+        } = :factUseTime, ${
+            UsageContract.Columns.UPDATED_DATE
+        } = :date, ${
+            UsageContract.Columns.UPDATED_NETWORK_DATE
+        } = 0 WHERE ${
+            UsageContract.Columns.ID
+        } = :usageId"
+    )
+    suspend fun setFactUseTimeUsage(
+        usageId: Long,
+        factUseTime: Long,
+        date: Long = currentDateTimeInSecond()
+    )
     //--------------------------------------------------
 
     @Query(

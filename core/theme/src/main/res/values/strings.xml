@@ -30,6 +30,7 @@
     <string name="add_course_months">Months</string>
     <string name="add_course_days">Days</string>
     <string name="add_next_course_interval">Start next course in</string>
+    <string name="period_m_d">%02d m. %02d d.</string>
     <string name="add_course_end_time">End time</string>
     <string name="medication_regime">Schedule of medications</string>
     <string name="add_course_reminder">Add reminder for next course</string>
@@ -236,73 +237,73 @@
     <string name="action_navigate">Navigate</string>
 
     <plurals name="plurals_types_tablet">
-        <item quantity="one">%1$d таблетка</item>
-        <item quantity="few">%1$d таблетки</item>
-        <item quantity="many">%1$d таблеток</item>
-        <item quantity="other">%1$d таблеток</item>
+        <item quantity="one">%1$s таблетка</item>
+        <item quantity="few">%1$s таблетки</item>
+        <item quantity="many">%1$s таблеток</item>
+        <item quantity="other">%1$s таблеток</item>
     </plurals>
 
     <plurals name="plurals_types_pill">
-        <item quantity="one">%1$d капсула</item>
-        <item quantity="few">%1$d капсулы</item>
-        <item quantity="many">%1$d капсул</item>
-        <item quantity="other">%1$d капсул</item>
+        <item quantity="one">%1$s капсула</item>
+        <item quantity="few">%1$s капсулы</item>
+        <item quantity="many">%1$s капсул</item>
+        <item quantity="other">%1$s капсул</item>
     </plurals>
 
     <plurals name="plurals_types_inhalator">
-        <item quantity="one">%1$d ингаляция</item>
-        <item quantity="few">%1$d ингаляции</item>
-        <item quantity="many">%1$d ингаляций</item>
-        <item quantity="other">%1$d ингаляций</item>
+        <item quantity="one">%1$s ингаляция</item>
+        <item quantity="few">%1$s ингаляции</item>
+        <item quantity="many">%1$s ингаляций</item>
+        <item quantity="other">%1$s ингаляций</item>
     </plurals>
 
     <plurals name="plurals_types_injection">
-        <item quantity="one">%1$d инъекция</item>
-        <item quantity="few">%1$d инъекции</item>
-        <item quantity="many">%1$d инъекций</item>
-        <item quantity="other">%1$d инъекций</item>
+        <item quantity="one">%1$s инъекция</item>
+        <item quantity="few">%1$s инъекции</item>
+        <item quantity="many">%1$s инъекций</item>
+        <item quantity="other">%1$s инъекций</item>
     </plurals>
 
     <plurals name="plurals_types_drops">
-        <item quantity="one">%1$d капля</item>
-        <item quantity="few">%1$d капли</item>
-        <item quantity="many">%1$d капель</item>
-        <item quantity="other">%1$d капель</item>
+        <item quantity="one">%1$s капля</item>
+        <item quantity="few">%1$s капли</item>
+        <item quantity="many">%1$s капель</item>
+        <item quantity="other">%1$s капель</item>
     </plurals>
 
     <plurals name="plurals_types_solution">
-        <item quantity="one">%1$d раствор</item>
-        <item quantity="few">%1$d раствора</item>
-        <item quantity="many">%1$d растворов</item>
-        <item quantity="other">%1$d растворов</item>
+        <item quantity="one">%1$s раствор</item>
+        <item quantity="few">%1$s раствора</item>
+        <item quantity="many">%1$s растворов</item>
+        <item quantity="other">%1$s растворов</item>
     </plurals>
 
     <plurals name="plurals_types_suppository">
-        <item quantity="one">%1$d суппозиторий</item>
-        <item quantity="few">%1$d суппозитория</item>
-        <item quantity="many">%1$d суппозиториев</item>
-        <item quantity="other">%1$d суппозиториев</item>
+        <item quantity="one">%1$s суппозиторий</item>
+        <item quantity="few">%1$s суппозитория</item>
+        <item quantity="many">%1$s суппозиториев</item>
+        <item quantity="other">%1$s суппозиториев</item>
     </plurals>
 
     <plurals name="plurals_types_syrup">
-        <item quantity="one">%1$d сироп</item>
-        <item quantity="few">%1$d сиропа</item>
-        <item quantity="many">%1$d сиропов</item>
-        <item quantity="other">%1$d сиропов</item>
+        <item quantity="one">%1$s сироп</item>
+        <item quantity="few">%1$s сиропа</item>
+        <item quantity="many">%1$s сиропов</item>
+        <item quantity="other">%1$s сиропов</item>
     </plurals>
 
     <plurals name="plurals_types_suspension">
-        <item quantity="one">%1$d спрей</item>
-        <item quantity="few">%1$d спрея</item>
-        <item quantity="many">%1$d спреев</item>
-        <item quantity="other">%1$d спреев</item>
+        <item quantity="one">%1$s спрей</item>
+        <item quantity="few">%1$s спрея</item>
+        <item quantity="many">%1$s спреев</item>
+        <item quantity="other">%1$s спреев</item>
     </plurals>
 
     <plurals name="plurals_types_spray">
-        <item quantity="one">%1$d суспензия</item>
-        <item quantity="few">%1$d суспензии</item>
-        <item quantity="many">%1$d суспензий</item>
-        <item quantity="other">%1$d суспензий</item>
+        <item quantity="one">%1$s суспензия</item>
+        <item quantity="few">%1$s суспензии</item>
+        <item quantity="many">%1$s суспензий</item>
+        <item quantity="other">%1$s суспензий</item>
     </plurals>
 
     <plurals name="plurals_days">

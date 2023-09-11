@@ -85,6 +85,7 @@ fun CourseNetworkModel.mapToDomain(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
+    patternUsages = patternUsages ?: "",
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
     updateNetworkDate = currentDateTimeInSecond(),
 )
@@ -168,8 +169,6 @@ fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
 fun List<RemedyNetworkModel>.mapToDomain(): List<RemedyDomainModel> = this.map { it.mapToDomain() }
 
 fun UsageNetworkModel.mapToDomain(
-    remedyIdLoc: Long = 0,
-    remedyIdNet: Long = 0,
     courseIdLoc: Long = 0,
     usageIdLoc: Long = 0
 ) = UsageDomainModel(
@@ -182,9 +181,6 @@ fun UsageNetworkModel.mapToDomain(
     courseId = courseIdLoc,
     courseIdn = courseId ?: 0,
 
-    remedyId = remedyIdLoc,
-    remedyIdn = if (remedyIdNet > 0) remedyIdNet else remedyId ?: 0,
-
     createdDate = createdDate.toLocalDateTime().toEpochSecond(),
     updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
 
@@ -195,7 +191,7 @@ fun UsageNetworkModel.mapToDomain(
 
     notUsed = notUsed,
 
-    // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
+    // мы получаем с сервера, нам не нужно его возвращать опять на сервер
     updateNetworkDate = currentDateTimeInSecond(),
 )
 
@@ -206,12 +202,8 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 
     courseId = courseIdn,
 
-    remedyId = remedyIdn,
-
     createdDate = createdDate.toDateTimeIsoDisplay(),
     updatedDate = updatedDate.toDateTimeIsoDisplay(),
-
-    timestamp = createdDate.toDateTimeIsoDisplay(),// не понятно что это, без этого на сервер не отправлялось
 
     factUseTime = factUseTime,
     useTime = useTime,
@@ -223,14 +215,10 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 
 @JvmName("listUnmToDomain")
 fun List<UsageNetworkModel>.mapToDomain(
-    remedyIdLoc: Long = 0,
-    remedyIdNet: Long = 0,
     courseIdLoc: Long = 0,
     usageIdLoc: Long = 0
 ): List<UsageDomainModel> = this.map {
     it.mapToDomain(
-        remedyIdLoc = remedyIdLoc,
-        remedyIdNet = remedyIdNet,
         courseIdLoc = courseIdLoc,
         usageIdLoc = usageIdLoc,
     )

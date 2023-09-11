@@ -18,6 +18,10 @@ class CourseRepositoryImpl @Inject constructor(
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : CourseRepository {
 
+    override fun getCoursesWithParams(userId: Long) = db.getCoursesWithParams(userId)
+        .map { it.mapToDomain() }
+        .flowOn(dispatcher)
+
     override fun getCourses(userId: Long) = db.getCourses(userId)
         .map { it.mapToDomain() to currentDateTimeInSecond() }
         .flowOn(dispatcher)

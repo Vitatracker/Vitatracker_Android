@@ -69,7 +69,11 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                     )
                 ).onSuccess { updatedCourse ->
                     log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
-                    courseRepository.updateCourse(updatedCourse).onFailure {
+                    courseRepository.updateCourse(
+                        // TODO("временная заглушка, сервер не возвращает строку")
+                        if (updatedCourse.patternUsages.isBlank()) updatedCourse.copy(patternUsages = course.patternUsages)
+                        else updatedCourse
+                    ).onFailure {
                         TODO("реализовать обработку ошибок")
                     }
                     sendUsages(updatedCourse)
@@ -95,7 +99,10 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                             )
                         ).onSuccess { updatedCourse ->
                             log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
-                            courseRepository.updateCourse(updatedCourse).onFailure {
+                            courseRepository.updateCourse(
+                                if (updatedCourse.patternUsages.isBlank()) updatedCourse.copy(patternUsages = course.patternUsages)
+                                else updatedCourse
+                            ).onFailure {
                                 TODO("реализовать обработку ошибок")
                             }
                             sendUsages(updatedCourse)
@@ -118,7 +125,6 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                 usageNetworkRepository.updateUsage(
                     usage.copy(
                         courseIdn = course.idn,
-                        remedyIdn = course.remedyIdn,
                     )
                 ).onSuccess { updatedUsage ->
                     log("sendCourses: to net ok usage update=${updatedUsage.updateNetworkDate}")
@@ -142,7 +148,6 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                     if (course.remedyIdn > 0 && course.idn > 0) {
                         usageNetworkRepository.updateUsage(
                             usage.copy(
-                                remedyIdn = course.remedyIdn,
                                 courseIdn = course.idn,
                             )
                         ).onSuccess { updatedUsage ->

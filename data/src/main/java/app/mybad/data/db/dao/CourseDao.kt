@@ -7,11 +7,40 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import app.mybad.data.db.models.CourseContract
 import app.mybad.data.db.models.CourseModel
+import app.mybad.data.db.models.CourseWithParamsModel
+import app.mybad.data.db.models.RemedyContract
 import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDao {
+
+    @Query(
+        "select B.*, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            CourseContract.TABLE_NAME
+        } B LEFT JOIN ${RemedyContract.TABLE_NAME} C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
+            RemedyContract.Columns.ID
+        } where B.${CourseContract.Columns.USER_ID} = :userId and B.${CourseContract.Columns.DELETED_DATE} = 0 and B.${
+            CourseContract.Columns.IS_FINISHED
+        } = 0 and B.${CourseContract.Columns.NOT_USED} = 0 order by B.${CourseContract.Columns.START_DATE}, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getCoursesWithParams(userId: Long): Flow<List<CourseWithParamsModel>>
 
     @Query(
         "select * from ${CourseContract.TABLE_NAME} where ${CourseContract.Columns.DELETED_DATE} = 0 and ${
