@@ -21,6 +21,9 @@ data class UsageWithNameAndDateModel(
     val quantity: Float = 1f, // количество вещества за раз
 
     //  из курса
+    @ColumnInfo(name = CourseContract.Columns.IDN)
+    val courseIdn: Long,
+
     @ColumnInfo(name = CourseContract.Columns.REMEDY_ID)
     val remedyId: Long,
 

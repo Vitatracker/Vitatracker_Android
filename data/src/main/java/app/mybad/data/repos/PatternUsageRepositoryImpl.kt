@@ -46,7 +46,7 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
-//    override suspend fun getPatternUsagesBetweenByCourseId(
+    //    override suspend fun getPatternUsagesBetweenByCourseId(
 //        courseId: Long,
 //        startTime: Long,
 //        endTime: Long
@@ -123,12 +123,11 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deletePatternUsagesByCourseId(userId: Long, courseId: Long) =
-        withContext(dispatcher) {
-            runCatching {
-                db.deletePatternUsagesByCourseId(userId = userId, courseId = courseId)
-            }
+    override suspend fun deletePatternUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deletePatternUsagesByCourseId(courseId = courseId)
         }
+    }
 
     override suspend fun deletePatternUsage(id: Long) = withContext(dispatcher) {
         runCatching {

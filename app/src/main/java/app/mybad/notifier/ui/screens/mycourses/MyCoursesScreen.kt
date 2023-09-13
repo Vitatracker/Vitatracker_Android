@@ -39,8 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.data.models.UsageFormat.Companion.patternToCount
 import app.mybad.domain.models.CourseDisplayDomainModel
+import app.mybad.domain.models.patternToCount
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseIcon
 import app.mybad.notifier.ui.common.TitleText
@@ -50,7 +50,6 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.iconEditing
 import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
-import app.mybad.utils.secondsToDay
 import app.mybad.utils.toDateDisplay
 import kotlinx.coroutines.flow.Flow
 
@@ -126,7 +125,7 @@ private fun CourseItem(
 ) {
 
     // кол-во приемов, минимальное и максимальное кол-во за 1 прием
-    val (countPerDay, countPerDoseMin, countPerDoseMax) = courseDisplay.patternToCount()
+    val (countPerDay, countPerDoseMin, countPerDoseMax) = courseDisplay.patternUsages.patternToCount()
 
     Card(
         modifier = Modifier

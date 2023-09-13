@@ -30,7 +30,7 @@ class SetFactUseTimeOrInsertUsageUseCase @Inject constructor(
                     userId = usageDisplay.userId,
                     userIdn = "",
                     courseId = usageDisplay.courseId,
-                    courseIdn = 0,
+                    courseIdn = usageDisplay.courseIdn,
 
                     createdDate = currentDateTime,
                     updatedDate = 0,

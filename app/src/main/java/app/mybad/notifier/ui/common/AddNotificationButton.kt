@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 
 @Composable
@@ -32,6 +34,7 @@ fun AddNotificationButton(
     modifier: Modifier = Modifier,
     form: Int,
     forms: Array<String>,
+    dose: Float = 1f,
     onClick: () -> Unit = {},
 ) {
     Surface(
@@ -65,9 +68,9 @@ fun AddNotificationButton(
             )
             Spacer(Modifier.weight(1f))
             Text(
-                text = "1",
+                text = dose.toText(),
                 style = Typography.bodyMedium,
-                modifier = Modifier.padding(start = 4.dp).width(25.dp)
+                modifier = Modifier.padding(horizontal = 4.dp).widthIn(min = 25.dp)
             )
             Text(
                 text = forms[form],
@@ -82,6 +85,7 @@ fun AddNotificationButton(
 @Composable
 private fun AddNotificationButtonPreview() {
     AddNotificationButton(
+        dose = 1.5f,
         form = 0,
         forms = arrayOf("Таблетка")
     )

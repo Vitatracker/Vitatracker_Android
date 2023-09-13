@@ -92,9 +92,9 @@ fun AddMedFirstScreen(
                     isError = state.isError,
                     errorTextId = if (state.isError) R.string.add_med_error_empty_name else null,
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
                         keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Words
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Done,
                     ),
                 )
                 Spacer(modifier = Modifier.height(8.dp))

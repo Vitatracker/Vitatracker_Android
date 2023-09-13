@@ -52,7 +52,7 @@ class MyCoursesEditViewModel @Inject constructor(
         Log.w("VTTAG", "MyCoursesViewModel: init")
     }
 
-    private var courseId = 0L
+    private var courseIdLocked = 0L
 
     override fun setInitialState() = MyCoursesEditContract.State(
         dateLimit = DateCourseLimit(currentDateTimeInSecond()),
@@ -116,8 +116,8 @@ class MyCoursesEditViewModel @Inject constructor(
 
     fun uploadCourseForEditingInState(courseId: Long) {
         Log.w("VTTAG", "MyCoursesViewModel::loadEditCourseInState: courseId=$courseId")
-        if (this.courseId == courseId) return
-        this.courseId = courseId
+        if (this.courseIdLocked == courseId) return
+        this.courseIdLocked = courseId
         viewModelScope.launch {
             getCourseByIdUseCase(courseId).getOrNull()?.let { course ->
                 getRemedyByIdUseCase(course.remedyId).getOrNull()?.let { remedy ->
@@ -288,71 +288,62 @@ class MyCoursesEditViewModel @Inject constructor(
                 createRemedyUseCase(remedy).getOrNull()
             } ?: viewState.value.remedy.id
         // если таблетка старая, то idn не поменялся иначе будет новый
-        val remedyIdn = if (remedyId == viewState.value.remedy.id) viewState.value.remedy.idn else 0
-        val course = CourseDomainModel(
+        val remedyIdn = if (remedyId == viewState.value.remedy.id) viewState.value.remedy.idn else {
+            Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new remedyId=$remedyId")
+            0
+        }
+        val course = viewState.value.course.copy(
             id = 0,
 
             remedyId = remedyId,
             remedyIdn = remedyIdn,
 
-            userId = viewState.value.course.userId,
-            userIdn = viewState.value.course.userIdn,
-
-            comment = viewState.value.course.comment,
-
-            startDate = viewState.value.course.startDate,
-            endDate = viewState.value.course.endDate,
-
-            remindDate = viewState.value.course.remindDate,
-            interval = viewState.value.course.interval,
-
-            patternUsages = viewState.value.course.patternUsages,
-            regime = viewState.value.course.regime,
             isInfinite = false,
             isFinished = false,
-            notUsed = viewState.value.course.notUsed,
+            notUsed = false,
 
             createdDate = dateNew,
+            updatedDate = dateNew,
+
+            updateNetworkDate = 0,
+        )
+        Log.w(
+            "VTTAG", "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
         )
         // закроем курс
         closeCourseUseCase(courseId = viewState.value.course.id, dateTime = dateNew)
         // создадим новый курс
         createCourseUseCase(course).onSuccess { courseId ->
-            // создадим паттерн
-            updatePatternUsagesByCourseIdUseCase(
+            Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
+            // обновим паттерн
+            updatePatternUsages(
                 courseId = courseId,
-                patterns = viewState.value.usagesPatternEdit.map { pattern ->
-                    PatternUsageDomainModel(
-                        courseId = courseId,
-                        timeInMinutes = pattern.timeInMinutes,
-                        quantity = pattern.quantity,
-                    )
-                }
+                usagesPattern = viewState.value.usagesPatternEdit
             )
-            /*
-                        updateUsagesInCourseUseCase(
-                            courseId = courseId,
-                            usages = generateUsages(
-                                usagesByDay = viewState.value.usagesPattern,
-                                remedyId = remedyId,
-                                courseId = courseId,
-                                userId = course.userId,
-                                startDate = course.startDate,
-                                endDate = course.endDate,
-                                regime = course.regime
-                            )
-                        )
-            */
         }
     }
 
     private suspend fun updateCourse() {
-        updateRemedyUseCase(viewState.value.remedy)
-        updateCourseUseCase(viewState.value.course)
-        // обновим паттерн
+        Log.w("VTTAG", "MyCoursesViewModel::updateCourse: courseId=${viewState.value.course.id}")
+        updateRemedyUseCase(viewState.value.remedy.copy(updateNetworkDate = 0))
+        updateCourseUseCase(viewState.value.course.copy(updateNetworkDate = 0))
+        // обновим паттерн, только если нужно
+        if (viewState.value.usagesPattern != viewState.value.usagesPatternEdit) {
+            Log.w(
+                "VTTAG",
+                "MyCoursesViewModel::updateCourse: updatePatternUsages=${viewState.value.usagesPatternEdit.size}"
+            )
+            updatePatternUsages(
+                courseId = viewState.value.course.id,
+                usagesPattern = viewState.value.usagesPatternEdit
+            )
+        }
+    }
+
+    private suspend fun updatePatternUsages(courseId: Long, usagesPattern: List<UsageFormat>) {
         updatePatternUsagesByCourseIdUseCase(
             courseId = courseId,
-            patterns = viewState.value.usagesPatternEdit.map { pattern ->
+            patterns = usagesPattern.map { pattern ->
                 PatternUsageDomainModel(
                     courseId = courseId,
                     timeInMinutes = pattern.timeInMinutes,
@@ -360,21 +351,5 @@ class MyCoursesEditViewModel @Inject constructor(
                 )
             }
         )
-
-        /*
-                updateUsagesInCourseUseCase(
-                    courseId = viewState.value.course.id,
-                    usages = generateUsages(
-                        usagesByDay = viewState.value.usagesPattern,
-                        remedyId = viewState.value.remedy.id,
-                        courseId = viewState.value.course.id,
-                        userId = viewState.value.course.userId,
-                        startDate = viewState.value.course.startDate,
-                        endDate = viewState.value.course.endDate,
-                        regime = viewState.value.course.regime
-                    )
-                )
-        */
     }
-
 }

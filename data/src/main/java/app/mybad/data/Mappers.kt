@@ -326,6 +326,8 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(date: Long) = UsageDisplayDomai
     useTime = date.changeTime(minute = timeInMinutes),// для правильного отображения
     quantity = quantity,
 
+    courseIdn = courseIdn,
+
     remedyId = remedyId,
 
     startDate = startDate,
@@ -362,6 +364,8 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     quantity = quantity,
     useTime = useTime,
     factUseTime = factUseTime,
+
+    courseIdn = courseIdn,
 
     remedyId = remedyId,
 

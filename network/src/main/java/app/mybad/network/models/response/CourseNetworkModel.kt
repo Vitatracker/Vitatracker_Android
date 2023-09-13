@@ -2,7 +2,7 @@ package app.mybad.network.models.response
 
 import com.google.gson.annotations.SerializedName
 
-// сверено с беком 10.07.23
+// сверено с беком 12.09.23
 data class CourseNetworkModel(
     @SerializedName("id") val id: Long,// -> idn
 
@@ -13,6 +13,7 @@ data class CourseNetworkModel(
 
     @SerializedName("remedyId") val remedyId: Long,
     @SerializedName("regime") val regime: Int,
+
     @SerializedName("patternUsage") val patternUsages: String? = null,
 
     @SerializedName("notUsed") val notUsed: Boolean,

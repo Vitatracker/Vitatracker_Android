@@ -47,6 +47,7 @@ interface UsageRepository {
 
     suspend fun deleteUsagesById(usageId: Long): Result<Unit>
     suspend fun deleteUsagesByUserId(userId: Long): Result<Unit>
+    suspend fun deleteUsagesByCourseId(courseId: Long): Result<Unit>
     suspend fun deleteUsages(usages: List<UsageDomainModel>): Result<Unit>
 
     suspend fun getUsagesNotUpdateByUserId(userId: Long): Result<List<UsageDomainModel>>

@@ -1,11 +1,16 @@
 package app.mybad.notifier.ui.screens.settings.main
 
+import androidx.lifecycle.viewModelScope
+import app.mybad.domain.usecases.user.ClearDBUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsMainViewModel @Inject constructor() : BaseViewModel<
+class SettingsMainViewModel @Inject constructor(
+    private val clearDBUseCase: ClearDBUseCase,
+) : BaseViewModel<
         SettingsMainScreenContract.Event,
         SettingsMainScreenContract.State,
         SettingsMainScreenContract.Effect>() {
@@ -30,6 +35,11 @@ class SettingsMainViewModel @Inject constructor() : BaseViewModel<
                 SettingsMainScreenContract.Effect.Navigation.ToAbout
             }
 
+            SettingsMainScreenContract.Event.ClearDB -> {
+                viewModelScope.launch {
+                    clearDBUseCase()
+                }
+            }
         }
     }
 }

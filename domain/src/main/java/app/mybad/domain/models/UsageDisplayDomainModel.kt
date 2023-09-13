@@ -16,6 +16,8 @@ data class UsageDisplayDomainModel(
     val factUseTime: Long = -1, // дата фактического приема
 
     // из курса для информации
+    val courseIdn: Long = 0,
+
     val remedyId: Long = -1,
 
     val startDate: Long = 0,

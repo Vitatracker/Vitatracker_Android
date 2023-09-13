@@ -48,7 +48,7 @@
     <string name="settings_profile">Профіль</string>
     <string name="settings_notifications">Настройки повідомлень</string>
     <string name="settings_about">Про додаток</string>
-    <string name="settings_db_clear">Очистить DB</string>
+    <string name="settings_db_clear">Очистити DB (На етапi тестування)</string>
     <string name="settings_quit">Вийти</string>
     <string name="settings_delete_account">Видалити обліковий запис</string>
     <string name="settings_change_password">Змінити пароль</string>

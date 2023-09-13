@@ -75,9 +75,9 @@ interface UsageDao {
             UsageContract.Columns.USE_TIME
         }, A.${UsageContract.Columns.FACT_USE_TIME}, A.${
             UsageContract.Columns.QUANTITY
-        }, B.${CourseContract.Columns.REMEDY_ID}, B.${
-            CourseContract.Columns.START_DATE
-        }, B.${
+        }, B.${CourseContract.Columns.IDN}, B.${
+            CourseContract.Columns.REMEDY_ID
+        }, B.${CourseContract.Columns.START_DATE}, B.${
             CourseContract.Columns.END_DATE
         }, B.${CourseContract.Columns.IS_INFINITE}, B.${
             CourseContract.Columns.REGIME
@@ -228,6 +228,13 @@ interface UsageDao {
         } = :userId"
     )
     suspend fun deleteUsagesByUserId(userId: Long)
+
+    @Query(
+        "delete from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId"
+    )
+    suspend fun deleteUsagesByCourseId(courseId: Long)
 
     @Delete
     suspend fun deleteUsages(usages: List<UsageModel>)

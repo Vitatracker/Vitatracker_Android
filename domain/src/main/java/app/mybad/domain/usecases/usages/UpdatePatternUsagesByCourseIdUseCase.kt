@@ -1,7 +1,6 @@
 package app.mybad.domain.usecases.usages
 
 import android.util.Log
-import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.repository.PatternUsageRepository
 import javax.inject.Inject
@@ -12,7 +11,7 @@ class UpdatePatternUsagesByCourseIdUseCase @Inject constructor(
 
     suspend operator fun invoke(courseId: Long, patterns: List<PatternUsageDomainModel>) {
         try {
-            repository.deletePatternUsagesByCourseId(userId = AuthToken.userId, courseId = courseId)
+            repository.deletePatternUsagesByCourseId(courseId = courseId)
             if (patterns.isEmpty()) return
             repository.insertPatternUsage(patterns)
         } catch (e: Error) {

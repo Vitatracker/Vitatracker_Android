@@ -52,9 +52,7 @@ class MyCoursesViewModel @Inject constructor(
             currentDateTime.flatMapLatest { date ->
                 getCoursesUseCase()
                     .distinctUntilChanged()
-                    .map { courses ->
-                        addRemindCourse(courses)
-                    }
+                    .map(::addRemindCourse)
             }
                 .distinctUntilChanged()
                 .collect(::changeState)
@@ -75,7 +73,7 @@ class MyCoursesViewModel @Inject constructor(
         val currentDate = currentDateTimeInSecond()
         val newCourses = mutableListOf<CourseDisplayDomainModel>()
         courses.forEach { newCourse ->
-            if (newCourse.remindDate > 0) {
+            if (newCourse.remindDate > 0 && newCourse.interval > 0) {
 
                 val startDate = newCourse.endDate.plusDay(newCourse.interval).atStartOfDay()
                 if (startDate > currentDate) {

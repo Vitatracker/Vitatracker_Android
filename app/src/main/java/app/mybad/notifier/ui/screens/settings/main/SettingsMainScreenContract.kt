@@ -10,6 +10,7 @@ class SettingsMainScreenContract {
         object NotificationsSettingsClicked : Event
         object LeaveWishesClicked : Event
         object AboutClicked : Event
+        object ClearDB : Event
     }
 
     object State: ViewState

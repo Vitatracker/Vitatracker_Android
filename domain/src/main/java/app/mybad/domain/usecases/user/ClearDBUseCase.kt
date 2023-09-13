@@ -23,7 +23,7 @@ class ClearDBUseCase @Inject constructor(
 
     suspend operator fun invoke() {
         Log.w("VTTAG", "ClearDBUseCase:: delete usageNetworkRepository")
-        // удаляем на удаленной базе
+        // удаляем на сервере
         usageNetworkRepository.getUsages().getOrNull()?.forEach { usage ->
             usageNetworkRepository.deleteUsage(usage.idn)
         }

@@ -3,7 +3,9 @@ package app.mybad.domain.usecases.courses
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.toPatterns
 import app.mybad.domain.repository.CourseRepository
 import app.mybad.domain.repository.PatternUsageRepository
 import app.mybad.domain.repository.RemedyRepository
@@ -40,8 +42,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 "VTTAG",
                 "SynchronizationCourseWorker::getCourses: remediesNet=${remediesNet.size} remediesLoc=${remediesLoc.size}"
             )
-            var remediesNew: List<RemedyDomainModel> = emptyList()
-            if (remediesLoc.isNotEmpty()) {
+            val remediesNew = if (remediesLoc.isNotEmpty()) {
                 // remedies которых нет на беке, после отправки их туда и
                 // то, что нужно удалить, потому что были удалены удаленно
                 // но проверять была ли отправка на бек idn > 0 и updateNetworkDate > 0
@@ -50,15 +51,15 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                         remedy.idn > 0 && remedy.updateNetworkDate > 0 && remedy.idn !in remediesNetIds
                     }
                 }
-                // удаляем старые записи remedies и нужно удалить courses и usages
+                // удаляем старые записи remedies и нужно удалить courses, patterns и usages
                 deleteRemediesLoc(remediesOld)
                 // то что пришло с бека, но нет локально и ему еще нужно назначить id local
-                remediesNew = remediesLoc.map { it.idn }.let { remediesLocIds ->
+                remediesLoc.map { it.idn }.let { remediesLocIds ->
                     remediesNet.filter { remedyNet ->
                         remedyNet.idn !in remediesLocIds
                     }
                 }
-            } else remediesNew = remediesNet
+            } else remediesNet
             remediesNew.forEach { remedyNew ->
                 // запишем в локальную базу и получим id, загрузим все курсы с remedyNew.idn
                 remedyRepository.insertRemedy(remedyNew).onSuccess { remedyIdLoc ->
@@ -81,7 +82,6 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         ).onSuccess { usagesNet ->
             if (usagesNet.isNotEmpty()) {
                 usageRepository.insertUsage(usagesNet)
-                //TODO("сохраним паттерн или новый патерн для courseIdLoc, передать usagesNet и в мапере уже переделать, но то что нам нужно")
             }
         }.onFailure {
             TODO("реализовать обработку ошибок")
@@ -105,6 +105,12 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 )
                 // запишем в локальную базу, тут уже подставлен remedyIdLoc и userIdLoc
                 courseRepository.insertCourse(courseNet).onSuccess { courseIdLoc ->
+                    // создать паттерн из строки
+                    patternsToLocal(
+                        patternUsages = courseNet.patternUsages,
+                        courseIdLoc = courseIdLoc,
+                        courseIdNet = courseNet.idn
+                    )
                     // получим с бека usages для courseNet.idn
                     syncUsagesFromNetwork(
                         courseIdNet = courseNet.idn,
@@ -143,12 +149,39 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 remedyRepository.getRemedyByIdn(courseNew.idn).onSuccess { remedy ->
                     courseRepository.insertCourse(courseNew.copy(remedyId = remedy.id))
                         .onSuccess { courseIdLoc ->
+                            // создать паттерн из строки
+                            patternsToLocal(
+                                patternUsages = courseNew.patternUsages,
+                                courseIdLoc = courseIdLoc,
+                                courseIdNet = courseNew.idn
+                            )
+                            // получим с бека usages для courseNet.idn
                             syncUsagesFromNetwork(
                                 courseIdNet = courseNew.idn,
                                 courseIdLoc = courseIdLoc,
                             )
                         }
                 }
+            }
+        }
+    }
+
+    private suspend fun patternsToLocal(
+        patternUsages: String,
+        courseIdLoc: Long,
+        courseIdNet: Long = 0
+    ) {
+        if (patternUsages.isNotBlank()) {
+            val patterns = patternUsages.toPatterns()
+            patterns.forEach {
+                patternUsageRepository.insertPatternUsage(
+                    PatternUsageDomainModel(
+                        courseId = courseIdLoc,
+                        courseIdn = courseIdNet,
+                        timeInMinutes = it.first,
+                        quantity = it.second,
+                    )
+                )
             }
         }
     }
@@ -198,6 +231,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         if (remedyId <= 0) return
         courseRepository.getCoursesByRemedyId(remedyId).onSuccess { courses ->
             courses.forEach { course ->
+                deletePatternUsageLoc(course.id)
                 deleteUsageLoc(course.id)
                 courseRepository.deleteCoursesById(course.id)
             }
@@ -208,19 +242,14 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
 
     private suspend fun deletePatternUsageLoc(courseId: Long) {
         if (courseId <= 0) return
-        patternUsageRepository.getPatternUsagesByCourseId(courseId = courseId)
-            .onSuccess { patterns ->
-                patternUsageRepository.deletePatternUsages(patterns)
-            }.onFailure {
-                TODO("реализовать обработку ошибок")
-            }
+        patternUsageRepository.deletePatternUsagesByCourseId(courseId = courseId).onFailure {
+            TODO("реализовать обработку ошибок")
+        }
     }
 
     private suspend fun deleteUsageLoc(courseId: Long) {
         if (courseId <= 0) return
-        usageRepository.getUsagesByCourseId(courseId).onSuccess { usages ->
-            usageRepository.deleteUsages(usages)
-        }.onFailure {
+        usageRepository.deleteUsagesByCourseId(courseId).onFailure {
             TODO("реализовать обработку ошибок")
         }
     }

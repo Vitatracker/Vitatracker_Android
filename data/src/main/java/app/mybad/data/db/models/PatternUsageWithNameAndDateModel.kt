@@ -20,6 +20,9 @@ data class PatternUsageWithNameAndDateModel(
     val quantity: Float = 1f,
 
     // из курса
+    @ColumnInfo(name = CourseContract.Columns.IDN)
+    val courseIdn: Long,
+
     @ColumnInfo(name = CourseContract.Columns.REMEDY_ID)
     val remedyId: Long,
 

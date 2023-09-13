@@ -24,6 +24,8 @@ interface PatternUsageDao {
         }, A.${
             PatternUsageContract.Columns.TIME_MINUTES
         }, A.${PatternUsageContract.Columns.QUANTITY}, B.${
+            CourseContract.Columns.IDN
+        }, B.${
             CourseContract.Columns.REMEDY_ID
         }, B.${
             CourseContract.Columns.START_DATE
@@ -202,12 +204,10 @@ interface PatternUsageDao {
 
     @Query(
         "delete from ${PatternUsageContract.TABLE_NAME} where ${
-            PatternUsageContract.Columns.USER_ID
-        } = :userId and ${
             PatternUsageContract.Columns.COURSE_ID
         } = :courseId"
     )
-    suspend fun deletePatternUsagesByCourseId(userId: Long, courseId: Long)
+    suspend fun deletePatternUsagesByCourseId(courseId: Long)
 
     @Delete
     suspend fun deletePatternUsages(patterns: List<PatternUsageModel>)

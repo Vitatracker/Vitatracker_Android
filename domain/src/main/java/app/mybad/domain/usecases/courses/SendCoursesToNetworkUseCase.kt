@@ -69,11 +69,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                     )
                 ).onSuccess { updatedCourse ->
                     log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
-                    courseRepository.updateCourse(
-                        // TODO("временная заглушка, сервер не возвращает строку")
-                        if (updatedCourse.patternUsages.isBlank()) updatedCourse.copy(patternUsages = course.patternUsages)
-                        else updatedCourse
-                    ).onFailure {
+                    courseRepository.updateCourse(updatedCourse).onFailure {
                         TODO("реализовать обработку ошибок")
                     }
                     sendUsages(updatedCourse)
@@ -99,10 +95,7 @@ class SendCoursesToNetworkUseCase @Inject constructor(
                             )
                         ).onSuccess { updatedCourse ->
                             log("sendCourses: to net ok courses update=${updatedCourse.updateNetworkDate}")
-                            courseRepository.updateCourse(
-                                if (updatedCourse.patternUsages.isBlank()) updatedCourse.copy(patternUsages = course.patternUsages)
-                                else updatedCourse
-                            ).onFailure {
+                            courseRepository.updateCourse(updatedCourse).onFailure {
                                 TODO("реализовать обработку ошибок")
                             }
                             sendUsages(updatedCourse)

@@ -109,6 +109,8 @@ fun CourseDomainModel.mapToNet() = CourseNetworkModel(
     interval = interval,
     regime = regime,
 
+    patternUsages = patternUsages,
+
     isFinished = isFinished,
     isInfinite = isInfinite,
     notUsed = notUsed,

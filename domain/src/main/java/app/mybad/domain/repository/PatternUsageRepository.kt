@@ -36,7 +36,7 @@ interface PatternUsageRepository {
     suspend fun markDeletionPatternUsageByCourseId(courseId: Long): Result<Unit>
 
     suspend fun deletePatternUsagesByUserId(userId: Long): Result<Unit>
-    suspend fun deletePatternUsagesByCourseId(userId: Long, courseId: Long): Result<Unit>
+    suspend fun deletePatternUsagesByCourseId(courseId: Long): Result<Unit>
     suspend fun deletePatternUsage(id: Long): Result<Unit>
     suspend fun deletePatternUsages(patterns: List<PatternUsageDomainModel>): Result<Unit>
 }
