@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.authorization.registration
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.authorization.RegistrationUserUseCase
 import app.mybad.domain.usecases.user.CreateUserUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
@@ -27,31 +26,34 @@ class RegistrationViewModel @Inject constructor(
     override fun handleEvents(event: RegistrationContract.Event) {
         when (event) {
             RegistrationContract.Event.ActionBack -> setEffect { RegistrationContract.Effect.Navigation.Back }
+
             is RegistrationContract.Event.CreateAccount -> {
                 registration(event.email, event.password, event.confirmationPassword)
             }
 
             RegistrationContract.Event.SignInWithGoogle -> signInWithGoogle()
-            is RegistrationContract.Event.UpdateConfirmationPassword -> setState {
-                copy(
-                    confirmationPassword = event.newConfirmationPassword,
-                    error = null,
-                )
-            }
 
-            is RegistrationContract.Event.UpdateEmail -> setState {
-                copy(
+            is RegistrationContract.Event.UpdateEmail -> {
+                checkParams(
                     email = event.newEmail,
-                    error = null,
-                    isRegistrationButtonEnabled = email.isNotBlank() && password.isNotBlank()
+                    password = viewState.value.password,
+                    confirmationPassword = viewState.value.confirmationPassword,
                 )
             }
 
-            is RegistrationContract.Event.UpdatePassword -> setState {
-                copy(
+            is RegistrationContract.Event.UpdatePassword -> {
+                checkParams(
+                    email = viewState.value.email,
                     password = event.newPassword,
-                    error = null,
-                    isRegistrationButtonEnabled = email.isNotBlank() && password.isNotBlank()
+                    confirmationPassword = viewState.value.confirmationPassword,
+                )
+            }
+
+            is RegistrationContract.Event.UpdateConfirmationPassword -> {
+                checkParams(
+                    email = viewState.value.email,
+                    password = viewState.value.password,
+                    confirmationPassword = event.newConfirmationPassword,
                 )
             }
 
@@ -66,11 +68,16 @@ class RegistrationViewModel @Inject constructor(
             log("start")
             // для обновления состояния необходимо запускать в launch
             launch {
-                setState { copy(error = null, isLoading = true) }
+                setState {
+                    copy(
+                        error = null,
+                        isLoading = true,
+                        isRegistrationButtonEnabled = false,
+                    )
+                }
             }
             // проверка почты на валидность
             if (!isValidParams(login, password, confirmPassword)) return@launch
-            AuthToken.clear()
             registrationUserUseCase(
                 login = login,
                 password = password,
@@ -89,58 +96,79 @@ class RegistrationViewModel @Inject constructor(
                     tokenRefresh = result.tokenRefresh,
                     tokenRefreshDate = result.tokenRefreshDate,
                 )
-                setState { copy(isLoading = false) }
                 setEffect { RegistrationContract.Effect.Navigation.ToMain }
             }.onFailure { error ->
                 log("Error", error)
-//                error.message ?: error.localizedMessage ?: "Error: Registration"
                 (error.message ?: error.localizedMessage)?.let(::checkErrorMessage)
             }
         }
     }
 
-    private fun isValidParams(login: String, password: String, confirmPassword: String): Boolean {
-        if (password != confirmPassword) {
-            setState {
-                copy(
-                    error = RegistrationContract.RegistrationError.PasswordsMismatch,
-                    isLoading = false
-                )
+    private fun isValidParams(
+        login: String,
+        password: String,
+        confirmPassword: String
+    ): Boolean {
+        val registrationError = when {
+            password != confirmPassword -> {
+                log("Error: passwords mismatch")
+                RegistrationContract.RegistrationError.PasswordsMismatch
             }
-            log("Error: passwords mismatch")
-            return false
-        }
-        if (!login.isValidEmail()) {
-            log("Error: email is not valid!")
-            setState {
-                copy(
-                    error = RegistrationContract.RegistrationError.WrongEmailFormat,
-                    isLoading = false
-                )
+
+            !login.isValidEmail() -> {
+                log("Error: email is not valid!")
+                RegistrationContract.RegistrationError.WrongEmailFormat
             }
-            return false
-        }
-        if (!password.isValidPassword()) {
-            log("Error: password is not valid!")
-            setState {
-                copy(
-                    error = RegistrationContract.RegistrationError.WrongPassword,
-                    isLoading = false
-                )
+
+            !password.isValidPassword() -> {
+                log("Error: password is not valid!")
+                RegistrationContract.RegistrationError.WrongPassword
             }
-            return false
+
+            else -> null
         }
-        return true
+        registrationError?.let { error ->
+            viewModelScope.launch {
+                setState {
+                    copy(
+                        error = error,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+        return registrationError == null
     }
 
     private fun checkErrorMessage(message: String) {
-        setState {
-            copy(
-                error = if (message.contains("email", ignoreCase = true)) {
-                    RegistrationContract.RegistrationError.WrongEmailFormat
-                } else RegistrationContract.RegistrationError.WrongPassword,
-                isLoading = false,
-            )
+        viewModelScope.launch {
+            setState {
+                copy(
+                    error = if (message.contains("email", ignoreCase = true)) {
+                        RegistrationContract.RegistrationError.WrongEmailFormat
+                    } else RegistrationContract.RegistrationError.WrongPassword,
+                    isLoading = false,
+                )
+            }
+        }
+    }
+
+    private fun checkParams(
+        email: String,
+        password: String,
+        confirmationPassword: String,
+    ) {
+        viewModelScope.launch {
+            setState {
+                copy(
+                    error = null,
+                    email = email,
+                    password = password,
+                    confirmationPassword = confirmationPassword,
+                    isRegistrationButtonEnabled = email.isNotBlank() && password.isNotBlank() && confirmationPassword.isNotBlank()
+                            && email.contains("@")
+                )
+            }
         }
     }
 

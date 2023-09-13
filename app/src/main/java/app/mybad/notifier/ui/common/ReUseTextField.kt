@@ -80,7 +80,11 @@ fun ReUsePasswordOutlinedTextField(
     enabled: Boolean = true,
     isError: Boolean = false,
     onValueChanged: (String) -> Unit = {},
-    errorTextId: Int? = null
+    errorTextId: Int? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Password,
+        imeAction = ImeAction.Done
+    ),
 ) {
     var showPassword by remember { mutableStateOf(false) }
 
@@ -98,10 +102,7 @@ fun ReUsePasswordOutlinedTextField(
             }
         },
         placeholder = { Text(text = label) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
-        ),
+        keyboardOptions = keyboardOptions,
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             //TODO("изменить, взять цвет из темы")

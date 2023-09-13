@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.authorization.login
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.authorization.LoginWithEmailUseCase
 import app.mybad.domain.usecases.user.CreateUserUseCase
 import app.mybad.domain.usecases.user.GetUserIdUseCase
@@ -38,18 +37,12 @@ class LoginViewModel @Inject constructor(
 
             LoginContract.Event.SignInWithGoogle -> signInWithGoogle()
 
-            is LoginContract.Event.UpdateLogin -> setState {
-                copy(
-                    email = event.newLogin,
-                    isLoginButtonEnabled = password.isNotBlank() && event.newLogin.isNotBlank()
-                )
+            is LoginContract.Event.UpdateLogin -> {
+                checkParams(email = event.newLogin, password = viewState.value.password)
             }
 
-            is LoginContract.Event.UpdatePassword -> setState {
-                copy(
-                    password = event.newPassword,
-                    isLoginButtonEnabled = event.newPassword.isNotBlank() && email.isNotBlank()
-                )
+            is LoginContract.Event.UpdatePassword -> {
+                checkParams(email = viewState.value.email, password = event.newPassword)
             }
         }
     }
@@ -58,12 +51,20 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             // тут обязательно в launch
             launch {
-                setState { copy(isLoading = true) }
+                setState {
+                    copy(
+                        isError = false,
+                        isErrorEmail = false,
+                        isErrorPassword = false,
+
+                        isLoading = true,
+                        isLoginButtonEnabled = false,
+                    )
+                }
             }
             // проверка почты и пароля на валидность
             log("isValidParams")
             if (!isValidParams(login, password)) return@launch
-            AuthToken.clear()
             loginWithEmailUseCase(login = login, password = password)
                 .onSuccess { result ->
                     // тут не только получение id, но и если его нет, то создается
@@ -83,7 +84,6 @@ class LoginViewModel @Inject constructor(
                         tokenRefresh = result.tokenRefresh,
                         tokenRefreshDate = result.tokenRefreshDate,
                     )
-                    setState { copy(isError = false, isLoading = false) }
                     setEffect { LoginContract.Effect.Navigation.ToMain }
                 }
                 .onFailure { error ->
@@ -94,8 +94,10 @@ class LoginViewModel @Inject constructor(
                     setState {
                         copy(
                             isError = true,
+                            isErrorEmail = true,
+                            isErrorPassword = true,
                             isLoading = false,
-                            isLoginButtonEnabled = false
+                            isLoginButtonEnabled = true
                         )
                     }
                 }
@@ -107,16 +109,42 @@ class LoginViewModel @Inject constructor(
         log("isValidEmail=${isValidEmail}")
         val isValidPassword = password.isValidPassword()
         log("isValidPassword=${isValidPassword}")
-        setState {
-            copy(
-                isError = !(isValidEmail && isValidPassword),
-                isErrorEmail = !isValidEmail,
-                isErrorPassword = !isValidPassword,
-                isLoading = false,
-                isLoginButtonEnabled = false,
-            )
+        if (!(isValidEmail && isValidPassword)) {
+            viewModelScope.launch {
+                setState {
+                    copy(
+                        isError = true,
+                        isErrorEmail = !isValidEmail,
+                        isErrorPassword = !isValidPassword,
+
+                        isLoading = false,
+                        isLoginButtonEnabled = false,
+                    )
+                }
+            }
         }
         return isValidEmail && isValidPassword
+    }
+
+    private fun checkParams(
+        email: String,
+        password: String,
+    ) {
+        viewModelScope.launch {
+            setState {
+                copy(
+                    isError = false,
+                    isErrorEmail = false,
+                    isErrorPassword = false,
+
+                    email = email,
+                    password = password,
+
+                    isLoginButtonEnabled = email.isNotBlank() && password.isNotBlank()
+                            && email.contains("@")
+                )
+            }
+        }
     }
 
     private fun signInWithGoogle() {

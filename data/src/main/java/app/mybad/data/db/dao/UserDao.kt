@@ -27,7 +27,7 @@ interface UserDao {
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
     suspend fun getUser(userId: Long): UserModel
 
-    @Query("select * from ${UserContract.TABLE_NAME} ORDER BY ${UserContract.Columns.TOKEN_DATE} DESC limit 1")
+    @Query("select * from ${UserContract.TABLE_NAME} ORDER BY ${UserContract.Columns.UPDATED_DATE} DESC limit 1")
     suspend fun getUserLastEntrance(): UserModel?
 
     @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.EMAIL} = :email limit 1")

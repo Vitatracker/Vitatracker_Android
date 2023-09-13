@@ -95,14 +95,14 @@ private fun LoginScreen(
                 login = state.email,
                 updateLogin = { sendEvent(LoginContract.Event.UpdateLogin(it)) },
                 enabled = !state.isLoading,
-                isError = state.isError
+                isError = state.isErrorEmail
             )
             Spacer(modifier = Modifier.height(8.dp))
             LoginScreenEnteredPassword(
                 password = state.password,
                 updatePassword = { sendEvent(LoginContract.Event.UpdatePassword(it)) },
                 enabled = !state.isLoading,
-                isError = state.isError,
+                isError = state.isErrorPassword,
                 errorTextId = if (state.isError) R.string.incorrect_credentials else null
             )
             Spacer(modifier = Modifier.height(8.dp))

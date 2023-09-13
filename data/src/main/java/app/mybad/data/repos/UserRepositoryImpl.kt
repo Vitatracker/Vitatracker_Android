@@ -92,6 +92,8 @@ class UserRepositoryImpl @Inject constructor(
                     tokenDate = 0,
                     tokenRefresh = "",
                     tokenRefreshDate = 0,
+
+                    updatedDate = currentDateTimeInSecond(),
                 )
             )
         }
@@ -109,6 +111,8 @@ class UserRepositoryImpl @Inject constructor(
             tokenDate = tokenDate,
             tokenRefresh = tokenRefresh,
             tokenRefreshDate = tokenRefreshDate,
+
+            updatedDate = currentDateTimeInSecond(),
         )
         Log.w(
             "VTTAG",

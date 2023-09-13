@@ -143,7 +143,11 @@ private fun RegistrationScreenBaseForSignIn(
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdatePassword(it)) },
             enabled = !state.isLoading,
             isError = state.error is RegistrationContract.RegistrationError.WrongPassword,
-            errorTextId = R.string.password_format
+            errorTextId = R.string.password_format,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
+            ),
         )
         Spacer(modifier = Modifier.height(4.dp))
 
