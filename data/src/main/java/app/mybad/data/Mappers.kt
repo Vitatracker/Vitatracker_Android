@@ -19,9 +19,11 @@ import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.models.user.UserRulesDomainModel
-import app.mybad.utils.changeTime
+import app.mybad.utils.changeTimeOfSystem
+import app.mybad.utils.changeTimeToSystemTimeInMinutes
 import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.timeInMinutes
+import app.mybad.utils.toSystemTimeInMinutes
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -322,8 +324,9 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(date: Long) = UsageDisplayDomai
     userId = userId,
 
     isPattern = true, // pattern
-    timeInMinutes = timeInMinutes,
-    useTime = date.changeTime(minute = timeInMinutes),// для правильного отображения
+    timeInMinutes = timeInMinutes,// UTC время в минутах, для сортировки и сопоставления с паттерном
+    useTime = date.changeTimeOfSystem(minutes = timeInMinutes),// для правильного отображения
+    sortedDate = date.changeTimeToSystemTimeInMinutes(timeInMinutes), // дата и время с учетом часового пояса, для правильной сортировки
     quantity = quantity,
 
     courseIdn = courseIdn,
@@ -360,9 +363,11 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     userId = userId,
 
     isPattern = false, // usage
-    timeInMinutes = useTime.timeInMinutes(),// берем только время в минутах, для сортировки и сопоставления с паттерном
+    sortedDate = useTime.toSystemTimeInMinutes(), // дата и время с учетом часового пояса, для правильной сортировки
+
+    timeInMinutes = useTime.timeInMinutes(),// UTC время в минутах, для сортировки и сопоставления с паттерном
     quantity = quantity,
-    useTime = useTime,
+    useTime = useTime, // какое-то конкретное UTC время приема препарата, которое формируется из паттерна и текущей даты
     factUseTime = factUseTime,
 
     courseIdn = courseIdn,

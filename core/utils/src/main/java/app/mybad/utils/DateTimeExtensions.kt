@@ -19,7 +19,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 const val SECONDS_IN_DAY = 86400L
-const val SECONDS_IN_HOUR = 1440
+const val MINUTES_IN_DAY = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val DAYS_A_WEEK = 7
@@ -45,6 +45,14 @@ fun LocalDateTime.toDateTimeDisplay() = this.toInstant(TimeZone.currentSystemDef
 fun Long.toDateTimeDisplay(): String = Instant.fromEpochSeconds(this).formatDateTime()
 
 fun Instant.formatDateTime(): String = dateTimeDisplayFormatter.format(this.toJavaInstant())
+
+private val dateTimeShortDisplayFormatter = DateTimeFormatter
+    .ofPattern("dd.MM HH:mm")
+    .withZone(ZoneOffset.systemDefault())
+
+fun Long.toDateTimeShortDisplay(): String = Instant.fromEpochSeconds(this).formatDateTimeShort()
+
+fun Instant.formatDateTimeShort(): String = dateTimeShortDisplayFormatter.format(this.toJavaInstant())
 
 private val dateFullDisplayFormatter
     get() = DateTimeFormatter
@@ -150,8 +158,8 @@ fun LocalDateTime.toEpochSecond(isUTC: Boolean = true) = this.toInstant(
 ).epochSeconds
 
 // Преобразование и замена даты и времени
-fun Long.changeTime(minute: Int, hour: Int = 0) = this.toLocalDateTime()
-    .changeTime(hour = hour, minute = minute)
+fun Long.changeTime(minutes: Int) = this.toLocalDateTime()
+    .changeTime(hour = 0, minute = minutes)
     .toEpochSecond()
 
 fun LocalDateTime.changeTime(
@@ -243,7 +251,7 @@ fun LocalDateTime.minus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
     .minus(period, TimeZone.UTC)
     .toLocalDateTime(TimeZone.UTC)
 
-fun LocalDateTime.minusDays(days: Int): LocalDateTime {
+fun LocalDateTime.minusDays(days: Int = 1): LocalDateTime {
     return if (days == 0) this
     else this.toInstant(TimeZone.UTC)
         .minus(days, DateTimeUnit.DAY, TimeZone.UTC)
@@ -265,7 +273,7 @@ fun LocalDateTime.plus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
     .plus(period, TimeZone.UTC)
     .toLocalDateTime(TimeZone.UTC)
 
-fun LocalDateTime.plusDays(days: Int): LocalDateTime {
+fun LocalDateTime.plusDays(days: Int = 1): LocalDateTime {
     return if (days == 0) this
     else this.toInstant(TimeZone.UTC)
         .plus(days, DateTimeUnit.DAY, TimeZone.UTC)
@@ -286,15 +294,16 @@ fun Long.plusMonths(months: Int) = this.toLocalDateTime()
 // Получение даты + времени
 fun currentDateTime() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 fun currentDateTimeInSecond() = currentDateTime().toEpochSecond()
-fun systemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-
-// сегодня + 1 день, дата и время
-fun Long.dateTimeTomorrow() = currentDateTime().changeTime(this)
-    .plusDays(1)
-    .toEpochSecond()
+fun currentSystemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
 // текущее время преобразованное в минуты
-fun Int.minutesToHHmm() = "%02d:%02d".format(this.hour(), this.minute())
+fun Int.timeInMinutesToText() = "%02d:%02d".format(this.hour(), this.minute())
+
+// UTC время в минутах отображает с учетом часового пояса
+fun Int.timeInMinutesToDisplay() = this.toSystemTimeInMinutes().run {
+    "%02d:%02d".format(hour(), minute())
+}
+
 fun Int.hour() = this / MINUTES_IN_HOUR
 
 fun Int.minute() = this % MINUTES_IN_HOUR
@@ -306,7 +315,7 @@ fun LocalDateTime.timeInMinutes() = this.run {
 fun currentTimeInMinutes() = currentDateTime().timeInMinutes()
 
 fun Int.toSystemTimeInMinutes() = currentDateTime()
-    .changeTime(hour = this.hour(), minute = this.minute())
+    .changeTime(hour = 0, minute = this)
     .toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
     .timeInMinutes()
@@ -317,9 +326,35 @@ fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
     .toLocalDateTime(TimeZone.UTC)
     .timeInMinutes()
 
-fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
+fun LocalDateTime.changeTimeToSystemTimeInMinutes(minutes: Int) = this
+    .changeTime(hour = 0, minute = minutes)
+    .toInstant(TimeZone.UTC)
+    .toLocalDateTime(TimeZone.currentSystemDefault())
+    .timeInMinutes()
 
-fun Int.toTimeDisplay() = "%02d:%02d".format(this.hour(), this.minute())
+fun Long.changeTimeToSystemTimeInMinutes(minutes: Int) = this.toLocalDateTime()
+    .changeTimeToSystemTimeInMinutes(minutes)
+
+fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
+fun Long.toSystemTimeInMinutes() = this.toLocalDateTime()
+    .toInstant(TimeZone.UTC)
+    .toLocalDateTime(TimeZone.currentSystemDefault())
+    .timeInMinutes()
+
+fun Long.changeTimeOfSystem(minutes: Int): Long {
+    val time = minutes.toSystemTimeInMinutes()
+    val date = this.toLocalDateTime()
+    return LocalDateTime(
+        year = date.year,
+        monthNumber = date.monthNumber,
+        dayOfMonth = date.dayOfMonth,
+        hour = time.hour(),
+        minute = time.minute(),
+        second = 0,
+        nanosecond = 0,
+    )
+        .toInstant(TimeZone.currentSystemDefault()).epochSeconds
+}
 
 // высокосный год
 val Int.isLeapYear

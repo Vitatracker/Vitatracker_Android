@@ -1,16 +1,19 @@
 package app.mybad.data.models
 
-import app.mybad.utils.SECONDS_IN_HOUR
+import app.mybad.utils.MINUTES_IN_DAY
+import app.mybad.utils.changeTime
+import app.mybad.utils.changeTimeToSystemTimeInMinutes
+import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.currentTimeInMinutes
-import app.mybad.utils.toTimeDisplay
+import app.mybad.utils.timeInMinutesToDisplay
 
 data class UsageFormat(
-    val timeInMinutes: Int = -1, //
+    val timeInMinutes: Int = -1, // UTC время в минутах
     val quantity: Float = 1f,
 ) {
 
     override fun toString(): String {
-        return timeInMinutes.toTimeDisplay()
+        return timeInMinutes.timeInMinutesToDisplay() // UTC отобразиться с учетом часового пояса
     }
 
     companion object {
@@ -19,51 +22,58 @@ data class UsageFormat(
         private const val MAX_COUNT_USAGES: Int = 30
 
         @JvmName("listUfToPattern")
-        fun List<UsageFormat>.toPattern() = this.toSort()
+        fun List<UsageFormat>.toPattern() = this.toSortedList()
             .joinToString(separator = ";", transform = { "${it.timeInMinutes}-${it.quantity}" })
 
         @JvmName("listUfToSort")
-        private fun List<UsageFormat>.toSort() = this.toSortedSet(
-            comparator = { up1, up2 ->
-                up1.timeInMinutes - up2.timeInMinutes
-            }
-        ).toList()
+        private fun List<UsageFormat>.toSortedList(): List<UsageFormat> {
+            val date = currentDateTimeInSecond() // UTC
+            return this.toSortedSet(
+                comparator = { up1, up2 ->
+                    (date.changeTimeToSystemTimeInMinutes(up1.timeInMinutes) -
+                            date.changeTimeToSystemTimeInMinutes(up2.timeInMinutes))
+                }
+            ).toList()
+        }
 
         fun changeTimeUsagePattern(
             usagesPattern: List<UsageFormat>,
             pattern: UsageFormat,
-            time: Int
+            time: Int,
         ): List<UsageFormat> {
             return usagesPattern.minus(pattern)
                 .plus(pattern.copy(timeInMinutes = time))
-                .toSort()
+                .toSortedList()
         }
 
         fun changeQuantityUsagePattern(
             usagesPattern: List<UsageFormat>,
             pattern: UsageFormat,
-            quantity: Float
+            quantity: Float,
         ): List<UsageFormat> {
             return usagesPattern.minus(pattern)
                 .plus(pattern.copy(quantity = quantity))
-                .toSort()
+                .toSortedList()
         }
 
         fun addUsagesPattern(
             usagesPattern: List<UsageFormat>,
-            dose: Float = 1f
+            dose: Float = 1f,
         ): List<UsageFormat> {
             // проверить на максимум
             if (usagesPattern.size >= MAX_COUNT_USAGES) return usagesPattern
-            var time = currentTimeInMinutes()
+            val date = currentDateTimeInSecond() // UTC
+            var time = currentTimeInMinutes() // в UTC
             var isChange = false
             do {
                 isChange = false
-                usagesPattern.find { it.timeInMinutes == time }?.let {
+                usagesPattern.find {
+                    date.changeTime(it.timeInMinutes) == date.changeTime(time)
+                }?.let {
                     time++
                     isChange = true
                 }
-                if (time >= SECONDS_IN_HOUR) {
+                if (time >= MINUTES_IN_DAY) {
                     time = 0
                     isChange = true
                 }
@@ -74,7 +84,7 @@ data class UsageFormat(
                     quantity = dose,
                 )
             )
-                .toSort()
+                .toSortedList()
         }
     }
 }

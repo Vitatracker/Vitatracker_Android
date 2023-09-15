@@ -227,7 +227,6 @@ class MyCoursesEditViewModel @Inject constructor(
                 remindTime = remindTime,
                 coursesInterval = coursesInterval,
                 remindBeforePeriod = remindBeforePeriod,
-                usagesPattern = viewState.value.usagesPatternEdit,
 
                 course = viewState.value.course.copy(
                     remindDate = remindDate,
@@ -308,7 +307,8 @@ class MyCoursesEditViewModel @Inject constructor(
             updateNetworkDate = 0,
         )
         Log.w(
-            "VTTAG", "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
+            "VTTAG",
+            "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
         )
         // закроем курс
         closeCourseUseCase(courseId = viewState.value.course.id, dateTime = dateNew)

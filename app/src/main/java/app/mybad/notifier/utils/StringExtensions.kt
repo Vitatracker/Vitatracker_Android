@@ -23,3 +23,5 @@ fun Float.toText() = if (this % 1 == 0.0f) {
 
 fun Pair<Float, Float>.toText() = if (this.first == this.second) this.second.toText()
 else "${this.first.toText()}-${this.second.toText()}"
+
+fun Int.toText() = "%02d".format(this)

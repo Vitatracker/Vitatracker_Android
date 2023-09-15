@@ -11,9 +11,10 @@ data class UsageDisplayDomainModel(
     val quantity: Float = 1f,
 
     val isPattern: Boolean = true, // это для определения pattern или usage
+    val sortedDate: Int = 0, // для сортировки, timeInMinutes, но с учетом часового пояса
     // для usage
     val useTime: Long = 0, // тут полная дата со временем, когда необходимо было принять
-    val factUseTime: Long = -1, // дата фактического приема
+    val factUseTime: Long = -1, // дата фактического приема время с учетом часового пояса
 
     // из курса для информации
     val courseIdn: Long = 0,
@@ -44,7 +45,7 @@ data class UsageDisplayDomainModel(
     val measureUnit: Int = 0,
     val photo: String? = null,
 ) {
-    fun toUsageKey() = "%04d%06d%06d".format(timeInMinutes, courseId, remedyId)
+    fun toUsageKey() = "%04d%06d%06d".format(sortedDate, courseId, remedyId)
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

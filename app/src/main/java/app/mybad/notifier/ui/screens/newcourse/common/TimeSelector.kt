@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.common
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,13 +38,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
+import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.hour
 import app.mybad.utils.minute
-import app.mybad.utils.minutesToHHmm
 import app.mybad.utils.systemTimeInMinutes
+import app.mybad.utils.timeInMinutesToDisplay
+import app.mybad.utils.timeInMinutesToText
 import app.mybad.utils.toSystemTimeInMinutes
-import app.mybad.utils.toTimeDisplay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -52,11 +56,16 @@ fun TimeSelector(
     initTime: Int,
     onSelect: (Int) -> Unit
 ) {
-    val hours = (0..23).toList()
-    val minutes = (0..59).toList()
-    val timeSystem = initTime.toSystemTimeInMinutes()
-    val pagerStateHours = rememberPagerState(initialPage = timeSystem.hour()) { hours.size }
-    val pagerStateMinutes = rememberPagerState(initialPage = timeSystem.minute()) { minutes.size }
+    val hours = listOf(21, 22, 23) + (0..23).toList() + listOf(0, 1, 2)
+    val minutes = listOf(57, 58, 59) + (0..59).toList() + listOf(0, 1, 2)
+    val correction = 3
+
+    val timeSystem =
+        initTime.toSystemTimeInMinutes() // преобразует UTC время в минутах во время с учетом часового пояса в минутах
+    val pagerStateHours =
+        rememberPagerState(initialPage = timeSystem.hour() + correction) { hours.size }
+    val pagerStateMinutes =
+        rememberPagerState(initialPage = timeSystem.minute() + correction) { minutes.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,12 +82,14 @@ fun TimeSelector(
             NumberPicker(
                 pagerState = pagerStateHours,
                 items = hours,
+                correction = correction,
                 contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
                 pageSize = 32.dp
             )
             NumberPicker(
                 pagerState = pagerStateMinutes,
                 items = minutes,
+                correction = correction,
                 contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
                 pageSize = 32.dp
             )
@@ -89,13 +100,14 @@ fun TimeSelector(
             .padding(16.dp),
             textId = R.string.settings_save,
             onClick = {
+                // тут время UTC в минутах
                 val newTime = systemTimeInMinutes(
-                    hour = pagerStateHours.currentPage % hours.size,
-                    minute = pagerStateMinutes.currentPage % minutes.size,
+                    hour = hours[pagerStateHours.currentPage % hours.size],
+                    minute = minutes[pagerStateMinutes.currentPage % minutes.size],
                 )
                 Log.w(
                     "VTTAG",
-                    "TimeSelector::onSelect: date time=${newTime.minutesToHHmm()} - ${newTime.toTimeDisplay()}"
+                    "TimeSelector::onSelect: date time=${newTime.timeInMinutesToText()} - ${newTime.timeInMinutesToDisplay()}"
                 )
                 onSelect(newTime)
             }
@@ -104,28 +116,49 @@ fun TimeSelector(
 
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NumberPicker(
     pagerState: PagerState,
     items: List<Int>,
     contentPadding: PaddingValues,
-    pageSize: Dp
+    pageSize: Dp,
+    correction: Int,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val pageFirst = correction
+    val pageLast = items.lastIndex - correction
+    var scrollFirstLast = items.size > correction
+
     VerticalPager(
         modifier = Modifier
             .height(200.dp),
         state = pagerState,
-        pageSpacing = 8.dp,
+        pageSpacing = 21.dp, // между элементами
         contentPadding = contentPadding,
-        pageSize = PageSize.Fixed(pageSize)
-    ) {
-        val ts = when ((pagerState.currentPage - it).absoluteValue) {
+        pageSize = PageSize.Fixed(pageSize), // размер элемента
+    ) { index ->
+        // прокрутка вперед на первый или прокрутка назад на последний
+        if (scrollFirstLast && (pagerState.settledPage < pageFirst || pagerState.settledPage > pageLast)) {
+            scrollFirstLast = false
+            coroutineScope.launch {
+                pagerState.scrollToPage(
+                    if (pagerState.settledPage < pageFirst) {
+                        pagerState.settledPage + pageLast - pageFirst + 1
+                    } else {
+                        pagerState.settledPage - pageLast + pageFirst - 1
+                    }
+                )
+                scrollFirstLast = true
+            }
+        }
+        val ts = when ((pagerState.currentPage - index).absoluteValue) {
             0 -> 1f
             1 -> 0.85f
             else -> 0.7f
         }
-        val a = when ((pagerState.currentPage - it).absoluteValue) {
+        val a = when ((pagerState.currentPage - index).absoluteValue) {
             0 -> 1f
             1 -> 0.5f
             2 -> 0.3f
@@ -150,7 +183,7 @@ private fun NumberPicker(
                 .scale(scale)
         ) {
             Text(
-                text = items[it % items.size].toDisplay(),
+                text = items[index % items.size].toText(),
                 style = Typography.headlineLarge,
                 fontSize = 20.sp
             )
@@ -176,5 +209,3 @@ fun TimeSelectorDialog(
         }
     }
 }
-
-private fun Int.toDisplay() = "%02d".format(this)

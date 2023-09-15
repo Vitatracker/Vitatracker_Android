@@ -11,10 +11,12 @@ import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTime
+import app.mybad.utils.toDateTimeShortDisplay
 import app.mybad.utils.toEpochSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -55,13 +57,16 @@ class MainViewModel @Inject constructor(
                 endTime = date.atEndOfDay().toEpochSecond(),
             ),
         ) { p, u ->
-            p.plus(u)
+//            p.plus(u).toSortedMap()
+            // для тестов, потом удалить
+            p.plus(u).mapValues {
+                val pattern = it.value
+                pattern.copy(name = "${pattern.name}|${pattern.useTime.toDateTimeShortDisplay()}")
+            }.toSortedMap()
         }
     }
         .distinctUntilChanged()
-        .onEach {
-            Log.w("VTTAG", "MainViewModel::receivingCourses: pattern + usages=${it.size}")
-        }
+        .onEach(::changeState)
 
     init {
         observeAuthorization()
@@ -78,7 +83,8 @@ class MainViewModel @Inject constructor(
 
     private fun receivingCourses() {
         viewModelScope.launch {
-            patternsAndUsages.collect(::changeState)
+            //TODO("заменить и использованием жизненного цикла экрана")
+            patternsAndUsages.collect()
         }
     }
 

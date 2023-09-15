@@ -32,8 +32,8 @@ import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.nextCourseStart
+import app.mybad.utils.timeInMinutesToDisplay
 import app.mybad.utils.toDateTimeDisplay
-import app.mybad.utils.toTimeDisplay
 import kotlinx.datetime.DateTimePeriod
 
 @Composable
@@ -94,7 +94,7 @@ fun RemindNewCourseBottomSheet(
                 {
                     ParameterIndicator(
                         name = stringResource(R.string.add_next_course_remind_time),
-                        value = remindTime.toTimeDisplay(),
+                        value = remindTime.timeInMinutesToDisplay(),
                         onClick = { selectedInput = 3 }
                     )
                 },
