@@ -11,7 +11,7 @@ interface PatternUsageRepository {
     suspend fun getPatternUsagesDeletedByUserId(userId: Long): Result<List<PatternUsageDomainModel>>
     suspend fun getPatternUsagesByCourseId(courseId: Long): Result<List<PatternUsageDomainModel>>
 
-//    suspend fun getPatternUsagesBetweenByCourseId(
+    //    suspend fun getPatternUsagesBetweenByCourseId(
 //        courseId: Long,
 //        startTime: Long,
 //        endTime: Long
@@ -24,6 +24,12 @@ interface PatternUsageRepository {
 //    ): Flow<List<PatternUsageDomainModel>>
 //
     suspend fun getPatternUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageDisplayDomainModel>>
+
+    suspend fun getPatternUsagesWithParamsBetween(
         userId: Long,
         startTime: Long,
         endTime: Long

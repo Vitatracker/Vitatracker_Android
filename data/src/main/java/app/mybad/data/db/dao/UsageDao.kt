@@ -46,6 +46,21 @@ interface UsageDao {
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
+            UsageContract.Columns.USER_ID
+        } = :userId  and ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId  and ${
+            UsageContract.Columns.USE_TIME
+        } = :useTime  limit 1"
+    )
+    suspend fun getUsageByParams(
+        userId: Long,
+        courseId: Long,
+        useTime: Long,
+    ): UsageModel?
+
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.COURSE_ID
         } = :courseId  and ${
             UsageContract.Columns.USE_TIME
@@ -60,13 +75,13 @@ interface UsageDao {
     @Query(
         "SELECT * FROM ${UsageContract.TABLE_NAME} WHERE ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.USER_ID
-        } = :userId and ${UsageContract.Columns.USE_TIME} BETWEEN :startTime AND :endTime"
+        } = :userId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime order by ${UsageContract.Columns.USE_TIME}"
     )
     fun getUsagesBetween(
         userId: Long,
         startTime: Long,
         endTime: Long
-    ): Flow<List<UsageModel>>
+    ): List<UsageModel>
 
     @Query(
         "select A.${UsageContract.Columns.ID}, A.${
@@ -118,6 +133,59 @@ interface UsageDao {
         }, C.${RemedyContract.Columns.NAME}"
     )
     fun getUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageWithNameAndDateModel>>
+
+    @Query(
+        "select A.${UsageContract.Columns.ID}, A.${
+            UsageContract.Columns.COURSE_ID
+        }, A.${UsageContract.Columns.USER_ID}, A.${
+            UsageContract.Columns.USE_TIME
+        }, A.${UsageContract.Columns.FACT_USE_TIME}, A.${
+            UsageContract.Columns.QUANTITY
+        }, B.${CourseContract.Columns.IDN}, B.${
+            CourseContract.Columns.REMEDY_ID
+        }, B.${CourseContract.Columns.START_DATE}, B.${
+            CourseContract.Columns.END_DATE
+        }, B.${CourseContract.Columns.IS_INFINITE}, B.${
+            CourseContract.Columns.REGIME
+        }, B.${
+            CourseContract.Columns.SHOW_USAGE_TIME
+        }, B.${CourseContract.Columns.IS_FINISHED}, B.${
+            CourseContract.Columns.NOT_USED
+        }, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            UsageContract.TABLE_NAME
+        } A LEFT JOIN ${
+            CourseContract.TABLE_NAME
+        } B ON A.${UsageContract.Columns.COURSE_ID} = B.${CourseContract.Columns.ID} LEFT JOIN ${
+            RemedyContract.TABLE_NAME
+        } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
+            RemedyContract.Columns.ID
+        } where A.${UsageContract.Columns.USER_ID} = :userId and B.${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and A.${UsageContract.Columns.USE_TIME} between :startTime and :endTime order by A.${
+            UsageContract.Columns.USE_TIME
+        }, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getUsagesWithParamsBetween(
         userId: Long,
         startTime: Long,
         endTime: Long

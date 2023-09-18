@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.calender
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,10 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -34,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.BottomSlideInDialog
@@ -42,12 +40,9 @@ import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
-import app.mybad.utils.atStartOfMonth
+import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.currentDateTime
 import app.mybad.utils.dayShortDisplay
-import app.mybad.utils.minusDays
-import app.mybad.utils.plusDays
-import app.mybad.utils.toSecondsLeftFromStartOfDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDateTime
 
@@ -55,17 +50,14 @@ import kotlinx.datetime.LocalDateTime
 @Composable
 fun CalendarScreen(
     state: CalendarContract.State,
+    dateUpdate: Flow<LocalDateTime>,
     effectFlow: Flow<CalendarContract.Effect>,
     sendEvent: (event: CalendarContract.Event) -> Unit = {},
     navigation: (navigationEffect: CalendarContract.Effect.Navigation) -> Unit,
 ) {
-//    var date by remember { mutableStateOf(currentDateTime()) }
-//    var selectedDate by remember { mutableStateOf<LocalDateTime?>(date) }
-    var dialogIsShown by remember { mutableStateOf(false) }
-//    var usagesDaily = collectUsagesToday(
-//        date = selectedDate,
-//        usages = state.patternUsage
-//    )
+
+    val currentDate = dateUpdate.collectAsStateWithLifecycle(initialValue = currentDateTime())
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow.collect { effect ->
             when (effect) {
@@ -88,32 +80,41 @@ fun CalendarScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Log.w("VTTAG", "CalendarViewModel::MonthSelector: date=${state.date}")
             MonthSelector(
                 date = state.date,
-                onSwitch = { sendEvent(CalendarContract.Event.ChangeDate(date = it)) }
+                onSwitch = { sendEvent(CalendarContract.Event.ChangeMonth(date = it)) }
             )
             Spacer(Modifier.height(16.dp))
             CalendarItem(
                 date = state.date,
-                usages = state.patternUsage,
-                onSelect = {
-                    sendEvent(CalendarContract.Event.SelectDate(date = it))
-                    dialogIsShown = true
-                }
+                currentDate = currentDate.value,
+                datesWeeks = state.datesWeeks,
+                usagesWeeks = state.usagesWeeks,
+                onSelect = { sendEvent(CalendarContract.Event.SelectElement(it)) }
             )
-            if (dialogIsShown) {
-                BottomSlideInDialog(onDismissRequest = { dialogIsShown = false }) {
-                    DailyUsages(
-                        date = state.selectedDate,
-                        usages = state.usagesDaily,
-                        onDismiss = { dialogIsShown = false },
-                        onNewDate = {
-                            sendEvent(CalendarContract.Event.SelectDate(date = it))
-                            //TODO("изменить реализацию, загружать usagesDaily при изменении selectedDate")
-                            sendEvent(CalendarContract.Event.ChangeUsagesDaily)
-                        },
-                        onUsed = { sendEvent(CalendarContract.Event.SetUsage(it)) }
-                    )
+            state.selectedElement?.let { element ->
+                Log.w(
+                    "VTTAG",
+                    "CalendarViewModel::selectElement: selectElement=${state.selectedElement}"
+                )
+                // проверка
+                val date = state.datesWeeks[element.first][element.second]
+                val usages = state.usagesWeeks[element.first][element.second]
+                if (date == null) {
+                    sendEvent(CalendarContract.Event.SelectElement(null))
+                } else {
+                    BottomSlideInDialog(
+                        onDismissRequest = { sendEvent(CalendarContract.Event.SelectDate(null)) }
+                    ) {
+                        DailyUsages(
+                            date = date,
+                            usagesDisplay = usages,
+                            onDismiss = { sendEvent(CalendarContract.Event.SelectDate(null)) },
+                            onNewDate = { sendEvent(CalendarContract.Event.SelectDate(it)) },
+                            onUsed = { sendEvent(CalendarContract.Event.SetUsage(it)) }
+                        )
+                    }
                 }
             }
         }
@@ -123,38 +124,15 @@ fun CalendarScreen(
 @Composable
 private fun CalendarItem(
     date: LocalDateTime,
-    usages: List<UsageDisplayDomainModel>,
-    onSelect: (LocalDateTime?) -> Unit = {}
-) {
-    val currentDate = currentDateTime()
-    val cdr: Array<Array<LocalDateTime?>> = Array(6) {
+    currentDate: LocalDateTime,
+    datesWeeks: Array<Array<LocalDateTime?>> = Array(WEEKS_PER_MONTH) {
         Array(DAYS_A_WEEK) { null }
-    }
-    val usgs = Array(6) {
-        Array(DAYS_A_WEEK) { listOf<UsageDisplayDomainModel>() }
-    }
-    TODO("епределать реализацию")
-    // не понятно что это, начало месяца или что или последний день предыдущего месяца
-    // minusDays(date.dayOfMonth.toLong())
-    val fwd = date.atStartOfMonth()
-    repeat(6) { w ->
-        repeat(DAYS_A_WEEK) { day ->
-            if (w == 0 && day < fwd.dayOfWeek.value) {
-                val time = fwd.minusDays(fwd.dayOfWeek.ordinal - day)
-                usgs[w][day] = usages.filter {
-                    it.useTime.toSecondsLeftFromStartOfDay() == time.toSecondsLeftFromStartOfDay()
-                }
-                cdr[w][day] = time
-            } else {
-                val time = fwd.plusDays(w * DAYS_A_WEEK + day - fwd.dayOfWeek.ordinal)
-                usgs[w][day] = usages.filter {
-                    it.useTime.toSecondsLeftFromStartOfDay() == time.toSecondsLeftFromStartOfDay()
-                }
-                cdr[w][day] = time
-            }
-        }
-    }
-
+    },
+    usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
+        Array(DAYS_A_WEEK) { emptyList() }
+    },
+    onSelect: (Pair<Int, Int>) -> Unit = {}
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -184,8 +162,8 @@ private fun CalendarItem(
                 .padding(top = 12.dp, bottom = 4.dp)
                 .fillMaxWidth()
         )
-        repeat(6) { w ->
-            if (cdr[w].any { it?.month == date.month }) {
+        repeat(WEEKS_PER_MONTH) { week ->
+            if (datesWeeks[week].any { it?.month == date.month }) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -194,12 +172,14 @@ private fun CalendarItem(
                 ) {
                     repeat(DAYS_A_WEEK) { day ->
                         CalendarDayItem(
-                            date = cdr[w][day],
-                            usages = usgs[w][day].size,
-                            isSelected = cdr[w][day]?.dayOfYear == currentDate.dayOfYear &&
-                                    cdr[w][day]?.year == currentDate.year,
-                            isOtherMonth = date.month.value != cdr[w][day]?.month?.value
-                        ) { onSelect(it) }
+                            date = datesWeeks[week][day],
+                            usages = usagesWeeks[week][day].size,
+                            isSelected = datesWeeks[week][day]?.dayOfYear == currentDate.dayOfYear &&
+                                datesWeeks[week][day]?.year == currentDate.year,
+                            isOtherMonth = date.month.value != datesWeeks[week][day]?.month?.value
+                        ) {
+                            onSelect(week to day) // передаем выбранный элемент массива
+                        }
                     }
                 }
             }
@@ -213,7 +193,7 @@ private fun CalendarDayItem(
     date: LocalDateTime? = null,
     isSelected: Boolean = false,
     isOtherMonth: Boolean = false,
-    onSelect: (LocalDateTime?) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -227,7 +207,7 @@ private fun CalendarDayItem(
                 CircleShape
             )
             .alpha(if (isOtherMonth) 0.5f else 1f)
-            .clickable { if (usages > 0) onSelect(date) }
+            .clickable { if (usages > 0) onClick() }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -255,25 +235,3 @@ private fun CalendarDayItem(
         }
     }
 }
-
-/*
-private fun collectUsagesToday(
-    date: LocalDateTime?,
-    usages: List<UsageDomainModel>,
-): List<UsageDomainModel> {
-    Log.w(
-        "VTTAG",
-        "CalendarScreen::collectUsagesToday: date=${date?.toDateFullDisplay()} usages=${usages.size}"
-    )
-
-    if (date == null) return usages
-    val fromTime = date.atStartOfDay().toEpochSecond(isUTC = false)
-    val toTime = date.atEndOfDay().toEpochSecond(isUTC = false)
-    return usages.filter { it.useTime in fromTime..toTime }.also {
-        Log.w(
-            "VTTAG",
-            "CalendarScreen::collectUsagesToday: date=${date.toDateFullDisplay()} usages=${it.size}"
-        )
-    }
-}
-*/

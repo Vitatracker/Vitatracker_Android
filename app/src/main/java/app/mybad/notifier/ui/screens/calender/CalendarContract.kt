@@ -1,33 +1,58 @@
 package app.mybad.notifier.ui.screens.calender
 
-import app.mybad.domain.models.CourseDomainModel
-import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
+import app.mybad.utils.DAYS_A_WEEK
+import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.currentDateTime
 import kotlinx.datetime.LocalDateTime
 
 class CalendarContract {
     sealed interface Event : ViewEvent {
         data class SetUsage(val usage: UsageDisplayDomainModel) : Event
-        data class ChangeDate(val date: LocalDateTime) : Event
+        data class ChangeMonth(val date: LocalDateTime) : Event
         data class SelectDate(val date: LocalDateTime?) : Event
-        object ChangeUsagesDaily : Event
+        data class SelectElement(val element: Pair<Int, Int>?) : Event
         object ActionBack : Event
     }
 
     data class State(
-        val remedies: List<RemedyDomainModel> = emptyList(),
-        val courses: List<CourseDomainModel> = emptyList(),
-        val patternUsage: List<UsageDisplayDomainModel> = emptyList(),
-
-        val usagesDaily: List<UsageDisplayDomainModel> = emptyList(),
-
+        // дата для отображения месяяных usages
         val date: LocalDateTime = currentDateTime(),
-        val selectedDate: LocalDateTime? = null,
-    ) : ViewState
+
+        val selectedElement: Pair<Int, Int>? = null,
+
+        val updateDateWeek: LocalDateTime? = null,
+
+        val datesWeeks: Array<Array<LocalDateTime?>> = Array(WEEKS_PER_MONTH) {
+            Array(DAYS_A_WEEK) { null }
+        },
+        val usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
+            Array(DAYS_A_WEEK) { emptyList() }
+        },
+    ) : ViewState {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as State
+
+            if (date != other.date) return false
+            if (selectedElement != other.selectedElement) return false
+            if (updateDateWeek != other.updateDateWeek) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = date.hashCode()
+            result = 31 * result + (selectedElement?.hashCode() ?: 0)
+            result = 31 * result + (updateDateWeek?.hashCode() ?: 0)
+            return result
+        }
+    }
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {

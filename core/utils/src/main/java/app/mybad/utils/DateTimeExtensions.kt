@@ -22,6 +22,7 @@ const val SECONDS_IN_DAY = 86400L
 const val MINUTES_IN_DAY = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
+const val WEEKS_PER_MONTH = 6 // строк недель месяца
 const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
 const val CORRECTION_SERVER_TIME = 1000
@@ -314,20 +315,20 @@ fun LocalDateTime.timeInMinutes() = this.run {
 
 fun currentTimeInMinutes() = currentDateTime().timeInMinutes()
 
-fun Int.toSystemTimeInMinutes() = currentDateTime()
-    .changeTime(hour = 0, minute = this)
-    .toInstant(TimeZone.UTC)
-    .toLocalDateTime(TimeZone.currentSystemDefault())
-    .timeInMinutes()
+fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
 
+// изменить время у текущей даты и преобразовать в UTC и отдать только время
 fun systemTimeInMinutes(hour: Int, minute: Int) = currentDateTime()
     .changeTime(hour = hour, minute = minute)
     .toInstant(TimeZone.currentSystemDefault())
     .toLocalDateTime(TimeZone.UTC)
     .timeInMinutes()
 
-fun LocalDateTime.changeTimeToSystemTimeInMinutes(minutes: Int) = this
-    .changeTime(hour = 0, minute = minutes)
+// изменить время у текущей даты и преобразовать с учетом часового пояяса и отдать только время
+fun Int.toSystemTimeInMinutes() = currentDateTime()
+    .changeTimeToSystemTimeInMinutes(this)
+
+fun Long.toSystemTimeInMinutes() = this.toLocalDateTime()
     .toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
     .timeInMinutes()
@@ -335,19 +336,23 @@ fun LocalDateTime.changeTimeToSystemTimeInMinutes(minutes: Int) = this
 fun Long.changeTimeToSystemTimeInMinutes(minutes: Int) = this.toLocalDateTime()
     .changeTimeToSystemTimeInMinutes(minutes)
 
-fun Long.timeInMinutes() = this.toLocalDateTime().timeInMinutes()
-fun Long.toSystemTimeInMinutes() = this.toLocalDateTime()
+// изменить время и преобразовать с учетом часового пояса и отдать только время
+fun LocalDateTime.changeTimeToSystemTimeInMinutes(minutes: Int) = this
+    .changeTime(hour = 0, minute = minutes)
     .toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
     .timeInMinutes()
 
-fun Long.changeTimeOfSystem(minutes: Int): Long {
+// сложный маневр для правильной сортировки, дата остается той же, а время из UTC в часовой пояс
+fun Long.changeTimeOfSystem(minutes: Int): Long = this.toLocalDateTime()
+    .changeTimeOfSystem(minutes)
+
+fun LocalDateTime.changeTimeOfSystem(minutes: Int): Long {
     val time = minutes.toSystemTimeInMinutes()
-    val date = this.toLocalDateTime()
     return LocalDateTime(
-        year = date.year,
-        monthNumber = date.monthNumber,
-        dayOfMonth = date.dayOfMonth,
+        year = year,
+        monthNumber = monthNumber,
+        dayOfMonth = dayOfMonth,
         hour = time.hour(),
         minute = time.minute(),
         second = 0,

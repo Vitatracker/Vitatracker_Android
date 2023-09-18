@@ -9,6 +9,12 @@ interface UsageRepository {
     suspend fun getUsagesByUserId(userId: Long): Result<List<UsageDomainModel>>
     suspend fun getUsagesByCourseId(courseId: Long): Result<List<UsageDomainModel>>
     suspend fun getUsageById(usageId: Long): Result<UsageDomainModel?>
+    suspend fun getUsageByParams(
+        userId: Long,
+        courseId: Long,
+        useTime: Long,
+    ): Result<UsageDomainModel?>
+
     suspend fun getUsagesBetweenByCourseId(
         courseId: Long,
         startTime: Long,
@@ -19,9 +25,15 @@ interface UsageRepository {
         userId: Long,
         startTime: Long,
         endTime: Long
-    ): Flow<List<UsageDomainModel>>
+    ): Result<List<UsageDomainModel>>
 
     suspend fun getUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageDisplayDomainModel>>
+
+    suspend fun getUsagesWithParamsBetween(
         userId: Long,
         startTime: Long,
         endTime: Long
@@ -30,7 +42,7 @@ interface UsageRepository {
     suspend fun insertUsage(usage: UsageDomainModel): Result<Long>
     suspend fun insertUsage(usages: List<UsageDomainModel>): Result<Unit>
     suspend fun updateUsage(usage: UsageDomainModel): Result<Long>
-    suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long): Result<Unit>
+    suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long): Result<Long>
 
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
 

@@ -65,15 +65,70 @@ interface PatternUsageDao {
             CourseContract.Columns.DELETED_DATE
         } = 0 and B.${
             CourseContract.Columns.IS_FINISHED
-        } = 0 and B.${CourseContract.Columns.NOT_USED} = 0 and ((B.${CourseContract.Columns.IS_INFINITE} and B.${
+        } = 0 and B.${CourseContract.Columns.NOT_USED} = 0 and ((B.${CourseContract.Columns.IS_INFINITE} and :endTime >= B.${
             CourseContract.Columns.START_DATE
-        } <= :startTime) or (:startTime between B.${CourseContract.Columns.START_DATE} and B.${
+        }) or (:endTime >= B.${CourseContract.Columns.START_DATE} and :startTime <= B.${
             CourseContract.Columns.END_DATE
-        } and :endTime between B.${CourseContract.Columns.START_DATE} and B.${
-            CourseContract.Columns.END_DATE
-        })) order by A.${PatternUsageContract.Columns.TIME_MINUTES}, C.${RemedyContract.Columns.NAME}"
+        })) order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
     )
     fun getPatternUsagesWithNameAndDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<PatternUsageWithNameAndDateModel>>
+
+    @Query(
+        "select A.${
+            PatternUsageContract.Columns.ID
+        }, A.${PatternUsageContract.Columns.COURSE_ID}, A.${
+            PatternUsageContract.Columns.USER_ID
+        }, A.${
+            PatternUsageContract.Columns.TIME_MINUTES
+        }, A.${PatternUsageContract.Columns.QUANTITY}, B.${
+            CourseContract.Columns.IDN
+        }, B.${
+            CourseContract.Columns.REMEDY_ID
+        }, B.${
+            CourseContract.Columns.START_DATE
+        }, B.${
+            CourseContract.Columns.END_DATE
+        }, B.${
+            CourseContract.Columns.IS_INFINITE
+        }, B.${CourseContract.Columns.REGIME}, B.${
+            CourseContract.Columns.SHOW_USAGE_TIME
+        }, B.${CourseContract.Columns.IS_FINISHED}, B.${
+            CourseContract.Columns.NOT_USED
+        }, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            PatternUsageContract.TABLE_NAME
+        } A LEFT JOIN ${
+            CourseContract.TABLE_NAME
+        } B ON A.${PatternUsageContract.Columns.COURSE_ID} = B.${CourseContract.Columns.ID} LEFT JOIN ${
+            RemedyContract.TABLE_NAME
+        } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${RemedyContract.Columns.ID
+        } where A.${PatternUsageContract.Columns.USER_ID} = :userId and B.${CourseContract.Columns.DELETED_DATE
+        } = 0 and ((B.${CourseContract.Columns.IS_INFINITE} and :endTime >= B.${
+            CourseContract.Columns.START_DATE
+        }) or (:endTime >= B.${CourseContract.Columns.START_DATE} and :startTime <= B.${
+            CourseContract.Columns.END_DATE
+        })) order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getPatternUsagesWithParamsBetween( // тут должны попасть и закрытые и законченные курсы
         userId: Long,
         startTime: Long,
         endTime: Long

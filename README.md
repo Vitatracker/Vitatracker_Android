@@ -18,7 +18,7 @@ VitaTracker
 
 ## Architecture
 
-- [MVVM](https://ru.wikipedia.org/wiki/Model-View-ViewModel)
+- [MVI]
 - [Clean-Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Use Case](https://en.wikipedia.org/wiki/Use_case)
 

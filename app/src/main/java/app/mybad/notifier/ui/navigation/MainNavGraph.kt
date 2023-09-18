@@ -77,6 +77,7 @@ fun MainNavGraph(
 
             CalendarScreen(
                 state = viewModel.viewState.value,
+                dateUpdate = viewModel.dateUpdate,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationAction ->

@@ -44,6 +44,19 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getUsageByParams(
+        userId: Long,
+        courseId: Long,
+        useTime: Long,
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getUsageByParams(userId,
+                courseId,
+                useTime,
+                )?.mapToDomain()
+        }
+    }
+
     override suspend fun getUsagesBetweenByCourseId(
         courseId: Long,
         startTime: Long,
@@ -62,22 +75,40 @@ class UsageRepositoryImpl @Inject constructor(
         userId: Long,
         startTime: Long,
         endTime: Long
-    ) = db.getUsagesBetween(
-        userId = userId,
-        startTime = startTime,
-        endTime = endTime
-    )
-        .map { it.mapToDomain() }
-        .catch {
-            Log.w("VTTAG", "UsageRepositoryImpl::getUsagesBetween: error userId=$userId", it)
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getUsagesBetween(
+                userId = userId,
+                startTime = startTime,
+                endTime = endTime
+            ).mapToDomain()
         }
-        .flowOn(dispatcher)
+    }
 
     override suspend fun getUsagesWithNameAndDateBetween(
         userId: Long,
         startTime: Long,
         endTime: Long
     ) = db.getUsagesWithNameAndDateBetween(
+        userId = userId,
+        startTime = startTime,
+        endTime = endTime
+    )
+        .map { it.mapToDomain() }
+        .catch {
+            Log.w(
+                "VTTAG",
+                "UsageRepositoryImpl::getUsagesWithNameAndDateBetween: error userId=$userId",
+                it
+            )
+        }
+        .flowOn(dispatcher)
+
+    override suspend fun getUsagesWithParamsBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ) = db.getUsagesWithParamsBetween(
         userId = userId,
         startTime = startTime,
         endTime = endTime
@@ -118,6 +149,7 @@ class UsageRepositoryImpl @Inject constructor(
         withContext(dispatcher) {
             runCatching {
                 db.setFactUseTimeUsage(usageId = usageId, factUseTime = factUseTime)
+                usageId// вернем id
             }
         }
 

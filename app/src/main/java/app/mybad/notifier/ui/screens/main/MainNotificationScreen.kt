@@ -363,11 +363,11 @@ private fun NotificationCourseItem(
         shape = RoundedCornerShape(10.dp),
         border = setBorderColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime != -1L
+            isDone = usage.factUseTime > 0
         ),
         color = setBackgroundColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime != -1L
+            isDone = usage.factUseTime > 0
         ),
     ) {
         Row(
@@ -456,7 +456,7 @@ private fun NotificationCourseHeader(
                 Spacer(modifier = Modifier.width(10.dp))
                 // название препарата
                 Text(
-                    text = "${usage.name}",
+                    text = usage.name,
                     style = Typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,

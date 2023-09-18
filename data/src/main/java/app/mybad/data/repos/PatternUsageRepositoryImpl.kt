@@ -84,6 +84,18 @@ class PatternUsageRepositoryImpl @Inject constructor(
         .map { it.mapToDomain(startTime) }
         .flowOn(dispatcher)
 
+    override suspend fun getPatternUsagesWithParamsBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ) = db.getPatternUsagesWithParamsBetween(
+        userId = userId,
+        startTime = startTime,
+        endTime = endTime
+    )
+        .map { it.mapToDomain(startTime) }
+        .flowOn(dispatcher)
+
     override suspend fun insertPatternUsage(pattern: PatternUsageDomainModel) =
         withContext(dispatcher) {
             runCatching {

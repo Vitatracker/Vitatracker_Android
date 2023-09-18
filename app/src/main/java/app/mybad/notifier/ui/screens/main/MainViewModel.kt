@@ -61,7 +61,7 @@ class MainViewModel @Inject constructor(
             // для тестов, потом удалить
             p.plus(u).mapValues {
                 val pattern = it.value
-                pattern.copy(name = "${pattern.name}|${pattern.useTime.toDateTimeShortDisplay()}")
+                pattern.copy(name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${pattern.useTime.toDateTimeShortDisplay()}")
             }.toSortedMap()
         }
     }
@@ -111,6 +111,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             viewState.value.patternsAndUsages[usageKey]?.let { usageDisplay ->
                 val dateTime = currentDateTime()
+                // тут отправка с проверкой на дублирование
                 setFactUseTimeOrInsertUsageUseCase(
                     usageDisplay = usageDisplay,
                     currentDateTime = dateTime.toEpochSecond(),
