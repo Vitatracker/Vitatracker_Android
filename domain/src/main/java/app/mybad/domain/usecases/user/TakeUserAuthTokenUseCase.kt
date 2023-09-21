@@ -25,6 +25,8 @@ class TakeUserAuthTokenUseCase @Inject constructor(
                 if (user.tokenDate <= currentDate + 600 && user.tokenRefreshDate > currentDate) {
                     Log.w("VTTAG", "TakeUserAuthTokenUseCase:: refreshAuthTokenUseCase")
                     // требуется обновить токен
+                    AuthToken.tokenRefreshDate = user.tokenRefreshDate
+                    AuthToken.tokenRefresh = user.tokenRefresh
                     refreshAuthTokenUseCase(currentDate)
                 } else if (user.tokenRefreshDate <= currentDate) {
                     Log.w("VTTAG", "TakeUserAuthTokenUseCase:: clearUserAuthTokenUseCase")

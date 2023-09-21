@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.usecases.authorization.RegistrationUserUseCase
 import app.mybad.domain.usecases.user.CreateUserUseCase
+import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.utils.isValidEmail
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val registrationUserUseCase: RegistrationUserUseCase,
+    private val getUserIdUseCase: GetUserIdUseCase,
     private val createUserUseCase: CreateUserUseCase,
     private val updateUserAuthTokenUseCase: UpdateUserAuthTokenUseCase,
 ) :
@@ -83,7 +85,10 @@ class RegistrationViewModel @Inject constructor(
                 password = password,
             ).onSuccess { result ->
                 // добавить в локальную db user и получим userId
-                val userId: Long = createUserUseCase(email = login)
+                val userId: Long = getUserIdUseCase(email = login) ?: createUserUseCase(
+                    email = login,
+                    name = "",
+                )
                 log(
                     "Ok: userId=$userId token=${result.token} date=${
                         result.tokenDate
@@ -99,6 +104,7 @@ class RegistrationViewModel @Inject constructor(
                 setEffect { RegistrationContract.Effect.Navigation.ToMain }
             }.onFailure { error ->
                 log("Error", error)
+                //TODO(" сделать отображение ошибки возможно такой пользователь уже существует или не правильная почта или пароль")
                 (error.message ?: error.localizedMessage)?.let(::checkErrorMessage)
             }
         }
@@ -166,7 +172,7 @@ class RegistrationViewModel @Inject constructor(
                     password = password,
                     confirmationPassword = confirmationPassword,
                     isRegistrationButtonEnabled = email.isNotBlank() && password.isNotBlank() && confirmationPassword.isNotBlank()
-                            && email.contains("@")
+                        && email.contains("@")
                 )
             }
         }

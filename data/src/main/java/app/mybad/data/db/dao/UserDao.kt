@@ -30,7 +30,7 @@ interface UserDao {
     @Query("select * from ${UserContract.TABLE_NAME} ORDER BY ${UserContract.Columns.UPDATED_DATE} DESC limit 1")
     suspend fun getUserLastEntrance(): UserModel?
 
-    @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.EMAIL} = :email limit 1")
+    @Query("select * from ${UserContract.TABLE_NAME} where ${UserContract.Columns.EMAIL} like :email limit 1")
     suspend fun getUserByEmail(email: String): UserModel?
 
     //--------------------------------------------------
@@ -57,6 +57,8 @@ interface UserDao {
     @Query(
         "UPDATE ${UserContract.TABLE_NAME} SET ${
             UserContract.Columns.SYNCHRONIZE_DATE
+        } = :date, ${
+            UserContract.Columns.UPDATED_DATE
         } = :date WHERE ${UserContract.Columns.ID} = :userId"
     )
     suspend fun synchronization(userId: Long, date: Long = currentDateTimeInSecond())

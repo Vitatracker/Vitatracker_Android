@@ -10,7 +10,7 @@ class AuthorizationInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return chain.proceed(
             if (AuthToken.token.isNotBlank()) {
-                Log.w("VTTAG", "auth with token ${AuthToken.token}")
+                Log.w("VTTAG", "AuthorizationInterceptor: auth with token ${AuthToken.token}")
                 chain.request().newBuilder()
                     .addHeader(
                         "Authorization",
