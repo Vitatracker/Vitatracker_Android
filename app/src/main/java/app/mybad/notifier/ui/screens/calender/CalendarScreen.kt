@@ -43,6 +43,8 @@ import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.currentDateTime
 import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.isEqualsMonth
+import app.mybad.utils.isNotEqualsMonth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDateTime
 
@@ -101,7 +103,7 @@ fun CalendarScreen(
                 // проверка
                 val date = state.datesWeeks[element.first][element.second]
                 val usages = state.usagesWeeks[element.first][element.second]
-                if (date == null) {
+                if (usages.isEmpty()) {
                     sendEvent(CalendarContract.Event.SelectElement(null))
                 } else {
                     BottomSlideInDialog(
@@ -125,12 +127,8 @@ fun CalendarScreen(
 private fun CalendarItem(
     date: LocalDateTime,
     currentDate: LocalDateTime,
-    datesWeeks: Array<Array<LocalDateTime?>> = Array(WEEKS_PER_MONTH) {
-        Array(DAYS_A_WEEK) { null }
-    },
-    usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
-        Array(DAYS_A_WEEK) { emptyList() }
-    },
+    datesWeeks: Array<Array<LocalDateTime>>,
+    usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>>,
     onSelect: (Pair<Int, Int>) -> Unit = {}
 ) {
     Column(
@@ -163,7 +161,7 @@ private fun CalendarItem(
                 .fillMaxWidth()
         )
         repeat(WEEKS_PER_MONTH) { week ->
-            if (datesWeeks[week].any { it?.month == date.month }) {
+            if (datesWeeks[week].any { it.isEqualsMonth(date) }) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,9 +172,9 @@ private fun CalendarItem(
                         CalendarDayItem(
                             date = datesWeeks[week][day],
                             usages = usagesWeeks[week][day].size,
-                            isSelected = datesWeeks[week][day]?.dayOfYear == currentDate.dayOfYear &&
-                                datesWeeks[week][day]?.year == currentDate.year,
-                            isOtherMonth = date.month.value != datesWeeks[week][day]?.month?.value
+                            isSelected = datesWeeks[week][day].dayOfYear == currentDate.dayOfYear &&
+                                datesWeeks[week][day].year == currentDate.year,
+                            isOtherMonth = datesWeeks[week][day].isNotEqualsMonth(date)
                         ) {
                             onSelect(week to day) // передаем выбранный элемент массива
                         }

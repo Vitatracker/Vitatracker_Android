@@ -23,7 +23,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,12 +39,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import app.mybad.data.models.CourseSelectInput
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
-import app.mybad.notifier.ui.common.CalendarSelectorScreen
+import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.usagesPatternPreview
@@ -53,15 +49,11 @@ import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
-import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atEndOfDaySystemToUTC
-import app.mybad.utils.atStartOfDay
 import app.mybad.utils.atStartOfDaySystemToUTC
-import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toDateFullDisplay
 import app.mybad.utils.toEpochSecond
 import kotlinx.coroutines.flow.Flow
@@ -341,48 +333,24 @@ fun MyCourseEditScreen(
             )
         }
 
-        selectedInput?.let { selected ->
-            Dialog(
+        selectedInput?.let { select ->
+            CalendarAndRegimeSelectorDialog(
+                selectedInput = select,
+                startDate = startDate,
+                endDate = endDate,
+                regime = state.course.regime,
+                regimeList = regimeList.toList(),
                 onDismissRequest = { selectedInput = null },
-                properties = DialogProperties()
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    when (selected) {
-                        CourseSelectInput.SELECT_START_DATE -> CalendarSelectorScreen(
-                            startDay = startDate,
-                            endDay = endDate,
-                            editStart = true,
-                        ) { selectDate ->
-                            courseInternal = courseInternal.copy(
-                                startDate = selectDate?.atStartOfDay()?.toEpochSecond() ?: 0L,
-                            )
-                            selectedInput = null
-                        }
-
-                        CourseSelectInput.SELECT_END_DATE -> CalendarSelectorScreen(
-                            startDay = startDate,
-                            endDay = endDate,
-                            editStart = false,
-                        ) { editDate ->
-                            courseInternal = courseInternal.copy(
-                                endDate = editDate?.atEndOfDay()?.toEpochSecond() ?: 0L,
-                            )
-                            selectedInput = null
-                        }
-
-                        CourseSelectInput.SELECT_REGIME -> RollSelector(
-                            list = regimeList.toList(),
-                            startOffset = state.course.regime,
-                        ) {
-                            courseInternal = courseInternal.copy(regime = it)
-                            selectedInput = null
-                        }
-                    }
+                onDateSelected = {
+                    courseInternal = courseInternal.copy(
+                        startDate = it.first.toEpochSecond(),
+                        endDate = it.second.toEpochSecond(),
+                    )
+                },
+                onRegimeSelected = {
+                    courseInternal = courseInternal.copy(regime = it)
                 }
-            }
+            )
         }
     }
 }
@@ -441,7 +409,6 @@ fun MyCourseEditScreenPreview() {
         MyCourseEditScreen(
             MyCoursesEditContract.State(
                 usagesPatternEdit = usagesPatternPreview,
-                dateLimit = DateCourseLimit(currentDateTimeInSecond()),
             )
         )
     }

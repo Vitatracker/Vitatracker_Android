@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
@@ -34,18 +33,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
-
-@Preview
-@Composable
-fun AddMedFirstScreenPreview() {
-    MyBADTheme {
-        AddMedFirstScreen(
-            state = CreateCourseContract.State(dateLimit = DateCourseLimit(currentDateTimeInSecond())),
-        )
-    }
-}
 
 @Composable
 fun AddMedFirstScreen(
@@ -162,5 +150,15 @@ fun AddMedFirstScreen(
                 sendEvent(CreateCourseContract.Event.ActionNext)
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun AddMedFirstScreenPreview() {
+    MyBADTheme {
+        AddMedFirstScreen(
+            state = CreateCourseContract.State(),
+        )
     }
 }

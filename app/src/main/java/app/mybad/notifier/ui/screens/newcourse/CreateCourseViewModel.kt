@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.newcourse
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.data.models.UsageFormat.Companion.toPattern
 import app.mybad.domain.models.AuthToken
@@ -32,9 +31,7 @@ class CreateCourseViewModel @Inject constructor(
         Log.w("VTTAG", "NewCourseNavGraph::CreateCourseViewModel: init")
     }
 
-    override fun setInitialState() = CreateCourseContract.State(
-        dateLimit = DateCourseLimit(currentDateTimeInSecond())
-    )
+    override fun setInitialState() = CreateCourseContract.State()
 
     override fun handleEvents(event: CreateCourseContract.Event) {
         when (event) {
@@ -227,7 +224,6 @@ class CreateCourseViewModel @Inject constructor(
         log("setCourseDate: userId=$userId date=$date")
         setState {
             copy(
-                dateLimit = DateCourseLimit(date),
                 remedy = viewState.value.remedy.copy(
                     createdDate = date,
                     userId = userId

@@ -22,10 +22,12 @@ const val SECONDS_IN_DAY = 86400L
 const val MINUTES_IN_DAY = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
-const val WEEKS_PER_MONTH = 6 // строк недель месяца
-const val DAYS_A_WEEK = 7
 const val TIME_IS_UP = 3600
-const val CORRECTION_SERVER_TIME = 1000
+const val WEEKS_PER_MONTH = 6 // строк недель месяца
+const val DAYS_A_WEEK = 7 // дней недели
+const val LIMIT_START_MIN = 12 // - минимальная дата начала курса от текущей даты
+const val LIMIT_START_MAX = 6 // + максимальная дата начала курса от текущей даты
+const val LIMIT_END_MAX = 60 // + максимальная дата окончания курса от текущей даты
 
 // форматирование даты и времени
 private val dateDisplayFormatter = DateTimeFormatter
@@ -53,7 +55,8 @@ private val dateTimeShortDisplayFormatter = DateTimeFormatter
 
 fun Long.toDateTimeShortDisplay(): String = Instant.fromEpochSeconds(this).formatDateTimeShort()
 
-fun Instant.formatDateTimeShort(): String = dateTimeShortDisplayFormatter.format(this.toJavaInstant())
+fun Instant.formatDateTimeShort(): String =
+    dateTimeShortDisplayFormatter.format(this.toJavaInstant())
 
 private val dateFullDisplayFormatter
     get() = DateTimeFormatter
@@ -245,7 +248,8 @@ fun Long.atEndOfDaySystemToUTC() = this.toLocalDateTime()
     .atEndOfDaySystemToUTC()
 //    .toEpochSeconds()
 
-fun LocalDateTime.atStartOfMonth() = this.changeDate(dayOfMonth = 1)
+fun LocalDateTime.firstDayOfMonth() = this.changeDate(dayOfMonth = 1)
+fun LocalDateTime.lastDayOfMonth() = this.changeDate(dayOfMonth = this.getDaysOfMonth())
 
 // Прибавление и удаление
 fun LocalDateTime.minus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
@@ -269,6 +273,9 @@ fun LocalDateTime.minusMonths(months: Int): LocalDateTime {
 fun Long.minusMonths(months: Int) = this.toLocalDateTime()
     .minusMonths(months)
     .toEpochSecond()
+
+fun LocalDateTime.isEqualsMonth(date:LocalDateTime) = this.month == date.month && this.year == date.year
+fun LocalDateTime.isNotEqualsMonth(date:LocalDateTime) = !this.isEqualsMonth(date)
 
 fun LocalDateTime.plus(period: DateTimePeriod) = this.toInstant(TimeZone.UTC)
     .plus(period, TimeZone.UTC)
@@ -434,5 +441,38 @@ fun Long.nextCourseIntervals(
         Triple(remindTime, intervalCorrect, beforeDay)
     } catch (_: Error) {
         Triple(840, 0, 0)
+    }
+}
+
+// начало месяца и от этого дня берется неделя и первый день недели матрица 6 х 7
+fun LocalDateTime.repeatWeekAndDayOfMonth(action: (week: Int, day: Int, date: LocalDateTime) -> Unit) {
+    val fwd = this.firstDayOfMonth()
+    repeat(WEEKS_PER_MONTH) { week ->
+        repeat(DAYS_A_WEEK) { day ->
+            val date = if (week == 0 && day < fwd.dayOfWeek.value) {
+                fwd.minusDays(fwd.dayOfWeek.ordinal - day)
+            } else {
+                fwd.plusDays(week * DAYS_A_WEEK - fwd.dayOfWeek.ordinal + day)
+            }
+            action(week, day, date)
+        }
+    }
+}
+
+fun initWeekAndDayOfMonth(
+    initData: LocalDateTime,
+    action: (week: Int, day: Int, date: LocalDateTime) -> Unit = { _, _, _ -> }
+): Array<Array<LocalDateTime>> {
+    val fwd = initData.firstDayOfMonth()
+    return Array(WEEKS_PER_MONTH) { week ->
+        Array(DAYS_A_WEEK) { day ->
+            val date = if (week == 0 && day < fwd.dayOfWeek.value) {
+                fwd.minusDays(fwd.dayOfWeek.ordinal - day)
+            } else {
+                fwd.plusDays(week * DAYS_A_WEEK - fwd.dayOfWeek.ordinal + day)
+            }
+            action(week, day, date)
+            date
+        }
     }
 }

@@ -28,7 +28,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
@@ -39,18 +38,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
-
-@Preview
-@Composable
-fun AddMedSecondScreenPreview() {
-    MyBADTheme {
-        AddMedSecondScreen(
-            state = CreateCourseContract.State(dateLimit = DateCourseLimit(currentDateTimeInSecond())),
-        )
-    }
-}
 
 @Composable
 fun AddMedSecondScreen(
@@ -222,5 +210,15 @@ private fun SecondScreenContent(
         textId = R.string.navigation_next
     ) {
         sendEvent(CreateCourseContract.Event.ActionNext)
+    }
+}
+
+@Preview
+@Composable
+fun AddMedSecondScreenPreview() {
+    MyBADTheme {
+        AddMedSecondScreen(
+            state = CreateCourseContract.State(),
+        )
     }
 }

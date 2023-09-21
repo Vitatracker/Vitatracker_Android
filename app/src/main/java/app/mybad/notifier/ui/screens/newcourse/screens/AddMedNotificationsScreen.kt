@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.AddNotificationButton
@@ -37,7 +36,6 @@ import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelectorDialog
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
-import app.mybad.utils.currentDateTimeInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -161,7 +159,6 @@ fun AddMedNotificationsScreenPreview() {
             state = CreateCourseContract.State(
                 usagesPattern = usagesPatternPreview,
                 nextAllowed = true,
-                dateLimit = DateCourseLimit(currentDateTimeInSecond())
             ),
         )
     }

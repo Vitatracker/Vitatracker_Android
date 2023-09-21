@@ -7,6 +7,7 @@ import app.mybad.notifier.ui.base.ViewState
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.currentDateTime
+import app.mybad.utils.initWeekAndDayOfMonth
 import kotlinx.datetime.LocalDateTime
 
 class CalendarContract {
@@ -19,16 +20,13 @@ class CalendarContract {
     }
 
     data class State(
-        // дата для отображения месяяных usages
         val date: LocalDateTime = currentDateTime(),
 
         val selectedElement: Pair<Int, Int>? = null,
 
         val updateDateWeek: LocalDateTime? = null,
 
-        val datesWeeks: Array<Array<LocalDateTime?>> = Array(WEEKS_PER_MONTH) {
-            Array(DAYS_A_WEEK) { null }
-        },
+        val datesWeeks: Array<Array<LocalDateTime>> = initWeekAndDayOfMonth(date),
         val usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
             Array(DAYS_A_WEEK) { emptyList() }
         },

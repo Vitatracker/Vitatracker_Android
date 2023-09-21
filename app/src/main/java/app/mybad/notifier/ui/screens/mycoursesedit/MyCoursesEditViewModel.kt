@@ -2,7 +2,6 @@ package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
@@ -54,9 +53,7 @@ class MyCoursesEditViewModel @Inject constructor(
 
     private var courseIdLocked = 0L
 
-    override fun setInitialState() = MyCoursesEditContract.State(
-        dateLimit = DateCourseLimit(currentDateTimeInSecond()),
-    )
+    override fun setInitialState() = MyCoursesEditContract.State()
 
     override fun handleEvents(event: MyCoursesEditContract.Event) {
 //        TODO("Not yet implemented")

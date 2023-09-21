@@ -12,10 +12,11 @@ import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.atStartOfMonth
+import app.mybad.utils.firstDayOfMonth
 import app.mybad.utils.changeTimeOfSystem
 import app.mybad.utils.currentDateTime
 import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.initWeekAndDayOfMonth
 import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
 import app.mybad.utils.toDateDisplay
@@ -64,7 +65,7 @@ class CalendarViewModel @Inject constructor(
     var dateUpdate = dateMonth.flatMapLatest { date ->
         // пересчитываем и перезагружаем значениея для каждого месяца,
         // дата меняется только при изменении месяца
-        val startOfMonth = date.atStartOfMonth()
+        val startOfMonth = date.firstDayOfMonth()
         // определим начало недели для отображения 6 недель
         val startDayOfWeek = startOfMonth.minusDays(startOfMonth.dayOfWeek.ordinal)
         val dateMin = startDayOfWeek.atStartOfDay().toEpochSecond()
@@ -110,28 +111,15 @@ class CalendarViewModel @Inject constructor(
             "VTTAG",
             "CalendarViewModel::calculateByWeekAndSetState: in"
         )
-        val datesWeeks: Array<Array<LocalDateTime?>> = Array(WEEKS_PER_MONTH) {
-            Array(DAYS_A_WEEK) { null }
-        }
+        // начало месяца и от этого дня берется неделя и первый день недели
         val usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
             Array(DAYS_A_WEEK) { emptyList() }
         }
-
-        // начало месяца и от этого дня берется неделя и первый день недели
-        val fwd = date.atStartOfMonth()
-        repeat(WEEKS_PER_MONTH) { week ->
-            repeat(DAYS_A_WEEK) { day ->
-                val time = if (week == 0 && day < fwd.dayOfWeek.value) {
-                    fwd.minusDays(fwd.dayOfWeek.ordinal - day)
-                } else {
-                    fwd.plusDays(week * DAYS_A_WEEK - fwd.dayOfWeek.ordinal + day)
-                }
-                datesWeeks[week][day] = time
-                usagesWeeks[week][day] = getUsagesOnDate(time)
+        val datesWeeks = initWeekAndDayOfMonth(date) { week, day, dateTime ->
+                usagesWeeks[week][day] = getUsagesOnDate(dateTime)
             }
-        }
-        val dateUpdate =
-            currentDateTime() // текущаая дата для отображения на календаре и обновление данных
+        // текущаая дата для отображения на календаре и обновление данных
+        val dateUpdate = currentDateTime()
         setState {
             copy(
                 date = date,

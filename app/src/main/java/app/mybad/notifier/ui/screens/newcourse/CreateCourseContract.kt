@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.screens.newcourse
 
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.data.models.UsageFormat
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.RemedyDomainModel
@@ -43,8 +42,6 @@ class CreateCourseContract {
         val isError: Boolean = false,
         val courseIntervalEntered: Boolean = false,
         val nextAllowed: Boolean = false,
-
-        val dateLimit: DateCourseLimit,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {

@@ -1,4 +1,4 @@
-package app.mybad.notifier.ui.screens.newcourse.common
+package app.mybad.notifier.ui.common
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,14 +28,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RollSelector(
+fun RollSelectorView(
     modifier: Modifier = Modifier,
     list: List<String>,
     startOffset: Int = 0,

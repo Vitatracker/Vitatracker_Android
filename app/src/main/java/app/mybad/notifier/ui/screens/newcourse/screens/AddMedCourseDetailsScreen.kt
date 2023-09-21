@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -37,29 +36,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import app.mybad.data.models.CourseSelectInput
-import app.mybad.data.models.DateCourseLimit
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
-import app.mybad.notifier.ui.common.SingleDayCalendarSelector
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
-import app.mybad.notifier.ui.screens.newcourse.common.RollSelector
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTimeInSecond
 import app.mybad.utils.toDateFullDisplay
 import app.mybad.utils.toEpochSecond
 import app.mybad.utils.toLocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -203,117 +197,25 @@ fun AddMedCourseDetailsScreen(
     }
 
     selectedInput?.let { select ->
-        when (select) {
-            CourseSelectInput.SELECT_START_DATE -> {
-                DatePickerDialog(
-                    initDate = startDate,
-                    limitDate = state.dateLimit,
-                    onDismissRequest = { selectedInput = null },
-                    onDatePicked = {
-                        val newDate = it?.atStartOfDay()?.toEpochSecond() ?: 0L
-                        if (newDate in state.dateLimit.minStartDate..state.dateLimit.maxStartDate) {
-                            val newCourse = state.course.copy(startDate = newDate)
-                            sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-                        }
-                    }
+        CalendarAndRegimeSelectorDialog(
+            selectedInput = select,
+            startDate = startDate,
+            endDate = endDate,
+            regime = state.course.regime,
+            regimeList = regimeList.toList(),
+            onDismissRequest = { selectedInput = null },
+            onDateSelected = {
+                val newCourse = state.course.copy(
+                    startDate = it.first.toEpochSecond(),
+                    endDate = it.second.toEpochSecond(),
                 )
+                sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
+            },
+            onRegimeSelected = {
+                val newCourse = state.course.copy(regime = it)
+                sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
             }
-
-            CourseSelectInput.SELECT_END_DATE -> {
-                DatePickerDialog(
-                    initDate = endDate,
-                    limitDate = state.dateLimit,
-                    onDismissRequest = { selectedInput = null },
-                    onDatePicked = {
-                        val newDate = it?.atEndOfDay()?.toEpochSecond() ?: 0L
-                        if (newDate in state.course.startDate..state.dateLimit.maxEndDate) {
-                            val newCourse = state.course.copy(endDate = newDate)
-                            sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-                        }
-                    }
-                )
-            }
-
-            CourseSelectInput.SELECT_REGIME -> {
-                RegimeSelector(
-                    regimeList = regimeList.toList(),
-                    startOffset = state.course.regime,
-                    onDismissRequest = {
-                        selectedInput = null
-                    },
-                    onRegimePicked = { newRegime ->
-                        val newCourse = state.course.copy(regime = newRegime)
-                        sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun DatePickerDialogPreview() {
-    MyBADTheme {
-        val date = LocalDateTime(2023, 5, 4, 5, 5, 5)
-        DatePickerDialog(
-            initDate = date,
-            limitDate = DateCourseLimit(date.toEpochSecond()),
-            onDismissRequest = {},
-            onDatePicked = {}
         )
-    }
-}
-
-@Composable
-fun DatePickerDialog(
-    initDate: LocalDateTime,
-    limitDate: DateCourseLimit,
-    onDismissRequest: () -> Unit = {},
-    onDatePicked: (event: LocalDateTime?) -> Unit = {}
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest::invoke
-    ) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.background,
-        ) {
-            SingleDayCalendarSelector(
-                initDay = initDate,
-                onSelect = {
-                    onDatePicked(it)
-                    onDismissRequest()
-                }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun RegimeSelector(
-    regimeList: List<String> = listOf("Regime 1, Regime 2, Regime 3"),
-    startOffset: Int = -1,
-    onDismissRequest: () -> Unit = {},
-    onRegimePicked: (Int) -> Unit = {}
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest::invoke
-    ) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.background,
-        ) {
-            RollSelector(
-                list = regimeList,
-                startOffset = startOffset,
-                onSelect = {
-                    onRegimePicked(it)
-                    onDismissRequest()
-                }
-            )
-        }
     }
 }
 
@@ -322,7 +224,7 @@ fun RegimeSelector(
 fun AddMedCourseDetailsScreenPreview() {
     MyBADTheme {
         AddMedCourseDetailsScreen(
-            state = CreateCourseContract.State(dateLimit = DateCourseLimit(currentDateTimeInSecond())),
+            state = CreateCourseContract.State(),
         )
     }
 }
