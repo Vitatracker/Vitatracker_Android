@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.main
 import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -113,34 +114,23 @@ fun MainNotificationScreen(
                 .fillMaxSize()
                 .padding(contentPadding)
         ) {
-            NotificationScreen(
-                state = state,
-                sendEvent = sendEvent,
-            )
-        }
-    }
-}
-
-@Composable
-private fun NotificationScreen(
-    state: MainContract.State,
-    sendEvent: (MainContract.Event) -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        NotificationBackgroundImage()
-        Column(
-            modifier = Modifier
-        ) {
-            NotificationMonthPager(
-                date = state.selectedDate,
-                changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
-            )
-            NotificationLazyMedicines(
-                usagesDisplay = state.patternsAndUsages,
-            ) { sendEvent(MainContract.Event.SetUsageFactTime(it)) }
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                NotificationBackgroundImage()
+                Column(
+                    modifier = Modifier
+                ) {
+                    NotificationMonthPager(
+                        date = state.selectedDate,
+                        changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
+                    )
+                    NotificationLazyMedicines(
+                        usagesDisplay = state.patternsAndUsages,
+                    ) { sendEvent(MainContract.Event.SetUsageFactTime(it)) }
+                }
+            }
         }
     }
 }
@@ -290,9 +280,9 @@ private fun NotificationLazyMedicines(
     setUsageFactTime: (String) -> Unit,
 ) {
     if (usagesDisplay.isNotEmpty()) {
-//        val types = stringArrayResource(R.array.types)
-//        val relations = stringArrayResource(R.array.food_relations)
-//        val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
+        val types = stringArrayResource(R.array.types)
+        val relations = stringArrayResource(R.array.food_relations)
+        val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
         NotificationTextCategory()
         Log.w(
             "VTTAG",
@@ -304,12 +294,141 @@ private fun NotificationLazyMedicines(
         ) {
             items(usagesDisplay.entries.toList()) { usageEntry ->
                 //TODO("переделать так же как и BottomSheetUsages")
+                val usage = usageEntry.value
                 NotificationCourseItem(
-                    usage = usageEntry.value,
-                ) { setUsageFactTime(usageEntry.key) }
+                    usage = usage,
+                    relation = relations[usage.beforeFood],
+                    type = types[usage.type],
+                    icon = icons.getResourceId(usage.icon, 0),
+                    onClick = { setUsageFactTime(usageEntry.key) },
+                )
             }
         }
     } else NotificationRemedyClear()
+}
+
+@SuppressLint("Recycle")
+@Composable
+private fun NotificationCourseItem(
+    usage: UsageDisplayDomainModel,
+    relation: String,
+    type: String,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp),
+        border = setBorderColorCard(
+            usageTime = usage.useTime,
+            isDone = usage.factUseTime != null
+        ),
+        color = setBackgroundColorCard(
+            usageTime = usage.useTime,
+            isDone = usage.factUseTime != null
+        ),
+    ) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            NotificationTimeCourse(
+                usageTime = usage.useTime,
+                isDone = usage.factUseTime != null
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(1f)
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        // иконка препарата
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(25.dp),
+                            tint = PickColor.getColor(usage.color)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        // название препарата
+                        Text(
+                            text = usage.name,
+                            style = Typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                    ) {
+                        // количество и тип
+                        Text(
+                            text = "${usage.quantity.toText()} $type",
+                            style = Typography.labelMedium
+                        )
+                        Text(
+                            text = "|",
+                            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                            style = Typography.labelMedium,
+                            color = Color.Gray,
+                            fontSize = 12.sp
+                        )
+                        Text(
+                            text = relation,
+                            style = Typography.labelMedium,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
+                }
+                NotificationButtonAccept(
+                    usageTime = usage.useTime,
+                    isDone = usage.factUseTime != null,
+                    modifier = Modifier.clickable {
+                        onClick()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationTimeCourse(
+    usageTime: LocalDateTime,
+    isDone: Boolean,
+) {
+    Surface(
+        modifier = Modifier.padding(start = 10.dp),
+        shape = RoundedCornerShape(10.dp),
+        border = setBorderColorTimeCard(usageTime = usageTime, isDone = isDone),
+        color = setBackgroundColorTime(usageTime = usageTime, isDone = isDone)
+    ) {
+        Text(
+            text = usageTime.displayTime(),
+            modifier = Modifier
+                .padding(8.dp),
+            color = setTextColorTime(usageTime = usageTime, isDone = isDone),
+            fontSize = 20.sp,
+            textAlign = TextAlign.Justify,
+            fontWeight = FontWeight.Bold,
+        )
+    }
 }
 
 @Composable
@@ -354,150 +473,6 @@ private fun NotificationRemedyClearImage() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 15.dp)
-        )
-    }
-}
-
-@Composable
-private fun NotificationCourseItem(
-    usage: UsageDisplayDomainModel,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        shape = RoundedCornerShape(10.dp),
-        border = setBorderColorCard(
-            usageTime = usage.useTime,
-            isDone = usage.factUseTime != null
-        ),
-        color = setBackgroundColorCard(
-            usageTime = usage.useTime,
-            isDone = usage.factUseTime != null
-        ),
-    ) {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            NotificationTimeCourse(
-                usageTime = usage.useTime,
-                isDone = usage.factUseTime != null
-            )
-            NotificationCourseHeader(
-                usage = usage,
-                onClick = onClick,
-            )
-        }
-    }
-}
-
-@Composable
-private fun NotificationTimeCourse(
-    usageTime: LocalDateTime,
-    isDone: Boolean,
-) {
-    Surface(
-        modifier = Modifier.padding(start = 10.dp),
-        shape = RoundedCornerShape(10.dp),
-        border = setBorderColorTimeCard(usageTime = usageTime, isDone = isDone),
-        color = setBackgroundColorTime(usageTime = usageTime, isDone = isDone)
-    ) {
-        Text(
-            text = usageTime.displayTime(),
-            modifier = Modifier
-                .padding(8.dp),
-            color = setTextColorTime(usageTime = usageTime, isDone = isDone),
-            fontSize = 20.sp,
-            textAlign = TextAlign.Justify,
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun NotificationCourseHeaderPreview() {
-    NotificationCourseHeader(
-        usage = patternsAndUsages[0],
-        onClick = {},
-    )
-}
-
-@SuppressLint("Recycle")
-@Composable
-private fun NotificationCourseHeader(
-    usage: UsageDisplayDomainModel,
-    onClick: () -> Unit,
-) {
-    val r = LocalContext.current.resources.obtainTypedArray(R.array.icons)
-    val types = stringArrayResource(R.array.types)
-    val relations = stringArrayResource(R.array.food_relations)
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .weight(1f)
-        ) {
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // иконка препарата
-                Icon(
-                    painter = painterResource(r.getResourceId(usage.icon, 0)),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(25.dp),
-                    tint = PickColor.getColor(usage.color)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                // название препарата
-                Text(
-                    text = usage.name,
-                    style = Typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Row(
-                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
-            ) {
-                // количество и тип
-                Text(
-                    text = "${usage.quantity.toText()} ${types[usage.type]}",
-                    style = Typography.labelMedium
-                )
-                Text(
-                    text = "|",
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    style = Typography.labelMedium,
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-                Text(
-                    text = relations[usage.beforeFood],
-                    style = Typography.labelMedium,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-            }
-        }
-        NotificationButtonAccept(
-            usageTime = usage.useTime,
-            isDone = usage.factUseTime != null,
-            modifier = Modifier.clickable {
-                onClick()
-            }
         )
     }
 }
