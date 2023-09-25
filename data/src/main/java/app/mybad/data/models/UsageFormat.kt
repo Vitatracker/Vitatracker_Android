@@ -5,6 +5,7 @@ import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayTimeInMinutes
 import app.mybad.utils.timeInMinutes
+import app.mybad.utils.timeInMinutesSystemToUTC
 
 data class UsageFormat(
     val timeInMinutes: Int = -1, // с учетом часового пояса
@@ -22,7 +23,10 @@ data class UsageFormat(
 
         @JvmName("listUfToPattern")
         fun List<UsageFormat>.toPattern() = this.toSortedList()
-            .joinToString(separator = ";", transform = { "${it.timeInMinutes}-${it.quantity}" })
+            .joinToString(
+                separator = ";",
+                transform = { "${it.timeInMinutes.timeInMinutesSystemToUTC()}-${it.quantity}" } // UTC
+            )
 
         @JvmName("listUfToSort")
         private fun List<UsageFormat>.toSortedList(): List<UsageFormat> {

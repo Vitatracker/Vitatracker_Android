@@ -111,7 +111,7 @@ fun MyCourseEditNotificationScreen(
                 ) {
                     items(state.usagesPatternEdit) { pattern ->
                         NotificationItem(
-                            time = pattern.timeInMinutes,
+                            time = pattern.timeInMinutes, // с учетом часового пояса
                             quantity = pattern.quantity,
                             form = state.remedy.type,
                             forms = forms,

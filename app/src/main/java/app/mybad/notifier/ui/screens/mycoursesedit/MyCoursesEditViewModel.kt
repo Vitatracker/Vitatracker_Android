@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.mycoursesedit
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.data.models.UsageFormat
+import app.mybad.data.models.UsageFormat.Companion.toPattern
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.PatternUsageDomainModel
@@ -290,6 +291,8 @@ class MyCoursesEditViewModel @Inject constructor(
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new remedyId=$remedyId")
             0
         }
+        // сформировать паттерн usages
+        val patternUsages = viewState.value.usagesPatternEdit.toPattern()
         // TODO("не понятно какая тут дата старта курса?")
         val course = viewState.value.course.copy(
             id = 0,
@@ -300,6 +303,7 @@ class MyCoursesEditViewModel @Inject constructor(
             isInfinite = false,
             isFinished = false,
             notUsed = false,
+            patternUsages = patternUsages,
 
             createdDate = 0,// запишется в мапере
 
@@ -310,7 +314,10 @@ class MyCoursesEditViewModel @Inject constructor(
             "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
         )
         // закроем курс
-        closeCourseUseCase(courseId = viewState.value.course.id, endDate = currentDateTimeSystem()) // с учетом часового пояса
+        closeCourseUseCase(
+            courseId = viewState.value.course.id,
+            endDate = currentDateTimeSystem()
+        ) // с учетом часового пояса
         // создадим новый курс
         createCourseUseCase(course).onSuccess { courseId ->
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
@@ -325,7 +332,14 @@ class MyCoursesEditViewModel @Inject constructor(
     private suspend fun updateCourse() {
         Log.w("VTTAG", "MyCoursesViewModel::updateCourse: courseId=${viewState.value.course.id}")
         updateRemedyUseCase(viewState.value.remedy.copy(updateNetworkDate = 0))
-        updateCourseUseCase(viewState.value.course.copy(updateNetworkDate = 0))
+        // сформировать паттерн usages
+        val patternUsages = viewState.value.usagesPatternEdit.toPattern() // UTC
+        updateCourseUseCase(
+            viewState.value.course.copy(
+                updateNetworkDate = 0,
+                patternUsages = patternUsages
+            )
+        )
         // обновим паттерн, только если нужно
         if (viewState.value.usagesPattern != viewState.value.usagesPatternEdit) {
             Log.w(

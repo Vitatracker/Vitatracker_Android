@@ -121,7 +121,7 @@ fun CourseModel.mapToDomain() = CourseDomainModel(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
-    patternUsages = patternUsages,
+    patternUsages = patternUsages, // UTC
 
     updateNetworkDate = updateNetworkDate,
 )
@@ -158,7 +158,7 @@ fun CourseDomainModel.mapToData() = CourseModel(
     isInfinite = isInfinite,
     notUsed = notUsed,
 
-    patternUsages = patternUsages,
+    patternUsages = patternUsages, // UTC
 
     updateNetworkDate = updateNetworkDate,
 )

@@ -40,7 +40,7 @@ class MyCoursesViewModel @Inject constructor(
         }
     }
 
-    private val currentDateTime = MutableStateFlow(currentDateTimeUTCInSecond())
+    private val currentDateTime = MutableStateFlow(currentDateTimeSystem()) // с учетом часового пояса
 
     init {
         Log.w("VTTAG", "MyCoursesViewModel: init")
@@ -50,7 +50,7 @@ class MyCoursesViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun uploadCoursesInState() {
         viewModelScope.launch {
-            currentDateTime.flatMapLatest { date ->
+            currentDateTime.flatMapLatest {
                 getCoursesUseCase()
                     .distinctUntilChanged()
                     .map(::addRemindCourse)
