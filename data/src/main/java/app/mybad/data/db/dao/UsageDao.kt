@@ -10,7 +10,7 @@ import app.mybad.data.db.models.RemedyContract
 import app.mybad.data.db.models.UsageContract
 import app.mybad.data.db.models.UsageModel
 import app.mybad.data.db.models.UsageWithNameAndDateModel
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -219,8 +219,8 @@ interface UsageDao {
     )
     suspend fun setFactUseTimeUsage(
         usageId: Long,
-        factUseTime: Long,
-        date: Long = currentDateTimeInSecond()
+        factUseTime: Long?,
+        date: Long = currentDateTimeUTCInSecond()
     )
     //--------------------------------------------------
 
@@ -239,7 +239,7 @@ interface UsageDao {
             UsageContract.Columns.ID
         } = :usageId"
     )
-    suspend fun markDeletionUsagesById(usageId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionUsagesById(usageId: Long, date: Long = currentDateTimeUTCInSecond())
 
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
@@ -248,7 +248,7 @@ interface UsageDao {
             UsageContract.Columns.COURSE_ID
         } = :courseId"
     )
-    suspend fun markDeletionUsagesByCourseId(courseId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionUsagesByCourseId(courseId: Long, date: Long = currentDateTimeUTCInSecond())
 
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
@@ -261,7 +261,7 @@ interface UsageDao {
         courseId: Long,
         startTime: Long,
         endTime: Long,
-        date: Long = currentDateTimeInSecond()
+        date: Long = currentDateTimeUTCInSecond()
     )
 
     @Query(
@@ -273,12 +273,11 @@ interface UsageDao {
             UsageContract.Columns.FACT_USE_TIME
         } <= 0 and ${
             UsageContract.Columns.USE_TIME
-        } >= :dateTime"
+        } >= :date"
     )
     suspend fun markDeletionUsagesAfterByCourseId(
         courseId: Long,
-        dateTime: Long,
-        date: Long = currentDateTimeInSecond()
+        date: Long = currentDateTimeUTCInSecond()
     )
 
     //--------------------------------------------------

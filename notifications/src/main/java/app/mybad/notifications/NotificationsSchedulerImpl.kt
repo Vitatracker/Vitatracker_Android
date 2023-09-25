@@ -14,9 +14,10 @@ import app.mybad.domain.repository.CourseRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.scheduler.NotificationsScheduler
-import app.mybad.utils.MILES_SECONDS
-import app.mybad.utils.currentDateTime
-import app.mybad.utils.toEpochSecond
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.plusDays
+import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.systemToInstant
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ class NotificationsSchedulerImpl @Inject constructor(
                     val pendingIntent = generateUsagePendingIntent(remedy, usage, context)
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
-                        usage.useTime * MILES_SECONDS,
+                        usage.useTime.systemToInstant().toEpochMilliseconds(),
                         pendingIntent
                     )
                 }
@@ -46,13 +47,15 @@ class NotificationsSchedulerImpl @Inject constructor(
     }
 
     override suspend fun addAlarm(course: CourseDomainModel) {
-        remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
-            val pendingIntent = generateCoursePendingIntent(course, remedy, context)
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                course.remindDate * MILES_SECONDS,
-                pendingIntent
-            )
+        course.remindDate?.let { remindDate ->
+            remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
+                val pendingIntent = generateCoursePendingIntent(course, remedy, context)
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    remindDate.systemToInstant().toEpochMilliseconds(),
+                    pendingIntent
+                )
+            }
         }
     }
 
@@ -93,7 +96,7 @@ class NotificationsSchedulerImpl @Inject constructor(
     }
 
     override suspend fun rescheduleAlarmByUserId(userId: Long, onComplete: () -> Unit) {
-        val now = currentDateTime().toEpochSecond()
+        val now = currentDateTimeSystem()
         usageRepository.getUsagesByUserId(userId).getOrNull()?.forEach { usage ->
             if (usage.useTime >= now) {
                 courseRepository.getCourseById(usage.courseId).getOrNull()?.let { course ->
@@ -101,7 +104,7 @@ class NotificationsSchedulerImpl @Inject constructor(
                         val pendingIntent = generateUsagePendingIntent(remedy, usage, context)
                         alarmManager.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
-                            usage.useTime * MILES_SECONDS,
+                            usage.useTime.systemToInstant().toEpochMilliseconds(),
                             pendingIntent
                         )
                     }
@@ -109,12 +112,12 @@ class NotificationsSchedulerImpl @Inject constructor(
             }
         }
         courseRepository.getCoursesByUserId(userId).getOrNull()?.forEach { course ->
-            if (course.remindDate >= now) {
+            course.remindDate?.takeIf { it >= now }?.let { remindDate ->
                 remedyRepository.getRemedyById(course.remedyId).getOrNull()?.let { remedy ->
                     val pendingIntent = generateCoursePendingIntent(course, remedy, context)
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
-                        course.remindDate * MILES_SECONDS,
+                        remindDate.systemToInstant().toEpochMilliseconds(),
                         pendingIntent
                     )
                 }
@@ -128,9 +131,10 @@ class NotificationsSchedulerImpl @Inject constructor(
         usage: UsageDomainModel,
         context: Context
     ): PendingIntent {
+        val useTime = usage.useTime.systemToEpochSecond()
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = NOTIFICATION_INTENT
-        i.data = Uri.parse("custom://${(usage.useTime + remedy.id).toInt()}")
+        i.data = Uri.parse("custom://${(useTime + remedy.id).toInt()}")
         i.putExtra(Extras.REMEDY_NAME.name, remedy.name ?: "no name")
         i.putExtra(Extras.REMEDY_ID.name, remedy.id)
         i.putExtra(Extras.TYPE.name, remedy.type)
@@ -138,11 +142,11 @@ class NotificationsSchedulerImpl @Inject constructor(
         i.putExtra(Extras.COLOR.name, remedy.color)
         i.putExtra(Extras.DOSE.name, remedy.dose)
         i.putExtra(Extras.UNIT.name, remedy.measureUnit)
-        i.putExtra(Extras.USAGE_TIME.name, usage.useTime)
+        i.putExtra(Extras.USAGE_TIME.name, useTime)
         i.putExtra(Extras.QUANTITY.name, usage.quantity)
         return PendingIntent.getBroadcast(
             context,
-            (usage.useTime + remedy.id).toInt(),
+            (useTime + remedy.id).toInt(),
             i,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         )
@@ -153,9 +157,11 @@ class NotificationsSchedulerImpl @Inject constructor(
         remedy: RemedyDomainModel,
         context: Context
     ): PendingIntent {
+        val startDate = course.endDate.plusDays(course.interval.toInt()).systemToEpochSecond()
+        val remindDate = course.remindDate?.systemToEpochSecond() ?: 0
         val i = Intent(context.applicationContext, AlarmReceiver::class.java)
         i.action = COURSE_NOTIFICATION_INTENT
-        i.data = Uri.parse("custom://${(course.id + remedy.id).toInt()}")
+        i.data = Uri.parse("custom://${(course.id * 1000 + remedy.id).toInt()}")
         i.putExtra(Extras.REMEDY_NAME.name, remedy.name ?: "no name")
         i.putExtra(Extras.REMEDY_ID.name, remedy.id)
         i.putExtra(Extras.TYPE.name, remedy.type)
@@ -163,11 +169,11 @@ class NotificationsSchedulerImpl @Inject constructor(
         i.putExtra(Extras.COLOR.name, remedy.color)
         i.putExtra(Extras.DOSE.name, remedy.dose)
         i.putExtra(Extras.UNIT.name, remedy.measureUnit)
-        i.putExtra(Extras.NEW_COURSE_START_DATE.name, (course.startDate + course.interval))
-        i.putExtra(Extras.COURSE_REMIND_TIME.name, course.remindDate)
+        i.putExtra(Extras.NEW_COURSE_START_DATE.name, startDate)
+        i.putExtra(Extras.COURSE_REMIND_TIME.name, remindDate)
         return PendingIntent.getBroadcast(
             context,
-            (course.remindDate + remedy.id).toInt(),
+            (remindDate + remedy.id).toInt(),
             i,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         )

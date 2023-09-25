@@ -7,7 +7,7 @@ import app.mybad.data.mapToDomain
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.repository.UserRepository
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -62,7 +62,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertUser(name: String, email: String) = withContext(dispatcher) {
-        db.insert(UserModel(name = name, email = email, createdDate = currentDateTimeInSecond()))
+        db.insert(UserModel(name = name, email = email, createdDate = currentDateTimeUTCInSecond()))
     }
 
     override suspend fun updateMail(userId: Long, email: String) {
@@ -93,7 +93,7 @@ class UserRepositoryImpl @Inject constructor(
                     tokenRefresh = "",
                     tokenRefreshDate = 0,
 
-                    updatedDate = currentDateTimeInSecond(),
+                    updatedDate = currentDateTimeUTCInSecond(),
                 )
             )
         }
@@ -112,7 +112,7 @@ class UserRepositoryImpl @Inject constructor(
             tokenRefresh = tokenRefresh,
             tokenRefreshDate = tokenRefreshDate,
 
-            updatedDate = currentDateTimeInSecond(),
+            updatedDate = currentDateTimeUTCInSecond(),
         )
         Log.w(
             "VTTAG",

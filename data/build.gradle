@@ -92,6 +92,8 @@ dependencies {
     implementation "androidx.hilt:hilt-work:1.0.0"
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
+    // Date Time
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
     //    local unit test
     implementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation 'junit:junit:4.13.2'

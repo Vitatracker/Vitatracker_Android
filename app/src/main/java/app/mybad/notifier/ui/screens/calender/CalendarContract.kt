@@ -6,7 +6,8 @@ import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
-import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.firstDayOfMonth
 import app.mybad.utils.initWeekAndDayOfMonth
 import kotlinx.datetime.LocalDateTime
 
@@ -20,7 +21,7 @@ class CalendarContract {
     }
 
     data class State(
-        val date: LocalDateTime = currentDateTime(),
+        val date: LocalDateTime = currentDateTimeSystem().firstDayOfMonth(), // с учетом часового пояса
 
         val selectedElement: Pair<Int, Int>? = null,
 

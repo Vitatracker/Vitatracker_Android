@@ -13,7 +13,8 @@ import app.mybad.domain.usecases.usages.CreatePatternUsagesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.currentDateTimeUTCInSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,8 +70,8 @@ class CreateCourseViewModel @Inject constructor(
                 setState { copy(courseIntervalEntered = true) }
             }
 
-            CreateCourseContract.Event.UpdateCourseStartDateAndLimit -> {
-                if (viewState.value.course.startDate <= 0L) setCourseDate()
+            CreateCourseContract.Event.UpdateCourseStartDate -> {
+                if (!viewState.value.updateCourseStartDate) setCourseDate()
             }
 
             is CreateCourseContract.Event.ActionNext -> {
@@ -173,7 +174,7 @@ class CreateCourseViewModel @Inject constructor(
                         )
                         newState()
                         // синхронизировать
-                        AuthToken.requiredSynchronize(currentDateTimeInSecond())
+                        AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
                     }.onFailure {
                         err("finishCreation: error createPatternUsagesUseCase", it)
                     }
@@ -220,21 +221,20 @@ class CreateCourseViewModel @Inject constructor(
 
     private fun setCourseDate() {
         val userId = AuthToken.userId
-        val date = currentDateTimeInSecond()
+        val date = currentDateTimeSystem()
         log("setCourseDate: userId=$userId date=$date")
         setState {
             copy(
                 remedy = viewState.value.remedy.copy(
-                    createdDate = date,
                     userId = userId
                 ),
                 course = viewState.value.course.copy(
-                    createdDate = date,
                     userId = userId,
                     startDate = date.atStartOfDay(),
                     endDate = date.atEndOfDay(),
                 ),
                 nextAllowed = viewState.value.usagesPattern.isNotEmpty(),
+                updateCourseStartDate = true,
                 isError = false,
             )
         }

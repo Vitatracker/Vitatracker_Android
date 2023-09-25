@@ -24,7 +24,7 @@ data class RemedyDomainModel(
     val dose: Int = 0,
     val measureUnit: Int = 0,
     val photo: String? = null,
-    val beforeFood: Int = 0,
+    val beforeFood: Int = 1,
     val notUsed: Boolean = false,
 
     val updateNetworkDate: Long = 0,

@@ -19,11 +19,12 @@ import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.models.user.UserRulesDomainModel
-import app.mybad.utils.changeTimeOfSystem
-import app.mybad.utils.changeTimeToSystemTimeInMinutes
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.timeInMinutes
-import app.mybad.utils.toSystemTimeInMinutes
+import app.mybad.utils.timeInMinutesSystemToUTC
+import app.mybad.utils.timeInMinutesUTCToSystem
+import app.mybad.utils.toDateTimeSystem
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -63,8 +64,8 @@ fun CourseWithParamsModel.mapToDomain() = CourseDisplayDomainModel(
     remedyId = remedyId,
     remedyIdn = remedyIdn,
 
-    startDate = startDate,
-    endDate = endDate,
+    startDate = startDate.toDateTimeSystem(),
+    endDate = endDate.toDateTimeSystem(),
     isInfinite = isInfinite,
 
     regime = regime,
@@ -73,7 +74,7 @@ fun CourseWithParamsModel.mapToDomain() = CourseDisplayDomainModel(
     patternUsages = patternUsages,
     comment = comment,
 
-    remindDate = remindDate,
+    remindDate = if (remindDate > 0) remindDate.toDateTimeSystem() else null,
     interval = interval,
 
     createdDate = createdDate,
@@ -109,9 +110,9 @@ fun CourseModel.mapToDomain() = CourseDomainModel(
     remedyId = remedyId,
     remedyIdn = remedyIdn,
 
-    startDate = startDate,
-    endDate = endDate,
-    remindDate = remindDate,
+    startDate = startDate.toDateTimeSystem(),
+    endDate = endDate.toDateTimeSystem(),
+    remindDate = if (remindDate > 0) remindDate.toDateTimeSystem() else null,
 
     interval = interval,
     regime = regime,
@@ -135,8 +136,8 @@ fun CourseDomainModel.mapToData() = CourseModel(
     id = id,
     idn = idn,
 
-    createdDate = createdDate,
-    updateDate = currentDateTimeInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
+    updateDate = currentDateTimeUTCInSecond(),
 
     userId = userId,
     userIdn = userIdn,
@@ -146,9 +147,9 @@ fun CourseDomainModel.mapToData() = CourseModel(
     remedyId = remedyId,
     remedyIdn = remedyIdn,
 
-    startDate = startDate,
-    endDate = endDate,
-    remindDate = remindDate,
+    startDate = startDate.systemToEpochSecond(), // UTC
+    endDate = endDate.systemToEpochSecond(),
+    remindDate = remindDate?.systemToEpochSecond() ?: 0,
 
     interval = interval,
     regime = regime,
@@ -166,8 +167,8 @@ fun RemedyModel.mapToDomain() = RemedyDomainModel(
     id = id,
     idn = idn,
 
-    createdDate = creationDate,
-    updatedDate = updateDate,
+    createdDate = createdDate,
+    updatedDate = updatedDate,
 
     userId = userId,
     userIdn = userIdn,
@@ -198,8 +199,8 @@ fun RemedyDomainModel.mapToData() = RemedyModel(
     id = id,
     idn = idn,
 
-    creationDate = createdDate,
-    updateDate = currentDateTimeInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
+    updatedDate = currentDateTimeUTCInSecond(),
 
     userId = userId,
     userIdn = userIdn,
@@ -230,14 +231,14 @@ fun UsageModel.mapToDomain() = UsageDomainModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    useTime = useTime,
-    factUseTime = factUseTime,
+    useTime = useTime.toDateTimeSystem(),
+    factUseTime = factUseTime?.toDateTimeSystem(),
     quantity = quantity,
 
     isDeleted = isDeleted,
     notUsed = notUsed,
 
-    createdDate = creationDate,
+    createdDate = createdDate,
     updatedDate = updatedDate,
 
     updateNetworkDate = updateNetworkDate,
@@ -253,15 +254,15 @@ fun UsageDomainModel.mapToData() = UsageModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    useTime = useTime,
-    factUseTime = factUseTime,
+    useTime = useTime.systemToEpochSecond(), // UTC
+    factUseTime = factUseTime?.systemToEpochSecond(), // UTC
     quantity = quantity,
 
     isDeleted = isDeleted,
     notUsed = notUsed,
 
-    creationDate = createdDate,
-    updatedDate = currentDateTimeInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
+    updatedDate = currentDateTimeUTCInSecond(),
 
     updateNetworkDate = updateNetworkDate,
 )
@@ -283,10 +284,10 @@ fun PatternUsageModel.mapToDomain() = PatternUsageDomainModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    createdDate = creationDate,
+    createdDate = createdDate,
     updatedDate = updatedDate,
 
-    timeInMinutes = timeInMinutes,
+    timeInMinutes = timeInMinutes.timeInMinutesUTCToSystem(), // с учетом часового пояса
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
@@ -302,10 +303,10 @@ fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    creationDate = if (createdDate > 0) createdDate else currentDateTimeInSecond(),
-    updatedDate = currentDateTimeInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
+    updatedDate = currentDateTimeUTCInSecond(),
 
-    timeInMinutes = timeInMinutes,
+    timeInMinutes = timeInMinutes.timeInMinutesSystemToUTC(), // UTC
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
@@ -318,23 +319,25 @@ fun List<PatternUsageModel>.mapToDomain() = this.map { it.mapToDomain() }
 fun List<PatternUsageDomainModel>.mapToData() = this.map { it.mapToData() }
 
 //----------------------------------------
-fun PatternUsageWithNameAndDateModel.mapToDomain(date: Long) = UsageDisplayDomainModel(
+fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomainModel(
     id = id,
     courseId = courseId,
     userId = userId,
 
     isPattern = true, // pattern
-    timeInMinutes = timeInMinutes,// UTC время в минутах, для сортировки и сопоставления с паттерном
-    useTime = date.changeTimeOfSystem(minutes = timeInMinutes),// для правильного отображения
-    sortedDate = date.changeTimeToSystemTimeInMinutes(timeInMinutes), // дата и время с учетом часового пояса, для правильной сортировки
+
+    timeInMinutes = data.toDateTimeSystem(timeInMinutes)
+        .timeInMinutes(),// UTC время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
+    useTime = data.toDateTimeSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
+
     quantity = quantity,
 
     courseIdn = courseIdn,
 
     remedyId = remedyId,
 
-    startDate = startDate,
-    endDate = endDate,
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
     isInfinite = isInfinite,
 
     regime = regime,
@@ -354,8 +357,8 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(date: Long) = UsageDisplayDomai
 )
 
 @JvmName("listPUNDmToDomain")
-fun List<PatternUsageWithNameAndDateModel>.mapToDomain(date: Long) =
-    this.map { it.mapToDomain(date) }
+fun List<PatternUsageWithNameAndDateModel>.mapToDomain(data: Long) =
+    this.map { it.mapToDomain(data) }
 
 fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     id = id,
@@ -363,19 +366,18 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     userId = userId,
 
     isPattern = false, // usage
-    sortedDate = useTime.toSystemTimeInMinutes(), // дата и время с учетом часового пояса, для правильной сортировки
-
-    timeInMinutes = useTime.timeInMinutes(),// UTC время в минутах, для сортировки и сопоставления с паттерном
+    // заполним во вью модели, но пока с учетом часового пояса
+    timeInMinutes = useTime.toDateTimeSystem().timeInMinutes(), // UTC, поменяем во вью модели
     quantity = quantity,
-    useTime = useTime, // какое-то конкретное UTC время приема препарата, которое формируется из паттерна и текущей даты
-    factUseTime = factUseTime,
+    useTime = useTime.toDateTimeSystem(), // какое-то конкретное UTC время приема препарата, которое формируется из паттерна и текущей даты, с учетом часового пояса
+    factUseTime = factUseTime?.toDateTimeSystem(),
 
     courseIdn = courseIdn,
 
     remedyId = remedyId,
 
-    startDate = startDate,
-    endDate = endDate,
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
     isInfinite = isInfinite,
 
     regime = regime,

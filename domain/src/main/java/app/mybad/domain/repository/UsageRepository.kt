@@ -42,7 +42,7 @@ interface UsageRepository {
     suspend fun insertUsage(usage: UsageDomainModel): Result<Long>
     suspend fun insertUsage(usages: List<UsageDomainModel>): Result<Unit>
     suspend fun updateUsage(usage: UsageDomainModel): Result<Long>
-    suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long): Result<Long>
+    suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long?): Result<Long>
 
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
 
@@ -55,7 +55,7 @@ interface UsageRepository {
         endTime: Long
     ): Result<Unit>
 
-    suspend fun markDeletionUsagesAfterByCourseId(courseId: Long, dateTime: Long): Result<Unit>
+    suspend fun markDeletionUsagesAfterByCourseId(courseId: Long): Result<Unit>
 
     suspend fun deleteUsagesById(usageId: Long): Result<Unit>
     suspend fun deleteUsagesByUserId(userId: Long): Result<Unit>

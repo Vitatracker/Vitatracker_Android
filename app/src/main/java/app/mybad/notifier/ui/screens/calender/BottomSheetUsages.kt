@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.calender
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -46,12 +47,13 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
-import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.toDayDisplay
-import app.mybad.utils.toTimeDisplay
+import app.mybad.utils.betweenSecondsSystem
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.displayDayAndMonthFull
+import app.mybad.utils.displayTime
 import kotlinx.datetime.LocalDateTime
-import kotlin.math.absoluteValue
 
+@SuppressLint("Recycle")
 @Composable
 fun DailyUsages(
     date: LocalDateTime,
@@ -84,8 +86,9 @@ fun DailyUsages(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
+                // день и месяц
                 Text(
-                    text = date.toDayDisplay(),
+                    text = date.displayDayAndMonthFull(),
                     style = Typography.titleLarge,
                 )
                 Icon(
@@ -142,11 +145,12 @@ private fun SingleUsageItem(
     onClick: () -> Unit
 ) {
     Log.d("VTTAG", "CalendarSelector::BottomSheetUsages:SingleUsageItem: start")
-    val isTaken = usage.factUseTime > 0L
-    val now = currentDateTimeInSecond()
-    val outlineColor = if (isTaken || now <= usage.useTime) MaterialTheme.colorScheme.primary
+    val isTaken = usage.factUseTime != null
+    val now = currentDateTimeSystem()
+    val useTime = usage.useTime
+    val outlineColor = if (isTaken || now <= useTime) MaterialTheme.colorScheme.primary
     else MaterialTheme.colorScheme.error
-    val alpha = if ((now - usage.useTime).absoluteValue > TIME_IS_UP) 0.6f else 1f
+    val alpha = if (now.betweenSecondsSystem(useTime) > TIME_IS_UP) 0.6f else 1f
 
     Row(
         verticalAlignment = Alignment.Top,
@@ -155,7 +159,7 @@ private fun SingleUsageItem(
             .alpha(alpha)
     ) {
         Text(
-            text = usage.useTime.toTimeDisplay(),
+            text = usage.useTime.displayTime(),
             modifier = Modifier.padding(end = 8.dp),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
         )
@@ -216,7 +220,7 @@ private fun SingleUsageItem(
                         )
                     }
                 }
-                when (now - usage.useTime) {
+                when (now.betweenSecondsSystem(useTime)) {
                     in Long.MIN_VALUE..-TIME_IS_UP -> {
                         Icon(
                             painter = painterResource(R.drawable.locked),

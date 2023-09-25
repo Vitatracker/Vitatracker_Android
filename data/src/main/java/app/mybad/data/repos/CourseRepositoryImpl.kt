@@ -5,7 +5,7 @@ import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.repository.CourseRepository
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -23,7 +23,7 @@ class CourseRepositoryImpl @Inject constructor(
         .flowOn(dispatcher)
 
     override fun getCourses(userId: Long) = db.getCourses(userId)
-        .map { it.mapToDomain() to currentDateTimeInSecond() }
+        .map { it.mapToDomain() to currentDateTimeUTCInSecond() }
         .flowOn(dispatcher)
 
     override suspend fun getCoursesByUserId(userId: Long) = withContext(dispatcher) {

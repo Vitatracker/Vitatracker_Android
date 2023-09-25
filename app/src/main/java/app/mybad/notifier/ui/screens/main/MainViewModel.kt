@@ -10,9 +10,17 @@ import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTime
-import app.mybad.utils.toDateTimeShortDisplay
-import app.mybad.utils.toEpochSecond
+import app.mybad.utils.betweenDaysSystem
+import app.mybad.utils.changeTime
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.displayDateTimeShort
+import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.isBetweenDay
+import app.mybad.utils.isEqualsDay
+import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.timeInMinutes
+import app.mybad.utils.toSystem
+import app.mybad.utils.toUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +28,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -46,22 +55,39 @@ class MainViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val patternsAndUsages = dateTime.flatMapLatest { date ->
-        Log.w("VTTAG", "MainViewModel::receivingCourses: pattern + usages date=$date")
+        Log.w("VTTAG", "MainViewModel::patternsAndUsages: pattern + usages date=$date")
+        val startDate = date.atStartOfDay().systemToEpochSecond()
+        val endDate = date.atEndOfDay().systemToEpochSecond()
         combine(
             getPatternUsagesWithNameAndDateBetweenUseCase(
-                startTime = date.atStartOfDay().toEpochSecond(),
-                endTime = date.atEndOfDay().toEpochSecond(),
-            ),
+                startTime = startDate,
+                endTime = endDate,
+            ).mapLatest { transformPatternUsages(date, it) },
             getUsagesWithNameAndDateBetweenUseCase(
-                startTime = date.atStartOfDay().toEpochSecond(),
-                endTime = date.atEndOfDay().toEpochSecond(),
+                startTime = startDate,
+                endTime = endDate,
             ),
         ) { p, u ->
+            // тут нужна подмена для useTime и timeInMinutes для pattern
 //            p.plus(u).toSortedMap()
             // для тестов, потом удалить
             p.plus(u).mapValues {
                 val pattern = it.value
-                pattern.copy(name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${pattern.useTime.toDateTimeShortDisplay()}")
+                val timeInMinutesUTC = pattern.timeInMinutes
+                val useTime = if (pattern.isPattern) date.toUTC().changeTime(pattern.timeInMinutes)
+                    .toSystem() else pattern.useTime // с учетом часового пояса
+                Log.w(
+                    "VTTAG",
+                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} timeInMinutesUTC=${timeInMinutesUTC.displayTimeInMinutes()} - ${
+                        useTime.timeInMinutes().displayTimeInMinutes()
+                    }"
+                )
+                pattern.copy(
+                    name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
+                    useTime = useTime,
+                    timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
+                )
+
             }.toSortedMap()
         }
     }
@@ -80,6 +106,15 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    private fun transformPatternUsages(
+        date: LocalDateTime,
+        patterns: List<UsageDisplayDomainModel>
+    ): Map<String, UsageDisplayDomainModel> = patterns.filter { pattern ->
+        date.isEqualsDay(pattern.startDate) ||
+            (date.isBetweenDay(pattern.startDate, pattern.endDate) &&
+                (pattern.regime == 0 || date.betweenDaysSystem(pattern.startDate) % (pattern.regime + 1) == 0L))
+    }.associateBy { it.toUsageKey() }
 
     private fun receivingCourses() {
         viewModelScope.launch {
@@ -110,11 +145,13 @@ class MainViewModel @Inject constructor(
     private fun setUsagesFactTime(usageKey: String) {
         viewModelScope.launch {
             viewState.value.patternsAndUsages[usageKey]?.let { usageDisplay ->
-                val dateTime = currentDateTime()
+                val dateTime = currentDateTimeSystem()
                 // тут отправка с проверкой на дублирование
                 setFactUseTimeOrInsertUsageUseCase(
                     usageDisplay = usageDisplay,
-                    currentDateTime = dateTime.toEpochSecond(),
+                    currentDateTime = dateTime, // local
+                    currentDateTimeUTC = dateTime.systemToEpochSecond(), // UTC
+                    useTimeUTC = usageDisplay.useTime.systemToEpochSecond(), // UTC
                 ).onFailure {
                     TODO("setUsagesFactTime: сделать обработку ошибок")
                 }

@@ -48,16 +48,16 @@ data class RemedyModel(
     @ColumnInfo(name = RemedyContract.Columns.MEASURE_UNIT)
     val measureUnit: Int = 0,
     @ColumnInfo(name = RemedyContract.Columns.BEFORE_FOOD)
-    val beforeFood: Int = 5,
+    val beforeFood: Int = 1,
     @ColumnInfo(name = RemedyContract.Columns.PHOTO)
     val photo: String? = null,
     @ColumnInfo(name = RemedyContract.Columns.NOT_USED)
     val notUsed: Boolean = false,
 
     @ColumnInfo(name = RemedyContract.Columns.CREATION_DATE)
-    val creationDate: Long = 0,
+    val createdDate: Long = 0,
     @ColumnInfo(name = RemedyContract.Columns.UPDATE_DATE)
-    val updateDate: Long = 0,
+    val updatedDate: Long = 0,
 
     @ColumnInfo(name = RemedyContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,

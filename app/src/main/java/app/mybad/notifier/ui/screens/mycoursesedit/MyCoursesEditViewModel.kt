@@ -19,10 +19,11 @@ import app.mybad.domain.usecases.usages.GetPatternUsagesByCourseIdUseCase
 import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
 import app.mybad.domain.usecases.usages.UpdatePatternUsagesByCourseIdUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.displayDateTime
 import app.mybad.utils.nextCourseIntervals
 import app.mybad.utils.nextCourseStart
-import app.mybad.utils.toDateTimeDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimePeriod
@@ -61,10 +62,10 @@ class MyCoursesEditViewModel @Inject constructor(
             when (event) {
                 is MyCoursesEditContract.Event.Delete -> {
                     //TODO("проверить было ли использование")
-                    deleteCourseFullUseCase(event.courseId, currentDateTimeInSecond())
+                    deleteCourseFullUseCase(event.courseId, currentDateTimeSystem())
                     //TODO("запустить воркер удаления курса на беке")
                     // синхронизировать
-                    AuthToken.requiredSynchronize(currentDateTimeInSecond())
+                    AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
@@ -86,7 +87,7 @@ class MyCoursesEditViewModel @Inject constructor(
                     updateRemedyAndCourse(remedy = event.remedy, course = event.course)
                     saveCourse()
                     // синхронизировать
-                    AuthToken.requiredSynchronize(currentDateTimeInSecond())
+                    AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
@@ -127,6 +128,7 @@ class MyCoursesEditViewModel @Inject constructor(
                             )
                         } ?: emptyList()
 
+                    // тут время в локальном часовом поясе
                     val (remindTime, interval, beforeDay) = course.endDate.nextCourseIntervals(
                         remindDate = course.remindDate,
                         interval = course.interval,
@@ -233,7 +235,7 @@ class MyCoursesEditViewModel @Inject constructor(
         }
         Log.w(
             "VTTAG",
-            "MyCoursesViewModel::updateReminder: endDay=${viewState.value.course.endDate.toDateTimeDisplay()} remindDate=${remindDate.toDateTimeDisplay()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=${viewState.value.course.interval}"
+            "MyCoursesViewModel::updateReminder: endDay=${viewState.value.course.endDate.displayDateTime()} remindDate=${remindDate?.displayDateTime()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=${viewState.value.course.interval}"
         )
     }
 
@@ -260,13 +262,13 @@ class MyCoursesEditViewModel @Inject constructor(
     }
 
     private suspend fun createNewCourse() {
-        val dateNew = currentDateTimeInSecond()
+        val dateNew = currentDateTimeUTCInSecond()
         // сравнить таблетку и создать новую если нужно
         val remedyId = getRemedyByIdUseCase(viewState.value.remedy.id).getOrNull()
             ?.takeIf { it != viewState.value.remedy }?.let {
                 val remedy = RemedyDomainModel(
                     id = 0,
-                    createdDate = dateNew,
+                    createdDate = 0,
                     userId = viewState.value.remedy.userId,
                     userIdn = viewState.value.remedy.userIdn,
                     name = viewState.value.remedy.name,
@@ -288,6 +290,7 @@ class MyCoursesEditViewModel @Inject constructor(
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new remedyId=$remedyId")
             0
         }
+        // TODO("не понятно какая тут дата старта курса?")
         val course = viewState.value.course.copy(
             id = 0,
 
@@ -298,8 +301,7 @@ class MyCoursesEditViewModel @Inject constructor(
             isFinished = false,
             notUsed = false,
 
-            createdDate = dateNew,
-            updatedDate = dateNew,
+            createdDate = 0,// запишется в мапере
 
             updateNetworkDate = 0,
         )
@@ -308,7 +310,7 @@ class MyCoursesEditViewModel @Inject constructor(
             "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
         )
         // закроем курс
-        closeCourseUseCase(courseId = viewState.value.course.id, dateTime = dateNew)
+        closeCourseUseCase(courseId = viewState.value.course.id, endDate = currentDateTimeSystem()) // с учетом часового пояса
         // создадим новый курс
         createCourseUseCase(course).onSuccess { courseId ->
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
@@ -343,7 +345,7 @@ class MyCoursesEditViewModel @Inject constructor(
             patterns = usagesPattern.map { pattern ->
                 PatternUsageDomainModel(
                     courseId = courseId,
-                    timeInMinutes = pattern.timeInMinutes,
+                    timeInMinutes = pattern.timeInMinutes, // тут время с учетом часового пояса
                     quantity = pattern.quantity,
                 )
             }

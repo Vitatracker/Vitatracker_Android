@@ -50,7 +50,7 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.iconEditing
 import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
-import app.mybad.utils.toDateDisplay
+import app.mybad.utils.displayDate
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -202,7 +202,7 @@ private fun CourseItem(
                         }
                     }
                     // иконка редактирования курса
-                    if (courseDisplay.remindDate > 0 || courseDisplay.interval == 0L) {
+                    if (courseDisplay.remindDate != null || courseDisplay.interval == 0L) {
                         ReUseIcon(
                             painterId = R.drawable.icon_pencil,
                             color = MaterialTheme.colorScheme.primary,
@@ -228,8 +228,8 @@ private fun CourseItem(
                 ) {
                     // дата старта и окончание курса
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        val start = courseDisplay.startDate.toDateDisplay()
-                        val end = courseDisplay.endDate.toDateDisplay()
+                        val start = courseDisplay.startDate.displayDate()
+                        val end = courseDisplay.endDate.displayDate()
                         Text(
                             text = start, fontSize = 12.sp, fontWeight = FontWeight(500),
                             color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -248,7 +248,7 @@ private fun CourseItem(
                         )
                     }
                     // отобразить старт нового курса через ...
-                    if (courseDisplay.remindDate <= 0 && courseDisplay.interval > 0) {
+                    if (courseDisplay.remindDate == null && courseDisplay.interval > 0) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(Modifier.size(16.dp))
                             Surface(

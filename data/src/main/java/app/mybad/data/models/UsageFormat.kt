@@ -2,18 +2,17 @@ package app.mybad.data.models
 
 import app.mybad.utils.MINUTES_IN_DAY
 import app.mybad.utils.changeTime
-import app.mybad.utils.changeTimeToSystemTimeInMinutes
-import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.currentTimeInMinutes
-import app.mybad.utils.timeInMinutesToDisplay
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.timeInMinutes
 
 data class UsageFormat(
-    val timeInMinutes: Int = -1, // UTC время в минутах
+    val timeInMinutes: Int = -1, // с учетом часового пояса
     val quantity: Float = 1f,
 ) {
 
     override fun toString(): String {
-        return timeInMinutes.timeInMinutesToDisplay() // UTC отобразиться с учетом часового пояса
+        return timeInMinutes.displayTimeInMinutes() // с учетом часового пояса
     }
 
     companion object {
@@ -27,11 +26,11 @@ data class UsageFormat(
 
         @JvmName("listUfToSort")
         private fun List<UsageFormat>.toSortedList(): List<UsageFormat> {
-            val date = currentDateTimeInSecond() // UTC
+            val date = currentDateTimeSystem() // с учетом часового пояса
             return this.toSortedSet(
                 comparator = { up1, up2 ->
-                    (date.changeTimeToSystemTimeInMinutes(up1.timeInMinutes) -
-                            date.changeTimeToSystemTimeInMinutes(up2.timeInMinutes))
+                    date.changeTime(up1.timeInMinutes)
+                        .compareTo(date.changeTime(up2.timeInMinutes))
                 }
             ).toList()
         }
@@ -62,9 +61,9 @@ data class UsageFormat(
         ): List<UsageFormat> {
             // проверить на максимум
             if (usagesPattern.size >= MAX_COUNT_USAGES) return usagesPattern
-            val date = currentDateTimeInSecond() // UTC
-            var time = currentTimeInMinutes() // в UTC
-            var isChange = false
+            val date = currentDateTimeSystem()
+            var time = date.timeInMinutes()
+            var isChange: Boolean
             do {
                 isChange = false
                 usagesPattern.find {

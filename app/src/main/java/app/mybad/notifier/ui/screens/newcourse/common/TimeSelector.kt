@@ -40,12 +40,11 @@ import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
+import app.mybad.utils.displayTimeInMinutes
 import app.mybad.utils.hour
+import app.mybad.utils.hourPlusMinute
 import app.mybad.utils.minute
-import app.mybad.utils.systemTimeInMinutes
-import app.mybad.utils.timeInMinutesToDisplay
-import app.mybad.utils.timeInMinutesToText
-import app.mybad.utils.toSystemTimeInMinutes
+import app.mybad.utils.timeInMinutesSystemToUTC
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -53,19 +52,17 @@ import kotlin.math.absoluteValue
 @Composable
 fun TimeSelector(
     modifier: Modifier = Modifier,
-    initTime: Int,
+    initTime: Int,// время в минутах с учетом часового пояса
     onSelect: (Int) -> Unit
 ) {
     val hours = listOf(21, 22, 23) + (0..23).toList() + listOf(0, 1, 2)
     val minutes = listOf(57, 58, 59) + (0..59).toList() + listOf(0, 1, 2)
     val correction = 3
 
-    val timeSystem =
-        initTime.toSystemTimeInMinutes() // преобразует UTC время в минутах во время с учетом часового пояса в минутах
-    val pagerStateHours =
-        rememberPagerState(initialPage = timeSystem.hour() + correction) { hours.size }
-    val pagerStateMinutes =
-        rememberPagerState(initialPage = timeSystem.minute() + correction) { minutes.size }
+    val pagerStateHours = rememberPagerState(initialPage = initTime.hour() + correction)
+    { hours.size }
+    val pagerStateMinutes = rememberPagerState(initialPage = initTime.minute() + correction)
+    { minutes.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,14 +97,11 @@ fun TimeSelector(
             .padding(16.dp),
             textId = R.string.settings_save,
             onClick = {
-                // тут время UTC в минутах
-                val newTime = systemTimeInMinutes(
-                    hour = hours[pagerStateHours.currentPage % hours.size],
-                    minute = minutes[pagerStateMinutes.currentPage % minutes.size],
-                )
+                val newTime = hours[pagerStateHours.currentPage % hours.size]
+                    .hourPlusMinute(minutes[pagerStateMinutes.currentPage % minutes.size])
                 Log.w(
                     "VTTAG",
-                    "TimeSelector::onSelect: date time=${newTime.timeInMinutesToText()} - ${newTime.timeInMinutesToDisplay()}"
+                    "TimeSelector::onSelect: date time=${newTime.displayTimeInMinutes()} - UTC=${newTime.timeInMinutesSystemToUTC().displayTimeInMinutes()}"
                 )
                 onSelect(newTime)
             }
@@ -127,7 +121,6 @@ private fun NumberPicker(
     correction: Int,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val pageFirst = correction
     val pageLast = items.lastIndex - correction
     var scrollFirstLast = items.size > correction
 
@@ -140,14 +133,14 @@ private fun NumberPicker(
         pageSize = PageSize.Fixed(pageSize), // размер элемента
     ) { index ->
         // прокрутка вперед на первый или прокрутка назад на последний
-        if (scrollFirstLast && (pagerState.settledPage < pageFirst || pagerState.settledPage > pageLast)) {
+        if (scrollFirstLast && (pagerState.settledPage < correction || pagerState.settledPage > pageLast)) {
             scrollFirstLast = false
             coroutineScope.launch {
                 pagerState.scrollToPage(
-                    if (pagerState.settledPage < pageFirst) {
-                        pagerState.settledPage + pageLast - pageFirst + 1
+                    if (pagerState.settledPage < correction) {
+                        pagerState.settledPage + pageLast - correction + 1
                     } else {
-                        pagerState.settledPage - pageLast + pageFirst - 1
+                        pagerState.settledPage - pageLast + correction - 1
                     }
                 )
                 scrollFirstLast = true

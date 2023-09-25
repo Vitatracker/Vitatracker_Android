@@ -22,5 +22,4 @@ data class UserDomainModel(
     val tokenRefreshDate: Long = 0,
 
     val updateNetworkDate: Long = 0,
-    val updateLocalDate: Long = 0,
 )

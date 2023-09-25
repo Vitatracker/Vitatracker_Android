@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import app.mybad.utils.changeDate
 import app.mybad.utils.dayShortDisplay
-import app.mybad.utils.isLeapYear
+import app.mybad.utils.getDaysOfMonth
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 
@@ -37,11 +37,10 @@ import kotlinx.datetime.LocalDateTime
 @Composable
 fun DaySelectorSlider(
     modifier: Modifier = Modifier,
-    date: LocalDateTime? = null,
+    date: LocalDateTime,
     onSelect: (LocalDateTime?) -> Unit = {}
 ) {
-    val pagerState = rememberPagerState(initialPage = date?.dayOfMonth ?: 0)
-    { date?.run { month.length(date.year.isLeapYear) } ?: 0 }
+    val pagerState = rememberPagerState(initialPage = date.dayOfMonth) { date.getDaysOfMonth() }
     val scope = rememberCoroutineScope()
     val padding =
         PaddingValues(horizontal = (LocalConfiguration.current.screenWidthDp / 2 + 20 + 8).dp)
@@ -57,8 +56,8 @@ fun DaySelectorSlider(
         pageSize = PageSize.Fixed(40.dp),
         key = null,
         pageContent = {
-            val itsDate = date?.changeDate(dayOfMonth = it + 1)
-            val isSelected = itsDate?.equals(date) ?: false
+            val itsDate = date.changeDate(dayOfMonth = it + 1)
+            val isSelected = itsDate == date
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 border = BorderStroke(
@@ -72,7 +71,7 @@ fun DaySelectorSlider(
                     .alpha(if (isSelected) 1f else 0.5f)
                     .clickable {
                         onSelect(itsDate)
-                        scope.launch { pagerState.animateScrollToPage(itsDate?.dayOfMonth ?: 0) }
+                        scope.launch { pagerState.animateScrollToPage(itsDate.dayOfMonth) }
                     }
             ) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -82,11 +81,11 @@ fun DaySelectorSlider(
                         modifier = Modifier.padding(4.dp)
                     ) {
                         Text(
-                            text = "${itsDate?.dayOfMonth}",
+                            text = "${itsDate.dayOfMonth}",
                             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                         )
                         Text(
-                            text = itsDate?.dayShortDisplay() ?: 0.dayShortDisplay(),
+                            text = itsDate.dayShortDisplay(),
                             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
                         )
                     }

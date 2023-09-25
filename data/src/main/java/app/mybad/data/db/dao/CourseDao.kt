@@ -9,7 +9,7 @@ import app.mybad.data.db.models.CourseContract
 import app.mybad.data.db.models.CourseModel
 import app.mybad.data.db.models.CourseWithParamsModel
 import app.mybad.data.db.models.RemedyContract
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -84,7 +84,7 @@ interface CourseDao {
             CourseContract.Columns.DELETED_DATE
         } = :date WHERE ${CourseContract.Columns.ID} = :courseId"
     )
-    suspend fun markDeletionCourseById(courseId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionCourseById(courseId: Long, date: Long = currentDateTimeUTCInSecond())
 
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер

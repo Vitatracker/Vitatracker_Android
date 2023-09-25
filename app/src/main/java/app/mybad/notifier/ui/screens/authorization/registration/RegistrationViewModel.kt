@@ -9,7 +9,7 @@ import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
-import app.mybad.utils.toLocalDateTime
+import app.mybad.utils.toDateTimeUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -92,7 +92,7 @@ class RegistrationViewModel @Inject constructor(
                 log(
                     "Ok: userId=$userId token=${result.token} date=${
                         result.tokenDate
-                    } exp=${result.tokenDate.toLocalDateTime()}"
+                    } exp=${result.tokenDate.toDateTimeUTC()}"
                 )
                 updateUserAuthTokenUseCase(
                     userId = userId,

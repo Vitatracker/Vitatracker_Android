@@ -47,11 +47,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.atEndOfDay
-import app.mybad.utils.atStartOfDay
-import app.mybad.utils.toDateFullDisplay
-import app.mybad.utils.toEpochSecond
-import app.mybad.utils.toLocalDateTime
+import app.mybad.utils.displayDateFull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -66,7 +62,7 @@ fun AddMedCourseDetailsScreen(
     Log.w("VTTAG", "AddMedCourseDetailsScreen:: start")
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         // обновим начальную дату курса и пределы дат
-        sendEvent(CreateCourseContract.Event.UpdateCourseStartDateAndLimit)
+        sendEvent(CreateCourseContract.Event.UpdateCourseStartDate)
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
@@ -76,8 +72,6 @@ fun AddMedCourseDetailsScreen(
         }
     }
     val regimeList = stringArrayResource(R.array.regime)
-    val startDate = state.course.startDate.toLocalDateTime().atStartOfDay()
-    val endDate = state.course.endDate.toLocalDateTime().atEndOfDay()
     var selectedInput by remember { mutableStateOf<CourseSelectInput?>(null) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -128,14 +122,14 @@ fun AddMedCourseDetailsScreen(
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.add_course_start_time),
-                            value = startDate.toDateFullDisplay(),
+                            value = state.course.startDate.displayDateFull(),
                             onClick = { selectedInput = CourseSelectInput.SELECT_START_DATE }
                         )
                     },
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.add_course_end_time),
-                            value = endDate.toDateFullDisplay(),
+                            value = state.course.endDate.displayDateFull(),
                             onClick = { selectedInput = CourseSelectInput.SELECT_END_DATE }
                         )
                     },
@@ -199,15 +193,15 @@ fun AddMedCourseDetailsScreen(
     selectedInput?.let { select ->
         CalendarAndRegimeSelectorDialog(
             selectedInput = select,
-            startDate = startDate,
-            endDate = endDate,
+            startDate = state.course.startDate,
+            endDate = state.course.endDate,
             regime = state.course.regime,
             regimeList = regimeList.toList(),
             onDismissRequest = { selectedInput = null },
             onDateSelected = {
                 val newCourse = state.course.copy(
-                    startDate = it.first.toEpochSecond(),
-                    endDate = it.second.toEpochSecond(),
+                    startDate = it.first,
+                    endDate = it.second,
                 )
                 sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
             },

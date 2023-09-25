@@ -38,7 +38,7 @@ data class UsageModel(
     @ColumnInfo(name = UsageContract.Columns.USE_TIME)
     val useTime: Long, // тут полная дата со временем, но нужно только время
     @ColumnInfo(name = UsageContract.Columns.FACT_USE_TIME)
-    val factUseTime: Long = -1, // дата фактического приема
+    val factUseTime: Long? = null, // дата фактического приема
     @ColumnInfo(name = UsageContract.Columns.QUANTITY)
     val quantity: Float = 1f, // количество вещества за раз
 
@@ -48,7 +48,7 @@ data class UsageModel(
     val notUsed: Boolean = false,
 
     @ColumnInfo(name = UsageContract.Columns.CREATION_DATE)
-    val creationDate: Long = 0,
+    val createdDate: Long = 0,
     @ColumnInfo(name = UsageContract.Columns.UPDATED_DATE)
     val updatedDate: Long = 0,
 

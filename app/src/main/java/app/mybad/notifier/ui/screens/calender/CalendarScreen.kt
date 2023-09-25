@@ -41,8 +41,9 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
-import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.displayDateTime
 import app.mybad.utils.isEqualsMonth
 import app.mybad.utils.isNotEqualsMonth
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,7 @@ fun CalendarScreen(
     navigation: (navigationEffect: CalendarContract.Effect.Navigation) -> Unit,
 ) {
 
-    val currentDate = dateUpdate.collectAsStateWithLifecycle(initialValue = currentDateTime())
+    val currentDate = dateUpdate.collectAsStateWithLifecycle(initialValue = currentDateTimeSystem())
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow.collect { effect ->
@@ -82,7 +83,7 @@ fun CalendarScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Log.w("VTTAG", "CalendarViewModel::MonthSelector: date=${state.date}")
+            Log.w("VTTAG", "CalendarViewModel::MonthSelector: date=${state.date.displayDateTime()}")
             MonthSelector(
                 date = state.date,
                 onSwitch = { sendEvent(CalendarContract.Event.ChangeMonth(date = it)) }

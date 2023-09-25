@@ -7,9 +7,10 @@ import app.mybad.domain.usecases.courses.GetCoursesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.plusDay
-import app.mybad.utils.secondsToDay
+import app.mybad.utils.betweenDaysSystem
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.plusDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +40,7 @@ class MyCoursesViewModel @Inject constructor(
         }
     }
 
-    private val currentDateTime = MutableStateFlow(currentDateTimeInSecond())
+    private val currentDateTime = MutableStateFlow(currentDateTimeUTCInSecond())
 
     init {
         Log.w("VTTAG", "MyCoursesViewModel: init")
@@ -70,23 +71,23 @@ class MyCoursesViewModel @Inject constructor(
     }
 
     private fun addRemindCourse(courses: List<CourseDisplayDomainModel>): List<CourseDisplayDomainModel> {
-        val currentDate = currentDateTimeInSecond()
+        val currentDate = currentDateTimeSystem()
         val newCourses = mutableListOf<CourseDisplayDomainModel>()
         courses.forEach { newCourse ->
-            if (newCourse.remindDate > 0 && newCourse.interval > 0) {
+            if (newCourse.remindDate != null && newCourse.interval > 0) {
 
-                val startDate = newCourse.endDate.plusDay(newCourse.interval).atStartOfDay()
+                val startDate = newCourse.endDate.plusDays(newCourse.interval).atStartOfDay()
                 if (startDate > currentDate) {
-                    val endDate = startDate.plusDay(
-                        (newCourse.endDate.atStartOfDay() - newCourse.startDate).secondsToDay()
+                    val endDate = startDate.plusDays(
+                        newCourse.endDate.atStartOfDay().betweenDaysSystem(newCourse.startDate)
                     ).atEndOfDay()
                     newCourses.add(
                         newCourse.copy(
                             idn = 0,
                             startDate = startDate,
                             endDate = endDate,
-                            remindDate = 0,
-                            interval = (startDate - currentDate.atStartOfDay()).secondsToDay(), // старт курса через ... дней
+                            remindDate = null,
+                            interval = startDate.betweenDaysSystem(currentDate.atEndOfDay()), // старт курса через ... дней
                         )
                     )
                 }

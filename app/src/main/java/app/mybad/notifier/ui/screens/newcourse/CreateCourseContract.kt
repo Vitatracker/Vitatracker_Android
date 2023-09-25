@@ -23,7 +23,7 @@ class CreateCourseContract {
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
         object CourseIntervalEntered : Event
-        object UpdateCourseStartDateAndLimit : Event
+        object UpdateCourseStartDate : Event
         object Drop : Event
         object Finish : Event
         object ActionBack : Event
@@ -41,6 +41,7 @@ class CreateCourseContract {
 
         val isError: Boolean = false,
         val courseIntervalEntered: Boolean = false,
+        val updateCourseStartDate: Boolean = false,
         val nextAllowed: Boolean = false,
     ) : ViewState
 

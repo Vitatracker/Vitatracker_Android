@@ -145,7 +145,7 @@ class UsageRepositoryImpl @Inject constructor(
 
     override suspend fun updateUsage(usage: UsageDomainModel) = insertUsage(usage)
 
-    override suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long) =
+    override suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long?) =
         withContext(dispatcher) {
             runCatching {
                 db.setFactUseTimeUsage(usageId = usageId, factUseTime = factUseTime)
@@ -166,10 +166,10 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun markDeletionUsagesAfterByCourseId(courseId: Long, dateTime: Long) =
+    override suspend fun markDeletionUsagesAfterByCourseId(courseId: Long) =
         withContext(dispatcher) {
             runCatching {
-                db.markDeletionUsagesAfterByCourseId(courseId = courseId, dateTime = dateTime)
+                db.markDeletionUsagesAfterByCourseId(courseId = courseId)
             }
         }
 

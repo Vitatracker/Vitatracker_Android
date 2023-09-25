@@ -8,21 +8,23 @@ import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.DAYS_A_WEEK
-import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
+import app.mybad.utils.betweenDaysSystem
+import app.mybad.utils.changeTimeOfUTC_
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.displayDateTime
+import app.mybad.utils.displayDateTimeShort
+import app.mybad.utils.displayDateTimeUTC
 import app.mybad.utils.firstDayOfMonth
-import app.mybad.utils.changeTimeOfSystem
-import app.mybad.utils.currentDateTime
-import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.initWeekAndDayOfMonth
+import app.mybad.utils.isBetweenDay
+import app.mybad.utils.isEqualsDay
 import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
-import app.mybad.utils.toDateDisplay
-import app.mybad.utils.toDateTimeDisplay
-import app.mybad.utils.toDateTimeShortDisplay
-import app.mybad.utils.toEpochSecond
+import app.mybad.utils.repeatWeekAndDayOfMonth
+import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.timeInMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,17 +67,16 @@ class CalendarViewModel @Inject constructor(
     var dateUpdate = dateMonth.flatMapLatest { date ->
         // пересчитываем и перезагружаем значениея для каждого месяца,
         // дата меняется только при изменении месяца
-        val startOfMonth = date.firstDayOfMonth()
-        // определим начало недели для отображения 6 недель
-        val startDayOfWeek = startOfMonth.minusDays(startOfMonth.dayOfWeek.ordinal)
-        val dateMin = startDayOfWeek.atStartOfDay().toEpochSecond()
+        val firstDayWeekOfMonth = date.minusDays(date.dayOfWeek.ordinal)
+        // определим начало недели для отображения 6 недель, время с учетом часового пояса, т.е 00:00 и 23:59
+        val dateMin = firstDayWeekOfMonth.atStartOfDay().systemToEpochSecond()
         // определим последний день 6 недель
-        val dateMax = startDayOfWeek.plusDays(WEEKS_PER_MONTH * DAYS_A_WEEK - 1)
-            .atEndOfDay().toEpochSecond()
+        val dateMax = firstDayWeekOfMonth.plusDays(WEEKS_PER_MONTH * DAYS_A_WEEK - 1)
+            .atEndOfDay().systemToEpochSecond()
 
         Log.w(
             "VTTAG",
-            "CalendarViewModel::changeDateForMonth: date=$date start=${dateMin.toDateDisplay()} end=${dateMax.toDateDisplay()}"
+            "CalendarViewModel::changeDateForMonth: date=$date start=${dateMin.displayDateTimeUTC()} end=${dateMax.displayDateTimeUTC()}" // UTC
         )
 
         combine(
@@ -102,7 +103,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun changeDateForMonth(date: LocalDateTime) {
         viewModelScope.launch {
-            dateMonth.value = date
+            dateMonth.value = date.firstDayOfMonth()
         }
     }
 
@@ -111,21 +112,18 @@ class CalendarViewModel @Inject constructor(
             "VTTAG",
             "CalendarViewModel::calculateByWeekAndSetState: in"
         )
-        // начало месяца и от этого дня берется неделя и первый день недели
-        val usagesWeeks: Array<Array<List<UsageDisplayDomainModel>>> = Array(WEEKS_PER_MONTH) {
-            Array(DAYS_A_WEEK) { emptyList() }
+        date.repeatWeekAndDayOfMonth { week, day, dateTime ->
+            viewState.value.datesWeeks[week][day] = dateTime
+            viewState.value.usagesWeeks[week][day] = getUsagesOnDate(dateTime)
         }
-        val datesWeeks = initWeekAndDayOfMonth(date) { week, day, dateTime ->
-                usagesWeeks[week][day] = getUsagesOnDate(dateTime)
-            }
         // текущаая дата для отображения на календаре и обновление данных
-        val dateUpdate = currentDateTime()
+        val dateUpdate = currentDateTimeSystem()
         setState {
             copy(
                 date = date,
                 updateDateWeek = dateUpdate,// для изменения стейта, datesWeeks и usagesWeeks, не меняют стейт
-                datesWeeks = datesWeeks,
-                usagesWeeks = usagesWeeks,
+                datesWeeks = viewState.value.datesWeeks,
+                usagesWeeks = viewState.value.usagesWeeks,
             )
         }
         return dateUpdate
@@ -135,40 +133,39 @@ class CalendarViewModel @Inject constructor(
         val pattens = patternsMonth.filter { it.value.checkDate(date) }
         val usages = usagesMonth.filter { it.value.checkDate(date) }
         val pattensAndUsages = pattens.plus(usages).values.map {
-/*
             // рабочий вариант
-            if (it.isPattern) {
-                // формируем на основе паттерна и даты для выборки - usage.useTime
-                it.copy(useTime = date.changeTimeOfSystem(minutes =  it.timeInMinutes))
-            } else it
-*/
+            /*
+                        if (it.isPattern) {
+            val time = date.changeTime(minutesUTC = it.timeInMinutes)
+                            // формируем на основе паттерна и даты для выборки - usage.useTime
+                            it.copy(
+                            useTime = date.changeTime(minutesUTC = it.timeInMinutes),
+                            timeInMinutes = time.timeInMinutes()
+                            )
+                        } else it
+            */
             // для теста, потом удалить
+            val useTime =
+                if (it.isPattern) date.changeTimeOfUTC_(minutesUTC = it.timeInMinutes) else it.useTime
             it.copy(
-                name = "${it.name}|${if (it.isPattern) "P" else "U"}|${
-                    date.toEpochSecond().changeTimeOfSystem(minutes = it.timeInMinutes)
-                        .toDateTimeShortDisplay()
-                }",
-                // формируем на основе паттерна и даты для выборки или остается прежняя
-                useTime = if (it.isPattern) date.changeTimeOfSystem(minutes = it.timeInMinutes) else it.useTime,
+                name = "${it.name}|${if (it.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
+                useTime = useTime,
+                timeInMinutes = useTime.timeInMinutes()
             )
         }
         Log.w(
             "VTTAG",
-            "CalendarViewModel::changeDateForMonth: date=${date.toDateTimeDisplay()} ${pattensAndUsages.size}=[pattens=${pattens.size}, usages=${usages.size}]"
+            "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, usages=${usages.size}]"
         )
         return pattensAndUsages
     }
 
     private fun UsageDisplayDomainModel.checkDate(date: LocalDateTime): Boolean {
         return if (this.isPattern) {
-            val time = date.toEpochSecond()
-            time in this.startDate..this.startDate.atEndOfDay() ||
-                ((this.regime == 0 || ((time - this.startDate) / SECONDS_IN_DAY) % (this.regime + 1) == 0L) &&
-                    time in this.startDate..this.endDate)
+            date.isEqualsDay(startDate) || (date.isBetweenDay(this.startDate, this.endDate) &&
+                (this.regime == 0 || date.betweenDaysSystem(this.startDate) % (this.regime + 1) == 0L))
         } else {
-            val start = date.atStartOfDay().toEpochSecond()
-            val end = date.atEndOfDay().toEpochSecond()
-            this.useTime in start..end
+            this.useTime.isEqualsDay(date)
         }
     }
 
@@ -201,7 +198,7 @@ class CalendarViewModel @Inject constructor(
                     if (date == viewState.value.datesWeeks[week][day]) {
                         Log.w(
                             "VTTAG",
-                            "CalendarViewModel::changeDateForDaily: date=${date.toDateTimeDisplay()} selectElement=$week, $day"
+                            "CalendarViewModel::changeDateForDaily: date=${date.displayDateTime()} selectElement=$week, $day"
                         )
                         selectElement(week to day)
                         return@launch
@@ -218,10 +215,13 @@ class CalendarViewModel @Inject constructor(
                 "VTTAG",
                 "CalendarViewModel::setUsagesFactTime: pattern or usage id=${usage.id}: ${usage.factUseTime}"
             )
+            val dateTime = currentDateTimeSystem()
             // тут отправка с проверкой на дублирование
             setFactUseTimeOrInsertUsageUseCase(
                 usageDisplay = usage,
-                currentDateTime = currentDateTimeInSecond(),
+                currentDateTime = dateTime, // local
+                currentDateTimeUTC = dateTime.systemToEpochSecond(), // UTC
+                useTimeUTC = usage.useTime.systemToEpochSecond(), // UTC
             ).onFailure {
                 TODO("setUsagesFactTime: сделать обработку ошибок")
             }

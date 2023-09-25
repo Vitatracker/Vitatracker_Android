@@ -10,7 +10,7 @@ import app.mybad.data.db.models.PatternUsageContract
 import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyContract
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -227,7 +227,7 @@ interface PatternUsageDao {
             PatternUsageContract.Columns.ID
         } = :id"
     )
-    suspend fun markDeletionPatternUsage(id: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionPatternUsage(id: Long, date: Long = currentDateTimeUTCInSecond())
 
     @Query(
         "UPDATE ${PatternUsageContract.TABLE_NAME} SET ${
@@ -238,7 +238,7 @@ interface PatternUsageDao {
     )
     suspend fun markDeletionPatternUsagesByCourseId(
         courseId: Long,
-        date: Long = currentDateTimeInSecond()
+        date: Long = currentDateTimeUTCInSecond()
     )
 
     //--------------------------------------------------

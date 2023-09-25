@@ -44,7 +44,7 @@ data class PatternUsageModel(
     val finished: Boolean = false,
 
     @ColumnInfo(name = PatternUsageContract.Columns.CREATION_DATE)
-    val creationDate: Long = 0,
+    val createdDate: Long = 0,
     @ColumnInfo(name = PatternUsageContract.Columns.UPDATED_DATE)
     val updatedDate: Long = 0,
 

@@ -16,18 +16,20 @@ import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
 import app.mybad.utils.MILES_SECONDS
-import app.mybad.utils.currentDateTimeInSecond
-import app.mybad.utils.toDateTimeIsoDisplay
-import app.mybad.utils.toEpochSecond
-import app.mybad.utils.toLocalDateTime
+import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.systemToInstant
+import app.mybad.utils.toDateTimeIso
+import app.mybad.utils.toDateTimeSystem
+import app.mybad.utils.toDateTimeUTCInSecond
 
 fun UserDomainModel.mapToNet() = UserNetworkModel(
     id = idn,
 
     avatar = avatar,
 
-    createdDate = createdDate.toDateTimeIsoDisplay(),
-    updatedDate = updatedDate.toDateTimeIsoDisplay(),
+    createdDate = createdDate.toDateTimeIso(),
+    updatedDate = updatedDate.toDateTimeIso(),
 
     name = name,
     email = email,
@@ -42,8 +44,8 @@ fun UserNetworkModel.mapToDomain(userIdLoc: Long = 0) = UserDomainModel(
 
     avatar = avatar ?: "",
 
-    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
-    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
+    createdDate = createdDate.toDateTimeUTCInSecond(),
+    updatedDate = updatedDate.toDateTimeUTCInSecond(),
 
     name = name ?: "",
     email = email ?: "",
@@ -52,7 +54,7 @@ fun UserNetworkModel.mapToDomain(userIdLoc: Long = 0) = UserDomainModel(
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeInSecond(),
+    updateNetworkDate = currentDateTimeUTCInSecond(),
 )
 
 fun CourseNetworkModel.mapToDomain(
@@ -62,8 +64,8 @@ fun CourseNetworkModel.mapToDomain(
     id = courseIdLoc,
     idn = id,
 
-    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
-    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
+    createdDate = createdDate.toDateTimeUTCInSecond(),
+    updatedDate = updatedDate.toDateTimeUTCInSecond(),
 
     userId = AuthToken.userId,
     userIdn = userId ?: "",
@@ -73,10 +75,10 @@ fun CourseNetworkModel.mapToDomain(
     remedyId = remedyIdLoc,
     remedyIdn = remedyId,
 
-    startDate = if (startDate > 0) startDate / MILES_SECONDS else startDate,
-    endDate = if (endDate > 0) endDate / MILES_SECONDS else endDate,
+    startDate = (startDate / MILES_SECONDS).toDateTimeSystem(),
+    endDate = (endDate / MILES_SECONDS).toDateTimeSystem(),
 
-    remindDate = if (remindDate > 0) remindDate / MILES_SECONDS else remindDate,
+    remindDate = if (remindDate > 0) (remindDate / MILES_SECONDS).toDateTimeSystem() else null,
     interval = interval,
 
     regime = regime,
@@ -87,14 +89,14 @@ fun CourseNetworkModel.mapToDomain(
 
     patternUsages = patternUsages ?: "",
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeInSecond(),
+    updateNetworkDate = currentDateTimeUTCInSecond(),
 )
 
 fun CourseDomainModel.mapToNet() = CourseNetworkModel(
     id = idn,
 
-    createdDate = createdDate.toDateTimeIsoDisplay(),
-    updatedDate = updatedDate.toDateTimeIsoDisplay(),
+    createdDate = createdDate.toDateTimeIso(),
+    updatedDate = updatedDate.toDateTimeIso(),
 
     userId = userIdn,
 
@@ -102,9 +104,9 @@ fun CourseDomainModel.mapToNet() = CourseNetworkModel(
 
     remedyId = remedyIdn,
 
-    startDate = startDate * MILES_SECONDS,
-    endDate = endDate * MILES_SECONDS,
-    remindDate = remindDate * MILES_SECONDS,
+    startDate = startDate.systemToInstant().toEpochMilliseconds(),
+    endDate = endDate.systemToInstant().toEpochMilliseconds(),
+    remindDate = remindDate?.systemToInstant()?.toEpochMilliseconds() ?: 0,
 
     interval = interval,
     regime = regime,
@@ -124,8 +126,8 @@ fun RemedyNetworkModel.mapToDomain(remedyIdLoc: Long = 0) = RemedyDomainModel(
     id = remedyIdLoc,
     idn = id,
 
-    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
-    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
+    createdDate = createdDate.toDateTimeUTCInSecond(),
+    updatedDate = updatedDate.toDateTimeUTCInSecond(),
 
     userId = AuthToken.userId,
     userIdn = userId ?: "",
@@ -143,14 +145,14 @@ fun RemedyNetworkModel.mapToDomain(remedyIdLoc: Long = 0) = RemedyDomainModel(
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeInSecond(),
+    updateNetworkDate = currentDateTimeUTCInSecond(),
 )
 
 fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
     id = idn,
 
-    createdDate = createdDate.toDateTimeIsoDisplay(),
-    updatedDate = updatedDate.toDateTimeIsoDisplay(),
+    createdDate = createdDate.toDateTimeIso(),
+    updatedDate = updatedDate.toDateTimeIso(),
 
     userId = userIdn,
 
@@ -183,18 +185,18 @@ fun UsageNetworkModel.mapToDomain(
     courseId = courseIdLoc,
     courseIdn = courseId ?: 0,
 
-    createdDate = createdDate.toLocalDateTime().toEpochSecond(),
-    updatedDate = updatedDate.toLocalDateTime().toEpochSecond(),
+    createdDate = createdDate.toDateTimeUTCInSecond(),
+    updatedDate = updatedDate.toDateTimeUTCInSecond(),
 
-    factUseTime = factUseTime,
-    useTime = useTime,
+    factUseTime = if (factUseTime > 0) factUseTime.toDateTimeSystem() else null,
+    useTime = useTime.toDateTimeSystem(),
 
     quantity = quantity,
 
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер
-    updateNetworkDate = currentDateTimeInSecond(),
+    updateNetworkDate = currentDateTimeUTCInSecond(),
 )
 
 fun UsageDomainModel.mapToNet() = UsageNetworkModel(
@@ -204,11 +206,11 @@ fun UsageDomainModel.mapToNet() = UsageNetworkModel(
 
     courseId = courseIdn,
 
-    createdDate = createdDate.toDateTimeIsoDisplay(),
-    updatedDate = updatedDate.toDateTimeIsoDisplay(),
+    createdDate = createdDate.toDateTimeIso(),
+    updatedDate = updatedDate.toDateTimeIso(),
 
-    factUseTime = factUseTime,
-    useTime = useTime,
+    factUseTime = factUseTime?.systemToEpochSecond() ?: -1,
+    useTime = useTime.systemToEpochSecond(),
 
     quantity = quantity,
 
@@ -236,8 +238,8 @@ fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
 fun UserSettingsDomainModel.mapToNet() = UserNetworkModel(
     id = "",
     avatar = null,
-    createdDate = createdDate.toDateTimeIsoDisplay(),
-    updatedDate = updatedDate.toDateTimeIsoDisplay(),
+    createdDate = createdDate.toDateTimeIso(),
+    updatedDate = updatedDate.toDateTimeIso(),
     email = null,
     name = null,
     notUsed = false,

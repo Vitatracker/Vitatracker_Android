@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import app.mybad.data.db.models.RemedyContract
 import app.mybad.data.db.models.RemedyModel
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -50,7 +50,7 @@ interface RemedyDao {
             RemedyContract.Columns.DELETED_DATE
         } = :date WHERE ${RemedyContract.Columns.ID} = :remedyId"
     )
-    suspend fun markDeletionRemedyById(remedyId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionRemedyById(remedyId: Long, date: Long = currentDateTimeUTCInSecond())
 
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер

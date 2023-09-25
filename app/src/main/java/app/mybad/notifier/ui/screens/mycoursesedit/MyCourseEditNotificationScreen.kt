@@ -44,7 +44,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelectorDialog
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
-import app.mybad.utils.timeInMinutesToDisplay
+import app.mybad.utils.displayTimeInMinutes
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -169,7 +169,7 @@ fun MyCourseEditNotificationScreen(
                     {
                         ParameterIndicator(
                             name = stringResource(R.string.add_next_course_remind_time),
-                            value = remindTime.timeInMinutesToDisplay(),
+                            value = remindTime.displayTimeInMinutes(),
                             onClick = { selectedInput = 3 }
                         )
                     },

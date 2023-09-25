@@ -17,7 +17,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,7 +46,7 @@ class SynchronizationCourseWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result = withContext(dispatcher) {
         log("doWork: Start")
-        synchronizationCourseUseCase(currentDateTimeInSecond()) { info ->
+        synchronizationCourseUseCase(currentDateTimeUTCInSecond()) { info ->
             setInfo(info)
         }.onFailure {
             log("doWork: Error", it)

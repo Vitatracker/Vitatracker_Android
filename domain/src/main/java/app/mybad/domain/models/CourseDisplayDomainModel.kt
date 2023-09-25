@@ -1,5 +1,8 @@
 package app.mybad.domain.models
 
+import app.mybad.utils.notNullDateTime
+import kotlinx.datetime.LocalDateTime
+
 data class CourseDisplayDomainModel(
     val id: Long = 0,
     var idn: Long = 0,
@@ -10,8 +13,8 @@ data class CourseDisplayDomainModel(
     val remedyId: Long = -1,
     val remedyIdn: Long = 0,
 
-    val startDate: Long = 0,
-    val endDate: Long = 0,
+    val startDate: LocalDateTime = notNullDateTime,
+    val endDate: LocalDateTime = notNullDateTime,
 
     val regime: Int = 0,
     val isFinished: Boolean = false,
@@ -22,7 +25,7 @@ data class CourseDisplayDomainModel(
 
     val comment: String = "",
 
-    val remindDate: Long = 0,
+    val remindDate: LocalDateTime? = null,
     val interval: Long = 0,
 
     val createdDate: Long = 0,

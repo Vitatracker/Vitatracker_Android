@@ -52,10 +52,7 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.atEndOfDaySystemToUTC
-import app.mybad.utils.atStartOfDaySystemToUTC
-import app.mybad.utils.toDateFullDisplay
-import app.mybad.utils.toEpochSecond
+import app.mybad.utils.displayDateFull
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -83,9 +80,6 @@ fun MyCourseEditScreen(
     var remedyInternal by remember { mutableStateOf(state.remedy) }
     var courseInternal by remember { mutableStateOf(state.course) }
 
-    var startDate by remember { mutableStateOf(courseInternal.startDate.atStartOfDaySystemToUTC()) }
-    var endDate by remember { mutableStateOf(courseInternal.endDate.atEndOfDaySystemToUTC()) }
-
     var selectedInput: CourseSelectInput? by remember { mutableStateOf(null) }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
@@ -101,14 +95,9 @@ fun MyCourseEditScreen(
         courseInternal = state.course
     }
 
-    LaunchedEffect(courseInternal) {
-        startDate = courseInternal.startDate.atStartOfDaySystemToUTC()
-        endDate = courseInternal.endDate.atEndOfDaySystemToUTC()
-    }
-
     Log.w(
         "VTTAG",
-        "CourseInfoScreen::EditCourse: id=${state.remedy.id} remedy=${remedyInternal.name} courseId=${
+        "MyCourseEditScreen::Init: id=${remedyInternal.id} remedy=${remedyInternal.name} courseId=${
             courseInternal.id
         } usagesPattern=${state.usagesPatternEdit.size}"
     )
@@ -180,7 +169,7 @@ fun MyCourseEditScreen(
                         var exp by remember { mutableStateOf(false) }
                         ParameterIndicator(
                             name = form,
-                            value = types[state.remedy.type],
+                            value = types[remedyInternal.type],
                             onClick = { exp = true }
                         )
                         DropdownMenu(
@@ -276,14 +265,14 @@ fun MyCourseEditScreen(
                     {
                         ParameterIndicator(
                             name = startLabel,
-                            value = startDate.toDateFullDisplay(),
+                            value = courseInternal.startDate.displayDateFull(),
                             onClick = { selectedInput = CourseSelectInput.SELECT_START_DATE }
                         )
                     },
                     {
                         ParameterIndicator(
                             name = endLabel,
-                            value = endDate.toDateFullDisplay(),
+                            value = courseInternal.endDate.displayDateFull(),
                             onClick = { selectedInput = CourseSelectInput.SELECT_END_DATE }
                         )
                     },
@@ -336,15 +325,15 @@ fun MyCourseEditScreen(
         selectedInput?.let { select ->
             CalendarAndRegimeSelectorDialog(
                 selectedInput = select,
-                startDate = startDate,
-                endDate = endDate,
-                regime = state.course.regime,
+                startDate = courseInternal.startDate,
+                endDate = courseInternal.endDate,
+                regime = courseInternal.regime,
                 regimeList = regimeList.toList(),
                 onDismissRequest = { selectedInput = null },
                 onDateSelected = {
                     courseInternal = courseInternal.copy(
-                        startDate = it.first.toEpochSecond(),
-                        endDate = it.second.toEpochSecond(),
+                        startDate = it.first,
+                        endDate = it.second,
                     )
                 },
                 onRegimeSelected = {

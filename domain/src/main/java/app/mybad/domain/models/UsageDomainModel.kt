@@ -1,5 +1,8 @@
 package app.mybad.domain.models
 
+import app.mybad.utils.notNullDateTime
+import kotlinx.datetime.LocalDateTime
+
 data class UsageDomainModel(
     val id: Long = 0,
     val idn: Long = 0,
@@ -13,8 +16,8 @@ data class UsageDomainModel(
     val createdDate: Long = 0,
     val updatedDate: Long = 0,
 
-    val factUseTime: Long = -1,
-    val useTime: Long = 0, // тут полная дата со временем
+    val factUseTime: LocalDateTime? = null,
+    val useTime: LocalDateTime = notNullDateTime, // тут полная дата со временем
     val quantity: Float = 1f,
 
     val isDeleted: Boolean = false,

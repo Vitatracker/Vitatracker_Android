@@ -43,16 +43,19 @@ import app.mybad.utils.LIMIT_START_MIN
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTime
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.displayDateTime
+import app.mybad.utils.displayDay
 import app.mybad.utils.dayShortDisplay
 import app.mybad.utils.firstDayOfMonth
 import app.mybad.utils.initWeekAndDayOfMonth
+import app.mybad.utils.isBetweenDay
+import app.mybad.utils.isEqualsDay
 import app.mybad.utils.isEqualsMonth
 import app.mybad.utils.isNotEqualsMonth
 import app.mybad.utils.lastDayOfMonth
 import app.mybad.utils.minusMonths
 import app.mybad.utils.plusMonths
-import app.mybad.utils.toDateTimeDisplay
 import kotlinx.datetime.LocalDateTime
 
 @Preview
@@ -140,10 +143,10 @@ fun CalendarPairSelectorView(
     startDate: LocalDateTime,
     endDate: LocalDateTime,
     editStart: Boolean,
-    dateOfMonth: LocalDateTime = currentDateTime(),
+    dateOfMonth: LocalDateTime = currentDateTimeSystem(),
     onSelect: (Pair<LocalDateTime, LocalDateTime>) -> Unit
 ) {
-    val currentDate by remember { mutableStateOf(currentDateTime()) }
+    val currentDate by remember { mutableStateOf(currentDateTimeSystem()) }
     val minStartDate by remember {
         mutableStateOf(currentDate.minusMonths(LIMIT_START_MIN).firstDayOfMonth())
     }
@@ -159,7 +162,7 @@ fun CalendarPairSelectorView(
     var sDate by remember { mutableStateOf(dateOfMonth) }
     // начало месяца и от этого дня берется неделя и первый день недели
     var datesWeeks by remember {
-        Log.w("VTTAG", "CalendarPairSelectorView::init: date=${sDate.toDateTimeDisplay()}")
+        Log.w("VTTAG", "CalendarPairSelectorView::init: date=${sDate.displayDateTime()}")
         mutableStateOf(initWeekAndDayOfMonth(sDate))
     }
 
@@ -175,7 +178,7 @@ fun CalendarPairSelectorView(
                     datesWeeks = initWeekAndDayOfMonth(sDate)
                     Log.w(
                         "VTTAG",
-                        "CalendarPairSelectorView::update: date=${sDate.toDateTimeDisplay()}"
+                        "CalendarPairSelectorView::update: date=${sDate.displayDateTime()}"
                     )
                 }
             )
@@ -207,10 +210,14 @@ fun CalendarPairSelectorView(
                         }.atEndOfDay()
                     }
                     Log.w(
-                        "VTTAG", "CalendarPairSelectorView::onSelect: startDay=${
-                            startDay.toDateTimeDisplay()
-                        } endDay=${endDay.toDateTimeDisplay()} endDate=${
-                            endDate.toDateTimeDisplay()
+                        "VTTAG", "CalendarPairSelectorView::onSelect: day=${
+                            if (editStart) startDay.dayOfMonth else endDay.dayOfMonth
+                        } dayOfMonth=${
+                            if (editStart) startDay.displayDay() else endDay.displayDay()
+                        } startDay=${
+                            startDay.displayDateTime()
+                        } endDay=${endDay.displayDateTime()} endDate=${
+                            endDate.displayDateTime()
                         }"
                     )
                 }
@@ -288,15 +295,20 @@ fun CalendarPairSelector(
                                         .padding(bottom = 8.dp)
                                         .fillMaxWidth()
                                         .weight(1f, false),
-                                    isInitDate = datesWeeks[week][day] == if (editStart) startDate else endDate,
+                                    isInitDate = datesWeeks[week][day].isEqualsDay(
+                                        if (editStart) startDate else endDate
+                                    ),
                                     date = datesWeeks[week][day],
-                                    isInRange = datesWeeks[week][day] in startDate..endDate,
+                                    isInRange = datesWeeks[week][day].isBetweenDay(
+                                        startDate,
+                                        endDate
+                                    ),
                                     isOtherMonth = datesWeeks[week][day].isNotEqualsMonth(date),
                                     onSelect = onSelect
                                 )
                             }
                         }
-                    } else  if (week > 4) Spacer(Modifier.height(48.dp))
+                    } else if (week > 4) Spacer(Modifier.height(48.dp))
                 }
             }
         }
@@ -339,7 +351,7 @@ private fun CalendarDayItem(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Text(
-                    text = date.dayOfMonth.toString(),
+                    text = date.displayDay(),
                     style = if (isInitDate) Typography.bodyLarge.copy(
                         fontSize = Typography.bodyLarge.fontSize.times(
                             1.2f

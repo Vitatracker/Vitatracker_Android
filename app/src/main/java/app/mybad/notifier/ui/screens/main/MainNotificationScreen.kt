@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,14 +71,16 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.notifier.ui.theme.textColorSecond
 import app.mybad.notifier.ui.theme.textColorThird
+import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.changeDate
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.displayTime
 import app.mybad.utils.getDaysOfMonth
 import app.mybad.utils.monthShortDisplay
-import app.mybad.utils.toTimeDisplay
+import app.mybad.utils.plusSeconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -202,7 +205,7 @@ private fun NotificationWeekPager(
     val paddingEnd = 10.dp
 
     var shortNameOfDay by remember { mutableStateOf("") }
-    var countDay by remember { mutableStateOf(0) }
+    var countDay by remember { mutableIntStateOf(0) }
     val displayedDate by remember { mutableStateOf(date) }
     val stateDay = rememberPagerState(date.dayOfMonth - 1) {
         // количество дней в месяце с учетом высокосного года
@@ -287,6 +290,9 @@ private fun NotificationLazyMedicines(
     setUsageFactTime: (String) -> Unit,
 ) {
     if (usagesDisplay.isNotEmpty()) {
+//        val types = stringArrayResource(R.array.types)
+//        val relations = stringArrayResource(R.array.food_relations)
+//        val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
         NotificationTextCategory()
         Log.w(
             "VTTAG",
@@ -297,6 +303,7 @@ private fun NotificationLazyMedicines(
             userScrollEnabled = true,
         ) {
             items(usagesDisplay.entries.toList()) { usageEntry ->
+                //TODO("переделать так же как и BottomSheetUsages")
                 NotificationCourseItem(
                     usage = usageEntry.value,
                 ) { setUsageFactTime(usageEntry.key) }
@@ -363,11 +370,11 @@ private fun NotificationCourseItem(
         shape = RoundedCornerShape(10.dp),
         border = setBorderColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime > 0
+            isDone = usage.factUseTime != null
         ),
         color = setBackgroundColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime > 0
+            isDone = usage.factUseTime != null
         ),
     ) {
         Row(
@@ -376,7 +383,7 @@ private fun NotificationCourseItem(
         ) {
             NotificationTimeCourse(
                 usageTime = usage.useTime,
-                isDone = usage.factUseTime > 0
+                isDone = usage.factUseTime != null
             )
             NotificationCourseHeader(
                 usage = usage,
@@ -388,7 +395,7 @@ private fun NotificationCourseItem(
 
 @Composable
 private fun NotificationTimeCourse(
-    usageTime: Long,
+    usageTime: LocalDateTime,
     isDone: Boolean,
 ) {
     Surface(
@@ -398,7 +405,7 @@ private fun NotificationTimeCourse(
         color = setBackgroundColorTime(usageTime = usageTime, isDone = isDone)
     ) {
         Text(
-            text = usageTime.toTimeDisplay(),
+            text = usageTime.displayTime(),
             modifier = Modifier
                 .padding(8.dp),
             color = setTextColorTime(usageTime = usageTime, isDone = isDone),
@@ -466,8 +473,9 @@ private fun NotificationCourseHeader(
             Row(
                 modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             ) {
+                // количество и тип
                 Text(
-                    text = "${usage.dose} ${types[usage.type]}",
+                    text = "${usage.quantity.toText()} ${types[usage.type]}",
                     style = Typography.labelMedium
                 )
                 Text(
@@ -486,7 +494,7 @@ private fun NotificationCourseHeader(
         }
         NotificationButtonAccept(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime > 0,
+            isDone = usage.factUseTime != null,
             modifier = Modifier.clickable {
                 onClick()
             }
@@ -496,11 +504,11 @@ private fun NotificationCourseHeader(
 
 @Composable
 private fun NotificationButtonAccept(
-    usageTime: Long,
+    usageTime: LocalDateTime,
     isDone: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val nowDate = currentDateTimeInSecond()
+    val nowDate = currentDateTimeSystem()
 
     val tint: Color
     val painter: Painter
@@ -516,7 +524,7 @@ private fun NotificationButtonAccept(
             tint = MaterialTheme.colorScheme.primary
         }
 
-        nowDate > usageTime + TIME_IS_UP -> {
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> {
             painter = painterResource(R.drawable.undone)
             tint = MaterialTheme.colorScheme.error
         }
@@ -560,13 +568,17 @@ private fun getMonthColor(page: Int, month: Int) = when (page) {
 
 // цвет рамки вокруг карточки
 @Composable
-private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = currentDateTimeInSecond()
+private fun setBorderColorCard(usageTime: LocalDateTime, isDone: Boolean): BorderStroke {
+    val nowDate = currentDateTimeSystem()
 //TODO("проверить тут время, возможно в usageTime подменять дату или нет")
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
         nowDate < usageTime -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowDate > usageTime + TIME_IS_UP -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> BorderStroke(
+            0.dp,
+            MaterialTheme.colorScheme.error
+        )
+
         nowDate > usageTime -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
         else -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
@@ -574,13 +586,13 @@ private fun setBorderColorCard(usageTime: Long, isDone: Boolean): BorderStroke {
 
 // цвет фона карточки 5%
 @Composable
-private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTimeInSecond()
+private fun setBackgroundColorCard(usageTime: LocalDateTime, isDone: Boolean): Color {
+    val nowDate = currentDateTimeSystem()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
         nowDate < usageTime -> MaterialTheme.colorScheme.primaryContainer
-        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.errorContainer
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> MaterialTheme.colorScheme.errorContainer
         nowDate > usageTime -> MaterialTheme.colorScheme.errorContainer
         else -> MaterialTheme.colorScheme.primaryContainer
     }.copy(alpha = 0.05f)
@@ -588,13 +600,17 @@ private fun setBackgroundColorCard(usageTime: Long, isDone: Boolean): Color {
 
 // цвет рамки вокруг времени
 @Composable
-private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStroke {
-    val nowDate = currentDateTimeInSecond()
+private fun setBorderColorTimeCard(usageTime: LocalDateTime, isDone: Boolean): BorderStroke {
+    val nowDate = currentDateTimeSystem()
 
     return when {
         isDone -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
         nowDate < usageTime -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
-        nowDate > usageTime + TIME_IS_UP -> BorderStroke(0.dp, MaterialTheme.colorScheme.error)
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> BorderStroke(
+            0.dp,
+            MaterialTheme.colorScheme.error
+        )
+
         nowDate > usageTime -> BorderStroke(1.dp, color = MaterialTheme.colorScheme.error)
         else -> BorderStroke(0.dp, MaterialTheme.colorScheme.primaryContainer)
     }
@@ -602,13 +618,13 @@ private fun setBorderColorTimeCard(usageTime: Long, isDone: Boolean): BorderStro
 
 // цвет фона времени 10% в карточке
 @Composable
-private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTimeInSecond()
+private fun setBackgroundColorTime(usageTime: LocalDateTime, isDone: Boolean): Color {
+    val nowDate = currentDateTimeSystem()
 
     return when {
         isDone -> MaterialTheme.colorScheme.primaryContainer
         nowDate < usageTime -> MaterialTheme.colorScheme.primaryContainer
-        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.errorContainer
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> MaterialTheme.colorScheme.errorContainer
         nowDate > usageTime -> MaterialTheme.colorScheme.errorContainer
         else -> MaterialTheme.colorScheme.primaryContainer
     }.copy(alpha = 0.1f)
@@ -616,13 +632,13 @@ private fun setBackgroundColorTime(usageTime: Long, isDone: Boolean): Color {
 
 // цвет времени в карточке
 @Composable
-private fun setTextColorTime(usageTime: Long, isDone: Boolean): Color {
-    val nowDate = currentDateTimeInSecond()
+private fun setTextColorTime(usageTime: LocalDateTime, isDone: Boolean): Color {
+    val nowDate = currentDateTimeSystem()
 
     return when {
         isDone -> MaterialTheme.colorScheme.onPrimary
         nowDate < usageTime -> MaterialTheme.colorScheme.onPrimary
-        nowDate > usageTime + TIME_IS_UP -> MaterialTheme.colorScheme.onError
+        nowDate > usageTime.plusSeconds(TIME_IS_UP) -> MaterialTheme.colorScheme.onError
         nowDate > usageTime -> MaterialTheme.colorScheme.onError
         else -> MaterialTheme.colorScheme.onPrimary
     }

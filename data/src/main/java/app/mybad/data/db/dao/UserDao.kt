@@ -8,7 +8,7 @@ import androidx.room.Update
 import app.mybad.data.db.models.UserContract
 import app.mybad.data.db.models.UserModel
 import app.mybad.data.models.user.PersonalDataModel
-import app.mybad.utils.currentDateTimeInSecond
+import app.mybad.utils.currentDateTimeUTCInSecond
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -46,7 +46,7 @@ interface UserDao {
             UserContract.Columns.DELETED_DATE
         } = :date WHERE ${UserContract.Columns.ID} = :userId"
     )
-    suspend fun markDeletionUserById(userId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun markDeletionUserById(userId: Long, date: Long = currentDateTimeUTCInSecond())
 
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер
@@ -61,7 +61,7 @@ interface UserDao {
             UserContract.Columns.UPDATED_DATE
         } = :date WHERE ${UserContract.Columns.ID} = :userId"
     )
-    suspend fun synchronization(userId: Long, date: Long = currentDateTimeInSecond())
+    suspend fun synchronization(userId: Long, date: Long = currentDateTimeUTCInSecond())
 
     @Query("SELECT *  from ${UserContract.TABLE_NAME} where ${UserContract.Columns.ID} = :userId limit 1")
     fun getUserPersonal(userId: Long): PersonalDataModel?

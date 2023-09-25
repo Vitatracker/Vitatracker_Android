@@ -6,6 +6,7 @@ import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.scheduler.NotificationsScheduler
 import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
+import kotlinx.datetime.LocalDateTime
 import javax.inject.Inject
 
 class DeleteCourseFullUseCase @Inject constructor(
@@ -18,11 +19,11 @@ class DeleteCourseFullUseCase @Inject constructor(
     private val closeCourseUseCase: CloseCourseUseCase,
 ) {
 
-    suspend operator fun invoke(courseId: Long, dateTime: Long) {
+    suspend operator fun invoke(courseId: Long, endDate: LocalDateTime) {
         notificationsScheduler.cancelAlarmByCourseId(courseId) {
             val isUse = getUseUsagesInCourseUseCase(courseId).getOrNull() ?: false
             if (isUse) {
-                closeCourseUseCase(courseId = courseId, dateTime = dateTime)
+                closeCourseUseCase(courseId = courseId, endDate = endDate)
             } else {
                 patternUsageRepository.markDeletionPatternUsageByCourseId(courseId = courseId)
                 usageRepository.markDeletionUsagesByCourseId(courseId = courseId)
