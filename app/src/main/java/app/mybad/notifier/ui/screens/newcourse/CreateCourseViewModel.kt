@@ -90,7 +90,12 @@ class CreateCourseViewModel @Inject constructor(
     }
 
     private fun updateStateUsagesPatterns(usagesPattern: List<UsageFormat>) {
-        setState { copy(usagesPattern = usagesPattern, nextAllowed = usagesPattern.isNotEmpty()) }
+        setState {
+            copy(
+                usagesPattern = usagesPattern,
+                nextAllowed = usagesPattern.isNotEmpty()
+            )
+        }
     }
 
     private fun changeTimeUsagePattern(pattern: UsageFormat, time: Int) {

@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.mycoursesedit
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -109,18 +110,21 @@ fun MyCourseEditNotificationScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
-                    items(state.usagesPatternEdit) { pattern ->
+                    items(
+                        state.usagesPatternEdit,
+                        key = { pattern -> pattern.timeInMinutes }
+                    ) { pattern ->
+                        Log.w(
+                            "VTTAG",
+                            "MyCourseEditNotificationScreen::items: pattern=${pattern.timeInMinutes} - ${pattern.quantity}"
+                        )
                         NotificationItem(
                             time = pattern.timeInMinutes, // с учетом часового пояса
                             quantity = pattern.quantity,
                             form = state.remedy.type,
                             forms = forms,
                             onDelete = {
-                                sendEvent(
-                                    MyCoursesEditContract.Event.DeleteUsagePattern(
-                                        pattern
-                                    )
-                                )
+                                sendEvent(MyCoursesEditContract.Event.DeleteUsagePattern(pattern))
                             },
                             onDoseChange = {
                                 sendEvent(

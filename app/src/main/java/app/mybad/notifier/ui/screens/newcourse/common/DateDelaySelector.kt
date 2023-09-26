@@ -85,11 +85,13 @@ fun DateDelaySelector(
                     }
                     val scale by animateFloatAsState(
                         targetValue = ts,
-                        animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                        animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                        label = ""
                     )
                     val alpha by animateFloatAsState(
                         targetValue = a,
-                        animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                        animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                        label = ""
                     )
                     Box(
                         contentAlignment = Alignment.Center,
@@ -129,11 +131,13 @@ fun DateDelaySelector(
                     }
                     val scale by animateFloatAsState(
                         targetValue = ts,
-                        animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                        animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                        label = ""
                     )
                     val alpha by animateFloatAsState(
                         targetValue = a,
-                        animationSpec = tween(300, 0, LinearOutSlowInEasing)
+                        animationSpec = tween(300, 0, LinearOutSlowInEasing),
+                        label = ""
                     )
                     Box(
                         contentAlignment = Alignment.Center,

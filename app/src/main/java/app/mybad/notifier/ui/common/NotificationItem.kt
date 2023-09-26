@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -30,9 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
@@ -52,12 +55,10 @@ fun NotificationItem(
 ) {
     val fm = LocalFocusManager.current
     var field by remember { mutableStateOf(TextFieldValue(quantity.toText())) }
-    LaunchedEffect(quantity) {
-        val q = quantity.toText()
-        field = field.copy(
-            text = q,
-            selection = if (quantity == 0f) TextRange(0, 1) else TextRange(q.length, q.length),
-        )
+
+    var isDone by remember { mutableStateOf(false) }
+    LaunchedEffect(isDone) {
+        field = field.copy(text = quantity.toText())
     }
 
     Surface(
@@ -92,20 +93,22 @@ fun NotificationItem(
             Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {
                 BasicTextField(
                     modifier = Modifier
-                        .clickable(
-                            onClick = onTimeClick
-                        )
-                        .width(25.dp)
+                        .widthIn(min = 25.dp, max = 100.dp)
                         .onFocusChanged {
                             if (it.hasFocus || it.isFocused) {
                                 field = field.copy(selection = TextRange(0, field.text.length))
                             }
                         },
                     value = field,
+                    textStyle = TextStyle.Default.copy(textAlign = TextAlign.End),
                     onValueChange = {
-                        val countValue = it.text.toFloatOrNull() ?: 0f
-                        field = if (countValue > 10f) field else it
-                        onDoseChange(if (countValue > 10f) 10f else countValue)
+                        field = it.copy(
+                            text = it.text
+                                .replace(",", ".")
+                                .replace("-", "")
+                                .replace("+", "")
+                        )
+                        onDoseChange(field.text.toFloatOrNull() ?: 1f)
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -114,16 +117,16 @@ fun NotificationItem(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            fm.clearFocus()
+                            fm.clearFocus(true)
                             field = field.copy(selection = TextRange.Zero)
+                            isDone = !isDone
                         }
                     )
-
                 )
                 Text(
                     text = forms[form],
                     style = Typography.bodyMedium,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
@@ -135,7 +138,7 @@ fun NotificationItem(
 fun NotificationItemPreview() {
     NotificationItem(
         time = 140,
-        quantity = 1.1234f,
+        quantity = 1.12345f,
         form = 0,
         forms = arrayOf("Таблетка"),
     )
