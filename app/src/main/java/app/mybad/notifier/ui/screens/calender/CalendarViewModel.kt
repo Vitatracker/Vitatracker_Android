@@ -12,7 +12,7 @@ import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.betweenDaysSystem
-import app.mybad.utils.changeTimeOfUTC_
+import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDateTimeShort
@@ -60,8 +60,8 @@ class CalendarViewModel @Inject constructor(
     }
 
     private val dateMonth = MutableStateFlow(viewState.value.date)
-    private var patternsMonth: Map<String, UsageDisplayDomainModel> = emptyMap()
-    private var usagesMonth: Map<String, UsageDisplayDomainModel> = emptyMap()
+    private var patternsMonth: List<UsageDisplayDomainModel> = emptyList()
+    private var usagesMonth: List<UsageDisplayDomainModel> = emptyList()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var dateUpdate = dateMonth.flatMapLatest { date ->
@@ -89,8 +89,8 @@ class CalendarViewModel @Inject constructor(
                 endTime = dateMax,
             )
         ) { patterns, usages ->
-            patternsMonth = patterns.toSortedMap()
-            usagesMonth = usages.toSortedMap()
+            patternsMonth = patterns
+            usagesMonth = usages
             Log.w(
                 "VTTAG",
                 "CalendarViewModel::changeDateForMonth: patternsMonth=${patternsMonth.size} usagesMonth=${usagesMonth.size}"
@@ -130,29 +130,22 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getUsagesOnDate(date: LocalDateTime): List<UsageDisplayDomainModel> {
-        val pattens = patternsMonth.filter { it.value.checkDate(date) }
-        val usages = usagesMonth.filter { it.value.checkDate(date) }
-        val pattensAndUsages = pattens.plus(usages).values.map {
-            // рабочий вариант
-            /*
-                        if (it.isPattern) {
-            val time = date.changeTime(minutesUTC = it.timeInMinutes)
-                            // формируем на основе паттерна и даты для выборки - usage.useTime
-                            it.copy(
-                            useTime = date.changeTime(minutesUTC = it.timeInMinutes),
-                            timeInMinutes = time.timeInMinutes()
-                            )
-                        } else it
-            */
-            // для теста, потом удалить
-            val useTime =
-                if (it.isPattern) date.changeTimeOfUTC_(minutesUTC = it.timeInMinutes) else it.useTime
-            it.copy(
-                name = "${it.name}|${if (it.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
-                useTime = useTime,
-                timeInMinutes = useTime.timeInMinutes()
-            )
-        }
+        val pattens = patternsMonth.filter { it.checkDate(date) }
+            .map { pattern ->
+                val useTime = date.changeTime(minutes = pattern.timeInMinutes)
+                pattern.copy(
+                    name = "${pattern.name}|P|${useTime.displayDateTimeShort()}",
+                    useTime = useTime,
+                    timeInMinutes = useTime.timeInMinutes()
+                )
+            }.associateBy { it.toUsageKey() }
+        val usages = usagesMonth.filter { it.checkDate(date) }
+            .map { usage ->
+                usage.copy(
+                    name = "${usage.name}|U|${usage.useTime.displayDateTimeShort()}",
+                )
+            }.associateBy { it.toUsageKey() }
+        val pattensAndUsages = pattens.plus(usages).values.toList()
         Log.w(
             "VTTAG",
             "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, usages=${usages.size}]"
