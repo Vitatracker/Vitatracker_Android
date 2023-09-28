@@ -7,7 +7,7 @@ import app.mybad.domain.usecases.courses.GetCoursesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.betweenDaysPlus
+import app.mybad.utils.betweenDays
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.plusDays
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,7 +78,7 @@ class MyCoursesViewModel @Inject constructor(
                 val startDate = newCourse.endDate.plusDays(newCourse.interval).atStartOfDay()
                 if (startDate > currentDate) {
                     val endDate = startDate.plusDays(
-                        newCourse.endDate.atStartOfDay().betweenDaysPlus(newCourse.startDate)
+                        newCourse.endDate.atStartOfDay().betweenDays(newCourse.startDate)
                     ).atEndOfDay()
                     newCourses.add(
                         newCourse.copy(
@@ -87,7 +87,7 @@ class MyCoursesViewModel @Inject constructor(
                             startDate = startDate,
                             endDate = endDate,
                             remindDate = null,
-                            interval = startDate.betweenDaysPlus(currentDate.atEndOfDay()), // старт курса через ... дней
+                            interval = startDate.betweenDays(currentDate.atEndOfDay()), // старт курса через ... дней
                         )
                     )
                 }

@@ -2,6 +2,7 @@ package app.mybad.data
 
 import app.mybad.data.db.models.CourseModel
 import app.mybad.data.db.models.CourseWithParamsModel
+import app.mybad.data.db.models.PatternUsageFutureWithNameAndDateModel
 import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyModel
@@ -358,6 +359,47 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomai
 
 @JvmName("listPUNDmToDomain")
 fun List<PatternUsageWithNameAndDateModel>.mapToDomain(data: Long) =
+    this.map { it.mapToDomain(data) }
+
+fun PatternUsageFutureWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomainModel(
+    id = id,
+    courseId = courseId,
+    userId = userId,
+
+    isPattern = true, // pattern
+
+    timeInMinutes = data.toDateTimeSystem(timeInMinutes) //timeInMinutes в UTC, пересчитываем с учетом часового пояса
+        .timeInMinutes(),// время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
+    useTime = data.toDateTimeSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
+
+    quantity = quantity,
+
+    courseIdn = courseIdn,
+
+    remedyId = remedyId,
+
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
+    isInfinite = isInfinite,
+
+    regime = regime,
+    showUsageTime = showUsageTime,
+    isFinished = isFinished,
+    notUsed = notUsed,
+
+    name = name ?: "",
+    description = description ?: "",
+    type = type,
+    icon = icon,
+    color = color,
+    dose = dose,
+    beforeFood = beforeFood,
+    measureUnit = measureUnit,
+    photo = photo,
+)
+
+@JvmName("listPUFNDmToDomain")
+fun List<PatternUsageFutureWithNameAndDateModel>.mapToDomain(data: Long) =
     this.map { it.mapToDomain(data) }
 
 fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.domain.models.checkDate
+import app.mybad.domain.usecases.usages.GetFutureWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetPatternUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
@@ -36,6 +37,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val getPatternUsagesWithParamsBetweenUseCase: GetPatternUsagesWithParamsBetweenUseCase,
     private val getUsagesWithParamsBetweenUseCase: GetUsagesWithParamsBetweenUseCase,
+    private val getFutureWithParamsBetweenUseCase: GetFutureWithParamsBetweenUseCase,
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
 ) : BaseViewModel<CalendarContract.Event, CalendarContract.State, CalendarContract.Effect>() {
 
@@ -60,6 +62,7 @@ class CalendarViewModel @Inject constructor(
     private val dateMonth = MutableStateFlow(viewState.value.date)
     private var patternsMonth: List<UsageDisplayDomainModel> = emptyList()
     private var usagesMonth: List<UsageDisplayDomainModel> = emptyList()
+    private var futureMonth: List<UsageDisplayDomainModel> = emptyList()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var dateUpdate = dateMonth.flatMapLatest { date ->
@@ -85,13 +88,18 @@ class CalendarViewModel @Inject constructor(
             getUsagesWithParamsBetweenUseCase(
                 startTime = dateMin,
                 endTime = dateMax,
-            )
-        ) { patterns, usages ->
+            ),
+            getFutureWithParamsBetweenUseCase(
+                startTime = dateMin,
+                endTime = dateMax,
+            ),
+        ) { patterns, usages, future ->
             patternsMonth = patterns
             usagesMonth = usages
+            futureMonth = future
             Log.w(
                 "VTTAG",
-                "CalendarViewModel::changeDateForMonth: patternsMonth=${patternsMonth.size} usagesMonth=${usagesMonth.size}"
+                "CalendarViewModel::changeDateForMonth: patternsMonth=${patternsMonth.size} usagesMonth=${usagesMonth.size} futureMonth=${futureMonth.size}"
             )
 
             calculateByWeekAndSetState(date)
@@ -137,16 +145,25 @@ class CalendarViewModel @Inject constructor(
                     timeInMinutes = useTime.timeInMinutes()
                 )
             }.associateBy { it.toUsageKey() }
+        val future = futureMonth.filter { it.checkDate(date) }
+            .map { pattern ->
+                val useTime = date.changeTime(minutes = pattern.timeInMinutes)
+                pattern.copy(
+                    name = "${pattern.name}|F|${useTime.displayDateTimeShort()}",
+                    useTime = useTime,
+                    timeInMinutes = useTime.timeInMinutes()
+                )
+            }.associateBy { it.toUsageKey() }
         val usages = usagesMonth.filter { it.checkDate(date) }
             .map { usage ->
                 usage.copy(
                     name = "${usage.name}|U|${usage.useTime.displayDateTimeShort()}",
                 )
             }.associateBy { it.toUsageKey() }
-        val pattensAndUsages = pattens.plus(usages).values.toList()
+        val pattensAndUsages = pattens.plus(future).plus(usages).values.toList()
         Log.w(
             "VTTAG",
-            "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, usages=${usages.size}]"
+            "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, future=${future.size}, usages=${usages.size}]"
         )
         return pattensAndUsages
     }

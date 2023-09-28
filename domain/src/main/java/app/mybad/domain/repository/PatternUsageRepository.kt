@@ -35,6 +35,12 @@ interface PatternUsageRepository {
         endTime: Long
     ): Flow<List<UsageDisplayDomainModel>>
 
+    suspend fun getFutureWithParamsBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<UsageDisplayDomainModel>>
+
     suspend fun insertPatternUsage(pattern: PatternUsageDomainModel): Result<Unit>
     suspend fun insertPatternUsage(patterns: List<PatternUsageDomainModel>): Result<Unit>
     suspend fun finishedPatternUsageByCourseId(courseId: Long): Result<Unit>

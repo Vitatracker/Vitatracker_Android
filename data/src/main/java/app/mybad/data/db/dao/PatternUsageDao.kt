@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import app.mybad.data.db.models.CourseContract
 import app.mybad.data.db.models.PatternUsageContract
+import app.mybad.data.db.models.PatternUsageFutureWithNameAndDateModel
 import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyContract
@@ -133,6 +134,66 @@ interface PatternUsageDao {
         startTime: Long,
         endTime: Long
     ): Flow<List<PatternUsageWithNameAndDateModel>>
+
+    @Query(
+        "select A.${
+            PatternUsageContract.Columns.ID
+        }, A.${PatternUsageContract.Columns.COURSE_ID}, A.${
+            PatternUsageContract.Columns.USER_ID
+        }, A.${
+            PatternUsageContract.Columns.TIME_MINUTES
+        }, A.${PatternUsageContract.Columns.QUANTITY}, B.${
+            CourseContract.Columns.IDN
+        }, B.${
+            CourseContract.Columns.REMEDY_ID
+        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * 86400) as ${
+            CourseContract.Columns.START_DATE_FUTURE
+        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * 86400 + B.${CourseContract.Columns.END_DATE} - B.${CourseContract.Columns.START_DATE}) as ${
+            CourseContract.Columns.END_DATE_FUTURE
+        }, B.${
+            CourseContract.Columns.END_DATE
+        }, B.${
+            CourseContract.Columns.IS_INFINITE
+        }, B.${CourseContract.Columns.REGIME}, B.${
+            CourseContract.Columns.SHOW_USAGE_TIME
+        }, B.${CourseContract.Columns.IS_FINISHED}, B.${
+            CourseContract.Columns.NOT_USED
+        }, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            PatternUsageContract.TABLE_NAME
+        } A LEFT JOIN ${
+            CourseContract.TABLE_NAME
+        } B ON A.${PatternUsageContract.Columns.COURSE_ID} = B.${CourseContract.Columns.ID} LEFT JOIN ${
+            RemedyContract.TABLE_NAME
+        } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${RemedyContract.Columns.ID
+        } where A.${PatternUsageContract.Columns.USER_ID} = :userId and B.${CourseContract.Columns.DELETED_DATE
+        } = 0 and B.${CourseContract.Columns.IS_INFINITE
+        } = 0 and :endTime >= ${
+            CourseContract.Columns.START_DATE_FUTURE
+        } and :startTime <= ${
+            CourseContract.Columns.END_DATE_FUTURE
+        } order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getFutureWithParamsBetween( // тут только будущее
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ): Flow<List<PatternUsageFutureWithNameAndDateModel>>
 
 //    @Query(
 //        "select A.id, A.course_id, A.user_id, A.time_minutes, A.quantity, B.remedy_id, B.start_date, B.end_date, B.is_infinite, B.regime, B.show_usage_time, B.not_used , B.is_finished  from ${
