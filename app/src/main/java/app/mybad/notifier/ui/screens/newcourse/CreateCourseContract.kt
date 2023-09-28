@@ -7,6 +7,7 @@ import app.mybad.domain.models.UsageDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
+import kotlinx.datetime.LocalDateTime
 
 class CreateCourseContract {
     sealed interface Event : ViewEvent {
@@ -14,6 +15,7 @@ class CreateCourseContract {
         data class UpdateRemedy(val remedy: RemedyDomainModel) : Event
         data class UpdateRemedyName(val newName: String) : Event
         data class UpdateCourse(val course: CourseDomainModel) : Event
+        data class UpdateCourseRemindDate(val remindDate: LocalDateTime?, val interval: Long) : Event
         data class UpdateUsages(val usages: List<UsageDomainModel>) : Event
         data class UpdateUsagePatterns(val patterns: List<UsageFormat>) : Event
 
@@ -22,7 +24,6 @@ class CreateCourseContract {
         data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
-        object CourseIntervalEntered : Event
         object UpdateCourseStartDate : Event
         object Drop : Event
         object Finish : Event

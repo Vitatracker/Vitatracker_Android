@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.calender
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.UsageDisplayDomainModel
+import app.mybad.domain.models.checkDate
 import app.mybad.domain.usecases.usages.GetPatternUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
@@ -11,15 +12,12 @@ import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.betweenDaysSystem
 import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDateTimeShort
 import app.mybad.utils.displayDateTimeUTC
 import app.mybad.utils.firstDayOfMonth
-import app.mybad.utils.isBetweenDay
-import app.mybad.utils.isEqualsDay
 import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
 import app.mybad.utils.repeatWeekAndDayOfMonth
@@ -151,15 +149,6 @@ class CalendarViewModel @Inject constructor(
             "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, usages=${usages.size}]"
         )
         return pattensAndUsages
-    }
-
-    private fun UsageDisplayDomainModel.checkDate(date: LocalDateTime): Boolean {
-        return if (this.isPattern) {
-            date.isEqualsDay(startDate) || (date.isBetweenDay(this.startDate, this.endDate) &&
-                (this.regime == 0 || date.betweenDaysSystem(this.startDate) % (this.regime + 1) == 0L))
-        } else {
-            this.useTime.isEqualsDay(date)
-        }
     }
 
     private fun selectElement(element: Pair<Int, Int>?) {

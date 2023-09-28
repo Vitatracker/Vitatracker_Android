@@ -7,9 +7,8 @@ import app.mybad.domain.usecases.courses.GetCoursesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.betweenDaysSystem
+import app.mybad.utils.betweenDaysPlus
 import app.mybad.utils.currentDateTimeSystem
-import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.plusDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,20 +73,21 @@ class MyCoursesViewModel @Inject constructor(
         val currentDate = currentDateTimeSystem()
         val newCourses = mutableListOf<CourseDisplayDomainModel>()
         courses.forEach { newCourse ->
-            if (newCourse.remindDate != null && newCourse.interval > 0) {
+            if (newCourse.remindDate != null && newCourse.interval >= 0) {
 
                 val startDate = newCourse.endDate.plusDays(newCourse.interval).atStartOfDay()
                 if (startDate > currentDate) {
                     val endDate = startDate.plusDays(
-                        newCourse.endDate.atStartOfDay().betweenDaysSystem(newCourse.startDate)
+                        newCourse.endDate.atStartOfDay().betweenDaysPlus(newCourse.startDate)
                     ).atEndOfDay()
                     newCourses.add(
                         newCourse.copy(
+                            id = 1000000 + newCourse.id,
                             idn = 0,
                             startDate = startDate,
                             endDate = endDate,
                             remindDate = null,
-                            interval = startDate.betweenDaysSystem(currentDate.atEndOfDay()), // старт курса через ... дней
+                            interval = startDate.betweenDaysPlus(currentDate.atEndOfDay()), // старт курса через ... дней
                         )
                     )
                 }

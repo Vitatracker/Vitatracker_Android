@@ -34,7 +34,7 @@
     <string name="add_course_end_time">Закінчення прийому</string>
     <string name="medication_regime">Графік прийому</string>
     <string name="add_course_reminder">Нагадати про новий курс</string>
-    <string name="add_course_reminder_completed">New course added</string>
+    <string name="add_course_reminder_completed">Буде сповіщення про новий курс</string>
     <string name="add_next_course_remind_time">Час нагадування</string>
 
     <!--START SCREEN-->

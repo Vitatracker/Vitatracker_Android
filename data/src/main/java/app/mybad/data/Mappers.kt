@@ -326,8 +326,8 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomai
 
     isPattern = true, // pattern
 
-    timeInMinutes = data.toDateTimeSystem(timeInMinutes)
-        .timeInMinutes(),// UTC время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
+    timeInMinutes = data.toDateTimeSystem(timeInMinutes) //timeInMinutes в UTC, пересчитываем с учетом часового пояса
+        .timeInMinutes(),// время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
     useTime = data.toDateTimeSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
 
     quantity = quantity,
@@ -367,7 +367,7 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
 
     isPattern = false, // usage
     // заполним во вью модели, но пока с учетом часового пояса
-    timeInMinutes = useTime.toDateTimeSystem().timeInMinutes(), // UTC, поменяем во вью модели
+    timeInMinutes = useTime.toDateTimeSystem().timeInMinutes(),
     quantity = quantity,
     useTime = useTime.toDateTimeSystem(), // какое-то конкретное UTC время приема препарата, которое формируется из паттерна и текущей даты, с учетом часового пояса
     factUseTime = factUseTime?.toDateTimeSystem(),

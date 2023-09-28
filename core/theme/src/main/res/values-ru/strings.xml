@@ -34,7 +34,7 @@
     <string name="add_course_end_time">Окончание приема</string>
     <string name="medication_regime">График приема</string>
     <string name="add_course_reminder">Напомнить о новом курсе</string>
-    <string name="add_course_reminder_completed">New course added</string>
+    <string name="add_course_reminder_completed">Будет уведомление о новом курсе</string>
     <string name="add_next_course_remind_time">Время напоминания</string>
 
     <!--START SCREEN-->

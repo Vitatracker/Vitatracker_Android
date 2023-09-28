@@ -31,9 +31,9 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
-import app.mybad.utils.TIME_NOTIFICATION
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.nextCourseIntervals
 import app.mybad.utils.nextCourseStart
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDateTime
@@ -42,13 +42,29 @@ import kotlinx.datetime.LocalDateTime
 fun RemindNewCourseBottomSheet(
     modifier: Modifier = Modifier,
     endDate: LocalDateTime,
+    remindDate: LocalDateTime?,
+    interval: Long,
     onSave: (remindDate: LocalDateTime?, interval: Long) -> Unit = { _, _ -> }
 ) {
     var selectedInput: Int? by remember { mutableStateOf(null) }
 
-    var coursesInterval by remember { mutableStateOf(DateTimePeriod(days = 0)) }
-    var remindBeforePeriod by remember { mutableStateOf(DateTimePeriod(days = 0)) }
-    var remindTime by remember { mutableIntStateOf(TIME_NOTIFICATION) } // 14:00
+    val (remindTimeInit, intervalInit, beforeDayInit) = endDate.nextCourseIntervals(
+        remindDate,
+        interval
+    )
+    Log.w(
+        "VTTAG",
+        "RemindNewCourseBottomSheet::RemindNewCourseBottomSheet: endDate=${
+            endDate.displayDateTime()
+        } interval=$intervalInit remindDate=${
+            remindDate?.displayDateTime()
+        } remindTime=${
+            remindTimeInit.displayTimeInMinutes()
+        } beforeDay=$beforeDayInit"
+    )
+    var coursesInterval by remember { mutableStateOf(DateTimePeriod(days = intervalInit)) }
+    var remindBeforePeriod by remember { mutableStateOf(DateTimePeriod(days = beforeDayInit)) }
+    var remindTime by remember { mutableIntStateOf(remindTimeInit) }
 
     Column(
         modifier = modifier
@@ -106,16 +122,16 @@ fun RemindNewCourseBottomSheet(
             modifier = Modifier.fillMaxWidth(),
             textId = R.string.settings_save,
             onClick = {
-                val (remindDate, interval) = endDate.nextCourseStart(
+                val (remindDateNew, intervalNew) = endDate.nextCourseStart(
                     remindTime = remindTime,
                     coursesInterval = coursesInterval,
                     remindBeforePeriod = remindBeforePeriod,
                 )
                 Log.w(
                     "VTTAG",
-                    "RemindNewCourseBottomSheet::updateReminder: endDay=${endDate.displayDateTime()} remindDate=${remindDate?.displayDateTime()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=$interval"
+                    "RemindNewCourseBottomSheet::updateReminder: endDay=${endDate.displayDateTime()} remindDate=${remindDateNew?.displayDateTime()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=$intervalNew"
                 )
-                onSave(remindDate, interval)
+                onSave(remindDateNew, intervalNew)
             }
         )
     }

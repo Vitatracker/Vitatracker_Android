@@ -6,7 +6,6 @@ import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import app.mybad.utils.TIME_NOTIFICATION
 import kotlinx.datetime.DateTimePeriod
 
 class MyCoursesEditContract {
@@ -35,10 +34,11 @@ class MyCoursesEditContract {
     data class State(
         val course: CourseDomainModel = CourseDomainModel(),
         val remedy: RemedyDomainModel = RemedyDomainModel(),
-        val usagesPattern: List<UsageFormat> = emptyList(),
 
+        val usagesPattern: List<UsageFormat> = emptyList(),
         val usagesPatternEdit: List<UsageFormat> = emptyList(),
-        val remindTime: Int = TIME_NOTIFICATION,// тут только время в минутах 14:00
+
+        val remindTime: Int = 0,// тут обязательно 00:00, иначе будет создаваться новый курс
         val coursesInterval: DateTimePeriod = DateTimePeriod(days = 0),
         val remindBeforePeriod: DateTimePeriod = DateTimePeriod(days = 0),
 

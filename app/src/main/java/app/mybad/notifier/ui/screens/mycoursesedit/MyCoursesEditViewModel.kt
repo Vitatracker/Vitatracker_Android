@@ -20,6 +20,8 @@ import app.mybad.domain.usecases.usages.GetPatternUsagesByCourseIdUseCase
 import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
 import app.mybad.domain.usecases.usages.UpdatePatternUsagesByCourseIdUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.displayDateTime
@@ -138,13 +140,15 @@ class MyCoursesEditViewModel @Inject constructor(
                         copy(
                             course = course,
                             remedy = remedy,
-                            usagesPattern = usagesPattern,
 
+                            usagesPattern = usagesPattern,
                             usagesPatternEdit = usagesPattern,
+
                             nextAllowed = usagesPattern.isNotEmpty(),
-                            remindTime = remindTime,
+
                             coursesInterval = DateTimePeriod(days = interval),
                             remindBeforePeriod = DateTimePeriod(days = beforeDay),
+                            remindTime = remindTime,
                         )
                     }
                 }
@@ -263,7 +267,7 @@ class MyCoursesEditViewModel @Inject constructor(
     }
 
     private suspend fun createNewCourse() {
-        val dateNew = currentDateTimeUTCInSecond()
+        val dateNew = currentDateTimeSystem()
         // сравнить таблетку и создать новую если нужно
         val remedyId = getRemedyByIdUseCase(viewState.value.remedy.id).getOrNull()
             ?.takeIf { it != viewState.value.remedy }?.let {
@@ -316,10 +320,14 @@ class MyCoursesEditViewModel @Inject constructor(
         // закроем курс
         closeCourseUseCase(
             courseId = viewState.value.course.id,
-            endDate = currentDateTimeSystem()
+            endDate = dateNew.atEndOfDay()
         ) // с учетом часового пояса
         // создадим новый курс
-        createCourseUseCase(course).onSuccess { courseId ->
+        createCourseUseCase(
+            course.copy(
+                startDate = dateNew.atStartOfDay()
+            )
+        ).onSuccess { courseId ->
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
             // обновим паттерн
             updatePatternUsages(

@@ -8,7 +8,7 @@ import app.mybad.utils.timeInMinutes
 import app.mybad.utils.timeInMinutesSystemToUTC
 
 data class UsageFormat(
-    val timeInMinutes: Int = -1, // с учетом часового пояса
+    val timeInMinutes: Int = 0, // с учетом часового пояса
     val quantity: Float = 1f,
 ) {
 

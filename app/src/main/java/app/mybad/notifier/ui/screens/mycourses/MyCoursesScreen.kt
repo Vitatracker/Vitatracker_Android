@@ -1,6 +1,8 @@
 package app.mybad.notifier.ui.screens.mycourses
 
-import android.content.res.TypedArray
+import android.annotation.SuppressLint
+import androidx.annotation.DrawableRes
+import androidx.annotation.PluralsRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,6 +55,7 @@ import app.mybad.theme.R
 import app.mybad.utils.displayDate
 import kotlinx.coroutines.flow.Flow
 
+@SuppressLint("Recycle")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCoursesScreen(
@@ -94,11 +97,11 @@ fun MyCoursesScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Отображение текущих курсов таблеток
-            items(state.courses) { course ->
+            items(state.courses, key = { course -> course.id }) { course ->
                 CourseItem(
                     courseDisplay = course,
-                    icons = icons,
-                    typePlurals = typePlurals,
+                    icon = icons.getResourceId(course.icon, 0),
+                    type = typePlurals[course.type],
                     onClick = { sendEvent(MyCoursesContract.Event.CourseEditing(course.id)) },
                 )
             }
@@ -106,21 +109,11 @@ fun MyCoursesScreen(
     }
 }
 
-@Preview
-@Composable
-private fun CourseItemPreview() {
-    CourseItem(
-        courseDisplay = CourseDisplayDomainModel(),
-        icons = LocalContext.current.resources.obtainTypedArray(R.array.icons),
-        typePlurals = getFormsPluralsArray(),
-    )
-}
-
 @Composable
 private fun CourseItem(
     courseDisplay: CourseDisplayDomainModel,
-    icons: TypedArray,
-    typePlurals: Array<Int>,
+    @DrawableRes icon: Int,
+    @PluralsRes type: Int,
     onClick: () -> Unit = {},
 ) {
 
@@ -147,7 +140,7 @@ private fun CourseItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ReUseIcon(
-                    painterId = icons.getResourceId(courseDisplay.icon, 0),
+                    painterId = icon,
                     color = PickColor.getColor(courseDisplay.color),
                     tint = MaterialTheme.colorScheme.outline,
                     iconSize = 24.dp,
@@ -174,7 +167,7 @@ private fun CourseItem(
                                     Text(
                                         // тут ерунда получается, у нас доза "0.5 таблетки 2 раза, утро и вечер", "по 1-й таблетки 3 раза в день"
                                         text = pluralStringResource(
-                                            id = typePlurals[courseDisplay.type],
+                                            id = type,
                                             count = countPerDoseMax.toInt(),
                                             Pair(countPerDoseMin, countPerDoseMax).toText()
                                         ),
@@ -272,4 +265,14 @@ private fun CourseItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun CourseItemPreview() {
+    CourseItem(
+        courseDisplay = CourseDisplayDomainModel(),
+        icon = 0,
+        type = 0,
+    )
 }

@@ -4,23 +4,19 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.UsageDisplayDomainModel
+import app.mybad.domain.models.checkDate
 import app.mybad.domain.usecases.usages.GetPatternUsagesWithNameAndDateBetweenUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
 import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.betweenDaysSystem
 import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTimeShort
 import app.mybad.utils.displayTimeInMinutes
-import app.mybad.utils.isBetweenDay
-import app.mybad.utils.isEqualsDay
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.timeInMinutes
-import app.mybad.utils.toSystem
-import app.mybad.utils.toUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,14 +69,11 @@ class MainViewModel @Inject constructor(
             // для тестов, потом удалить
             p.plus(u).mapValues {
                 val pattern = it.value
-                val timeInMinutesUTC = pattern.timeInMinutes
-                val useTime = if (pattern.isPattern) date.toUTC().changeTime(pattern.timeInMinutes)
-                    .toSystem() else pattern.useTime // с учетом часового пояса
+                val useTime = if (pattern.isPattern) date.changeTime(pattern.timeInMinutes)
+                    else pattern.useTime // с учетом часового пояса
                 Log.w(
                     "VTTAG",
-                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} timeInMinutesUTC=${timeInMinutesUTC.displayTimeInMinutes()} - ${
-                        useTime.timeInMinutes().displayTimeInMinutes()
-                    }"
+                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} ${useTime.timeInMinutes().displayTimeInMinutes()}"
                 )
                 pattern.copy(
                     name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
@@ -110,11 +103,8 @@ class MainViewModel @Inject constructor(
     private fun transformPatternUsages(
         date: LocalDateTime,
         patterns: List<UsageDisplayDomainModel>
-    ): Map<String, UsageDisplayDomainModel> = patterns.filter { pattern ->
-        date.isEqualsDay(pattern.startDate) ||
-            (date.isBetweenDay(pattern.startDate, pattern.endDate) &&
-                (pattern.regime == 0 || date.betweenDaysSystem(pattern.startDate) % (pattern.regime + 1) == 0L))
-    }.associateBy { it.toUsageKey() }
+    ): Map<String, UsageDisplayDomainModel> = patterns.filter { it.checkDate(date) }
+        .associateBy { it.toUsageKey() }
 
     private fun receivingCourses() {
         viewModelScope.launch {

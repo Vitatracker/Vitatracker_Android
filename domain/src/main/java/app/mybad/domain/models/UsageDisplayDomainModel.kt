@@ -1,5 +1,8 @@
 package app.mybad.domain.models
 
+import app.mybad.utils.betweenDays
+import app.mybad.utils.isBetweenDay
+import app.mybad.utils.isEqualsDay
 import app.mybad.utils.notNullDateTime
 import app.mybad.utils.systemToEpochSecond
 import kotlinx.datetime.LocalDateTime
@@ -71,5 +74,14 @@ data class UsageDisplayDomainModel(
         result = 31 * result + (factUseTime?.hashCode() ?: 0)
         result = 31 * result + remedyId.hashCode()
         return result
+    }
+}
+
+fun UsageDisplayDomainModel.checkDate(date: LocalDateTime): Boolean {
+    return if (this.isPattern) {
+        date.isEqualsDay(startDate) || (date.isBetweenDay(this.startDate, this.endDate) &&
+            (this.regime == 0 || date.betweenDays(this.startDate) % (this.regime + 1) == 0L))
+    } else {
+        this.useTime.isEqualsDay(date)
     }
 }

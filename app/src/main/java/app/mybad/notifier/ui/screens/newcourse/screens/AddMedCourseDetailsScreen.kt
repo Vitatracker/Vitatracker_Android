@@ -26,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -48,8 +47,8 @@ import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.displayDateFull
+import app.mybad.utils.displayDateTime
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,25 +59,30 @@ fun AddMedCourseDetailsScreen(
     navigation: (navigationEffect: CreateCourseContract.Effect.Navigation) -> Unit = {},
 ) {
     Log.w("VTTAG", "AddMedCourseDetailsScreen:: start")
+    val regimeList = stringArrayResource(R.array.regime)
+    var selectedInput by remember { mutableStateOf<CourseSelectInput?>(null) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         // обновим начальную дату курса и пределы дат
         sendEvent(CreateCourseContract.Event.UpdateCourseStartDate)
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
-                is CreateCourseContract.Effect.Collapse -> {}
-                is CreateCourseContract.Effect.Expand -> {}
+
+                is CreateCourseContract.Effect.Collapse -> {
+                    bottomSheetState.hide()
+                }
+
+                is CreateCourseContract.Effect.Expand -> {
+                    bottomSheetState.expand()
+                }
             }
         }
     }
-    val regimeList = stringArrayResource(R.array.regime)
-    var selectedInput by remember { mutableStateOf<CourseSelectInput?>(null) }
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
-
     if (bottomSheetState.isVisible) {
         ModalBottomSheet(
-            onDismissRequest = { scope.launch { bottomSheetState.hide() } },
+            onDismissRequest = { sendEvent(CreateCourseContract.Event.ActionCollapse) },
             sheetState = bottomSheetState,
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
             containerColor = MaterialTheme.colorScheme.secondary
@@ -86,11 +90,20 @@ fun AddMedCourseDetailsScreen(
             RemindNewCourseBottomSheet(
                 modifier = Modifier.padding(16.dp),
                 endDate = state.course.endDate,
+                remindDate = state.course.remindDate,
+                interval = state.course.interval,
                 onSave = { remindDate, interval ->
-                    val newCourse = state.course.copy(remindDate = remindDate, interval = interval)
-                    sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-                    sendEvent(CreateCourseContract.Event.CourseIntervalEntered)
-                    scope.launch { bottomSheetState.hide() }
+                    Log.w(
+                        "VTTAG",
+                        "AddMedCourseDetailsScreen:: remindDate=${remindDate?.displayDateTime()} interval=$interval"
+                    )
+                    sendEvent(
+                        CreateCourseContract.Event.UpdateCourseRemindDate(
+                            remindDate = remindDate,
+                            interval = interval,
+                        )
+                    )
+                    sendEvent(CreateCourseContract.Event.ActionCollapse)
                 }
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -148,11 +161,7 @@ fun AddMedCourseDetailsScreen(
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.background),
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                    onClick = {
-                        if (!state.courseIntervalEntered) {
-                            scope.launch { bottomSheetState.expand() }
-                        }
-                    },
+                    onClick = { sendEvent(CreateCourseContract.Event.ActionExpand) },
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,

@@ -23,7 +23,6 @@ const val MINUTES_IN_DAY = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
 const val TIME_IS_UP = 3600
-const val TIME_NOTIFICATION = 840 // время в минутах 14:00
 const val WEEKS_PER_MONTH = 6 // строк недель месяца
 const val DAYS_A_WEEK = 7 // дней недели
 const val LIMIT_START_MIN = 12 // - минимальная дата начала курса от текущей даты
@@ -49,6 +48,7 @@ fun Long.toDateTimeSystem(minutesUTC: Int) = this.toInstant()
     .toLocalDateTime(TimeZone.UTC).changeTime(minutesUTC)
     .toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
+
 fun Instant.toDateTimeSystem() = this.toLocalDateTime(TimeZone.currentSystemDefault())
 fun LocalDateTime.toEpochSecond() = this.toInstant(TimeZone.UTC).epochSeconds
 fun LocalDateTime.systemToEpochSecond() = this.toInstant(TimeZone.currentSystemDefault())
@@ -173,11 +173,11 @@ fun Int.dayFullDisplay(): String = DayOfWeek(this + 1).getDisplayName(
 
 // Преобразование и замена даты и времени
 // тут дата не меняется, а время меняется из UTC и подменяется в локальной дате
-fun LocalDateTime.changeTimeOfUTC_(minutesUTC: Int) = this
-    .toUTC()
-    .changeTime(minutes = minutesUTC)
-    .toSystem()
-    .let { this.changeTime(hour = it.hour, minute = it.minute) }
+//fun LocalDateTime.changeTimeOfUTC_(minutesUTC: Int) = this
+//    .toUTC()
+//    .changeTime(minutes = minutesUTC)
+//    .toSystem()
+//    .let { this.changeTime(hour = it.hour, minute = it.minute) }
 
 fun LocalDateTime.changeTime(minutes: Int) = this.changeTime(
     hour = minutes / MINUTES_IN_HOUR,
@@ -354,8 +354,15 @@ fun LocalDateTime.betweenSecondsSystem(date: LocalDateTime) = this
     .systemToInstant()
     .betweenSeconds(date.systemToInstant())
 
-private fun Instant.betweenDays(other: Instant) = this.minus(other).inWholeDays.plus(1)
-fun LocalDateTime.betweenDaysSystem(date: LocalDateTime) = this
+private fun Instant.betweenDays(other: Instant) = this.minus(other).inWholeDays
+//для расчета разницы между датами + текущие сутки
+fun LocalDateTime.betweenDaysPlus(date: LocalDateTime) = this
+    .systemToInstant()
+    .betweenDays(date.systemToInstant())
+    .plus(1)
+
+// для расчета точной даты
+fun LocalDateTime.betweenDays(date: LocalDateTime) = this
     .systemToInstant()
     .betweenDays(date.systemToInstant())
 
@@ -380,14 +387,15 @@ fun LocalDateTime.nextCourseStart(
             .plus(coursesInterval)
             .atStartOfDay()
         val remindDate = if (coursesInterval.months > 0 || coursesInterval.days > 0
-            || remindBeforePeriod.months > 0 || remindBeforePeriod.days > 0
+            || remindBeforePeriod.months > 0 || remindBeforePeriod.days > 0 || remindTime > 0
         ) {
             nextCourseStart
                 .minus(remindBeforePeriod)
-                .changeTime(minute = remindTime, hour = 0)
+                .plusDays(1) // т.е. напоминаем
+                .changeTime(minutes = remindTime)
         } else null
         val interval = remindDate?.let {
-            nextCourseStart.betweenDaysSystem(this.atStartOfDay())
+            nextCourseStart.betweenDaysPlus(this.atStartOfDay()) // тут чтобы не было 0, на следующий день значит +1
         } ?: 0L
         remindDate to interval
     } catch (_: Error) {
@@ -402,23 +410,22 @@ fun LocalDateTime.nextCourseIntervals(
 ): Triple<Int, Int, Int> {
     // начало нового курса + интервал за сколько дней сообщить - последний день курса, который может быть больше
     // remindTime, coursesInterval (day), remindBeforePeriod (day)
-    if (remindDate == null) return Triple(TIME_NOTIFICATION, 0, 0)
+    if (remindDate == null) return Triple(0, 0, 0)
 
     return try {
-        // не больше 12 месяцев и 30 дней
-        val intervalCorrect = if (interval in 0..390) {
-            interval.toInt() - 1 // -1 день, значит следующий день
-        } else 0
+        val intervalCorrect = interval.minus(1) // -1 день, тут чтобы не было 0, на следующий день значит +1
+            .takeIf { it in 0..390 } // не больше 12 месяцев и 30 дней
+            ?: 0
 
         val remindTime = remindDate.timeInMinutes()
         val nextCourseStart = this.plusDays(intervalCorrect).atStartOfDay()
-        val days = nextCourseStart.betweenDaysSystem(remindDate.atStartOfDay())
-        // не больше 12 месяцев и 30 дней
-        val beforeDay = if (days in 0..390) days else 0
+        val beforeDay = nextCourseStart.betweenDaysPlus(remindDate.atStartOfDay())
+            .takeIf { it in 0..390 } // не больше 12 месяцев и 30 дней
+            ?: 0
 
-        Triple(remindTime, intervalCorrect, beforeDay.toInt())
+        Triple(remindTime, intervalCorrect.toInt(), beforeDay.toInt())
     } catch (_: Error) {
-        Triple(TIME_NOTIFICATION, 0, 0)
+        Triple(0, 0, 0)
     }
 }
 

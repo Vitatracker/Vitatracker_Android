@@ -44,6 +44,18 @@ class CreateCourseViewModel @Inject constructor(
 
             is CreateCourseContract.Event.UpdateCourse -> setState { copy(course = event.course) }
 
+            is CreateCourseContract.Event.UpdateCourseRemindDate -> {
+                setState {
+                    copy(
+                        course = viewState.value.course.copy(
+                            remindDate = event.remindDate,
+                            interval = event.interval
+                        ),
+                        courseIntervalEntered = event.remindDate?.let { true } ?: false
+                    )
+                }
+            }
+
             is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
 
             is CreateCourseContract.Event.UpdateUsagePatterns -> {
@@ -65,10 +77,6 @@ class CreateCourseViewModel @Inject constructor(
             }
 
             is CreateCourseContract.Event.UpdateRemedyName -> updateRemedyName(name = event.newName)
-
-            CreateCourseContract.Event.CourseIntervalEntered -> {
-                setState { copy(courseIntervalEntered = true) }
-            }
 
             CreateCourseContract.Event.UpdateCourseStartDate -> {
                 if (!viewState.value.updateCourseStartDate) setCourseDate()
@@ -240,7 +248,7 @@ class CreateCourseViewModel @Inject constructor(
                 ),
                 nextAllowed = viewState.value.usagesPattern.isNotEmpty(),
                 updateCourseStartDate = true,
-                isError = false,
+//                isError = false,
             )
         }
     }
