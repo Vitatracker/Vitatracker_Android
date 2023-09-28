@@ -1,9 +1,11 @@
 package app.mybad.notifier.ui.common
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,17 +23,17 @@ import app.mybad.theme.R
 
 @Composable
 fun ReUseFilledButton(
-    textId: Int,
+    @StringRes textId: Int,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         enabled = isEnabled,
-        onClick = {
-            onClick()
-        },
+        onClick = onClick,
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
         shape = MaterialTheme.shapes.small
     ) {
@@ -45,13 +47,15 @@ fun ReUseFilledButton(
 
 @Composable
 fun ReUseOutlinedButton(
-    textId: Int,
+    @StringRes textId: Int,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     OutlinedButton(
         modifier = modifier,
-        onClick = { onClick() },
+        enabled = isEnabled,
+        onClick = onClick,
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
         colors = ButtonDefaults.buttonColors(

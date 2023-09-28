@@ -225,9 +225,6 @@ fun CalendarPairSelectorView(
         }
         Spacer(Modifier.height(16.dp))
         ReUseFilledButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
             textId = R.string.settings_save,
             onClick = {
                 onSelect(startDay to endDay)
