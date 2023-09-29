@@ -9,6 +9,7 @@ import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.betweenDays
 import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.isEqualsDay
 import app.mybad.utils.plusDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,18 +73,22 @@ class MyCoursesViewModel @Inject constructor(
     private fun addRemindCourse(courses: List<CourseDisplayDomainModel>): List<CourseDisplayDomainModel> {
         val currentDate = currentDateTimeSystem()
         val newCourses = mutableListOf<CourseDisplayDomainModel>()
-        courses.forEach { newCourse ->
-            if (newCourse.remindDate != null && newCourse.interval >= 0) {
-
-                val startDate = newCourse.endDate.plusDays(newCourse.interval).atStartOfDay()
+        return courses.mapNotNull { course ->
+            course.remindDate?.let {
+                val startDate = course.endDate.plusDays(course.interval).atStartOfDay()
                 if (startDate > currentDate) {
                     val endDate = startDate.plusDays(
-                        newCourse.endDate.atStartOfDay().betweenDays(newCourse.startDate)
+                        // проверим что курс на 1 день
+                        if (course.endDate.isEqualsDay(course.startDate)) 0
+                        else course.endDate.atStartOfDay().betweenDays(course.startDate)
                     ).atEndOfDay()
                     newCourses.add(
-                        newCourse.copy(
-                            id = 1000000 + newCourse.id,
+                        course.copy(
+                            id = 1000000 + course.id,
                             idn = 0,
+
+                            idOld = if (course.endDate >= currentDate) 0 else course.id, // для редактирования
+
                             startDate = startDate,
                             endDate = endDate,
                             remindDate = null,
@@ -92,8 +97,9 @@ class MyCoursesViewModel @Inject constructor(
                     )
                 }
             }
-        }
-        return courses.plus(newCourses)
+            // проверяем, что курс уже закончен, не показываем его, но для редактирования id у нас прописан
+            if (course.endDate >= currentDate) course else null
+        }.plus(newCourses)
     }
 
 }

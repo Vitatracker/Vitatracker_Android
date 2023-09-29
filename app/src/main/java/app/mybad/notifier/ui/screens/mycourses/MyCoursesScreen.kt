@@ -102,7 +102,14 @@ fun MyCoursesScreen(
                     courseDisplay = course,
                     icon = icons.getResourceId(course.icon, 0),
                     type = typePlurals[course.type],
-                    onClick = { sendEvent(MyCoursesContract.Event.CourseEditing(course.id)) },
+                    onClick = {
+                        sendEvent(
+                            MyCoursesContract.Event.CourseEditing(
+                                // тут если есть id старого курса, то для редактирования курса берется именно он
+                                if (course.idOld > 0) course.idOld else course.id
+                            )
+                        )
+                    },
                 )
             }
         }
@@ -195,7 +202,7 @@ private fun CourseItem(
                         }
                     }
                     // иконка редактирования курса
-                    if (courseDisplay.remindDate != null || courseDisplay.interval == 0L) {
+                    if (courseDisplay.remindDate != null || courseDisplay.interval == 0L || courseDisplay.idOld > 0) {
                         ReUseIcon(
                             painterId = R.drawable.icon_pencil,
                             color = MaterialTheme.colorScheme.primary,

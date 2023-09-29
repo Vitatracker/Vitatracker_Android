@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDateTime
 data class CourseDisplayDomainModel(
     val id: Long = 0,
     var idn: Long = 0,
+    var idOld: Long = 0, // id course для редактирования будущего курса
 
     val userId: Long = AuthToken.userId,
     val userIdn: String = "",
