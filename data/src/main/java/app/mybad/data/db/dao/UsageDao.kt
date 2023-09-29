@@ -303,6 +303,13 @@ interface UsageDao {
     )
     suspend fun deleteUsagesByCourseId(courseId: Long)
 
+    @Query(
+        "delete from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.COURSE_IDN
+        } = :courseIdn"
+    )
+    suspend fun deleteUsagesByCourseIdn(courseIdn: Long)
+
     @Delete
     suspend fun deleteUsages(usages: List<UsageModel>)
 

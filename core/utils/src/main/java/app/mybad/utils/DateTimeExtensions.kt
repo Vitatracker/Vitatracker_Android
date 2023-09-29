@@ -361,9 +361,11 @@ fun LocalDateTime.betweenDays(date: LocalDateTime) = this
     .systemToInstant()
     .betweenDays(date.systemToInstant())
     .plus(1)
-fun LocalDateTime.courseDuration(date: LocalDateTime) = this
+
+// тут время должно быть одинаковое
+fun LocalDateTime.courseDuration(date: LocalDateTime) = this.atStartOfDay()
     .systemToInstant()
-    .betweenDays(date.systemToInstant())
+    .betweenDays(date.atStartOfDay().systemToInstant())
 
 fun LocalDateTime.isEqualsDay(date: LocalDateTime) = this.dayOfYear == date.dayOfYear &&
     this.year == date.year

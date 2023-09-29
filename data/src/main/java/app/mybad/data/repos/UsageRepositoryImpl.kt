@@ -207,6 +207,12 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteUsagesByCourseIdn(courseIdn: Long) = withContext(dispatcher) {
+        runCatching {
+            db.deleteUsagesByCourseIdn(courseIdn)
+        }
+    }
+
     override suspend fun deleteUsages(usages: List<UsageDomainModel>) = withContext(dispatcher) {
         runCatching {
             db.deleteUsages(usages.mapToData())

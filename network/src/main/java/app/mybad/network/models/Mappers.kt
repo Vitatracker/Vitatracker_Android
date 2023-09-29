@@ -16,6 +16,8 @@ import app.mybad.network.models.response.RemedyNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
 import app.mybad.utils.MILES_SECONDS
+import app.mybad.utils.atEndOfDay
+import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.systemToInstant
@@ -75,8 +77,8 @@ fun CourseNetworkModel.mapToDomain(
     remedyId = remedyIdLoc,
     remedyIdn = remedyId,
 
-    startDate = (startDate / MILES_SECONDS).toDateTimeSystem(),
-    endDate = (endDate / MILES_SECONDS).toDateTimeSystem(),
+    startDate = (startDate / MILES_SECONDS).toDateTimeSystem().atStartOfDay(),
+    endDate = (endDate / MILES_SECONDS).toDateTimeSystem().atEndOfDay(),
 
     remindDate = if (remindDate > 0) (remindDate / MILES_SECONDS).toDateTimeSystem() else null,
     interval = interval,

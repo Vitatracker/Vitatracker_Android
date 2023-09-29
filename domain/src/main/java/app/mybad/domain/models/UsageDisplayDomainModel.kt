@@ -51,7 +51,7 @@ data class UsageDisplayDomainModel(
     val measureUnit: Int = 0,
     val photo: String? = null,
 ) {
-    fun toUsageKey() = "%011d%06d%06d".format(useTime.systemToEpochSecond(), courseId, remedyId)
+    fun toUsageKey() = "%011d-%06d-%06d".format(useTime.systemToEpochSecond(), courseId, remedyId)
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

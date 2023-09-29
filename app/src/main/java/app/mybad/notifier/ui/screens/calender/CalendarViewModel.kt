@@ -160,7 +160,7 @@ class CalendarViewModel @Inject constructor(
                     name = "${usage.name}|U|${usage.useTime.displayDateTimeShort()}",
                 )
             }.associateBy { it.toUsageKey() }
-        val pattensAndUsages = pattens.plus(future).plus(usages).values.toList()
+        val pattensAndUsages = pattens.plus(future).plus(usages).values.sortedBy { it.timeInMinutes }
         Log.w(
             "VTTAG",
             "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, future=${future.size}, usages=${usages.size}]"

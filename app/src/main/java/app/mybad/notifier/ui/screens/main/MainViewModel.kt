@@ -65,23 +65,24 @@ class MainViewModel @Inject constructor(
             ),
         ) { p, u ->
             // тут нужна подмена для useTime и timeInMinutes для pattern
-//            p.plus(u).toSortedMap()
-            // для тестов, потом удалить
-            p.plus(u).mapValues {
+            p.plus(u).map {
                 val pattern = it.value
                 val useTime = if (pattern.isPattern) date.changeTime(pattern.timeInMinutes)
-                    else pattern.useTime // с учетом часового пояса
+                else pattern.useTime // с учетом часового пояса
                 Log.w(
                     "VTTAG",
-                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} ${useTime.timeInMinutes().displayTimeInMinutes()}"
+                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} ${
+                        useTime.timeInMinutes().displayTimeInMinutes()
+                    }"
                 )
                 pattern.copy(
+                    // для тестов, потом исправить на name = name
                     name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
                     useTime = useTime,
                     timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
                 )
 
-            }.toSortedMap()
+            }.sortedBy { it.useTime }.associateBy { it.toUsageKey() }
         }
     }
         .distinctUntilChanged()

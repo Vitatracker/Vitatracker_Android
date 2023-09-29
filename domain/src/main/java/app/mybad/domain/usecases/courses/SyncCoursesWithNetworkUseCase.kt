@@ -13,6 +13,7 @@ import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.repository.network.CourseNetworkRepository
 import app.mybad.domain.repository.network.RemedyNetworkRepository
 import app.mybad.domain.repository.network.UsageNetworkRepository
+import app.mybad.utils.timeInMinutesUTCToSystem
 import javax.inject.Inject
 
 class SyncCoursesWithNetworkUseCase @Inject constructor(
@@ -76,6 +77,9 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         courseIdNet: Long,
         courseIdLoc: Long = 0,
     ) {
+        // сначала удалим что есть в локальной базе
+        usageRepository.deleteUsagesByCourseIdn(courseIdn = courseIdNet)
+        // загрузим с сервера
         usageNetworkRepository.getUsagesByCourseId(
             courseId = courseIdNet,
             courseIdLoc = courseIdLoc,
@@ -149,7 +153,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                 remedyRepository.getRemedyByIdn(courseNew.idn).onSuccess { remedy ->
                     courseRepository.insertCourse(courseNew.copy(remedyId = remedy.id))
                         .onSuccess { courseIdLoc ->
-                            // создать паттерн из строки
+                            // создать паттерн из строки в локальную базу
                             patternsToLocal(
                                 patternUsages = courseNew.patternUsages,
                                 courseIdLoc = courseIdLoc,
@@ -171,6 +175,9 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
         courseIdLoc: Long,
         courseIdNet: Long = 0
     ) {
+        // сначала удалим, если есть что-то
+        patternUsageRepository.deletePatternUsagesByCourseId(courseIdLoc)
+        // дабавим из строки паттерна
         if (patternUsages.isNotBlank()) {
             val patterns = patternUsages.toPatterns()
             patterns.forEach {
@@ -178,7 +185,7 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                     PatternUsageDomainModel(
                         courseId = courseIdLoc,
                         courseIdn = courseIdNet,
-                        timeInMinutes = it.first,
+                        timeInMinutes = it.first.timeInMinutesUTCToSystem(), // тут UTC, но нам нужно с учетом часового пояса, при сохранении в базу будет перевод в UTC
                         quantity = it.second,
                     )
                 )

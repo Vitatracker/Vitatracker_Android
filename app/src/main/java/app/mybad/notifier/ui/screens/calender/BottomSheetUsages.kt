@@ -220,6 +220,7 @@ private fun SingleUsageItem(
                         )
                     }
                 }
+                //TODO("вынести и реализовать логику проверки, галка или нет и будущий курс или история")
                 when (now.betweenSecondsSystem(useTime)) {
                     in Long.MIN_VALUE..-TIME_IS_UP -> {
                         Icon(

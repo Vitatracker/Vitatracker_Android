@@ -10,7 +10,6 @@ import app.mybad.utils.atStartOfDay
 import app.mybad.utils.betweenDays
 import app.mybad.utils.courseDuration
 import app.mybad.utils.currentDateTimeSystem
-import app.mybad.utils.isEqualsDay
 import app.mybad.utils.plusDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +40,8 @@ class MyCoursesViewModel @Inject constructor(
         }
     }
 
-    private val currentDateTime = MutableStateFlow(currentDateTimeSystem()) // с учетом часового пояса
+    private val currentDateTime =
+        MutableStateFlow(currentDateTimeSystem()) // с учетом часового пояса
 
     init {
         Log.w("VTTAG", "MyCoursesViewModel: init")
