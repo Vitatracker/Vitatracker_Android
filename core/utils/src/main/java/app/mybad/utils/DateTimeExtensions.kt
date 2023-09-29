@@ -354,10 +354,14 @@ fun LocalDateTime.betweenSecondsSystem(date: LocalDateTime) = this
     .systemToInstant()
     .betweenSeconds(date.systemToInstant())
 
-private fun Instant.betweenDays(other: Instant) = this.minus(other).inWholeDays.plus(1)
+private fun Instant.betweenDays(other: Instant) = this.minus(other).inWholeDays
 
 //для расчета разницы между датами + текущие сутки
 fun LocalDateTime.betweenDays(date: LocalDateTime) = this
+    .systemToInstant()
+    .betweenDays(date.systemToInstant())
+    .plus(1)
+fun LocalDateTime.courseDuration(date: LocalDateTime) = this
     .systemToInstant()
     .betweenDays(date.systemToInstant())
 

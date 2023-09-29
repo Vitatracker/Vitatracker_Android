@@ -8,6 +8,7 @@ import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.betweenDays
+import app.mybad.utils.courseDuration
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.isEqualsDay
 import app.mybad.utils.plusDays
@@ -78,9 +79,7 @@ class MyCoursesViewModel @Inject constructor(
                 val startDate = course.endDate.plusDays(course.interval).atStartOfDay()
                 if (startDate > currentDate) {
                     val endDate = startDate.plusDays(
-                        // проверим что курс на 1 день
-                        if (course.endDate.isEqualsDay(course.startDate)) 0
-                        else course.endDate.atStartOfDay().betweenDays(course.startDate)
+                        course.endDate.courseDuration(course.startDate)
                     ).atEndOfDay()
                     newCourses.add(
                         course.copy(
