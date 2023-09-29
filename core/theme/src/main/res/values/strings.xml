@@ -202,9 +202,13 @@
 
     <!-- regime-режим   -->
     <string name="regime_every_day">Every day</string>
-    <string name="regime_every_other_day">Every other day</string>
+    <string name="regime_every_one_day">Every other day</string>
     <string name="regime_every_two_days">Every 2 days</string>
     <string name="regime_every_three_days">Every 3 days</string>
+    <string name="regime_every_four_days">Every 4 days</string>
+    <string name="regime_every_five_days">Every 5 days</string>
+    <string name="regime_every_six_days">Every 6 days</string>
+    <string name="regime_every_seven_days">Every 7 days</string>
 
     <!-- types   -->
     <string name="types_tablet">Tablet</string>

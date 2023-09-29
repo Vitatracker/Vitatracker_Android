@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -26,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlin.math.absoluteValue
@@ -40,7 +39,7 @@ fun RollSelectorView(
     startOffset: Int = 0,
     onSelect: (Int) -> Unit = {},
 ) {
-    val pagerState = rememberPagerState(initialPage = list.size * 10000 + startOffset) { list.size }
+    val pagerState = rememberPagerState(initialPage = startOffset) { list.size }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,7 +50,7 @@ fun RollSelectorView(
         VerticalPager(
             modifier = Modifier.height(200.dp),
             state = pagerState,
-            pageSpacing = 8.dp,
+            pageSpacing = 21.dp,
             contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
             pageSize = PageSize.Fixed(32.dp)
         ) {
@@ -83,21 +82,16 @@ fun RollSelectorView(
                     .wrapContentWidth()
                     .scale(scale)
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = list[it % list.size],
-                        style = Typography.bodyLarge.copy(fontSize = 16.sp),
-                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
-                    )
-                }
+                Text(
+                    text = list[it % list.size],
+                    style = Typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
+                )
             }
         }
         Spacer(Modifier.height(16.dp))
         ReUseFilledButton(
-            modifier = Modifier.fillMaxWidth(),
             textId = R.string.settings_save,
             onClick = { onSelect(pagerState.currentPage % list.size) }
         )

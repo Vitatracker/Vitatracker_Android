@@ -15,9 +15,13 @@
     </string-array>
     <string-array name="regime">
         <item>@string/regime_every_day</item>
-        <item>@string/regime_every_other_day</item>
+        <item>@string/regime_every_one_day</item>
         <item>@string/regime_every_two_days</item>
         <item>@string/regime_every_three_days</item>
+        <item>@string/regime_every_four_days</item>
+        <item>@string/regime_every_five_days</item>
+        <item>@string/regime_every_six_days</item>
+        <item>@string/regime_every_seven_days</item>
     </string-array>
     <string-array name="types">
         <item>@string/types_tablet</item>

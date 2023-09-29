@@ -193,9 +193,13 @@
 
     <!-- regime-режим   -->
     <string name="regime_every_day">Каждый день</string>
-    <string name="regime_every_other_day">Через день</string>
+    <string name="regime_every_one_day">Через день</string>
     <string name="regime_every_two_days">Каждые 2 дня</string>
     <string name="regime_every_three_days">Каждые 3 дня</string>
+    <string name="regime_every_four_days">Каждые 4 дня</string>
+    <string name="regime_every_five_days">Каждые 5 дней</string>
+    <string name="regime_every_six_days">Каждые 6 дней</string>
+    <string name="regime_every_seven_days">Каждые 7 дней</string>
 
     <!-- types   -->
     <string name="types_tablet">Таблетка</string>
