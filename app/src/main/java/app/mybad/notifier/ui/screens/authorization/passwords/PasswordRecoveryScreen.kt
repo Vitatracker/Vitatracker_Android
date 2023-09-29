@@ -152,7 +152,6 @@ private fun PasswordRecoveryScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         ReUseFilledButton(
-            modifier = Modifier.fillMaxWidth(),
             textId = R.string.action_recover,
             isEnabled = state.isRecoveryButtonEnabled
         ) {

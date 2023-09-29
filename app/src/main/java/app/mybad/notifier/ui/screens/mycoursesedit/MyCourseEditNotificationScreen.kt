@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -182,7 +181,6 @@ fun MyCourseEditNotificationScreen(
                 Spacer(Modifier.height(16.dp))
             }
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.navigation_next,
                 isEnabled = state.nextAllowed,
             ) {

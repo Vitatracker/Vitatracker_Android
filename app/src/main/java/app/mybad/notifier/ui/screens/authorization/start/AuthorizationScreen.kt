@@ -72,7 +72,6 @@ fun AuthorizationScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 ReUseFilledButton(
-                    modifier = Modifier.fillMaxWidth(),
                     textId = R.string.authorization_screen_login,
                     onClick = { sendEvent(AuthorizationContract.Event.SignIn) }
                 )

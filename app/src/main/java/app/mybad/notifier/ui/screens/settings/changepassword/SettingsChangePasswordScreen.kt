@@ -3,7 +3,6 @@ package app.mybad.notifier.ui.screens.settings.changepassword
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -55,7 +54,6 @@ fun SettingsChangePasswordScreen(
         ) {
             ChangePasswordTop(state, sendEvent)
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.action_confirm
             ) {
                 sendEvent(SettingsChangePasswordContract.Event.Save)

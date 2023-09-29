@@ -119,7 +119,6 @@ fun RemindNewCourseBottomSheet(
             )
         }
         ReUseFilledButton(
-            modifier = Modifier.fillMaxWidth(),
             textId = R.string.settings_save,
             onClick = {
                 val (remindDateNew, intervalNew) = endDate.nextCourseStart(

@@ -392,9 +392,6 @@ fun SingleDayCalendarSelector(
         }
         Spacer(Modifier.height(16.dp))
         ReUseFilledButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
             textId = R.string.settings_save,
             onClick = {
                 onSelect(selectedDay)

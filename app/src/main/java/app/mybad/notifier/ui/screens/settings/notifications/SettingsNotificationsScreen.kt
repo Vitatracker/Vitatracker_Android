@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -103,7 +102,6 @@ private fun ContactUs(sendEvent: (event: SettingsNotificationsContract.Event) ->
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
-        modifier = Modifier.fillMaxWidth(),
         textId = R.string.settings_notifications_contact_us_button,
         onClick = {
             sendEvent(SettingsNotificationsContract.Event.ContactUsClicked)
@@ -190,7 +188,6 @@ private fun SetupNotifications(sendEvent: (event: SettingsNotificationsContract.
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
-        modifier = Modifier.fillMaxWidth(),
         textId = R.string.settings_notifications_setup_notifications_button,
         onClick = {
             sendEvent(SettingsNotificationsContract.Event.SetupNotificationsClicked)
@@ -212,7 +209,6 @@ private fun SleepMode(sendEvent: (event: SettingsNotificationsContract.Event) ->
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
-        modifier = Modifier.fillMaxWidth(),
         textId = R.string.settings_notifications_sleep_regime_button,
         onClick = {
             sendEvent(SettingsNotificationsContract.Event.SetupSleepRegimeClicked)

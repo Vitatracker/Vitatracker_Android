@@ -70,7 +70,6 @@ private fun NewPasswordScreen() {
             NewPasswordScreenEnteredPassword(R.string.login_password)
             NewPasswordScreenEnteredPassword(R.string.login_password_confirm)
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.text_continue
             ) {
 //                navController.navigate(

@@ -67,7 +67,6 @@ fun StartRegistrationScreen(
             RegistrationScreenBaseForSignIn(state, sendEvent)
             Spacer(modifier = Modifier.height(16.dp))
             ReUseFilledButton(
-                modifier = Modifier.fillMaxWidth(),
                 textId = R.string.registration_create_account,
                 isEnabled = state.isRegistrationButtonEnabled && !state.isLoading,
                 onClick = {
