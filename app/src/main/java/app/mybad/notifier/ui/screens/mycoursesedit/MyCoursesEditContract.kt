@@ -26,8 +26,8 @@ class MyCoursesEditContract {
         object NotificationEditing : Event
         data class NotificationUpdateAndEnd(
             val remindTime: Int,// тут в минутах HH:mm
-            val coursesInterval: DateTimePeriod,
-            val remindBeforePeriod: DateTimePeriod,
+            val coursesInterval: Int, // дней
+            val remindBeforePeriod: Int,
         ) : Event
     }
 
@@ -39,8 +39,8 @@ class MyCoursesEditContract {
         val usagesPatternEdit: List<UsageFormat> = emptyList(),
 
         val remindTime: Int = 0,// тут обязательно 00:00, иначе будет создаваться новый курс
-        val coursesInterval: DateTimePeriod = DateTimePeriod(days = 0),
-        val remindBeforePeriod: DateTimePeriod = DateTimePeriod(days = 0),
+        val coursesInterval: Int = 0,
+        val remindBeforePeriod: Int = 0,
 
         val nextAllowed: Boolean = false,
     ) : ViewState

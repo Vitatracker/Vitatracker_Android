@@ -24,7 +24,9 @@ import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.days
 import app.mybad.utils.displayDateTime
+import app.mybad.utils.months
 import app.mybad.utils.nextCourseIntervals
 import app.mybad.utils.nextCourseStart
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -146,8 +148,8 @@ class MyCoursesEditViewModel @Inject constructor(
 
                             nextAllowed = usagesPattern.isNotEmpty(),
 
-                            coursesInterval = DateTimePeriod(days = interval),
-                            remindBeforePeriod = DateTimePeriod(days = beforeDay),
+                            coursesInterval = interval,
+                            remindBeforePeriod = beforeDay,
                             remindTime = remindTime,
                         )
                     }
@@ -218,8 +220,8 @@ class MyCoursesEditViewModel @Inject constructor(
 
     private fun updateReminder(
         remindTime: Int,
-        coursesInterval: DateTimePeriod,
-        remindBeforePeriod: DateTimePeriod,
+        coursesInterval: Int,
+        remindBeforePeriod: Int,
     ) {
         val (remindDate, interval) = viewState.value.course.endDate.nextCourseStart(
             remindTime = remindTime,
@@ -240,7 +242,7 @@ class MyCoursesEditViewModel @Inject constructor(
         }
         Log.w(
             "VTTAG",
-            "MyCoursesViewModel::updateReminder: endDay=${viewState.value.course.endDate.displayDateTime()} remindDate=${remindDate?.displayDateTime()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=${viewState.value.course.interval}"
+            "MyCoursesViewModel::updateReminder: endDay=${viewState.value.course.endDate.displayDateTime()} remindDate=${remindDate?.displayDateTime()} coursesInterval=${coursesInterval.months()}:${coursesInterval.days()} interval=${viewState.value.course.interval}"
         )
     }
 

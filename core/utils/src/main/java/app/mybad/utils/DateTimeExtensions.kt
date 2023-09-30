@@ -378,20 +378,23 @@ fun LocalDateTime.isBetweenDay(firstDate: LocalDateTime, lastDate: LocalDateTime
 
 // интервал и дата оповещения
 // endDate в локальном времени
+fun Int.months() = this / 30
+fun Int.days() = this - this.months() * 30
+
+fun Int.monthPlusDay(days: Int) = this * 30 + days
+
 fun LocalDateTime.nextCourseStart(
-    coursesInterval: DateTimePeriod,
-    remindBeforePeriod: DateTimePeriod,
+    coursesInterval: Int,
+    remindBeforePeriod: Int,
     remindTime: Int
 ): Pair<LocalDateTime?, Long> {
     return try {
         val nextCourseStart = this
-            .plus(coursesInterval)
+            .plusDays(coursesInterval)
             .atStartOfDay()
-        val remindDate = if (coursesInterval.months > 0 || coursesInterval.days > 0
-            || remindBeforePeriod.months > 0 || remindBeforePeriod.days > 0 || remindTime > 0
-        ) {
+        val remindDate = if (coursesInterval > 0 || remindBeforePeriod > 0 || remindTime > 0) {
             nextCourseStart
-                .minus(remindBeforePeriod)
+                .minusDays(remindBeforePeriod)
                 .plusDays(1) // т.е. напоминаем
                 .changeTime(minutes = remindTime)
         } else null

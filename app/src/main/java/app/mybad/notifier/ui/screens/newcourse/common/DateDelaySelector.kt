@@ -20,22 +20,24 @@ import app.mybad.notifier.ui.common.NumberPicker
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
-import kotlinx.datetime.DateTimePeriod
+import app.mybad.utils.days
+import app.mybad.utils.monthPlusDay
+import app.mybad.utils.months
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DateDelaySelector(
     modifier: Modifier = Modifier,
-    initValue: DateTimePeriod,
-    onSelect: (DateTimePeriod) -> Unit
+    initValue: Int,
+    onSelect: (Int) -> Unit
 ) {
     val months = listOf(10, 11, 12) + (0..12).toList() + listOf(0, 1, 2)
     val days = listOf(28, 29, 30) + (0..30).toList() + listOf(0, 1, 2)
     val correction = 3
 
-    val pagerStateMonths = rememberPagerState(initialPage = initValue.months + correction)
+    val pagerStateMonths = rememberPagerState(initialPage = initValue.months() + correction)
     { months.size }
-    val pagerStateDays = rememberPagerState(initialPage = initValue.days + correction)
+    val pagerStateDays = rememberPagerState(initialPage = initValue.days() + correction)
     { days.size }
 
     Column(
@@ -81,10 +83,8 @@ fun DateDelaySelector(
         ReUseFilledButton(
             textId = R.string.settings_save,
             onClick = {
-                val newTime = DateTimePeriod(
-                    months = months[pagerStateMonths.currentPage % months.size],
-                    days = days[pagerStateDays.currentPage % days.size],
-                )
+                val newTime = months[pagerStateMonths.currentPage % months.size]
+                    .monthPlusDay(days[pagerStateDays.currentPage % days.size])
                 onSelect(newTime)
             }
         )
@@ -95,7 +95,7 @@ fun DateDelaySelector(
 @Composable
 fun DateSelectorPreview() {
     MyBADTheme {
-        DateDelaySelector(initValue = DateTimePeriod(days = 5, months = 4),
+        DateDelaySelector(initValue = 4.monthPlusDay(5),
             onSelect = {}
         )
     }

@@ -31,11 +31,12 @@ import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
+import app.mybad.utils.days
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.months
 import app.mybad.utils.nextCourseIntervals
 import app.mybad.utils.nextCourseStart
-import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDateTime
 
 @Composable
@@ -62,8 +63,8 @@ fun RemindNewCourseBottomSheet(
             remindTimeInit.displayTimeInMinutes()
         } beforeDay=$beforeDayInit"
     )
-    var coursesInterval by remember { mutableStateOf(DateTimePeriod(days = intervalInit)) }
-    var remindBeforePeriod by remember { mutableStateOf(DateTimePeriod(days = beforeDayInit)) }
+    var coursesInterval by remember { mutableIntStateOf(intervalInit) }
+    var remindBeforePeriod by remember { mutableIntStateOf(beforeDayInit) }
     var remindTime by remember { mutableIntStateOf(remindTimeInit) }
 
     Column(
@@ -91,8 +92,8 @@ fun RemindNewCourseBottomSheet(
                         name = stringResource(R.string.add_next_course_interval),
                         value = stringResource(
                             R.string.period_m_d,
-                            coursesInterval.months,
-                            coursesInterval.days
+                            coursesInterval.months(),
+                            coursesInterval.days(),
                         ),
                         onClick = { selectedInput = 1 }
                     )
@@ -102,8 +103,8 @@ fun RemindNewCourseBottomSheet(
                         name = stringResource(R.string.add_next_course_remind_before),
                         value = stringResource(
                             R.string.period_m_d,
-                            remindBeforePeriod.months,
-                            remindBeforePeriod.days
+                            remindBeforePeriod.months(),
+                            remindBeforePeriod.days(),
                         ),
                         onClick = { selectedInput = 2 }
                     )
@@ -128,7 +129,7 @@ fun RemindNewCourseBottomSheet(
                 )
                 Log.w(
                     "VTTAG",
-                    "RemindNewCourseBottomSheet::updateReminder: endDay=${endDate.displayDateTime()} remindDate=${remindDateNew?.displayDateTime()} coursesInterval=${coursesInterval.months}:${coursesInterval.days} interval=$intervalNew"
+                    "RemindNewCourseBottomSheet::updateReminder: endDay=${endDate.displayDateTime()} remindDate=${remindDateNew?.displayDateTime()} coursesInterval=${coursesInterval.months()}:${coursesInterval.days()} interval=$intervalNew"
                 )
                 onSave(remindDateNew, intervalNew)
             }
