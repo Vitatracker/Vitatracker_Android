@@ -22,6 +22,8 @@ const val DELAY_INTENT_SECONDS = 30
 const val MINUTES_IN_DAY = 1440
 private const val MINUTES_IN_HOUR = 60
 const val MILES_SECONDS = 1000
+private const val DAYS_IN_MONTH = 30 // округленно, дней в месяце
+private const val TIMEZONE_CORRECT = 720 // 12 * 60
 const val TIME_IS_UP = 3600
 const val WEEKS_PER_MONTH = 6 // строк недель месяца
 const val DAYS_A_WEEK = 7 // дней недели
@@ -33,21 +35,18 @@ val notNullDateTime = 0L.toDateTimeUTC()
 
 // Получение даты + времени
 fun currentDateTimeUTCInSecond() = currentDateTimeUTC().toEpochSecond()
-private fun currentDateTimeUTC() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+fun currentDateTimeUTC() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 fun currentDateTimeSystem() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
 // преобразование
 fun LocalDateTime.systemToInstant() = this.toInstant(TimeZone.currentSystemDefault())
+private fun LocalDateTime.toInstant() = this.toInstant(TimeZone.UTC)
 private fun Long.toInstant() = Instant.fromEpochSeconds(this)
 fun String.toDateTimeUTCInSecond() = if (this == "") currentDateTimeUTCInSecond()
 else LocalDateTime.parse(this).toEpochSecond()
 
 fun Long.toDateTimeUTC() = this.toInstant().toLocalDateTime(TimeZone.UTC)
 fun Long.toDateTimeSystem() = this.toInstant().toLocalDateTime(TimeZone.currentSystemDefault())
-fun Long.toDateTimeSystem(minutesUTC: Int) = this.toInstant()
-    .toLocalDateTime(TimeZone.UTC).changeTime(minutesUTC)
-    .toInstant(TimeZone.UTC)
-    .toLocalDateTime(TimeZone.currentSystemDefault())
 
 fun Instant.toDateTimeSystem() = this.toLocalDateTime(TimeZone.currentSystemDefault())
 fun LocalDateTime.toEpochSecond() = this.toInstant(TimeZone.UTC).epochSeconds
@@ -173,12 +172,6 @@ fun Int.dayFullDisplay(): String = DayOfWeek(this + 1).getDisplayName(
 
 // Преобразование и замена даты и времени
 // тут дата не меняется, а время меняется из UTC и подменяется в локальной дате
-//fun LocalDateTime.changeTimeOfUTC_(minutesUTC: Int) = this
-//    .toUTC()
-//    .changeTime(minutes = minutesUTC)
-//    .toSystem()
-//    .let { this.changeTime(hour = it.hour, minute = it.minute) }
-
 fun LocalDateTime.changeTime(minutes: Int) = this.changeTime(
     hour = minutes / MINUTES_IN_HOUR,
     minute = minutes % MINUTES_IN_HOUR,
@@ -223,6 +216,13 @@ fun LocalDateTime.changeDate(year: Int? = null, month: Int? = null, dayOfMonth: 
 
 fun LocalDateTime.atStartOfDay() = this.changeTime(
     hour = 0,
+    minute = 0,
+    second = 0,
+    nanosecond = 0
+)
+
+fun LocalDateTime.atNoonOfDay() = this.changeTime(
+    hour = 12,
     minute = 0,
     second = 0,
     nanosecond = 0
@@ -295,6 +295,26 @@ else this.systemToInstant()
     .plusMonths(months)
     .toDateTimeSystem()
 
+// поправка, чтобы число не было отрицательным
+// 0..-720..+720..+1440 для часового пояса -12..+12, в сутках 24 часа * 60 = 1440
+// 0 - -12, 720 - 0, 1440 - +12, 2160 - 24 часа
+fun Long.timeCorrectToSystem(minute: Int) = this.toDateTimeSystem()
+    .correctTimeInMinutes(minute)
+
+fun LocalDateTime.correctTimeInMinutes(minute: Int) = this
+    .atStartOfDay()//  установить в локальном поясе 00 + минуты
+    .systemToInstant()
+    // тут время уже откоректировано и может быть отрицательным
+    .plus(minute, DateTimeUnit.MINUTE, TimeZone.UTC) // тут UTC
+    .toDateTimeSystem()
+
+fun LocalDateTime.timeCorrect() = this.atStartOfDay().let {
+    it.toInstant().minus(it.systemToInstant()).inWholeMinutes.toInt()
+}
+
+fun Int.timeCorrect() = this - currentDateTimeSystem().timeCorrect() + TIMEZONE_CORRECT
+fun Int.timeCorrectToSystem() = this + currentDateTimeSystem().timeCorrect() - TIMEZONE_CORRECT
+
 // текущее время преобразованное в минуты
 fun Int.displayTimeInMinutes() = "%02d:%02d".format(this.hour(), this.minute())
 
@@ -305,20 +325,6 @@ fun Int.hour() = this / MINUTES_IN_HOUR
 fun Int.minute() = this % MINUTES_IN_HOUR
 
 fun LocalDateTime.timeInMinutes() = time.hour * MINUTES_IN_HOUR + time.minute
-
-// изменить время у текущей даты и преобразовать в UTC и отдать только время
-private fun timeInMinutesSystemToUTC(hour: Int, minute: Int) = currentDateTimeSystem()
-    .changeTime(hour = hour, minute = minute)
-    .toUTC()
-    .timeInMinutes()
-
-fun Int.timeInMinutesSystemToUTC() = timeInMinutesSystemToUTC(hour = hour(), minute = minute())
-
-// изменить время у текущей даты и преобразовать с учетом часового пояса и отдать только время
-fun Int.timeInMinutesUTCToSystem() = currentDateTimeUTC()
-    .changeTime(minute = minute(), hour = hour())
-    .toSystem()
-    .timeInMinutes()
 
 // высокосный год
 private val Int.isLeapYear
@@ -360,7 +366,6 @@ private fun Instant.betweenDays(other: Instant) = this.minus(other).inWholeDays
 fun LocalDateTime.betweenDays(date: LocalDateTime) = this
     .systemToInstant()
     .betweenDays(date.systemToInstant())
-    .plus(1)
 
 // тут время должно быть одинаковое
 fun LocalDateTime.courseDuration(date: LocalDateTime) = this.atStartOfDay()
@@ -378,10 +383,10 @@ fun LocalDateTime.isBetweenDay(firstDate: LocalDateTime, lastDate: LocalDateTime
 
 // интервал и дата оповещения
 // endDate в локальном времени
-fun Int.months() = this / 30
-fun Int.days() = this - this.months() * 30
+fun Int.months() = this / DAYS_IN_MONTH
+fun Int.days() = this % DAYS_IN_MONTH
 
-fun Int.monthPlusDay(days: Int) = this * 30 + days
+fun Int.monthPlusDay(days: Int) = this * DAYS_IN_MONTH + days
 
 fun LocalDateTime.nextCourseStart(
     coursesInterval: Int,

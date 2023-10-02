@@ -1,19 +1,18 @@
 package app.mybad.data.models
 
 import app.mybad.utils.MINUTES_IN_DAY
-import app.mybad.utils.changeTime
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.timeCorrect
 import app.mybad.utils.timeInMinutes
-import app.mybad.utils.timeInMinutesSystemToUTC
 
 data class UsageFormat(
-    val timeInMinutes: Int = 0, // с учетом часового пояса
+    val timeInMinutes: Int = 0, // время в минутах с поправкой
     val quantity: Float = 1f,
 ) {
 
     override fun toString(): String {
-        return timeInMinutes.displayTimeInMinutes() // с учетом часового пояса
+        return timeInMinutes.displayTimeInMinutes() // UTC // с учетом часового пояса
     }
 
     companion object {
@@ -25,16 +24,19 @@ data class UsageFormat(
         fun List<UsageFormat>.toPattern() = this.toSortedList()
             .joinToString(
                 separator = ";",
-                transform = { "${it.timeInMinutes.timeInMinutesSystemToUTC()}-${it.quantity}" } // UTC
+                // UTC TODO("корректировать время с учетом -720..+720..+1440") 00 по UTC это 720
+                transform = { "${it.timeInMinutes.timeCorrect()}-${it.quantity}" }
             )
 
         @JvmName("listUfToSort")
         private fun List<UsageFormat>.toSortedList(): List<UsageFormat> {
-            val date = currentDateTimeSystem() // с учетом часового пояса
+//            val date = currentDateTimeSystem() // с учетом часового пояса
             return this.toSortedSet(
                 comparator = { up1, up2 ->
-                    date.changeTime(up1.timeInMinutes)
-                        .compareTo(date.changeTime(up2.timeInMinutes))
+                    // сортировку выполняем в UTC
+                    up1.timeInMinutes.compareTo(up2.timeInMinutes)
+//                    date.changeTime(up1.timeInMinutes).systemToInstant()
+//                        .compareTo(date.changeTime(up2.timeInMinutes).systemToInstant())
                 }
             ).toList()
         }
@@ -71,7 +73,7 @@ data class UsageFormat(
             do {
                 isChange = false
                 usagesPattern.find {
-                    date.changeTime(it.timeInMinutes) == date.changeTime(time)
+                    it.timeInMinutes == time
                 }?.let {
                     time++
                     isChange = true

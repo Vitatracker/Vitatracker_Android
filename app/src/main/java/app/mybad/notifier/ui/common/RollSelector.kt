@@ -50,7 +50,7 @@ fun RollSelectorView(
         VerticalPager(
             modifier = Modifier.height(200.dp),
             state = pagerState,
-            pageSpacing = 21.dp,
+            pageSpacing = 17.dp,
             contentPadding = PaddingValues(top = 80.dp, bottom = 90.dp),
             pageSize = PageSize.Fixed(32.dp)
         ) {

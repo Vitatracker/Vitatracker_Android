@@ -13,7 +13,7 @@ import app.mybad.domain.repository.UsageRepository
 import app.mybad.domain.repository.network.CourseNetworkRepository
 import app.mybad.domain.repository.network.RemedyNetworkRepository
 import app.mybad.domain.repository.network.UsageNetworkRepository
-import app.mybad.utils.timeInMinutesUTCToSystem
+import app.mybad.utils.timeCorrectToSystem
 import javax.inject.Inject
 
 class SyncCoursesWithNetworkUseCase @Inject constructor(
@@ -185,7 +185,8 @@ class SyncCoursesWithNetworkUseCase @Inject constructor(
                     PatternUsageDomainModel(
                         courseId = courseIdLoc,
                         courseIdn = courseIdNet,
-                        timeInMinutes = it.first.timeInMinutesUTCToSystem(), // тут UTC, но нам нужно с учетом часового пояса, при сохранении в базу будет перевод в UTC
+                        // тут UTC, но нам нужно с учетом часового пояса, при сохранении в базу будет перевод в UTC
+                        timeInMinutes = it.first.timeCorrectToSystem(),
                         quantity = it.second,
                     )
                 )

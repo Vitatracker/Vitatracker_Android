@@ -15,7 +15,6 @@
     </string-array>
     <string-array name="regime">
         <item>@string/regime_every_day</item>
-        <item>@string/regime_every_one_day</item>
         <item>@string/regime_every_two_days</item>
         <item>@string/regime_every_three_days</item>
         <item>@string/regime_every_four_days</item>

@@ -202,7 +202,6 @@
 
     <!-- regime-режим   -->
     <string name="regime_every_day">Every day</string>
-    <string name="regime_every_one_day">Every other day</string>
     <string name="regime_every_two_days">Every 2 days</string>
     <string name="regime_every_three_days">Every 3 days</string>
     <string name="regime_every_four_days">Every 4 days</string>

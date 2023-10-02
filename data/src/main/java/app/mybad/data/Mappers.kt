@@ -24,10 +24,11 @@ import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.timeCorrect
+import app.mybad.utils.timeCorrectToSystem
 import app.mybad.utils.timeInMinutes
-import app.mybad.utils.timeInMinutesSystemToUTC
-import app.mybad.utils.timeInMinutesUTCToSystem
 import app.mybad.utils.toDateTimeSystem
+import app.mybad.utils.toDateTimeUTC
 import app.vitatracker.data.UserNotificationsDataModel
 import app.vitatracker.data.UserPersonalDataModel
 import app.vitatracker.data.UserRulesDataModel
@@ -290,7 +291,7 @@ fun PatternUsageModel.mapToDomain() = PatternUsageDomainModel(
     createdDate = createdDate,
     updatedDate = updatedDate,
 
-    timeInMinutes = timeInMinutes.timeInMinutesUTCToSystem(), // с учетом часового пояса
+    timeInMinutes = timeInMinutes.timeCorrectToSystem(), // UTC - 720 и коректировать к часовому поясу
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
@@ -309,7 +310,7 @@ fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
     createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
     updatedDate = currentDateTimeUTCInSecond(),
 
-    timeInMinutes = timeInMinutes.timeInMinutesSystemToUTC(), // UTC
+    timeInMinutes = timeInMinutes.timeCorrect(), // UTC + 720
     quantity = quantity,
 
     updateNetworkDate = updateNetworkDate,
@@ -329,9 +330,8 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomai
 
     isPattern = true, // pattern
 
-    timeInMinutes = data.toDateTimeSystem(timeInMinutes) //timeInMinutes в UTC, пересчитываем с учетом часового пояса
-        .timeInMinutes(),// время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
-    useTime = data.toDateTimeSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
+    timeInMinutes = timeInMinutes.timeCorrectToSystem(),
+    useTime = data.timeCorrectToSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
 
     quantity = quantity,
 
@@ -370,9 +370,8 @@ fun PatternUsageFutureWithNameAndDateModel.mapToDomain(data: Long) = UsageDispla
 
     isPattern = true, // pattern
 
-    timeInMinutes = data.toDateTimeSystem(timeInMinutes) //timeInMinutes в UTC, пересчитываем с учетом часового пояса
-        .timeInMinutes(),// время в минутах, но мы его меняем под конкретные даты во вьюмодели при пересчете по датам
-    useTime = data.toDateTimeSystem(timeInMinutes),// тут фиктивная дата, подменится во вьюмодели
+    timeInMinutes = timeInMinutes.timeCorrectToSystem(),
+    useTime = data.timeCorrectToSystem(timeInMinutes),
 
     quantity = quantity,
 
@@ -410,10 +409,9 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     userId = userId,
 
     isPattern = false, // usage
-    // заполним во вью модели, но пока с учетом часового пояса
-    timeInMinutes = useTime.toDateTimeSystem().timeInMinutes(),
+    timeInMinutes = useTime.toDateTimeUTC().timeInMinutes().timeCorrectToSystem(),
     quantity = quantity,
-    useTime = useTime.toDateTimeSystem(), // какое-то конкретное UTC время приема препарата, которое формируется из паттерна и текущей даты, с учетом часового пояса
+    useTime = useTime.toDateTimeSystem(), // с учетом часового пояса
     factUseTime = factUseTime?.toDateTimeSystem(),
 
     courseIdn = courseIdn,

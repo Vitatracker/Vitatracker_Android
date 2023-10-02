@@ -3,7 +3,6 @@ package app.mybad.notifier.ui.screens.calender
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.UsageDisplayDomainModel
-import app.mybad.domain.models.checkDate
 import app.mybad.domain.usecases.usages.GetFutureWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetPatternUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
@@ -13,7 +12,7 @@ import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.changeTime
+import app.mybad.utils.correctTimeInMinutes
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDateTimeShort
@@ -23,6 +22,7 @@ import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
 import app.mybad.utils.repeatWeekAndDayOfMonth
 import app.mybad.utils.systemToEpochSecond
+import app.mybad.utils.systemToInstant
 import app.mybad.utils.timeInMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,6 +60,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     private val dateMonth = MutableStateFlow(viewState.value.date)
+
     private var patternsMonth: List<UsageDisplayDomainModel> = emptyList()
     private var usagesMonth: List<UsageDisplayDomainModel> = emptyList()
     private var futureMonth: List<UsageDisplayDomainModel> = emptyList()
@@ -138,7 +139,7 @@ class CalendarViewModel @Inject constructor(
     private fun getUsagesOnDate(date: LocalDateTime): List<UsageDisplayDomainModel> {
         val pattens = patternsMonth.filter { it.checkDate(date) }
             .map { pattern ->
-                val useTime = date.changeTime(minutes = pattern.timeInMinutes)
+                val useTime = date.correctTimeInMinutes(pattern.timeInMinutes)
                 pattern.copy(
                     name = "${pattern.name}|P|${useTime.displayDateTimeShort()}",
                     useTime = useTime,
@@ -147,7 +148,7 @@ class CalendarViewModel @Inject constructor(
             }.associateBy { it.toUsageKey() }
         val future = futureMonth.filter { it.checkDate(date) }
             .map { pattern ->
-                val useTime = date.changeTime(minutes = pattern.timeInMinutes)
+                val useTime = date.correctTimeInMinutes(pattern.timeInMinutes)
                 pattern.copy(
                     name = "${pattern.name}|F|${useTime.displayDateTimeShort()}",
                     useTime = useTime,
@@ -160,7 +161,8 @@ class CalendarViewModel @Inject constructor(
                     name = "${usage.name}|U|${usage.useTime.displayDateTimeShort()}",
                 )
             }.associateBy { it.toUsageKey() }
-        val pattensAndUsages = pattens.plus(future).plus(usages).values.sortedBy { it.timeInMinutes }
+        val pattensAndUsages =
+            pattens.plus(future).plus(usages).values.sortedBy { it.useTime.systemToInstant() }
         Log.w(
             "VTTAG",
             "CalendarViewModel::changeDateForMonth: date=${date.displayDateTime()} ${pattensAndUsages.size}=[pattens=${pattens.size}, future=${future.size}, usages=${usages.size}]"

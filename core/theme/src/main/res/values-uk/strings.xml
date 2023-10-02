@@ -191,7 +191,6 @@
 
     <!-- regime-режим   -->
     <string name="regime_every_day">Кожен день</string>
-    <string name="regime_every_one_day">Через день</string>
     <string name="regime_every_two_days">Кожні 2 дні</string>
     <string name="regime_every_three_days">Кожні 3 дні</string>
     <string name="regime_every_four_days">Кожні 4 дні</string>

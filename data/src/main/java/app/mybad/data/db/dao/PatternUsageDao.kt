@@ -182,14 +182,15 @@ interface PatternUsageDao {
             RemedyContract.TABLE_NAME
         } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${RemedyContract.Columns.ID
         } where A.${PatternUsageContract.Columns.USER_ID} = :userId and B.${CourseContract.Columns.DELETED_DATE
-        } = 0 and B.${CourseContract.Columns.IS_INFINITE
-        } = 0 and :endTime >= ${
+        } = 0 and B.${CourseContract.Columns.INTERVAL
+        } > 0 and :endTime >= ${
             CourseContract.Columns.START_DATE_FUTURE
-        } and :startTime <= ${
+        } and (:startTime <= ${
             CourseContract.Columns.END_DATE_FUTURE
-        } order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
+        } or B.${CourseContract.Columns.IS_INFINITE
+        } > 0) order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
     )
-    fun getFutureWithParamsBetween( // тут только будущее
+    fun getFutureWithParamsBetween( // тут только будущее, где INTERVAL > 0
         userId: Long,
         startTime: Long,
         endTime: Long

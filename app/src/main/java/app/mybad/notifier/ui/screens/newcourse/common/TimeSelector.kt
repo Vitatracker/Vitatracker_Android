@@ -25,7 +25,6 @@ import app.mybad.utils.displayTimeInMinutes
 import app.mybad.utils.hour
 import app.mybad.utils.hourPlusMinute
 import app.mybad.utils.minute
-import app.mybad.utils.timeInMinutesSystemToUTC
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,9 +73,7 @@ fun TimeSelector(
                     .hourPlusMinute(minutes[pagerStateMinutes.currentPage % minutes.size])
                 Log.w(
                     "VTTAG",
-                    "TimeSelector::onSelect: date time=${newTime.displayTimeInMinutes()} - UTC=${
-                        newTime.timeInMinutesSystemToUTC().displayTimeInMinutes()
-                    }"
+                    "TimeSelector::onSelect: date time=${newTime.displayTimeInMinutes()}"
                 )
                 onSelect(newTime)
             }
