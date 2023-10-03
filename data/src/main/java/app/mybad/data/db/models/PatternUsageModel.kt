@@ -36,7 +36,7 @@ data class PatternUsageModel(
     val userIdn: String,
 
     @ColumnInfo(name = PatternUsageContract.Columns.TIME_MINUTES)
-    val timeInMinutes: Int, // тут только время HH:mm в минутах
+    val timeInMinutes: Int, // тут только время HH:mm в минутах + 720 (12 * 60)
     @ColumnInfo(name = PatternUsageContract.Columns.QUANTITY)
     val quantity: Float = 1f,
 

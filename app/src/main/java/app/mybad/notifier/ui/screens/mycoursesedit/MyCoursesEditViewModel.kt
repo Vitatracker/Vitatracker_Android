@@ -23,7 +23,6 @@ import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
-import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.days
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.months
@@ -31,7 +30,6 @@ import app.mybad.utils.nextCourseIntervals
 import app.mybad.utils.nextCourseStart
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimePeriod
 import javax.inject.Inject
 
 @HiltViewModel
@@ -70,7 +68,7 @@ class MyCoursesEditViewModel @Inject constructor(
                     deleteCourseFullUseCase(event.courseId, currentDateTimeSystem())
                     //TODO("запустить воркер удаления курса на беке")
                     // синхронизировать
-                    AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
+                    AuthToken.requiredSynchronize()
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
@@ -92,7 +90,7 @@ class MyCoursesEditViewModel @Inject constructor(
                     updateRemedyAndCourse(remedy = event.remedy, course = event.course)
                     saveCourse()
                     // синхронизировать
-                    AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
+                    AuthToken.requiredSynchronize()
                     setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 

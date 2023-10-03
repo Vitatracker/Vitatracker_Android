@@ -14,7 +14,6 @@ import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
-import app.mybad.utils.currentDateTimeUTCInSecond
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -187,7 +186,7 @@ class CreateCourseViewModel @Inject constructor(
                         )
                         newState()
                         // синхронизировать
-                        AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
+                        AuthToken.requiredSynchronize()
                     }.onFailure {
                         err("finishCreation: error createPatternUsagesUseCase", it)
                     }

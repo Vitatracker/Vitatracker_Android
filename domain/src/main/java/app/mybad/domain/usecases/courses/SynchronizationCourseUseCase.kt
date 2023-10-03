@@ -3,12 +3,14 @@ package app.mybad.domain.usecases.courses
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.repository.UserRepository
+import app.mybad.domain.usecases.usages.SendUsageToNetworkUseCase
 import app.mybad.domain.usecases.user.RefreshAuthTokenUseCase
 import javax.inject.Inject
 
 class SynchronizationCourseUseCase @Inject constructor(
     private val refreshAuthTokenUseCase: RefreshAuthTokenUseCase,
     private val sendCoursesDeletedToNetworkUseCase: SendCoursesDeletedToNetworkUseCase,
+    private val sendUsageToNetworkUseCase: SendUsageToNetworkUseCase,
     private val sendCoursesToNetworkUseCase: SendCoursesToNetworkUseCase,
     private val syncCoursesWithNetworkUseCase: SyncCoursesWithNetworkUseCase,
     private val checkCoursesLocalUseCase: CheckCoursesLocalUseCase,
@@ -25,6 +27,8 @@ class SynchronizationCourseUseCase @Inject constructor(
                 // удалим, что удалено в локальной базе
                 info(REMEDY_CHANNEL_INFO_DELETED)
                 sendCoursesDeletedToNetworkUseCase(userId)
+                // отправим usage у которых есть course_idn и fact_use_time
+                sendUsageToNetworkUseCase(userId)
                 // отправим новое на бек
                 info(REMEDY_CHANNEL_INFO_COURSES)
                 sendCoursesToNetworkUseCase(userId)

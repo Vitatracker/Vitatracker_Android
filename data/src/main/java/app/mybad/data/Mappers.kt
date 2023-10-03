@@ -20,8 +20,6 @@ import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
 import app.mybad.domain.models.user.UserRulesDomainModel
-import app.mybad.utils.atEndOfDay
-import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeUTCInSecond
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.timeCorrect
@@ -68,8 +66,8 @@ fun CourseWithParamsModel.mapToDomain() = CourseDisplayDomainModel(
     remedyId = remedyId,
     remedyIdn = remedyIdn,
 
-    startDate = startDate.toDateTimeSystem().atStartOfDay(),
-    endDate = endDate.toDateTimeSystem().atEndOfDay(),
+    startDate = startDate.toDateTimeSystem(),
+    endDate = endDate.toDateTimeSystem(),
     isInfinite = isInfinite,
 
     regime = regime,
@@ -114,8 +112,8 @@ fun CourseModel.mapToDomain() = CourseDomainModel(
     remedyId = remedyId,
     remedyIdn = remedyIdn,
 
-    startDate = startDate.toDateTimeSystem().atStartOfDay(),
-    endDate = endDate.toDateTimeSystem().atEndOfDay(),
+    startDate = startDate.toDateTimeSystem(),
+    endDate = endDate.toDateTimeSystem(),
     remindDate = if (remindDate > 0) remindDate.toDateTimeSystem() else null,
 
     interval = interval,
@@ -339,8 +337,8 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomai
 
     remedyId = remedyId,
 
-    startDate = startDate.toDateTimeSystem().atStartOfDay(), // с учетом часового пояса
-    endDate = endDate.toDateTimeSystem().atEndOfDay(), // с учетом часового пояса
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
     isInfinite = isInfinite,
 
     regime = regime,
@@ -379,8 +377,8 @@ fun PatternUsageFutureWithNameAndDateModel.mapToDomain(data: Long) = UsageDispla
 
     remedyId = remedyId,
 
-    startDate = startDate.toDateTimeSystem().atStartOfDay(), // с учетом часового пояса
-    endDate = endDate.toDateTimeSystem().atEndOfDay(), // с учетом часового пояса
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
     isInfinite = isInfinite,
 
     regime = regime,
@@ -418,8 +416,8 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
 
     remedyId = remedyId,
 
-    startDate = startDate.toDateTimeSystem().atStartOfDay(), // с учетом часового пояса
-    endDate = endDate.toDateTimeSystem().atEndOfDay(), // с учетом часового пояса
+    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
+    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
     isInfinite = isInfinite,
 
     regime = regime,

@@ -10,7 +10,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.courses.SynchronizationCourseUseCase
 import app.mybad.domain.usecases.usages.SendUsageToNetworkUseCase
 import app.mybad.domain.usecases.user.CheckDarkThemeUseCase
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.displayDateTimeUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -56,7 +56,7 @@ class MainActivityViewModel @Inject constructor(
             launch {
                 AuthToken.synchronization
                     .debounce(20000)
-                    .collectLatest { time ->
+                    .collect { time ->
                         log("synchronization: date=${time}")
                         synchronizationCourseUseCase(time).onFailure {
                             // TODO("отобразить ошибку синхронизации")
@@ -65,10 +65,10 @@ class MainActivityViewModel @Inject constructor(
             }
             launch {
                 AuthToken.updateUsage
-                    .debounce(20000)
-                    .collectLatest { (userId, usageId) ->
-                        log("updateUsage: userId=$userId usageId=$usageId")
-                        sendUsageToNetworkUseCase(userId, usageId).onFailure {
+                    .debounce(5000)
+                    .collect { (userId, date) ->
+                        log("updateUsage: userId=$userId date=${date.displayDateTimeUTC()}")
+                        sendUsageToNetworkUseCase(userId).onFailure {
                             // TODO("отобразить ошибку синхронизации")
                         }
                     }
@@ -80,7 +80,7 @@ class MainActivityViewModel @Inject constructor(
     private suspend fun startSynchronizationWithServer() {
         log("startSynchronizationWithServer: start tokenDate=${AuthToken.tokenDate} tokenRefreshDate=${AuthToken.tokenRefreshDate} token=${AuthToken.token}")
         // первоначальная синхронизация
-        AuthToken.requiredSynchronize(currentDateTimeUTCInSecond())
+        AuthToken.requiredSynchronize()
         worker.start()
     }
 

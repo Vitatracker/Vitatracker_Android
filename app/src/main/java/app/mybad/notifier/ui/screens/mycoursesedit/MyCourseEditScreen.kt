@@ -64,7 +64,7 @@ fun MyCourseEditScreen(
 ) {
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
-    val rels = stringArrayResource(R.array.food_relations)
+    val relations = stringArrayResource(R.array.food_relations)
 
     val name = stringResource(R.string.add_med_name)
     val form = stringResource(R.string.add_med_form)
@@ -77,8 +77,8 @@ fun MyCourseEditScreen(
     val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
 
-    var remedyInternal by remember { mutableStateOf(state.remedy) }
-    var courseInternal by remember { mutableStateOf(state.course) }
+    var remedyInternal by remember(state.course.id) { mutableStateOf(state.remedy) }
+    var courseInternal by remember(state.course.id) { mutableStateOf(state.course) }
 
     var selectedInput: CourseSelectInput? by remember { mutableStateOf(null) }
 
@@ -88,11 +88,6 @@ fun MyCourseEditScreen(
                 is MyCoursesEditContract.Effect.Navigation -> navigation(effect)
             }
         }
-    }
-
-    LaunchedEffect(state.course.id) {
-        remedyInternal = state.remedy
-        courseInternal = state.course
     }
 
     Log.w(
@@ -233,7 +228,7 @@ fun MyCourseEditScreen(
                         var exp by remember { mutableStateOf(false) }
                         ParameterIndicator(
                             name = rel,
-                            value = rels[remedyInternal.beforeFood],
+                            value = relations[remedyInternal.beforeFood],
                             onClick = { exp = true }
                         )
                         DropdownMenu(
@@ -241,7 +236,7 @@ fun MyCourseEditScreen(
                             onDismissRequest = { exp = false },
                             offset = DpOffset(x = 300.dp, y = 0.dp)
                         ) {
-                            rels.forEachIndexed { index, item ->
+                            relations.forEachIndexed { index, item ->
                                 DropdownMenuItem(
                                     text = { Text(item) },
                                     onClick = {

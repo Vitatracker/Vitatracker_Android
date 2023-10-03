@@ -67,6 +67,6 @@ class SetFactUseTimeOrInsertUsageUseCase @Inject constructor(
             "SetFactUseTimeOrInsertUsageUseCase:CalendarViewModel: usageId=$usageId - $factUseTime - $factUseTimeUTC"
         )
         // Синхронизируем с сервером, но тут с задержкой, если много раз чекать
-        AuthToken.requiredSetUsagesFactTime(usageId)
+        AuthToken.requiredUsagesSynchronize()
     }
 }
