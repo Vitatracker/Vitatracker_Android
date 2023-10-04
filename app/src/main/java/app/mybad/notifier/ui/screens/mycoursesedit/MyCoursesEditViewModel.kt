@@ -21,7 +21,6 @@ import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
 import app.mybad.domain.usecases.usages.UpdatePatternUsagesByCourseIdUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
-import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.days
 import app.mybad.utils.displayDateTime
@@ -86,8 +85,11 @@ class MyCoursesEditViewModel @Inject constructor(
                     changeTimeUsagePattern(event.pattern, event.time)
                 }
 
-                is MyCoursesEditContract.Event.UpdateAndEnd -> {
+                is MyCoursesEditContract.Event.Update -> {
                     updateRemedyAndCourse(remedy = event.remedy, course = event.course)
+                }
+
+                MyCoursesEditContract.Event.Save -> {
                     saveCourse()
                     // синхронизировать
                     AuthToken.requiredSynchronize()
@@ -274,8 +276,10 @@ class MyCoursesEditViewModel @Inject constructor(
                 val remedy = RemedyDomainModel(
                     id = 0,
                     createdDate = 0,
+
                     userId = viewState.value.remedy.userId,
                     userIdn = viewState.value.remedy.userIdn,
+
                     name = viewState.value.remedy.name,
                     description = viewState.value.remedy.description,
                     comment = viewState.value.remedy.comment,
@@ -297,9 +301,10 @@ class MyCoursesEditViewModel @Inject constructor(
         }
         // сформировать паттерн usages
         val patternUsages = viewState.value.usagesPatternEdit.toPattern()
-        // TODO("не понятно какая тут дата старта курса?")
+        // для нового курса startDate не меняем, у нас прием лекарства через несколько дней может сбиться.
         val course = viewState.value.course.copy(
             id = 0,
+            idn = 0,
 
             remedyId = remedyId,
             remedyIdn = remedyIdn,
@@ -309,7 +314,7 @@ class MyCoursesEditViewModel @Inject constructor(
             notUsed = false,
             patternUsages = patternUsages,
 
-            createdDate = 0,// запишется в мапере
+            createdDate = 0,
 
             updateNetworkDate = 0,
         )
@@ -320,14 +325,10 @@ class MyCoursesEditViewModel @Inject constructor(
         // закроем курс
         closeCourseUseCase(
             courseId = viewState.value.course.id,
-            endDate = dateNew.atEndOfDay()
-        ) // с учетом часового пояса
+            endDate = dateNew.atEndOfDay() // с учетом часового пояса
+        )
         // создадим новый курс
-        createCourseUseCase(
-            course.copy(
-                startDate = dateNew.atStartOfDay()
-            )
-        ).onSuccess { courseId ->
+        createCourseUseCase(course).onSuccess { courseId ->
             Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
             // обновим паттерн
             updatePatternUsages(

@@ -6,7 +6,6 @@ import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import kotlinx.datetime.DateTimePeriod
 
 class MyCoursesEditContract {
     sealed interface Event : ViewEvent {
@@ -18,11 +17,12 @@ class MyCoursesEditContract {
         data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
-        data class UpdateAndEnd(
+        data class Update(
             val course: CourseDomainModel,
             val remedy: RemedyDomainModel,
         ) : Event
 
+        object Save : Event
         object NotificationEditing : Event
         data class NotificationUpdateAndEnd(
             val remindTime: Int,// тут в минутах HH:mm

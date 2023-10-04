@@ -26,6 +26,8 @@ class CloseCourseUseCase @Inject constructor(
         }
         // пометить паттерн как закрытый
         patternUsageRepository.finishedPatternUsageByCourseId(courseId)
+        // пометить usage как закрытый
+        usageRepository.finishedUsageByCourseId(courseId)
         // удалить usage после даты закрытия
         usageRepository.markDeletionUsagesAfterByCourseId(courseId)
     }

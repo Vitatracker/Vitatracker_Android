@@ -80,7 +80,7 @@ fun MyCourseEditScreen(
     var remedyInternal by remember(state.course.id) { mutableStateOf(state.remedy) }
     var courseInternal by remember(state.course.id) { mutableStateOf(state.course) }
 
-    var selectedInput: CourseSelectInput? by remember { mutableStateOf(null) }
+    var selectedInput: CourseSelectInput? by remember(state.course.id) { mutableStateOf(null) }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
@@ -90,9 +90,9 @@ fun MyCourseEditScreen(
         }
     }
 
-    Log.w(
+    Log.d(
         "VTTAG",
-        "MyCourseEditScreen::Init: id=${remedyInternal.id} remedy=${remedyInternal.name} courseId=${
+        "MyCourseEditScreen::Init: remedy id=${remedyInternal.id} name=${remedyInternal.name} courseId=${
             courseInternal.id
         } usagesPattern=${state.usagesPatternEdit.size}"
     )
@@ -296,6 +296,12 @@ fun MyCourseEditScreen(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
                         onClick = {
+                            sendEvent(
+                                MyCoursesEditContract.Event.Update(
+                                    courseInternal,
+                                    remedyInternal,
+                                )
+                            )
                             sendEvent(MyCoursesEditContract.Event.NotificationEditing)
                         }
                     )
@@ -305,11 +311,12 @@ fun MyCourseEditScreen(
             SaveDecline(
                 onSave = {
                     sendEvent(
-                        MyCoursesEditContract.Event.UpdateAndEnd(
+                        MyCoursesEditContract.Event.Update(
                             courseInternal,
                             remedyInternal,
                         )
                     )
+                    sendEvent(MyCoursesEditContract.Event.Save)
                 },
                 onDelete = {
                     sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id))

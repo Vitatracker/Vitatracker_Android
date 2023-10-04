@@ -231,6 +231,22 @@ interface UsageDao {
     )
     suspend fun checkUseUsagesByCourseId(courseId: Long): UsageModel?
 
+    @Query(
+        "UPDATE ${UsageContract.TABLE_NAME} SET ${
+            UsageContract.Columns.NOT_USED
+        } = 1, ${
+            UsageContract.Columns.UPDATED_NETWORK_DATE
+        } = 0, ${
+            UsageContract.Columns.UPDATED_DATE
+        } = :date WHERE ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId"
+    )
+    suspend fun finishedUsageByCourseId(
+        courseId: Long,
+        date: Long = currentDateTimeUTCInSecond()
+    )
+
     //--------------------------------------------------
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
@@ -248,7 +264,10 @@ interface UsageDao {
             UsageContract.Columns.COURSE_ID
         } = :courseId"
     )
-    suspend fun markDeletionUsagesByCourseId(courseId: Long, date: Long = currentDateTimeUTCInSecond())
+    suspend fun markDeletionUsagesByCourseId(
+        courseId: Long,
+        date: Long = currentDateTimeUTCInSecond()
+    )
 
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
@@ -269,9 +288,11 @@ interface UsageDao {
             UsageContract.Columns.DELETED_DATE
         } = :date WHERE ${
             UsageContract.Columns.COURSE_ID
-        } = :courseId and ${
+        } = :courseId and (${
             UsageContract.Columns.FACT_USE_TIME
-        } <= 0 and ${
+        } <= 0 or ${
+            UsageContract.Columns.FACT_USE_TIME
+        } is null)and ${
             UsageContract.Columns.USE_TIME
         } >= :date"
     )

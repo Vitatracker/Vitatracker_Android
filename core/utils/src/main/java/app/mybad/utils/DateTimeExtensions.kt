@@ -317,6 +317,11 @@ fun Int.timeCorrectToSystem() = this + currentDateTimeSystem().timeCorrect() - T
 
 // текущее время преобразованное в минуты
 fun Int.displayTimeInMinutes() = "%02d:%02d".format(this.hour(), this.minute())
+fun Int.displayWithDateTimeInMinutes() = currentDateTimeSystem()
+    .correctTimeInMinutes(this)
+//    .timeInMinutes()
+//    .displayTimeInMinutes()
+    .displayDateTimeShort()
 
 fun Int.hourPlusMinute(minute: Int) = this * MINUTES_IN_HOUR + minute
 

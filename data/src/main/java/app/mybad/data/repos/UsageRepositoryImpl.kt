@@ -130,6 +130,12 @@ class UsageRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun finishedUsageByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.finishedUsageByCourseId(courseId)
+        }
+    }
+
     //--------------------------------------------------
     override suspend fun insertUsage(usage: UsageDomainModel) = withContext(dispatcher) {
         runCatching {

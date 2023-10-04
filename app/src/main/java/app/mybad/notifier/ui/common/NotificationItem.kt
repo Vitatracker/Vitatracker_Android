@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.utils.toText
-import app.mybad.utils.displayTimeInMinutes
+import app.mybad.utils.displayWithDateTimeInMinutes
 
 @Composable
 fun NotificationItem(
@@ -87,7 +87,7 @@ fun NotificationItem(
             Text(
                 modifier = Modifier
                     .clickable(onClick = onTimeClick),
-                text = time.displayTimeInMinutes(), // отображает время как есть
+                text = time.displayWithDateTimeInMinutes(), // отображает время с учетом даты и часового пояса
                 style = Typography.bodyLarge,
             )
             Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {

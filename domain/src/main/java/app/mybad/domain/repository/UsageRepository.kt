@@ -45,6 +45,7 @@ interface UsageRepository {
     suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long?): Result<Long>
 
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
+    suspend fun finishedUsageByCourseId(courseId: Long): Result<Unit>
 
     suspend fun markDeletionUsagesById(usageId: Long): Result<Unit>
     suspend fun markDeletionUsagesByCourseId(courseId: Long): Result<Unit>

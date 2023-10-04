@@ -61,9 +61,9 @@ fun MyCourseEditNotificationScreen(
     var selectedItem: UsageFormat? by remember { mutableStateOf(null) }
     var selectedInput: Int? by remember { mutableStateOf(null) }
 
-    var remindTime by remember { mutableIntStateOf(state.remindTime) }
-    var coursesInterval by remember { mutableIntStateOf(state.coursesInterval) }
-    var remindBeforePeriod by remember { mutableIntStateOf(state.remindBeforePeriod) }
+    var remindTime by remember(state.course.id) { mutableIntStateOf(state.remindTime) }
+    var coursesInterval by remember(state.course.id) { mutableIntStateOf(state.coursesInterval) }
+    var remindBeforePeriod by remember(state.course.id) { mutableIntStateOf(state.remindBeforePeriod) }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
@@ -117,7 +117,7 @@ fun MyCourseEditNotificationScreen(
                     ) { pattern ->
                         Log.w(
                             "VTTAG",
-                            "MyCourseEditNotificationScreen::items: pattern=${pattern.timeInMinutes} - ${pattern.quantity}"
+                            "MyCourseEditNotificationScreen::items: pattern=${pattern.timeInMinutes.displayTimeInMinutes()} (${pattern.timeInMinutes}) - ${pattern.quantity}"
                         )
                         NotificationItem(
                             time = pattern.timeInMinutes, // с учетом часового пояса
