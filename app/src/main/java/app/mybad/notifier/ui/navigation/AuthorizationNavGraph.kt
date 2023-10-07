@@ -7,13 +7,12 @@ import androidx.navigation.compose.navigation
 import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import app.mybad.notifier.ui.screens.authorization.login.LoginViewModel
 import app.mybad.notifier.ui.screens.authorization.login.MainLoginScreen
-import app.mybad.notifier.ui.screens.authorization.passwords.StartNewPasswordScreen
-import app.mybad.notifier.ui.screens.authorization.passwords.StartPasswordRecoveryScreen
 import app.mybad.notifier.ui.screens.authorization.passwords.PasswordRecoveryContract
 import app.mybad.notifier.ui.screens.authorization.passwords.PasswordRecoveryViewModel
-import app.mybad.notifier.ui.screens.authorization.registration.StartRegistrationScreen
+import app.mybad.notifier.ui.screens.authorization.passwords.StartPasswordRecoveryScreen
 import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import app.mybad.notifier.ui.screens.authorization.registration.RegistrationViewModel
+import app.mybad.notifier.ui.screens.authorization.registration.StartRegistrationScreen
 import app.mybad.notifier.ui.screens.authorization.start.AuthorizationContract
 import app.mybad.notifier.ui.screens.authorization.start.AuthorizationViewModel
 import app.mybad.notifier.ui.screens.authorization.start.StartAuthorizationScreen
@@ -114,12 +113,5 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
             )
         }
 
-        composable(AuthorizationScreens.NewPassword.route) {
-            StartNewPasswordScreen(
-                onBackPressed = {
-                    navigationState.navController.popBackStack()
-                }
-            )
-        }
     }
 }
