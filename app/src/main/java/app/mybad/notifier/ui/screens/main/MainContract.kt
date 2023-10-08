@@ -24,5 +24,6 @@ class MainContract {
         sealed interface Navigation : Effect {
             object ToAuthorization : Navigation
         }
+        data class Toast(val text: String) : Effect
     }
 }

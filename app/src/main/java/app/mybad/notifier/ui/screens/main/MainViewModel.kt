@@ -15,11 +15,8 @@ import app.mybad.utils.correctTimeInMinutes
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDateTimeShort
-import app.mybad.utils.displayTimeInMinutes
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.systemToInstant
-import app.mybad.utils.timeCorrect
-import app.mybad.utils.timeCorrectToSystem
 import app.mybad.utils.timeInMinutes
 import app.mybad.utils.toDateTimeSystem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -79,14 +76,14 @@ class MainViewModel @Inject constructor(
                 val useTime =
                     if (pattern.isPattern) date.correctTimeInMinutes(pattern.timeInMinutes)
                     else pattern.useTime // с учетом часового пояса
-                Log.w(
-                    "VTTAG",
-                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} useTime=${useTime.displayDateTime()} correct=${currentDateTimeSystem().timeCorrect()} time=${pattern.timeInMinutes.displayTimeInMinutes()} - ${
-                        pattern.timeInMinutes.timeCorrectToSystem().displayTimeInMinutes()
-                    } id=${pattern.id}"
-                )
+//                Log.w(
+//                    "VTTAG",
+//                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} useTime=${useTime.displayDateTime()} correct=${currentDateTimeSystem().timeCorrect()} time=${pattern.timeInMinutes.displayTimeInMinutes()} - ${
+//                        pattern.timeInMinutes.timeCorrectToSystem().displayTimeInMinutes()
+//                    } id=${pattern.id}"
+//                )
                 pattern.copy(
-                    // для тестов, потом исправить на name = name
+                    // для тестов, потом удалить name
                     name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
                     useTime = useTime,
                     timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
@@ -155,9 +152,15 @@ class MainViewModel @Inject constructor(
                     currentDateTimeUTC = dateTime.systemToEpochSecond(), // UTC
                     useTimeUTC = usageDisplay.useTime.systemToEpochSecond(), // UTC
                 ).onFailure {
-                    TODO("setUsagesFactTime: сделать обработку ошибок")
+                    setEffect {
+                        MainContract.Effect.Toast(
+                            it.localizedMessage
+                                ?: "Error: setFactTime ${usageDisplay.useTime.displayDateTime()}"
+                        )
+                    }
+//                    TODO("setUsagesFactTime: сделать обработку ошибок")
                 }
-            }
+            } ?: setEffect { MainContract.Effect.Toast("Error: setFactTime - usage not found!") }
         }
     }
 

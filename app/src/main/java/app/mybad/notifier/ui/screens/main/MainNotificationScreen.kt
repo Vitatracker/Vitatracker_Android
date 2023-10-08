@@ -66,6 +66,7 @@ import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.TitleText
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
@@ -95,10 +96,13 @@ fun MainNotificationScreen(
     sendEvent: (event: MainContract.Event) -> Unit = {},
     navigation: (navigationEffect: MainContract.Effect.Navigation) -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
                 is MainContract.Effect.Navigation -> navigation(effect)
+                is MainContract.Effect.Toast -> context.showToast(effect.text)
             }
         }
     }
@@ -274,6 +278,7 @@ private fun NotificationTextCategory() {
     )
 }
 
+@SuppressLint("Recycle")
 @Composable
 private fun NotificationLazyMedicines(
     usagesDisplay: Map<String, UsageDisplayDomainModel>,
@@ -292,11 +297,15 @@ private fun NotificationLazyMedicines(
             modifier = Modifier.padding(top = 10.dp),
             userScrollEnabled = true,
         ) {
-            items(usagesDisplay.entries.toList()) { usageEntry ->
+            items(
+                usagesDisplay.entries.toList(),
+                key = { it.key }
+            ) { usageEntry ->
                 //TODO("переделать так же как и BottomSheetUsages")
                 val usage = usageEntry.value
                 NotificationCourseItem(
                     usage = usage,
+                    isDone = usage.factUseTime != null,
                     relation = relations[usage.beforeFood],
                     type = types[usage.type],
                     icon = icons.getResourceId(usage.icon, 0),
@@ -311,11 +320,16 @@ private fun NotificationLazyMedicines(
 @Composable
 private fun NotificationCourseItem(
     usage: UsageDisplayDomainModel,
+    isDone: Boolean,
     relation: String,
     type: String,
     @DrawableRes icon: Int,
     onClick: () -> Unit,
 ) {
+    Log.w(
+        "VTTAG",
+        "MainNotificationScreen::NotificationCourseItem: recomposition ---------------- id=${usage.id} $isDone $relation $type $icon $usage"
+    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -323,11 +337,11 @@ private fun NotificationCourseItem(
         shape = RoundedCornerShape(10.dp),
         border = setBorderColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime != null
+            isDone = isDone
         ),
         color = setBackgroundColorCard(
             usageTime = usage.useTime,
-            isDone = usage.factUseTime != null
+            isDone = isDone
         ),
     ) {
         Row(
@@ -336,7 +350,7 @@ private fun NotificationCourseItem(
         ) {
             NotificationTimeCourse(
                 usageTime = usage.useTime,
-                isDone = usage.factUseTime != null
+                isDone = isDone
             )
 
             Row(
@@ -398,7 +412,7 @@ private fun NotificationCourseItem(
                 }
                 NotificationButtonAccept(
                     usageTime = usage.useTime,
-                    isDone = usage.factUseTime != null,
+                    isDone = isDone,
                     modifier = Modifier.clickable {
                         onClick()
                     }
@@ -625,7 +639,9 @@ fun MainNotificationScreenPreview() {
     MyBADTheme {
         MainNotificationScreen(
             state = MainContract.State(
-                patternsAndUsages = sortedMapOf<String, UsageDisplayDomainModel>().apply { patternsAndUsages.map { it.toUsageKey() to it } },
+                patternsAndUsages = sortedMapOf<String, UsageDisplayDomainModel>().apply {
+                    patternsAndUsages.map { it.toUsageKey() to it }
+                },
             )
         )
     }
