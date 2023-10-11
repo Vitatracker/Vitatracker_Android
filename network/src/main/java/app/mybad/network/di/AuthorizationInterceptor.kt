@@ -12,6 +12,10 @@ class AuthorizationInterceptor : Interceptor {
             if (AuthToken.token.isNotBlank()) {
                 Log.d("VTTAG", "AuthorizationInterceptor: auth with token ${AuthToken.token}")
                 chain.request().newBuilder()
+                    .header(
+                        "User-Agent",
+                        "android" // не менять, применяется для смены пароля, при изменении, изменить на беке
+                    )
                     .addHeader(
                         "Authorization",
                         "Bearer ${AuthToken.token}"
@@ -19,10 +23,6 @@ class AuthorizationInterceptor : Interceptor {
                     .addHeader(
                         "Content-Type",
                         "application/json"
-                    )
-                    .addHeader(
-                        "User-Agent",
-                        "android"
                     )
                     .build()
             } else chain.request()
