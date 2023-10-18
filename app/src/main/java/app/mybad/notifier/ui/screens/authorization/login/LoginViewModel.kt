@@ -148,6 +148,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun signInWithGoogle() {
+
     }
 
     private fun log(message: String, tr: Throwable? = null) {
