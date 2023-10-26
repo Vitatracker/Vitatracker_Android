@@ -6,6 +6,7 @@ import app.mybad.network.models.request.UserRegistrationRequestModel
 import app.mybad.network.models.request.UserSetNewPasswordRequestModel
 import app.mybad.network.models.response.AuthorizationNetworkModel
 import app.mybad.network.models.response.PasswordNetworkModel
+import app.mybad.network.models.response.SetNewPasswordNetworkModel
 import app.mybad.network.models.response.VerificationCodeNetworkModel
 import retrofit2.Response
 import retrofit2.http.Body
@@ -42,7 +43,7 @@ interface AuthorizationApi {
     suspend fun sendVerificationCode(@Body digit: Int): VerificationCodeNetworkModel
 
     @PATCH("/api/v1/auth/password/reset")
-    suspend fun setNewUserPassword(@Body userNewPasswordModel: UserSetNewPasswordRequestModel): Response<Unit>
+    suspend fun setNewUserPassword(@Body userNewPasswordModel: UserSetNewPasswordRequestModel): SetNewPasswordNetworkModel
 
     /*
         @PATCH(value = "/api/v1/auth/password/change")

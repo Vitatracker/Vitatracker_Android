@@ -5,6 +5,7 @@ import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.models.PasswordDomainModel
 import app.mybad.domain.models.RemedyDomainModel
+import app.mybad.domain.models.SetNewPasswordDomainModel
 import app.mybad.domain.models.UsageDomainModel
 import app.mybad.domain.models.VerificationCodeDomainModel
 import app.mybad.domain.models.user.UserDomainModel
@@ -14,6 +15,7 @@ import app.mybad.network.models.response.AuthorizationNetworkModel
 import app.mybad.network.models.response.CourseNetworkModel
 import app.mybad.network.models.response.PasswordNetworkModel
 import app.mybad.network.models.response.RemedyNetworkModel
+import app.mybad.network.models.response.SetNewPasswordNetworkModel
 import app.mybad.network.models.response.UsageNetworkModel
 import app.mybad.network.models.response.UserNetworkModel
 import app.mybad.network.models.response.VerificationCodeNetworkModel
@@ -256,6 +258,10 @@ fun PasswordNetworkModel.mapToDomain() = PasswordDomainModel(
 
 fun VerificationCodeNetworkModel.mapToDomain() = VerificationCodeDomainModel(
     token = token ?: "",
+    message = message ?: "${violations?.fieldName}: ${violations?.message}"
+)
+
+fun SetNewPasswordNetworkModel.mapToDomain() = SetNewPasswordDomainModel(
     message = message ?: "${violations?.fieldName}: ${violations?.message}"
 )
 /*

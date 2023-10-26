@@ -2,6 +2,7 @@ package app.mybad.domain.repository.network
 
 import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.PasswordDomainModel
+import app.mybad.domain.models.SetNewPasswordDomainModel
 import app.mybad.domain.models.VerificationCodeDomainModel
 
 interface AuthorizationNetworkRepository {
@@ -27,5 +28,5 @@ interface AuthorizationNetworkRepository {
     suspend fun sendVerificationCode(code: Int): Result<VerificationCodeDomainModel>
 
     suspend fun changeUserPassword(oldPassword: String, newPassword: String): Result<Boolean>
-    suspend fun setNewUserPassword(token: String, password: String, email: String): Result<Boolean>
+    suspend fun setNewUserPassword(token: String, password: String, email: String): Result<SetNewPasswordDomainModel>
 }
