@@ -2,12 +2,14 @@ package app.mybad.network.repository
 
 import android.util.Log
 import app.mybad.domain.models.AuthToken
+import app.mybad.domain.models.VerificationCodeDomainModel
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.models.mapToDomain
 import app.mybad.network.models.request.UserChangePasswordRequestModel
 import app.mybad.network.models.request.UserLoginRequestModel
 import app.mybad.network.models.request.UserRegistrationRequestModel
+import app.mybad.network.models.request.UserSetNewPasswordRequestModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -77,6 +79,12 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun sendVerificationCode(code: Int): Result<VerificationCodeDomainModel> = withContext(dispatcher) {
+        runCatching {
+            authorizationApi.sendVerificationCode(code).mapToDomain()
+        }
+    }
+
     override suspend fun changeUserPassword(
         oldPassword: String,
         newPassword: String
@@ -86,6 +94,18 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
                 UserChangePasswordRequestModel(
                     oldPassword = oldPassword,
                     newPassword = newPassword
+                )
+            ).isSuccessful
+        }
+    }
+
+    override suspend fun setNewUserPassword(token: String, password: String, email: String): Result<Boolean> = withContext(dispatcher) {
+        runCatching {
+            authorizationApi.setNewUserPassword(
+                UserSetNewPasswordRequestModel(
+                    token = token,
+                    password = password,
+                    email = email
                 )
             ).isSuccessful
         }

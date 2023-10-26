@@ -232,6 +232,18 @@
 
     <string name="action_navigate">Перейти</string>
 
+    <string name="enter_verification_code">Введите 6-значный код</string>
+    <string name="verification_code_sent_to">На почту %s отправлен 6-значный код. Введите его для продолжения</string>
+    <string name="resend_verification_code">Отправить код повторно</string>
+    <string name="resend_verification_code_loading">Отправляется</string>
+
+    <plurals name="verification_code_attempts_left">
+        <item quantity="one">Осталась %1$s попытка</item>
+        <item quantity="few">Осталось %1$s попытки</item>
+        <item quantity="many">Осталось %1$s попыток</item>
+        <item quantity="other">Осталось %1$s попыток</item>
+    </plurals>
+
     <plurals name="plurals_types_tablet">
         <item quantity="one">%1$s таблетка</item>
         <item quantity="few">%1$s таблетки</item>
