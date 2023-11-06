@@ -17,6 +17,7 @@ interface UserRepository {
     suspend fun insertUser(name: String, email: String): Long
     suspend fun updateMail(userId: Long, email: String)
     suspend fun updateName(userId: Long, name: String)
+    suspend fun updateNotificationDate(userId: Long)
 
     suspend fun clearTokenByUserId(userId: Long)
     suspend fun updateTokenByUserId(

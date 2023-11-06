@@ -44,6 +44,7 @@ interface UsageRepository {
     suspend fun updateUsage(usage: UsageDomainModel): Result<Long>
     suspend fun setFactUseTimeUsage(usageId: Long, factUseTime: Long?): Result<Long>
 
+    suspend fun checkUseUsages(courseId: Long, useTime: Long): Result<Boolean>
     suspend fun checkUseUsagesByCourseId(courseId: Long): Result<Boolean>
     suspend fun finishedUsageByCourseId(courseId: Long): Result<Unit>
 

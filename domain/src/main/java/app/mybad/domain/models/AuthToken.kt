@@ -1,7 +1,7 @@
 package app.mybad.domain.models
 
 import android.util.Log
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import app.mybad.utils.displayDateTimeUTC
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,7 @@ object AuthToken {
 
     suspend fun requiredSynchronize() {
         if (isAuthorize.value) {
-            val date = currentDateTimeUTCInSecond()
+            val date = currentDateTimeInSeconds()
             Log.v(
                 "VTTAG",
                 "AuthToken::token: requiredSynchronize date=${date.displayDateTimeUTC()}"
@@ -46,7 +46,7 @@ object AuthToken {
 
     suspend fun requiredUsagesSynchronize() {
         if (isAuthorize.value && userId > 0) {
-            val date = currentDateTimeUTCInSecond()
+            val date = currentDateTimeInSeconds()
             Log.v(
                 "VTTAG",
                 "AuthToken::token: requiredUsagesSynchronize date=${date.displayDateTimeUTC()}"

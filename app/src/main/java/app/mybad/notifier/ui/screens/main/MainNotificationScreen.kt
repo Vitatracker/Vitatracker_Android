@@ -73,7 +73,6 @@ import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.textColorFirst
 import app.mybad.notifier.ui.theme.textColorSecond
 import app.mybad.notifier.ui.theme.textColorThird
-import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.changeDate
@@ -83,6 +82,7 @@ import app.mybad.utils.displayTime
 import app.mybad.utils.getDaysOfMonth
 import app.mybad.utils.monthShortDisplay
 import app.mybad.utils.plusSeconds
+import app.mybad.utils.toText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -326,10 +326,6 @@ private fun NotificationCourseItem(
     @DrawableRes icon: Int,
     onClick: () -> Unit,
 ) {
-    Log.w(
-        "VTTAG",
-        "MainNotificationScreen::NotificationCourseItem: recomposition ---------------- id=${usage.id} $isDone $relation $type $icon $usage"
-    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()

@@ -43,27 +43,19 @@ dependencies {
     implementation project(path: ":core:theme")
     implementation project(path: ":domain")
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation "androidx.core:core-ktx:$core_ktx_version"
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // Logging interceptor
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11"
 
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Date Time
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-
-    //JWT
-    api 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.5') {
-        exclude group: 'org.json', module: 'json'
-    }
-    runtimeOnly 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetime_version")
 }

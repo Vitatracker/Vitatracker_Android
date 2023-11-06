@@ -26,8 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
+import app.mybad.utils.toText
 
 @Composable
 fun AddNotificationButton(
@@ -70,7 +70,9 @@ fun AddNotificationButton(
             Text(
                 text = dose.toText(),
                 style = Typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 4.dp).widthIn(min = 25.dp)
+                modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .widthIn(min = 25.dp)
             )
             Text(
                 text = forms[form],

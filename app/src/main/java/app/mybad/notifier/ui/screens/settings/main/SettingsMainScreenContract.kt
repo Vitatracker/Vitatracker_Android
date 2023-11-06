@@ -7,18 +7,19 @@ import app.mybad.notifier.ui.base.ViewState
 class SettingsMainScreenContract {
     sealed interface Event : ViewEvent {
         object ProfileClicked : Event
-        object NotificationsSettingsClicked : Event
+        object SystemNotificationsSettingsClicked : Event
         object LeaveWishesClicked : Event
         object AboutClicked : Event
         object ClearDB : Event
+        object SetAlarm : Event
     }
 
-    object State: ViewState
+    object State : ViewState
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {
             object ToProfile : Navigation
-            object ToNotificationsSettings : Navigation
+            object ToSystemNotificationsSettings : Navigation
             object ToLeaveWishes : Navigation
             object ToAbout : Navigation
         }

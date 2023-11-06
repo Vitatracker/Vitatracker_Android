@@ -6,10 +6,10 @@ import app.mybad.data.models.UsageFormat
 import app.mybad.data.models.UsageFormat.Companion.toPattern
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
-import app.mybad.domain.usecases.courses.AddNotificationsUseCase
+import app.mybad.domain.usecases.notification.AddNotificationsByCourseIdUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
-import app.mybad.domain.usecases.usages.CreatePatternUsagesUseCase
+import app.mybad.domain.usecases.patternusage.CreatePatternUsagesUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
@@ -24,7 +24,7 @@ class CreateCourseViewModel @Inject constructor(
     private val createCourseUseCase: CreateCourseUseCase,
     private val createPatternUsagesUseCase: CreatePatternUsagesUseCase,
 
-    private val addNotifications: AddNotificationsUseCase,
+    private val addNotifications: AddNotificationsByCourseIdUseCase,
 ) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
 
     init {
@@ -178,50 +178,15 @@ class CreateCourseViewModel @Inject constructor(
                         )
                     }
                     createPatternUsagesUseCase(patterns).onSuccess {
-                        // TODO("изменить и добавляем оповещение, расчитать usages")
+                        log("finishCreation: addNotifications courseId=${viewState.value.course.id}")
                         // добавляем оповещение
-                        addNotifications(
-                            course = viewState.value.course,
-                            usages = viewState.value.usages,
-                        )
+                        addNotifications(courseId = viewState.value.course.id)
                         newState()
                         // синхронизировать
                         AuthToken.requiredSynchronize()
                     }.onFailure {
                         err("finishCreation: error createPatternUsagesUseCase", it)
                     }
-                    // usages не создаем
-                    /*
-                                        val usages = generateUsages(
-                                            usagesByDay = viewState.value.usagesPattern,
-                                            remedyId = remedyId,
-                                            courseId = courseId,
-                                            userId = viewState.value.course.userId,
-                                            startDate = viewState.value.course.startDate,
-                                            endDate = viewState.value.course.endDate,
-                                            regime = viewState.value.course.regime
-                                        )
-                                        log("finishCreation: usages=${usages.size}")
-                                        createUsagesUseCase(usages).onSuccess {
-                                            log("finishCreation: usages-ok")
-                                            setState {
-                                                copy(
-                                                    usages = usages,
-                                                )
-                                            }
-                                            // добавляем оповещение
-                                            addNotifications(
-                                                course = viewState.value.course,
-                                                usages = viewState.value.usages,
-                                            )
-                                            newState()
-                                            log("finishCreation: synchronizationCourseUseCase")
-                                            // синхронизировать
-                                            AuthToken.requiredSynchronize(currentDateTimeInSecond())
-                                        }.onFailure {
-                                            err("finishCreation: error createUsagesUseCase", it)
-                                        }
-                    */
                 }.onFailure {
                     err("finishCreation: error createCourseUseCase", it)
                 }

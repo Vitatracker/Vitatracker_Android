@@ -11,6 +11,13 @@ interface CourseRepository {
     suspend fun getCoursesByRemedyId(remedyId: Long): Result<List<CourseDomainModel>>
     suspend fun getCourseById(courseId: Long): Result<CourseDomainModel>
     suspend fun getCourseByIdn(courseIdn: Long): Result<CourseDomainModel>
+    suspend fun getCoursesWithRemindDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long,
+    ): Result<List<CourseDisplayDomainModel>>
+    suspend fun getCourseWithParamsById(courseId: Long): Result<CourseDisplayDomainModel>
+    suspend fun countActiveCourses(userId: Long): Result<Long>
 
     suspend fun insertCourse(course: CourseDomainModel): Result<Long>
     suspend fun insertCourse(courses: List<CourseDomainModel>): Result<Unit>

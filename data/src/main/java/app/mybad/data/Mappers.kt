@@ -2,7 +2,7 @@ package app.mybad.data
 
 import app.mybad.data.db.models.CourseModel
 import app.mybad.data.db.models.CourseWithParamsModel
-import app.mybad.data.db.models.PatternUsageFutureWithNameAndDateModel
+import app.mybad.data.db.models.NotificationModel
 import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyModel
@@ -12,24 +12,20 @@ import app.mybad.data.db.models.UserModel
 import app.mybad.data.models.user.PersonalDataModel
 import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.models.CourseDomainModel
+import app.mybad.domain.models.NotificationDomainModel
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.models.RemedyDomainModel
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.domain.models.UsageDomainModel
-import app.mybad.domain.models.user.NotificationSettingDomainModel
 import app.mybad.domain.models.user.UserDomainModel
 import app.mybad.domain.models.user.UserPersonalDomainModel
-import app.mybad.domain.models.user.UserRulesDomainModel
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.timeCorrect
 import app.mybad.utils.timeCorrectToSystem
 import app.mybad.utils.timeInMinutes
 import app.mybad.utils.toDateTimeSystem
 import app.mybad.utils.toDateTimeUTC
-import app.vitatracker.data.UserNotificationsDataModel
-import app.vitatracker.data.UserPersonalDataModel
-import app.vitatracker.data.UserRulesDataModel
 
 fun UserModel.mapToDomain() = UserDomainModel(
     id = id,
@@ -138,8 +134,8 @@ fun CourseDomainModel.mapToData() = CourseModel(
     id = id,
     idn = idn,
 
-    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
-    updateDate = currentDateTimeUTCInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeInSeconds(),
+    updateDate = currentDateTimeInSeconds(),
 
     userId = userId,
     userIdn = userIdn,
@@ -201,8 +197,8 @@ fun RemedyDomainModel.mapToData() = RemedyModel(
     id = id,
     idn = idn,
 
-    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
-    updatedDate = currentDateTimeUTCInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeInSeconds(),
+    updatedDate = currentDateTimeInSeconds(),
 
     userId = userId,
     userIdn = userIdn,
@@ -263,8 +259,8 @@ fun UsageDomainModel.mapToData() = UsageModel(
     isDeleted = isDeleted,
     notUsed = notUsed,
 
-    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
-    updatedDate = currentDateTimeUTCInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeInSeconds(),
+    updatedDate = currentDateTimeInSeconds(),
 
     updateNetworkDate = updateNetworkDate,
 )
@@ -305,8 +301,8 @@ fun PatternUsageDomainModel.mapToData() = PatternUsageModel(
     courseId = courseId,
     courseIdn = courseIdn,
 
-    createdDate = if (createdDate > 0) createdDate else currentDateTimeUTCInSecond(),
-    updatedDate = currentDateTimeUTCInSecond(),
+    createdDate = if (createdDate > 0) createdDate else currentDateTimeInSeconds(),
+    updatedDate = currentDateTimeInSeconds(),
 
     timeInMinutes = timeInMinutes.timeCorrect(), // UTC + 720
     quantity = quantity,
@@ -361,46 +357,6 @@ fun PatternUsageWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomai
 fun List<PatternUsageWithNameAndDateModel>.mapToDomain(data: Long) =
     this.map { it.mapToDomain(data) }
 
-fun PatternUsageFutureWithNameAndDateModel.mapToDomain(data: Long) = UsageDisplayDomainModel(
-    id = id,
-    courseId = courseId,
-    userId = userId,
-
-    isPattern = true, // pattern
-
-    timeInMinutes = timeInMinutes.timeCorrectToSystem(),
-    useTime = data.timeCorrectToSystem(timeInMinutes),
-
-    quantity = quantity,
-
-    courseIdn = courseIdn,
-
-    remedyId = remedyId,
-
-    startDate = startDate.toDateTimeSystem(), // с учетом часового пояса
-    endDate = endDate.toDateTimeSystem(), // с учетом часового пояса
-    isInfinite = isInfinite,
-
-    regime = regime,
-    showUsageTime = showUsageTime,
-    isFinished = isFinished,
-    notUsed = notUsed,
-
-    name = name ?: "",
-    description = description ?: "",
-    type = type,
-    icon = icon,
-    color = color,
-    dose = dose,
-    beforeFood = beforeFood,
-    measureUnit = measureUnit,
-    photo = photo,
-)
-
-@JvmName("listPUFNDmToDomain")
-fun List<PatternUsageFutureWithNameAndDateModel>.mapToDomain(data: Long) =
-    this.map { it.mapToDomain(data) }
-
 fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
     id = id,
     courseId = courseId,
@@ -439,14 +395,6 @@ fun UsageWithNameAndDateModel.mapToDomain() = UsageDisplayDomainModel(
 @JvmName("listUNDmToDomain")
 fun List<UsageWithNameAndDateModel>.mapToDomain() = this.map { it.mapToDomain() }
 
-//------------------------
-fun UserPersonalDataModel.mapToDomain() = UserPersonalDomainModel(
-    name = name,
-    age = age,
-    avatar = avatar,
-    email = email,
-)
-
 fun PersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     name = name,
     age = age,
@@ -454,17 +402,24 @@ fun PersonalDataModel.mapToDomain() = UserPersonalDomainModel(
     email = email,
 )
 
-fun UserNotificationsDataModel.mapToDomain() = NotificationSettingDomainModel(
+fun NotificationModel.mapToDomain() = NotificationDomainModel(
+    id = id,
+    userId = userId,
     isEnabled = isEnabled,
-    isFloat = isFloat,
-    medicationControl = medicationControl,
-    nextCourseStart = nextCourseStart,
-    medsId = emptyList(),
+    type = type,
+    typeId = typeId,
+    time = time,
 )
 
-fun UserRulesDataModel.mapToDomain() = UserRulesDomainModel(
-    canEdit = canEdit,
-    canAdd = canAdd,
-    canShare = canShare,
-    canInvite = canInvite,
+fun NotificationDomainModel.mapToData() = NotificationModel(
+    id = id,
+    userId = userId,
+    isEnabled = isEnabled,
+    type = type,
+    typeId = typeId,
+    date = date,
+    time = time,
 )
+
+@JvmName("listNDmToDomain")
+fun List<NotificationModel>.mapToDomain() = this.map { it.mapToDomain() }

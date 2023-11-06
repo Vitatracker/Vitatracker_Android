@@ -34,15 +34,15 @@ const val LIMIT_END_MAX = 60 // + максимальная дата оконча
 val notNullDateTime = 0L.toDateTimeUTC()
 
 // Получение даты + времени
-fun currentDateTimeUTCInSecond() = currentDateTimeUTC().toEpochSecond()
-fun currentDateTimeUTC() = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+fun currentDateTimeInSeconds() = Clock.System.now().epochSeconds
+fun currentDateTimeInMilliseconds() = Clock.System.now().toEpochMilliseconds()
 fun currentDateTimeSystem() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
 // преобразование
 fun LocalDateTime.systemToInstant() = this.toInstant(TimeZone.currentSystemDefault())
 private fun LocalDateTime.toInstant() = this.toInstant(TimeZone.UTC)
 private fun Long.toInstant() = Instant.fromEpochSeconds(this)
-fun String.toDateTimeUTCInSecond() = if (this == "") currentDateTimeUTCInSecond()
+fun String.toDateTimeUTCInSecond() = if (this == "") currentDateTimeInSeconds()
 else LocalDateTime.parse(this).toEpochSecond()
 
 fun Long.toDateTimeUTC() = this.toInstant().toLocalDateTime(TimeZone.UTC)
@@ -58,6 +58,8 @@ fun LocalDateTime.toUTC() = this.toInstant(TimeZone.currentSystemDefault())
 
 fun LocalDateTime.toSystem() = this.toInstant(TimeZone.UTC)
     .toLocalDateTime(TimeZone.currentSystemDefault())
+
+fun LocalDateTime.minusForNotification() = this.minus(DateTimePeriod(minutes = 5))
 
 // форматирование даты и времени
 private val dateTimeDisplayFormatter = DateTimeFormatter
@@ -78,6 +80,10 @@ fun LocalDateTime.displayDateTime() = dateTimeFormatter.format(
     minute,
     second,
 )
+fun Long.displayDateTime() = this.toDateTimeSystem().displayDateTime()
+
+fun Long.milliSecondsToDisplayDateTime() = if (this < MILES_SECONDS) ""
+else (this / MILES_SECONDS).displayDateTime()
 
 private const val dateFormatter = "%02d.%02d.%04d" // dd.MM.yyyy
 fun LocalDateTime.displayDate() = dateFormatter.format(
@@ -96,10 +102,7 @@ fun LocalDateTime.displayDateTimeShort() = dateTimeShortFormatter.format(
 
 private val dateFullDisplayFormatter
     get() = DateTimeFormatter
-        .ofPattern(
-            "dd MMMM yyyy",
-            Locale.getDefault()
-        )
+        .ofPattern("dd MMMM yyyy", Locale.getDefault())
         .withZone(ZoneOffset.systemDefault())
 
 fun LocalDateTime.displayDateFull(): String = this.systemToInstant()
@@ -299,7 +302,7 @@ else this.systemToInstant()
 // 0..-720..+720..+1440 для часового пояса -12..+12, в сутках 24 часа * 60 = 1440
 // 0 - -12, 720 - 0, 1440 - +12, 2160 - 24 часа
 fun Long.timeCorrectToSystem(minute: Int) = this.toDateTimeSystem()
-    .correctTimeInMinutes(minute)
+    .correctTimeInMinutes(minute.timeCorrectToSystem())
 
 fun LocalDateTime.correctTimeInMinutes(minute: Int) = this
     .atStartOfDay()//  установить в локальном поясе 00 + минуты
@@ -379,10 +382,18 @@ fun LocalDateTime.courseDuration(date: LocalDateTime) = this.atStartOfDay()
 
 fun LocalDateTime.isEqualsDay(date: LocalDateTime) = this.dayOfYear == date.dayOfYear &&
     this.year == date.year
+fun LocalDateTime.isEqualsDay(dateInMilliseconds: Long) = if (dateInMilliseconds < MILES_SECONDS) false
+else (dateInMilliseconds/ MILES_SECONDS).toDateTimeSystem().isEqualsDay(this)
 
 fun LocalDateTime.isBetweenDay(firstDate: LocalDateTime, lastDate: LocalDateTime): Boolean {
     val first = firstDate.atStartOfDay().systemToInstant()
     val last = lastDate.atEndOfDay().systemToInstant()
+    return this.systemToInstant() in first..last
+}
+
+fun LocalDateTime.isWithinDay1(date: LocalDateTime): Boolean {
+    val first = date.systemToInstant()
+    val last = date.atEndOfDay().systemToInstant()
     return this.systemToInstant() in first..last
 }
 
@@ -476,5 +487,15 @@ fun initWeekAndDayOfMonth(
             action(week, day, date)
             date
         }
+    }
+}
+
+//
+fun LocalDateTime.minOf(b: LocalDateTime?, c: LocalDateTime? = null): LocalDateTime {
+    return when {
+        b != null && c == null -> if (this <= b) this else b
+        b == null && c != null -> if (this <= c) this else c
+        b != null && c != null -> this.minOf(b.minOf(c))
+        else -> this
     }
 }

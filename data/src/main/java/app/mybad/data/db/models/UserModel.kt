@@ -41,6 +41,9 @@ data class UserModel(
     @ColumnInfo(name = UserContract.Columns.UPDATED_DATE)
     val updatedDate: Long = 0,
 
+    @ColumnInfo(name = UserContract.Columns.NOTIFICATION_DATE)
+    val notificationDate: Long = 0,
+
     @ColumnInfo(name = UserContract.Columns.UPDATED_NETWORK_DATE)
     val updateNetworkDate: Long = 0,
     @ColumnInfo(name = UserContract.Columns.DELETED_DATE)

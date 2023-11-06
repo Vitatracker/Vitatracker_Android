@@ -2,7 +2,6 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
-    id "com.google.protobuf" version '0.9.1'
     id 'kotlin-kapt'
     id 'io.gitlab.arturbosch.detekt'
 }
@@ -47,12 +46,13 @@ kapt {
 
 dependencies {
 
+    implementation project(path: ":core:theme")
     implementation project(path: ":core:utils")
     implementation project(path: ":network")
     implementation project(path: ":domain")
     implementation project(path: ":notifications")
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation "androidx.core:core-ktx:$core_ktx_version"
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -73,15 +73,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room"
     kapt "androidx.room:room-compiler:$room"
 
-    // Preferences DataStore
-    implementation "androidx.datastore:datastore-preferences:$data_store"
-    implementation "androidx.datastore:datastore-preferences-core:$data_store"
-
-    // Proto DataStore
-    implementation "androidx.datastore:datastore:$data_store"
-    implementation "androidx.datastore:datastore-core:$data_store"
-    implementation 'com.google.protobuf:protobuf-javalite:3.23.4'
-
     // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test-jvm:$coroutine_version"
@@ -93,7 +84,7 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     // Date Time
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:$datetime_version"
     //    local unit test
     implementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation 'junit:junit:4.13.2'
@@ -112,23 +103,4 @@ dependencies {
     implementation "com.google.dagger:hilt-android-testing:$hilt_version"
     kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.19.4"
-    }
-
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
 }

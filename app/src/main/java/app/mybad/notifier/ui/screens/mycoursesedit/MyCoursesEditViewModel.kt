@@ -13,12 +13,14 @@ import app.mybad.domain.usecases.courses.CreateCourseUseCase
 import app.mybad.domain.usecases.courses.DeleteCourseFullUseCase
 import app.mybad.domain.usecases.courses.GetCourseByIdUseCase
 import app.mybad.domain.usecases.courses.UpdateCourseUseCase
+import app.mybad.domain.usecases.notification.AddNotificationsByCourseIdUseCase
+import app.mybad.domain.usecases.notification.CancelNotificationsByCourseIdUseCase
+import app.mybad.domain.usecases.patternusage.GetPatternUsagesByCourseIdUseCase
+import app.mybad.domain.usecases.patternusage.UpdatePatternUsagesByCourseIdUseCase
 import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.domain.usecases.remedies.GetRemedyByIdUseCase
 import app.mybad.domain.usecases.remedies.UpdateRemedyUseCase
-import app.mybad.domain.usecases.usages.GetPatternUsagesByCourseIdUseCase
-import app.mybad.domain.usecases.usages.GetUseUsagesInCourseUseCase
-import app.mybad.domain.usecases.usages.UpdatePatternUsagesByCourseIdUseCase
+import app.mybad.domain.usecases.usages.CheckUseUsagesInCourseUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.currentDateTimeSystem
@@ -45,9 +47,12 @@ class MyCoursesEditViewModel @Inject constructor(
     private val getPatternUsagesByCourseIdUseCase: GetPatternUsagesByCourseIdUseCase,
     private val updatePatternUsagesByCourseIdUseCase: UpdatePatternUsagesByCourseIdUseCase,
 
-    private val getUseUsagesInCourseUseCase: GetUseUsagesInCourseUseCase,
+    private val checkUseUsagesInCourseUseCase: CheckUseUsagesInCourseUseCase,
 
     private val deleteCourseFullUseCase: DeleteCourseFullUseCase,
+
+    private val addNotificationsByCourseIdUseCase: AddNotificationsByCourseIdUseCase,
+    private val cancelNotificationsByCourseIdUseCase: CancelNotificationsByCourseIdUseCase,
 ) : BaseViewModel<MyCoursesEditContract.Event, MyCoursesEditContract.State, MyCoursesEditContract.Effect>() {
 
     init {
@@ -257,8 +262,9 @@ class MyCoursesEditViewModel @Inject constructor(
     private suspend fun saveCourse() {
         //TODO("тут необходимо переделать, закрывать старый курс и пересоздавать курс с новой датой")
         // проверить есть ли использование таблетки
-        val isUseUsage = getUseUsagesInCourseUseCase(viewState.value.course.id)
+        val isUseUsage = checkUseUsagesInCourseUseCase(viewState.value.course.id)
             .getOrNull() ?: false
+        cancelNotificationsByCourseIdUseCase(viewState.value.course.id)
         if (isUseUsage) {
             // таблетки уже были выпиты, закрыть с текущай датой курс и создать новый
             createNewCourse()
@@ -373,5 +379,7 @@ class MyCoursesEditViewModel @Inject constructor(
                 )
             }
         )
+        // обновим оповещения
+        addNotificationsByCourseIdUseCase(courseId)
     }
 }

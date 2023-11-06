@@ -44,7 +44,7 @@ import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.toText
+import app.mybad.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.betweenSecondsSystem

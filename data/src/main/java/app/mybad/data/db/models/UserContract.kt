@@ -19,6 +19,8 @@ object UserContract {
         const val TOKEN_REFRESH = "token_refresh" //
         const val TOKEN_REFRESH_DATE = "token_refresh_date" //
 
+        const val NOTIFICATION_DATE = "notification_date" //
+
         const val UPDATED_NETWORK_DATE = "updated_network" // дата последней передачи данных на бек
         const val DELETED_DATE = "deleted_local" // дата удаления
 

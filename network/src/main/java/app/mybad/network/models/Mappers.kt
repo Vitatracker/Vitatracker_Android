@@ -18,7 +18,7 @@ import app.mybad.network.models.response.UserNetworkModel
 import app.mybad.utils.MILES_SECONDS
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.systemToInstant
 import app.mybad.utils.toDateTimeIso
@@ -56,7 +56,7 @@ fun UserNetworkModel.mapToDomain(userIdLoc: Long = 0) = UserDomainModel(
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeUTCInSecond(),
+    updateNetworkDate = currentDateTimeInSeconds(),
 )
 
 fun CourseNetworkModel.mapToDomain(
@@ -91,7 +91,7 @@ fun CourseNetworkModel.mapToDomain(
 
     patternUsages = patternUsages ?: "",
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeUTCInSecond(),
+    updateNetworkDate = currentDateTimeInSeconds(),
 )
 
 fun CourseDomainModel.mapToNet() = CourseNetworkModel(
@@ -147,7 +147,7 @@ fun RemedyNetworkModel.mapToDomain(remedyIdLoc: Long = 0) = RemedyDomainModel(
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер, проверить
-    updateNetworkDate = currentDateTimeUTCInSecond(),
+    updateNetworkDate = currentDateTimeInSeconds(),
 )
 
 fun RemedyDomainModel.mapToNet() = RemedyNetworkModel(
@@ -198,7 +198,7 @@ fun UsageNetworkModel.mapToDomain(
     notUsed = notUsed,
 
     // мы получаем с сервера, нам не нужно его возвращать опять на сервер
-    updateNetworkDate = currentDateTimeUTCInSecond(),
+    updateNetworkDate = currentDateTimeInSeconds(),
 )
 
 fun UsageDomainModel.mapToNet() = UsageNetworkModel(

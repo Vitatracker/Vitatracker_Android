@@ -39,7 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.toText
+import app.mybad.utils.toText
 import app.mybad.utils.displayWithDateTimeInMinutes
 
 @Composable

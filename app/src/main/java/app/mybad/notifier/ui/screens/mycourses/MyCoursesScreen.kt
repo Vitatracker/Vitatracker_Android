@@ -51,9 +51,9 @@ import app.mybad.notifier.ui.common.getFormsPluralsArray
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.notifier.ui.theme.iconEditing
-import app.mybad.notifier.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.displayDate
+import app.mybad.utils.toText
 import kotlinx.coroutines.flow.Flow
 
 @SuppressLint("Recycle")
@@ -67,7 +67,7 @@ fun MyCoursesScreen(
 ) {
 
     val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
-    val typePlurals = remember { getFormsPluralsArray()}
+    val typePlurals = remember { getFormsPluralsArray() }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->

@@ -79,6 +79,7 @@
     <string name="settings_notifications">Notification settings</string>
     <string name="settings_about">About application</string>
     <string name="settings_db_clear">Clear DB (For testing)</string>
+    <string name="settings_add_alarm">Add Alarm (For testing)</string>
     <string name="settings_quit">Logout</string>
     <string name="settings_delete_account">Delete account</string>
     <string name="settings_change_password">Change password</string>
@@ -113,9 +114,12 @@
     <string name="settings_about_our_team_body_2">По этой ссылке находится пост в линкедине о команде, где подробно рассказана история создания приложения и информация о каждом участнике.</string>
     <string name="settings_about_our_team_end">С заботой о вас, команда %s!</string>
     <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
-    <string name="settings_notifications_setup_notifications_2">Уведомления отключены</string>
-    <string name="settings_notifications_setup_notifications_3">Убедитесь, что ваши уведомления включены</string>
+    <string name="settings_notifications_setup_notifications_2">Notifications enabled</string>
+    <string name="settings_notifications_setup_notifications_3">Notifications disabled</string>
+    <string name="settings_notifications_setup_notifications_4">Убедитесь, что ваши уведомления включены</string>
     <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
+    <string name="settings_notifications_setup_notifications_tracker_button">Set up reception notifications</string>
+    <string name="settings_notifications_setup_notifications_info_button">Set up informational notifications</string>
     <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
     <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
     <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
@@ -132,10 +136,15 @@
     <string name="settings_notifications_contact_us_5">Нужна дополнительная помощь?</string>
     <string name="settings_notifications_contact_us_6">Свяжитесь со службой поддержки</string>
     <string name="settings_notifications_contact_us_button">Связаться</string>
+    <string name="settings_notifications_alarms_title">Set alarms</string>
+    <string name="settings_notifications_alarms">The application must have permission to set the notification if you want to receive notifications about the time of taking the medication.</string>
+    <string name="settings_notifications_alarms_can">Allowed to set alarms</string>
+    <string name="settings_notifications_alarms_can_not">Not allowed to set alarms</string>
+    <string name="settings_notifications_alarms_button">Request permission</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>
-
 
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
@@ -179,13 +188,31 @@
     <string name="wishes_text_email" translatable="false">support_vitatracker@gmail.com</string>
 
     <!--notifications-->
-    <string name="notifications_channel_description">Notifications from Vitatracker med reminder</string>
+    <string name="notifications_channel_name">Taking medications</string>
+    <string name="notifications_channel_description">Notifications from Vitatracker medication reminder</string>
+    <string name="notifications_channel_group_personal">Taking medications</string>
+
+    <string name="notifications_channel_name_info">Vitatracker info</string>
+    <string name="notifications_channel_description_info">Information notices from Vitatracker</string>
+    <string name="notifications_group_info">Vitatracker info</string>
+
+    <string name="notifications_group_personal">Taking medications</string>
     <string name="notifications_time_to_use">It is time to use your medication!</string>
-    <string name="notifications_text_template">Use your %s!\n%d, %s</string>
+    <string name="notifications_time_to_use_text">Use your %s!\n %s - %s %s</string>
     <string name="notifications_action_take">Take</string>
     <string name="notifications_action_delay">Delay</string>
-    <string name="notifications_new_course_start">New course starts!</string>
-    <string name="notifications_new_course_start_text_template">New course starts %s!\nYou will have a course of %s, %d %s, %s</string>
+    <string name="notifications_action_cancel">Skip</string>
+
+    <string name="notifications_new_course_start_title">New course starts!</string>
+    <string name="notifications_new_course_start_text">New course starts %s!\nYou will have a course of %s, %d %s, %s</string>
+
+    <string name="notifications_reschedule_title">Rescheduling</string>
+    <string name="notifications_reschedule_text">Wait for rescheduling to complete</string>
+
+    <string name="notifications_control_title">Reception control</string>
+    <string name="notifications_control_text">Monitor the intake of all medications</string>
+
+    <string name="notifications_synchronization_title">Synchronization</string>
 
     <!-- units-единицы   -->
     <string name="units_ug">ug</string>

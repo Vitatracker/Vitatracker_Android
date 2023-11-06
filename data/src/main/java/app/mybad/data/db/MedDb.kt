@@ -1,7 +1,7 @@
 package app.mybad.data.db
 
 import app.mybad.data.db.dao.CourseDao
-import app.mybad.data.db.dao.NotificationSettingsDao
+import app.mybad.data.db.dao.NotificationDao
 import app.mybad.data.db.dao.PatternUsageDao
 import app.mybad.data.db.dao.RemedyDao
 import app.mybad.data.db.dao.UsageDao
@@ -13,5 +13,5 @@ interface MedDb {
     fun getCourseDao(): CourseDao
     fun getUsageDao(): UsageDao
     fun getPatternUsageDao(): PatternUsageDao
-    fun getNotificationSettingsDao(): NotificationSettingsDao
+    fun getNotificationDao(): NotificationDao
 }

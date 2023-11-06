@@ -14,9 +14,7 @@ object CourseContract {
         const val REMEDY_IDN = "remedy_idn" //
 
         const val START_DATE = "start_date" //
-        const val START_DATE_FUTURE = "start_date_future" //
         const val END_DATE = "end_date" //
-        const val END_DATE_FUTURE = "end_date_future" //
 
         const val REGIME = "regime" //
         const val IS_FINISHED = "is_finished" //
@@ -29,7 +27,8 @@ object CourseContract {
 
         const val COMMENT = "comment" //
 
-        const val REMIND_DATE = "remind_date" // это дата оповещения о новом курсе, это не старт нового курса
+        const val REMIND_DATE =
+            "remind_date" // это дата оповещения о новом курсе, это не старт нового курса
         const val INTERVAL = "interval" // старт нового курса чере интервал после конца курса
 
         const val CREATION_DATE = "creation_date" //

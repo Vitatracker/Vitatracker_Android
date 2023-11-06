@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.UsageDisplayDomainModel
-import app.mybad.domain.usecases.usages.GetPatternUsagesWithNameAndDateBetweenUseCase
+import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
+import app.mybad.domain.usecases.patternusage.GetPatternUsagesActiveWithParamsBetween
 import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
-import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atNoonOfDay
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getPatternUsagesWithNameAndDateBetweenUseCase: GetPatternUsagesWithNameAndDateBetweenUseCase,
+    private val getPatternUsagesActiveWithParamsBetween: GetPatternUsagesActiveWithParamsBetween,
     private val getUsagesWithNameAndDateBetweenUseCase: GetUsagesWithNameAndDateBetweenUseCase,
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
@@ -61,7 +61,7 @@ class MainViewModel @Inject constructor(
             } endDate=${endDate.toDateTimeSystem().displayDateTime()}"
         )
         combine(
-            getPatternUsagesWithNameAndDateBetweenUseCase(
+            getPatternUsagesActiveWithParamsBetween(
                 startTime = startDate,
                 endTime = endDate,
             ).mapLatest(::transformPatternUsages),
@@ -73,9 +73,9 @@ class MainViewModel @Inject constructor(
             // тут нужна подмена для useTime и timeInMinutes для pattern
             p.plus(u).map {
                 val pattern = it.value
-                val useTime =
-                    if (pattern.isPattern) date.correctTimeInMinutes(pattern.timeInMinutes)
-                    else pattern.useTime // с учетом часового пояса
+                val useTime = if (pattern.isPattern) {
+                    date.correctTimeInMinutes(pattern.timeInMinutes)
+                } else pattern.useTime // с учетом часового пояса
 //                Log.w(
 //                    "VTTAG",
 //                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} useTime=${useTime.displayDateTime()} correct=${currentDateTimeSystem().timeCorrect()} time=${pattern.timeInMinutes.displayTimeInMinutes()} - ${

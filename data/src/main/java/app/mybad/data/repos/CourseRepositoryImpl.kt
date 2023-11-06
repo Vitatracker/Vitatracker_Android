@@ -5,7 +5,7 @@ import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.CourseDomainModel
 import app.mybad.domain.repository.CourseRepository
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -23,8 +23,28 @@ class CourseRepositoryImpl @Inject constructor(
         .flowOn(dispatcher)
 
     override fun getCourses(userId: Long) = db.getCourses(userId)
-        .map { it.mapToDomain() to currentDateTimeUTCInSecond() }
+        .map { it.mapToDomain() to currentDateTimeInSeconds() }
         .flowOn(dispatcher)
+
+    override suspend fun getCoursesWithRemindDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long,
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getCoursesWithRemindDateBetween(
+                userId = userId,
+                startTime = startTime,
+                endTime = endTime
+            ).mapToDomain()
+        }
+    }
+
+    override suspend fun getCourseWithParamsById(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getCourseWithParamsById(courseId).mapToDomain()
+        }
+    }
 
     override suspend fun getCoursesByUserId(userId: Long) = withContext(dispatcher) {
         runCatching {
@@ -47,6 +67,12 @@ class CourseRepositoryImpl @Inject constructor(
     override suspend fun getCourseByIdn(courseIdn: Long) = withContext(dispatcher) {
         runCatching {
             db.getCourseByIdn(courseIdn).mapToDomain()
+        }
+    }
+
+    override suspend fun countActiveCourses(userId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.countActiveCourses(userId)
         }
     }
 

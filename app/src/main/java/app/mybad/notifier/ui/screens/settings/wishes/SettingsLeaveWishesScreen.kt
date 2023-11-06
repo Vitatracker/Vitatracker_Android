@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -30,12 +31,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun SettingsLeaveWishesScreen(
-    context: Context,
     state: SettingsLeaveWishesContract.State,
     effectFlow: Flow<SettingsLeaveWishesContract.Effect>? = null,
     sendEvent: (event: SettingsLeaveWishesContract.Event) -> Unit = {},
     navigation: (navigationEffect: SettingsLeaveWishesContract.Effect.Navigation) -> Unit
 ) {
+
+    val context = LocalContext.current
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect {effect->

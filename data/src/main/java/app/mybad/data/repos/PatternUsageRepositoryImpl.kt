@@ -5,6 +5,8 @@ import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.repository.PatternUsageRepository
+import app.mybad.utils.currentDateTimeSystem
+import app.mybad.utils.toEpochSecond
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -21,6 +23,20 @@ class PatternUsageRepositoryImpl @Inject constructor(
     override fun getPatternUsages(userId: Long) = db.getPatternUsages(userId)
         .map { it.mapToDomain() }
         .flowOn(dispatcher)
+
+    override suspend fun getPatternUsageId(
+        userId: Long,
+        courseId: Long,
+        timeInMinutes: Int
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getPatternUsageId(
+                userId = userId,
+                courseId = courseId,
+                timeInMinutes = timeInMinutes
+            )
+        }
+    }
 
     override suspend fun getPatternUsagesByUserId(userId: Long) = withContext(dispatcher) {
         runCatching {
@@ -46,37 +62,46 @@ class PatternUsageRepositoryImpl @Inject constructor(
         }
     }
 
-    //    override suspend fun getPatternUsagesBetweenByCourseId(
-//        courseId: Long,
-//        startTime: Long,
-//        endTime: Long
-//    ) = withContext(dispatcher) {
-//        runCatching {
-//            db.getPatternUsagesBetweenByCourseId(
-//                courseId = courseId,
-//                startTime = startTime,
-//                endTime = endTime
-//            ).mapToDomain()
-//        }
-//    }
-//
-//    override suspend fun getPatternUsagesBetween(
-//        userId: Long,
-//        startTime: Long,
-//        endTime: Long
-//    ) = db.getPatternUsagesBetween(
-//        userId = userId,
-//        startTime = startTime,
-//        endTime = endTime
-//    )
-//        .map { it.mapToDomain() }
-//        .flowOn(dispatcher)
-//
-    override suspend fun getPatternUsagesWithNameAndDateBetween(
+    override suspend fun getPatternUsageById(patternId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getPatternUsageById(patternId = patternId)
+                .mapToDomain()
+        }
+    }
+
+    override suspend fun getUsageDisplayById(patternId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getUsageDisplayById(patternId = patternId)
+                .mapToDomain(currentDateTimeSystem().toEpochSecond())
+        }
+    }
+
+    override suspend fun getUsageDisplayByCourseId(courseId: Long) = withContext(dispatcher) {
+        runCatching {
+            db.getUsageDisplayByCourseId(courseId = courseId)
+                .mapToDomain(currentDateTimeSystem().toEpochSecond())
+        }
+    }
+
+    override suspend fun getPatternUsagesWithParamsOnDate(
         userId: Long,
         startTime: Long,
         endTime: Long
-    ) = db.getPatternUsagesWithNameAndDateBetween(
+    ) = withContext(dispatcher) {
+        runCatching {
+            db.getPatternUsagesWithParamsOnDate(
+                userId = userId,
+                startTime = startTime,
+                endTime = endTime
+            ).mapToDomain(startTime)
+        }
+    }
+
+    override suspend fun getPatternUsagesActiveWithParamsBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long
+    ) = db.getPatternUsagesActiveWithParamsBetween(
         userId = userId,
         startTime = startTime,
         endTime = endTime
@@ -96,7 +121,7 @@ class PatternUsageRepositoryImpl @Inject constructor(
         .map { it.mapToDomain(startTime) }
         .flowOn(dispatcher)
 
-    override suspend fun getFutureWithParamsBetween(
+    override suspend fun getPatternUsagesFutureWithParamsBetween(
         userId: Long,
         startTime: Long,
         endTime: Long

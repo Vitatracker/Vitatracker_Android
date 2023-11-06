@@ -6,7 +6,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.usecases.user.GetUsersCountUseCase
 import app.mybad.domain.usecases.user.TakeUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class SplashScreenViewModel @Inject constructor(
     }
 
     private suspend fun readToken() {
-        takeUserAuthTokenUseCase(currentDate = currentDateTimeUTCInSecond())
+        takeUserAuthTokenUseCase(currentDate = currentDateTimeInSeconds())
         Log.w("VTTAG", "SplashScreenViewModel:: readToken: userId=${AuthToken.userId}")
     }
 

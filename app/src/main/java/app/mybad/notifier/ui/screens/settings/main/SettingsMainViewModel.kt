@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.settings.main
 
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.scheduler.NotificationsScheduler
 import app.mybad.domain.usecases.user.ClearDBUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,10 +11,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsMainViewModel @Inject constructor(
     private val clearDBUseCase: ClearDBUseCase,
+    private val notificationsScheduler: NotificationsScheduler, // TODO("только для теста")
 ) : BaseViewModel<
-        SettingsMainScreenContract.Event,
-        SettingsMainScreenContract.State,
-        SettingsMainScreenContract.Effect>() {
+    SettingsMainScreenContract.Event,
+    SettingsMainScreenContract.State,
+    SettingsMainScreenContract.Effect>() {
 
     override fun setInitialState() = SettingsMainScreenContract.State
 
@@ -23,8 +25,8 @@ class SettingsMainViewModel @Inject constructor(
                 SettingsMainScreenContract.Effect.Navigation.ToProfile
             }
 
-            SettingsMainScreenContract.Event.NotificationsSettingsClicked -> setEffect {
-                SettingsMainScreenContract.Effect.Navigation.ToNotificationsSettings
+            SettingsMainScreenContract.Event.SystemNotificationsSettingsClicked -> setEffect {
+                SettingsMainScreenContract.Effect.Navigation.ToSystemNotificationsSettings
             }
 
             SettingsMainScreenContract.Event.LeaveWishesClicked -> setEffect {
@@ -38,6 +40,11 @@ class SettingsMainViewModel @Inject constructor(
             SettingsMainScreenContract.Event.ClearDB -> {
                 viewModelScope.launch {
                     clearDBUseCase()
+                }
+            }
+            SettingsMainScreenContract.Event.SetAlarm -> {
+                viewModelScope.launch {
+                    notificationsScheduler.addAlarmTest()
                 }
             }
         }

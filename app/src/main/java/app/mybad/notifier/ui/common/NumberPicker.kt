@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.utils.toText
+import app.mybad.utils.toText
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 

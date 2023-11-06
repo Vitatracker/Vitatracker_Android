@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.navigation
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -47,8 +46,8 @@ fun NavGraphBuilder.settingsNavGraph(
                             navigationState.navigateSingleTo(SettingsScreens.Profile.route)
                         }
 
-                        SettingsMainScreenContract.Effect.Navigation.ToNotificationsSettings -> {
-                            navigationState.navigateSingleTo(SettingsScreens.Notifications.route)
+                        SettingsMainScreenContract.Effect.Navigation.ToSystemNotificationsSettings -> {
+                            navigationState.navigateSingleTo(SettingsScreens.NotificationsSystem.route)
                         }
 
                         SettingsMainScreenContract.Effect.Navigation.ToAbout -> {
@@ -91,7 +90,7 @@ fun NavGraphBuilder.settingsNavGraph(
             }
         }
 
-        composable(route = SettingsScreens.Notifications.route) {
+        composable(route = SettingsScreens.NotificationsSystem.route) {
             val viewModel: SettingsNotificationsViewModel = hiltViewModel()
             SettingsNotificationsScreen(
                 effectFlow = viewModel.effect,
@@ -108,9 +107,7 @@ fun NavGraphBuilder.settingsNavGraph(
 
         composable(SettingsScreens.LeaveYourWishes.route) {
             val viewModel: SettingsLeaveWishesViewModel = hiltViewModel()
-            val context = LocalContext.current
             SettingsLeaveWishesScreen(
-                context = context,
                 state = viewModel.viewState.value,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,

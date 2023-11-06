@@ -50,10 +50,11 @@ class UsageRepositoryImpl @Inject constructor(
         useTime: Long,
     ) = withContext(dispatcher) {
         runCatching {
-            db.getUsageByParams(userId,
+            db.getUsageByParams(
+                userId,
                 courseId,
                 useTime,
-                )?.mapToDomain()
+            )?.mapToDomain()
         }
     }
 
@@ -124,6 +125,12 @@ class UsageRepositoryImpl @Inject constructor(
         .flowOn(dispatcher)
 
     //--------------------------------------------------
+    override suspend fun checkUseUsages(courseId: Long, useTime: Long) = withContext(dispatcher) {
+        runCatching {
+            db.checkUseUsages(courseId = courseId, useTime = useTime) != null
+        }
+    }
+
     override suspend fun checkUseUsagesByCourseId(courseId: Long) = withContext(dispatcher) {
         runCatching {
             db.checkUseUsagesByCourseId(courseId) != null

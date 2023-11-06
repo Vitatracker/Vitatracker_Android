@@ -10,7 +10,7 @@ import app.mybad.data.db.models.RemedyContract
 import app.mybad.data.db.models.UsageContract
 import app.mybad.data.db.models.UsageModel
 import app.mybad.data.db.models.UsageWithNameAndDateModel
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -75,7 +75,9 @@ interface UsageDao {
     @Query(
         "SELECT * FROM ${UsageContract.TABLE_NAME} WHERE ${UsageContract.Columns.DELETED_DATE} = 0 and ${
             UsageContract.Columns.USER_ID
-        } = :userId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime order by ${UsageContract.Columns.USE_TIME}"
+        } = :userId and ${UsageContract.Columns.USE_TIME} between :startTime and :endTime order by ${
+            UsageContract.Columns.USE_TIME
+        }"
     )
     fun getUsagesBetween(
         userId: Long,
@@ -220,9 +222,26 @@ interface UsageDao {
     suspend fun setFactUseTimeUsage(
         usageId: Long,
         factUseTime: Long?,
-        date: Long = currentDateTimeUTCInSecond()
+        date: Long = currentDateTimeInSeconds()
     )
     //--------------------------------------------------
+
+    @Query(
+        "select * from ${UsageContract.TABLE_NAME} where ${
+            UsageContract.Columns.DELETED_DATE
+        } = 0 and ${
+            UsageContract.Columns.NOT_USED
+        } = 0 and ${
+            UsageContract.Columns.IS_DELETED
+        } = 0 and ${
+            UsageContract.Columns.FACT_USE_TIME
+        } > 0 and ${
+            UsageContract.Columns.COURSE_ID
+        } = :courseId and ${
+            UsageContract.Columns.USE_TIME
+        } = :useTime"
+    )
+    suspend fun checkUseUsages(courseId: Long, useTime: Long): UsageModel?
 
     @Query(
         "select * from ${UsageContract.TABLE_NAME} where ${UsageContract.Columns.DELETED_DATE} = 0 and ${
@@ -244,7 +263,7 @@ interface UsageDao {
     )
     suspend fun finishedUsageByCourseId(
         courseId: Long,
-        date: Long = currentDateTimeUTCInSecond()
+        date: Long = currentDateTimeInSeconds()
     )
 
     //--------------------------------------------------
@@ -255,7 +274,7 @@ interface UsageDao {
             UsageContract.Columns.ID
         } = :usageId"
     )
-    suspend fun markDeletionUsagesById(usageId: Long, date: Long = currentDateTimeUTCInSecond())
+    suspend fun markDeletionUsagesById(usageId: Long, date: Long = currentDateTimeInSeconds())
 
     @Query(
         "UPDATE ${UsageContract.TABLE_NAME} SET ${
@@ -266,7 +285,7 @@ interface UsageDao {
     )
     suspend fun markDeletionUsagesByCourseId(
         courseId: Long,
-        date: Long = currentDateTimeUTCInSecond()
+        date: Long = currentDateTimeInSeconds()
     )
 
     @Query(
@@ -280,7 +299,7 @@ interface UsageDao {
         courseId: Long,
         startTime: Long,
         endTime: Long,
-        date: Long = currentDateTimeUTCInSecond()
+        date: Long = currentDateTimeInSeconds()
     )
 
     @Query(
@@ -298,7 +317,7 @@ interface UsageDao {
     )
     suspend fun markDeletionUsagesAfterByCourseId(
         courseId: Long,
-        date: Long = currentDateTimeUTCInSecond()
+        date: Long = currentDateTimeInSeconds()
     )
 
     //--------------------------------------------------

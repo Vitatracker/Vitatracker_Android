@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.TitleText
@@ -20,12 +21,13 @@ import app.mybad.notifier.ui.screens.settings.common.SettingsItem
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsMainScreen(
     effectFlow: Flow<SettingsMainScreenContract.Effect>? = null,
     sendEvent: (event: SettingsMainScreenContract.Event) -> Unit = {},
-    navigation: (navigationEffect: SettingsMainScreenContract.Effect.Navigation) -> Unit
+    navigation: (navigationEffect: SettingsMainScreenContract.Effect.Navigation) -> Unit = {},
 ) {
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
@@ -58,7 +60,7 @@ fun SettingsMainScreen(
             SettingsItem(
                 label = stringResource(R.string.settings_notifications),
                 icon = R.drawable.icon_settings_notifications,
-                onSelect = { sendEvent(SettingsMainScreenContract.Event.NotificationsSettingsClicked) }
+                onSelect = { sendEvent(SettingsMainScreenContract.Event.SystemNotificationsSettingsClicked) }
             )
             BaseHorizontalDivider()
             SettingsItem(
@@ -78,6 +80,12 @@ fun SettingsMainScreen(
                 label = stringResource(R.string.settings_db_clear),
                 icon = R.drawable.delete_forever_24,
                 onSelect = { sendEvent(SettingsMainScreenContract.Event.ClearDB) }
+            )
+            BaseHorizontalDivider()
+            SettingsItem(
+                label = stringResource(R.string.settings_add_alarm),
+                icon = R.drawable.icon_settings_notifications,
+                onSelect = { sendEvent(SettingsMainScreenContract.Event.SetAlarm) }
             )
             BaseHorizontalDivider()
         }

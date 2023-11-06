@@ -3,6 +3,7 @@ package app.mybad.domain.models
 import app.mybad.utils.betweenDays
 import app.mybad.utils.isBetweenDay
 import app.mybad.utils.isEqualsDay
+import app.mybad.utils.isWithinDay1
 import app.mybad.utils.notNullDateTime
 import app.mybad.utils.systemToEpochSecond
 import kotlinx.datetime.LocalDateTime
@@ -86,4 +87,13 @@ data class UsageDisplayDomainModel(
             this.useTime.isEqualsDay(date)
         }
     }
+
+    fun withinDayOnRegime(date: LocalDateTime) = if (useTime.isWithinDay1(date)) {
+        if (this.isPattern) {
+            date.isEqualsDay(startDate) ||
+                ((date.isBetweenDay(this.startDate, this.endDate) ||
+                    (this.isInfinite && date >= this.startDate)) &&
+                    (this.regime == 0 || date.betweenDays(this.startDate) % (this.regime + 1) == 0L))
+        } else true
+    } else false
 }

@@ -42,11 +42,11 @@ dependencies {
     implementation project(path: ":core:theme")
     implementation project(path: ":domain")
 
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
+    implementation "androidx.core:core-ktx:$core_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
     //Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     // Date Time
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:$datetime_version"
 }

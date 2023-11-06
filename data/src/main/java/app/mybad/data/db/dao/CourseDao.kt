@@ -9,11 +9,26 @@ import app.mybad.data.db.models.CourseContract
 import app.mybad.data.db.models.CourseModel
 import app.mybad.data.db.models.CourseWithParamsModel
 import app.mybad.data.db.models.RemedyContract
-import app.mybad.utils.currentDateTimeUTCInSecond
+import app.mybad.utils.currentDateTimeInSeconds
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDao {
+
+    @Query(
+        "select count() from ${CourseContract.TABLE_NAME} where ${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and ${
+            CourseContract.Columns.IS_FINISHED
+        } = 0  and ${
+            CourseContract.Columns.NOT_USED
+        } = 0 and ${
+            CourseContract.Columns.USER_ID
+        } = :userId and (:date between ${CourseContract.Columns.START_DATE} and ${CourseContract.Columns.END_DATE} or (${
+            CourseContract.Columns.IS_INFINITE
+        } > 0 and :date > ${CourseContract.Columns.START_DATE}))"
+    )
+    suspend fun countActiveCourses(userId: Long, date: Long= currentDateTimeInSeconds()): Long
 
     @Query(
         "select B.*, C.${RemedyContract.Columns.NAME}, C.${
@@ -36,11 +51,87 @@ interface CourseDao {
             CourseContract.TABLE_NAME
         } B LEFT JOIN ${RemedyContract.TABLE_NAME} C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
             RemedyContract.Columns.ID
-        } where B.${CourseContract.Columns.USER_ID} = :userId and B.${CourseContract.Columns.DELETED_DATE} = 0 and B.${
+        } where B.${CourseContract.Columns.USER_ID} = :userId and B.${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and B.${
             CourseContract.Columns.IS_FINISHED
-        } = 0 and B.${CourseContract.Columns.NOT_USED} = 0 order by B.${CourseContract.Columns.START_DATE}, C.${RemedyContract.Columns.NAME}"
+        } = 0 and B.${
+            CourseContract.Columns.NOT_USED
+        } = 0 and B.${
+            CourseContract.Columns.REMIND_DATE
+        } between :startTime and :endTime order by B.${
+            CourseContract.Columns.REMIND_DATE
+        } asc, C.${RemedyContract.Columns.NAME}"
+    )
+    fun getCoursesWithRemindDateBetween(
+        userId: Long,
+        startTime: Long,
+        endTime: Long,
+    ): List<CourseWithParamsModel>
+
+    @Query(
+        "select B.*, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            CourseContract.TABLE_NAME
+        } B LEFT JOIN ${RemedyContract.TABLE_NAME} C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
+            RemedyContract.Columns.ID
+        } where B.${CourseContract.Columns.USER_ID} = :userId and B.${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and B.${
+            CourseContract.Columns.IS_FINISHED
+        } = 0 and B.${CourseContract.Columns.NOT_USED} = 0 order by B.${
+            CourseContract.Columns.START_DATE
+        }, C.${RemedyContract.Columns.NAME}"
     )
     fun getCoursesWithParams(userId: Long): Flow<List<CourseWithParamsModel>>
+
+    @Query(
+        "select B.*, C.${RemedyContract.Columns.NAME}, C.${
+            RemedyContract.Columns.DESCRIPTION
+        }, C.${
+            RemedyContract.Columns.TYPE
+        }, C.${
+            RemedyContract.Columns.ICON
+        }, C.${
+            RemedyContract.Columns.COLOR
+        }, C.${
+            RemedyContract.Columns.DOSE
+        }, C.${
+            RemedyContract.Columns.BEFORE_FOOD
+        }, C.${
+            RemedyContract.Columns.MEASURE_UNIT
+        }, C.${
+            RemedyContract.Columns.PHOTO
+        } from ${
+            CourseContract.TABLE_NAME
+        } B LEFT JOIN ${RemedyContract.TABLE_NAME} C ON B.${
+            CourseContract.Columns.REMEDY_ID
+        } = C.${
+            RemedyContract.Columns.ID
+        } where B.${
+            CourseContract.Columns.DELETED_DATE
+        } = 0 and B.${
+            CourseContract.Columns.IS_FINISHED
+        } = 0 and B.${
+            CourseContract.Columns.NOT_USED
+        } = 0 and B.${CourseContract.Columns.ID} = :courseId"
+    )// только если курс активен
+    fun getCourseWithParamsById(courseId: Long): CourseWithParamsModel
 
     @Query(
         "select * from ${CourseContract.TABLE_NAME} where ${CourseContract.Columns.DELETED_DATE} = 0 and ${
@@ -84,7 +175,7 @@ interface CourseDao {
             CourseContract.Columns.DELETED_DATE
         } = :date WHERE ${CourseContract.Columns.ID} = :courseId"
     )
-    suspend fun markDeletionCourseById(courseId: Long, date: Long = currentDateTimeUTCInSecond())
+    suspend fun markDeletionCourseById(courseId: Long, date: Long = currentDateTimeInSeconds())
 
     //--------------------------------------------------
     // тут удаление физически, т.е. то, что было удалено через сервер

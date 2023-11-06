@@ -22,6 +22,18 @@ class SettingsNotificationsViewModel : BaseViewModel<
                 SettingsNotificationsContract.Effect.SetupNotifications
             }
 
+            SettingsNotificationsContract.Event.SetupNotificationsTrackerClicked -> setEffect {
+                SettingsNotificationsContract.Effect.SetupNotificationsTracker
+            }
+
+            SettingsNotificationsContract.Event.SetupNotificationsInfoClicked -> setEffect {
+                SettingsNotificationsContract.Effect.SetupNotificationsInfo
+            }
+
+            SettingsNotificationsContract.Event.SetupAlarmsClicked -> setEffect {
+                SettingsNotificationsContract.Effect.SetupAlarms
+            }
+
             SettingsNotificationsContract.Event.SetupSleepRegimeClicked -> setEffect {
                 SettingsNotificationsContract.Effect.SetupSleepRegime
             }

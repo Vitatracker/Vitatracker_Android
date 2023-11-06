@@ -5,22 +5,28 @@ import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
 
 class SettingsNotificationsContract {
-    sealed class Event : ViewEvent {
-        object ActionBack : Event()
-        object SetupNotificationsClicked : Event()
-        object SetupSleepRegimeClicked : Event()
-        object ContactUsClicked : Event()
+    sealed interface Event : ViewEvent {
+        object ActionBack : Event
+        object SetupNotificationsClicked : Event
+        object SetupNotificationsTrackerClicked : Event
+        object SetupNotificationsInfoClicked : Event
+        object SetupAlarmsClicked : Event
+        object SetupSleepRegimeClicked : Event
+        object ContactUsClicked : Event
     }
 
     object State : ViewState
 
-    sealed class Effect : ViewSideEffect {
-        object SetupNotifications : Effect()
-        object SetupSleepRegime : Effect()
-        object ContactUs : Effect()
+    sealed interface Effect : ViewSideEffect {
+        object SetupNotifications : Effect
+        object SetupNotificationsTracker : Effect
+        object SetupNotificationsInfo : Effect
+        object SetupAlarms : Effect
+        object SetupSleepRegime : Effect
+        object ContactUs : Effect
 
-        sealed class Navigation : Effect() {
-            object Back : Navigation()
+        sealed interface Navigation : Effect {
+            object Back : Navigation
         }
     }
 }

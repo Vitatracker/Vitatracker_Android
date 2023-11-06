@@ -3,10 +3,10 @@ package app.mybad.notifier.ui.screens.calender
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.UsageDisplayDomainModel
-import app.mybad.domain.usecases.usages.GetFutureWithParamsBetweenUseCase
-import app.mybad.domain.usecases.usages.GetPatternUsagesWithParamsBetweenUseCase
+import app.mybad.domain.usecases.patternusage.GetPatternUsagesFutureWithParamsBetweenUseCase
+import app.mybad.domain.usecases.patternusage.GetPatternUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
-import app.mybad.domain.usecases.usages.SetFactUseTimeOrInsertUsageUseCase
+import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val getPatternUsagesWithParamsBetweenUseCase: GetPatternUsagesWithParamsBetweenUseCase,
     private val getUsagesWithParamsBetweenUseCase: GetUsagesWithParamsBetweenUseCase,
-    private val getFutureWithParamsBetweenUseCase: GetFutureWithParamsBetweenUseCase,
+    private val getFutureWithParamsBetweenUseCase: GetPatternUsagesFutureWithParamsBetweenUseCase,
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
 ) : BaseViewModel<CalendarContract.Event, CalendarContract.State, CalendarContract.Effect>() {
 

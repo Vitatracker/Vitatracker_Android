@@ -1,16 +1,16 @@
 package app.mybad.notifier.di
 
 import app.mybad.data.repos.CourseRepositoryImpl
+import app.mybad.data.repos.NotificationRepositoryImpl
 import app.mybad.data.repos.PatternUsageRepositoryImpl
 import app.mybad.data.repos.RemedyRepositoryImpl
 import app.mybad.data.repos.UsageRepositoryImpl
-import app.mybad.data.repos.UserDataRepoImpl
 import app.mybad.data.repos.UserRepositoryImpl
 import app.mybad.domain.repository.CourseRepository
+import app.mybad.domain.repository.NotificationRepository
 import app.mybad.domain.repository.PatternUsageRepository
 import app.mybad.domain.repository.RemedyRepository
 import app.mybad.domain.repository.UsageRepository
-import app.mybad.domain.repository.UserDataRepo
 import app.mybad.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -21,10 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface DataModule {
-
-    @Binds
-    @Singleton
-    fun provideUserDataRepo(impl: UserDataRepoImpl): UserDataRepo
 
     @Binds
     @Singleton
@@ -45,5 +41,9 @@ interface DataModule {
     @Binds
     @Singleton
     fun providePatternUsageRepository(impl: PatternUsageRepositoryImpl): PatternUsageRepository
+
+    @Binds
+    @Singleton
+    fun provideNotificationRepository(impl: NotificationRepositoryImpl): NotificationRepository
 
 }

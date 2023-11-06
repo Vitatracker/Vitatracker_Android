@@ -9,5 +9,5 @@ java {
 }
 dependencies {
     // Date Time
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetime_version")
 }
