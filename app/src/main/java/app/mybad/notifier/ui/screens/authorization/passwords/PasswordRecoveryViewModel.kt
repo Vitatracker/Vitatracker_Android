@@ -11,25 +11,25 @@ import javax.inject.Inject
 @HiltViewModel
 class PasswordRecoveryViewModel @Inject constructor(
     private val recoveryPasswordUseCase: RecoveryPasswordUseCase,
-) : BaseViewModel<PasswordRecoveryContract.Event,
-        PasswordRecoveryContract.State, PasswordRecoveryContract.Effect>() {
+) : BaseViewModel<PasswordRecoveryScreenContract.Event,
+        PasswordRecoveryScreenContract.State, PasswordRecoveryScreenContract.Effect>() {
 
-    override fun setInitialState() = PasswordRecoveryContract.State()
+    override fun setInitialState() = PasswordRecoveryScreenContract.State()
 
-    override fun handleEvents(event: PasswordRecoveryContract.Event) {
+    override fun handleEvents(event: PasswordRecoveryScreenContract.Event) {
         when (event) {
-            PasswordRecoveryContract.Event.ActionBack -> {
-                setEffect { PasswordRecoveryContract.Effect.Navigation.Back }
+            PasswordRecoveryScreenContract.Event.ActionBack -> {
+                setEffect { PasswordRecoveryScreenContract.Effect.Navigation.Back }
             }
 
-            is PasswordRecoveryContract.Event.Recovery -> {
+            is PasswordRecoveryScreenContract.Event.Recovery -> {
                 submitRecoveryRequest(event.email)
             }
 
-            is PasswordRecoveryContract.Event.UpdateEmail -> setState {
+            is PasswordRecoveryScreenContract.Event.UpdateEmail -> setState {
                 copy(
                     email = event.newEmail,
-                    isRecoveryButtonEnabled = email.isValidEmail()
+                    isRecoveryButtonEnabled = event.newEmail.isValidEmail()
                 )
             }
         }
@@ -40,7 +40,7 @@ class PasswordRecoveryViewModel @Inject constructor(
             setState { copy(isLoading = true) }
             recoveryPasswordUseCase(email).onSuccess {
                 setState { copy(isError = false, isLoading = false) }
-                setEffect { PasswordRecoveryContract.Effect.MessageSent(it.message) }
+                setEffect { PasswordRecoveryScreenContract.Effect.Navigation.ToCodeVerification(email) }
             }.onFailure {
                 setState { copy(isError = true, isLoading = false) }
             }

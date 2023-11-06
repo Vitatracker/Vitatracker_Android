@@ -35,14 +35,19 @@ object NetworkApiModule {
     @Named("AuthInterceptor")
     @Provides
     fun provideAuthorizationInterceptor(): Interceptor = AuthorizationInterceptor()
+    @Named("UserAgentInterceptor")
+    @Provides
+    fun provideUserAgentInterceptor(): Interceptor = UserAgentInterceptor()
 
     @Provides
     fun provideOkHttpClient(
         @Named("LoggingInterceptor") loggingInterceptor: Interceptor,
         @Named("AuthInterceptor") authInterceptor: Interceptor,
+        @Named("UserAgentInterceptor") userAgentInterceptor: Interceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addNetworkInterceptor(authInterceptor)
+            .addNetworkInterceptor(userAgentInterceptor)
             .addNetworkInterceptor(loggingInterceptor)
             .retryOnConnectionFailure(false) // not necessary but useful!
             .build()
