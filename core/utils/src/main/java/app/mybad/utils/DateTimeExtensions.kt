@@ -80,6 +80,7 @@ fun LocalDateTime.displayDateTime() = dateTimeFormatter.format(
     minute,
     second,
 )
+
 fun Long.displayDateTime() = this.toDateTimeSystem().displayDateTime()
 
 fun Long.milliSecondsToDisplayDateTime() = if (this < MILES_SECONDS) ""
@@ -130,6 +131,7 @@ fun LocalDateTime.displayDay() = dayOfMonthFormatter.format(this.dayOfMonth)
 
 private const val timeFormatter = "%02d:%02d" //HH:mm
 fun LocalDateTime.displayTime() = timeFormatter.format(hour, minute)
+fun Long.displayTime() = this.toDateTimeSystem().displayTime()
 
 //DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
 private const val dateTimeIsoFormatter = "%04d-%02d-%02dT%02d:%02d:%02dZ"
@@ -324,7 +326,8 @@ fun Int.displayWithDateTimeInMinutes() = currentDateTimeSystem()
     .correctTimeInMinutes(this)
 //    .timeInMinutes()
 //    .displayTimeInMinutes()
-    .displayDateTimeShort()
+//    .displayDateTimeShort()
+    .displayTime()
 
 fun Int.hourPlusMinute(minute: Int) = this * MINUTES_IN_HOUR + minute
 
@@ -382,8 +385,13 @@ fun LocalDateTime.courseDuration(date: LocalDateTime) = this.atStartOfDay()
 
 fun LocalDateTime.isEqualsDay(date: LocalDateTime) = this.dayOfYear == date.dayOfYear &&
     this.year == date.year
-fun LocalDateTime.isEqualsDay(dateInMilliseconds: Long) = if (dateInMilliseconds < MILES_SECONDS) false
-else (dateInMilliseconds/ MILES_SECONDS).toDateTimeSystem().isEqualsDay(this)
+
+fun LocalDateTime.isEqualsDay(dateInMilliseconds: Long) =
+    if (dateInMilliseconds < MILES_SECONDS) false
+    else (dateInMilliseconds / MILES_SECONDS).toDateTimeSystem().isEqualsDay(this)
+
+fun Long.isEqualsDay(dateInMilliseconds: Long) = if (dateInMilliseconds < MILES_SECONDS) false
+else (dateInMilliseconds / MILES_SECONDS).toDateTimeSystem().isEqualsDay(this)
 
 fun LocalDateTime.isBetweenDay(firstDate: LocalDateTime, lastDate: LocalDateTime): Boolean {
     val first = firstDate.atStartOfDay().systemToInstant()

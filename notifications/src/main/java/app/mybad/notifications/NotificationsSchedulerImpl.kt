@@ -229,23 +229,22 @@ class NotificationsSchedulerImpl @Inject constructor(
     }
 
     override suspend fun addAlarmControl(userId: Long) {
-        val date = currentDateTimeSystem()
-        getNotificationInDBUseCase(userId).getOrNull()
-            ?.filter { date.isEqualsDay(it.time) }
-            ?.maxOf { it.time }
-            ?.let {
-                val currentTime = currentDateTimeInMilliseconds()
-                val time = (if (currentTime > it) currentTime else it) + 10_000 // 10 секунд
-                log("addAlarmControl: time=${time.milliSecondsToDisplayDateTime()}")
-                cancelAlarmControl(userId)
-                setAlarm(
-                    userId = userId,
-                    typeId = 0,
-                    type = NotificationType.MEDICAL_CONTROL.ordinal,
-                    time = time,
-                    pendingIntent = getPendingIntent(userId, time)
-                )
+        var time = currentDateTimeInMilliseconds()
+        getNotificationInDBUseCase(userId).getOrNull()?.forEach { notification ->
+            if (notification.time > time && notification.time.isEqualsDay(time)) {
+                time = notification.time
             }
+        }
+        time += 10_000 // 10 сек
+        log("addAlarmControl: time=${time.milliSecondsToDisplayDateTime()}")
+        cancelAlarmControl(userId)
+        setAlarm(
+            userId = userId,
+            typeId = 0,
+            type = NotificationType.MEDICAL_CONTROL.ordinal,
+            time = time,
+            pendingIntent = getPendingIntent(userId, time)
+        )
     }
 
     private suspend fun addAlarmReschedule(userId: Long) {
@@ -386,9 +385,10 @@ class NotificationsSchedulerImpl @Inject constructor(
             val pendingIntent = when (NotificationType.values()[notification.type]) {
                 NotificationType.PATTERN -> {
                     getUsageDisplayByIdUseCase(notification.typeId).getOrNull()?.let { usage ->
-                        if (usage.courseId == courseId){
+                        if (usage.courseId == courseId) {
                             cancelNotification(USAGE_NOTIFICATION_ID + usage.id.toInt())
-                            getPendingIntent(usage) }else null
+                            getPendingIntent(usage)
+                        } else null
                     }
                 }
 

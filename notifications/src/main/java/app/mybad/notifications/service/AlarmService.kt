@@ -24,6 +24,7 @@ import app.mybad.notifications.Extras
 import app.mybad.notifications.channel.NotificationTrackerChannel
 import app.mybad.theme.R
 import app.mybad.utils.displayDateTime
+import app.mybad.utils.displayTime
 import app.mybad.utils.toText
 
 @SuppressLint("UnspecifiedImmutableFlag")
@@ -75,7 +76,7 @@ class AlarmService : Service() {
         val contentText = getString(
             R.string.notifications_time_to_use_text,
             name,
-            time.displayDateTime(),
+            time.displayTime(),
             quantity.toText(),
             types[type],
         )

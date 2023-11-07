@@ -140,7 +140,8 @@
     <string name="settings_notifications_alarms">The application must have permission to set the notification if you want to receive notifications about the time of taking the medication.</string>
     <string name="settings_notifications_alarms_can">Allowed to set alarms</string>
     <string name="settings_notifications_alarms_can_not">Not allowed to set alarms</string>
-    <string name="settings_notifications_alarms_button">Request permission</string>
+    <string name="settings_notifications_alarms_request_button">Request permission</string>
+    <string name="settings_notifications_alarms_button">Set up alarms</string>
 
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>

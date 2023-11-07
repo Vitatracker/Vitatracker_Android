@@ -69,18 +69,18 @@ fun SettingsNotificationsScreen(
                     )
                 }
 
-                SettingsNotificationsContract.Effect.SetupAlarms -> {
+                SettingsNotificationsContract.Effect.SetupAlarmsRequest -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         context.openAppSettings(
                             Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             isData = true
                         )
-                        //TODO("тут нужно разобраться как правильно если нет разрешения у приолжения")
-//                        if (context.canAlarms()) {
-//                            context.openAppSettings(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, isData = true)
-//                        } else {
-//                            context.openAppSettings(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-//                        }
+                    }
+                }
+
+                SettingsNotificationsContract.Effect.SetupAlarms -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        context.openAppSettings(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                     }
                 }
 
@@ -110,7 +110,9 @@ fun SettingsNotificationsScreen(
         ) {
             SetupNotifications(context, sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
-            SetupAlarms(context, sendEvent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SetupAlarms(context, sendEvent)
+            }
             Spacer(modifier = Modifier.height(32.dp))
             SleepMode(sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
@@ -266,6 +268,13 @@ private fun SetupAlarms(
     Text(
         text = stringResource(alarmsId),
         fontSize = 14.sp
+    )
+    Spacer(modifier = Modifier.height(32.dp))
+    ReUseFilledButton(
+        textId = R.string.settings_notifications_alarms_request_button,
+        onClick = {
+            sendEvent(SettingsNotificationsContract.Event.SetupAlarmsRequestClicked)
+        }
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(

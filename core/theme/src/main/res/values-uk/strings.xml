@@ -90,7 +90,7 @@
     <string name="settings_notifications_setup_notifications_3">Повідомлення вимкнуто</string>
     <string name="settings_notifications_setup_notifications_4">Убедитесь, что ваши уведомления включены</string>
     <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
-    <string name="settings_notifications_setup_notifications_tracker_button">Set up reception notifications</string>
+    <string name="settings_notifications_setup_notifications_tracker_button">Налаштувати повідомлення про прийом</string>
     <string name="settings_notifications_setup_notifications_info_button">Налаштувати повідомлення інформаційні</string>
     <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
     <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
@@ -112,7 +112,8 @@
     <string name="settings_notifications_alarms">Додаток повинен мати дозвіл на встановлення оповіщення, якщо ви хочете отримати повідомлення про час прийому препаратів.</string>
     <string name="settings_notifications_alarms_can">Дозволено встановлювати оповіщення</string>
     <string name="settings_notifications_alarms_can_not">Не дозволено встановлювати оповіщення</string>
-    <string name="settings_notifications_alarms_button">Запитати дозвіл</string>
+    <string name="settings_notifications_alarms_request_button">Запитати дозвіл</string>
+    <string name="settings_notifications_alarms_button">Налаштувати оповіщення</string>
 
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
@@ -258,6 +259,18 @@
 
     <string name="action_navigate">Перейти</string>
     <string name="text_continue">Продовжити</string>
+
+    <string name="enter_verification_code">Введите 6-значный код</string>
+    <string name="verification_code_sent_to">На почту %s отправлен 6-значный код. Введите его для продолжения</string>
+    <string name="resend_verification_code">Отправить код повторно</string>
+    <string name="resend_verification_code_loading">Отправляется</string>
+
+    <plurals name="verification_code_attempts_left">
+        <item quantity="one">Осталась %1$s попытка</item>
+        <item quantity="few">Осталось %1$s попытки</item>
+        <item quantity="many">Осталось %1$s попыток</item>
+        <item quantity="other">Осталось %1$s попытки</item>
+    </plurals>
 
     <plurals name="plurals_types_tablet">
         <item quantity="one">%1$s таблетка</item>

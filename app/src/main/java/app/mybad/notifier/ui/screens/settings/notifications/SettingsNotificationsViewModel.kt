@@ -30,6 +30,10 @@ class SettingsNotificationsViewModel : BaseViewModel<
                 SettingsNotificationsContract.Effect.SetupNotificationsInfo
             }
 
+            SettingsNotificationsContract.Event.SetupAlarmsRequestClicked -> setEffect {
+                SettingsNotificationsContract.Effect.SetupAlarmsRequest
+            }
+
             SettingsNotificationsContract.Event.SetupAlarmsClicked -> setEffect {
                 SettingsNotificationsContract.Effect.SetupAlarms
             }
