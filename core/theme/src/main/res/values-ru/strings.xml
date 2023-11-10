@@ -29,7 +29,7 @@
     <string name="add_course_months">Месяцы</string>
     <string name="add_course_days">Дни</string>
     <string name="add_next_course_interval">Начать следующий курс через</string>
-    <string name="period_m_d">%02d м. %02d д.</string>
+    <string name="period_m_d">%1$02d м. %2$02d д.</string>
     <string name="add_course_repeatable">Повторяющийся курс</string>
     <string name="add_course_end_time">Окончание приема</string>
     <string name="medication_regime">График приема</string>
@@ -191,13 +191,13 @@
 
     <string name="notifications_group_personal">Личный прием</string>
     <string name="notifications_time_to_use">Время приема лекарства!</string>
-    <string name="notifications_time_to_use_text">Примите %s!\n %s - %s %s</string>
+    <string name="notifications_time_to_use_text">Примите %1$s!\n %2$s - %3$s %4$s</string>
     <string name="notifications_action_take">Брать</string>
     <string name="notifications_action_delay">Отсрочка</string>
     <string name="notifications_action_cancel">Пропустить</string>
 
     <string name="notifications_new_course_start_title">Старт нового курса!</string>
-    <string name="notifications_new_course_start_text">Новый курс начинается %s!\nПрепарат: %s, %d %s, %s</string>
+    <string name="notifications_new_course_start_text">Новый курс начинается %1$s!\nПрепарат: %2$s, %3$d %4$s, %5$s</string>
 
     <string name="notifications_reschedule_title">Перепланирование</string>
     <string name="notifications_reschedule_text">Дождитесь завершения перепланирования</string>

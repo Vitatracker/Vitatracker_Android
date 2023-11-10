@@ -50,3 +50,6 @@ val Context.powerManager: PowerManager?
 
 val Context.notificationManager: NotificationManager?
     get() = getSystemService(NotificationManager::class.java)
+
+val Context.packageVersionName: String
+    get() = packageManager.getPackageInfo(packageName, 0).versionName

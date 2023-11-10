@@ -30,7 +30,7 @@
     <string name="add_course_months">Months</string>
     <string name="add_course_days">Days</string>
     <string name="add_next_course_interval">Start next course in</string>
-    <string name="period_m_d">%02d m. %02d d.</string>
+    <string name="period_m_d">%1$02d m. %2$02d d.</string>
     <string name="add_course_end_time">End time</string>
     <string name="medication_regime">Schedule of medications</string>
     <string name="add_course_reminder">Add reminder for next course</string>
@@ -199,13 +199,13 @@
 
     <string name="notifications_group_personal">Taking medications</string>
     <string name="notifications_time_to_use">It is time to use your medication!</string>
-    <string name="notifications_time_to_use_text">Use your %s!\n %s - %s %s</string>
+    <string name="notifications_time_to_use_text">Use your %1$s!\n %2$s - %3$s %4$s</string>
     <string name="notifications_action_take">Take</string>
     <string name="notifications_action_delay">Delay</string>
     <string name="notifications_action_cancel">Skip</string>
 
     <string name="notifications_new_course_start_title">New course starts!</string>
-    <string name="notifications_new_course_start_text">New course starts %s!\nYou will have a course of %s, %d %s, %s</string>
+    <string name="notifications_new_course_start_text">New course starts %1$s!\nYou will have a course of %2$s, %3$d %4$s, %5$s</string>
 
     <string name="notifications_reschedule_title">Rescheduling</string>
     <string name="notifications_reschedule_text">Wait for rescheduling to complete</string>

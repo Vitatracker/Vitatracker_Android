@@ -1,6 +1,6 @@
 # VitaTracker
 
-![Language](https://img.shields.io/badge/Kotlin-1.8.20-blue) ![Compose](https://img.shields.io/badge/Compose-1.4.3-magenta) ![License](https://img.shields.io/aur/license/android-studio)
+![Language](https://img.shields.io/badge/Kotlin-1.9.20-blue) ![Compose](https://img.shields.io/badge/Compose-1.5.4-magenta) ![License](https://img.shields.io/aur/license/android-studio)
 
 VitaTracker
 Веб-сайт и мобильное приложение-напоминалка для приема БАДов
@@ -18,7 +18,7 @@ VitaTracker
 
 ## Architecture
 
-- [MVI]
+- [MVI](https://github.com/wellingtoncabral/android-compose-mvi-navigation)
 - [Clean-Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Use Case](https://en.wikipedia.org/wiki/Use_case)
 
