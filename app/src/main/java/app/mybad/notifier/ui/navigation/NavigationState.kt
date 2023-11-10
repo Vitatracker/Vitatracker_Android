@@ -1,6 +1,5 @@
 package app.mybad.notifier.ui.navigation
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,10 +42,6 @@ fun rememberNavigationState(navController: NavHostController = rememberNavContro
     return remember {
         NavigationState(navController)
     }
-}
-
-fun String.encode(): String {
-    return Uri.encode(this)
 }
 
 @Composable

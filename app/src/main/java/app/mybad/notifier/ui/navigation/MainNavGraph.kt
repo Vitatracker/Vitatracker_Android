@@ -15,8 +15,8 @@ import app.mybad.notifier.ui.screens.main.MainContract
 import app.mybad.notifier.ui.screens.main.MainNotificationScreen
 import app.mybad.notifier.ui.screens.main.MainViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesContract
-import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 import app.mybad.notifier.ui.screens.mycourses.MyCoursesScreen
+import app.mybad.notifier.ui.screens.mycourses.MyCoursesViewModel
 
 @Composable
 fun MainNavGraph(
@@ -90,8 +90,6 @@ fun MainNavGraph(
             )
         }
         //route = MainScreens.Settings.route
-        settingsNavGraph(navigationState) {
-            navigateUp(AppScreens.Authorization.route)
-        }
+        settingsNavGraph(navigationState, navigateUp)
     }
 }

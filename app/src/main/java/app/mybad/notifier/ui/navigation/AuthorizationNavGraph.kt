@@ -90,7 +90,7 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                                 AuthorizationScreens.ChooseMode.route,
                                 true
                             )
-                            navigationState.navigateToMain()
+                            navigationState.navigateSingleTo(AppScreens.NotificationRequest.route)
                         }
 
                         RegistrationContract.Effect.Navigation.Back -> {
@@ -120,7 +120,9 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                         is PasswordRecoveryScreenContract.Effect.Navigation.ToCodeVerification -> {
                             navigationState.navController.popBackStack()
                             navigationState.navigateSingleTo(
-                                route = AuthorizationScreens.RecoveryCodeVerification.getRouteWithArgs(navigationAction.email)
+                                route = AuthorizationScreens.RecoveryCodeVerification.getRouteWithArgs(
+                                    navigationAction.email
+                                )
                             )
                         }
                     }
@@ -136,7 +138,9 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                 }
             )
         ) {
-            val email = it.arguments?.getString(AuthorizationScreens.RecoveryCodeVerification.EMAIL_ARG) ?: ""
+            val email =
+                it.arguments?.getString(AuthorizationScreens.RecoveryCodeVerification.EMAIL_ARG)
+                    ?: ""
             val viewModel: RecoveryCodeVerificationViewModel = hiltViewModel()
             viewModel.setEmail(email)
             RecoveryCodeVerificationScreen(

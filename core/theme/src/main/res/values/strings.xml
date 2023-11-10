@@ -143,6 +143,11 @@
     <string name="settings_notifications_alarms_request_button">Request permission</string>
     <string name="settings_notifications_alarms_button">Set up alarms</string>
 
+    <string name="settings_notifications_allow_title">Allow the app to send notifications</string>
+    <string name="settings_notifications_allow_text">So that you can receive reminders on time</string>
+    <string name="settings_notifications_allow_button_next">Reject</string>
+    <string name="settings_notifications_allow_button_settings">Allow</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>

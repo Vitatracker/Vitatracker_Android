@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
@@ -28,12 +29,13 @@ import app.mybad.notifier.ui.common.SignInWithGoogle
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
+@Preview
 @Composable
 fun StartAuthorizationScreen(
     modifier: Modifier = Modifier,
     effectFlow: Flow<AuthorizationContract.Effect>? = null,
     sendEvent: (event: AuthorizationContract.Event) -> Unit = {},
-    navigation: (navigationEffect: AuthorizationContract.Effect.Navigation) -> Unit,
+    navigation: (navigationEffect: AuthorizationContract.Effect.Navigation) -> Unit = {},
 ) {
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->

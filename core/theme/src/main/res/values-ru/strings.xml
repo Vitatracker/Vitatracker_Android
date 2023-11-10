@@ -116,6 +116,11 @@
     <string name="settings_notifications_alarms_request_button">Запросить разрешение</string>
     <string name="settings_notifications_alarms_button">Настроить оповещения</string>
 
+    <string name="settings_notifications_allow_title">Разрешите приложению отправлять уведомления</string>
+    <string name="settings_notifications_allow_text">Чтобы вы могли получать напоминания вовремя</string>
+    <string name="settings_notifications_allow_button_next">Отклонить</string>
+    <string name="settings_notifications_allow_button_settings">Разрешить</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>

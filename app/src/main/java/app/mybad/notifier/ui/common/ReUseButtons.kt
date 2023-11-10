@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,13 +24,12 @@ import app.mybad.theme.R
 @Composable
 fun ReUseFilledButton(
     @StringRes textId: Int,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     isEnabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     Button(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         enabled = isEnabled,
         onClick = onClick,
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
@@ -75,7 +75,7 @@ fun ReUseButtonContinuePreview() {
     MyBADTheme {
         ReUseFilledButton(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(45.dp)
                 .height(50.dp),
             textId = R.string.text_continue
         )

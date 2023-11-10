@@ -32,9 +32,9 @@ val Typography = Typography(
     ),
     headlineMedium = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        lineHeight = 36.sp,
+        lineHeight = 34.sp,
     ),
     headlineSmall = TextStyle(
         fontFamily = SFProFontFamily,
@@ -50,9 +50,9 @@ val Typography = Typography(
     ),
     titleMedium = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
     ),
     titleSmall = TextStyle(
         fontFamily = SFProFontFamily,
@@ -64,7 +64,7 @@ val Typography = Typography(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp
+        lineHeight = 20.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = SFProFontFamily,

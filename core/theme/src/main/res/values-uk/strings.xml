@@ -115,6 +115,11 @@
     <string name="settings_notifications_alarms_request_button">Запитати дозвіл</string>
     <string name="settings_notifications_alarms_button">Налаштувати оповіщення</string>
 
+    <string name="settings_notifications_allow_title">Дозвольте застосунку надсилати повідомлення</string>
+    <string name="settings_notifications_allow_text">Щоб ви могли отримувати нагадування вчасно</string>
+    <string name="settings_notifications_allow_button_next">Відхилити</string>
+    <string name="settings_notifications_allow_button_settings">Дозволити</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>

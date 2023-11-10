@@ -17,9 +17,6 @@ import app.mybad.notifier.ui.screens.settings.changepassword.SettingsChangePassw
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreen
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainScreenContract
 import app.mybad.notifier.ui.screens.settings.main.SettingsMainViewModel
-import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsContract
-import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsScreen
-import app.mybad.notifier.ui.screens.settings.notifications.SettingsNotificationsViewModel
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileContract
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileScreen
 import app.mybad.notifier.ui.screens.settings.profile.SettingsProfileViewModel
@@ -29,7 +26,7 @@ import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishesViewMode
 
 fun NavGraphBuilder.settingsNavGraph(
     navigationState: NavigationState,
-    toAuthorizationRequested: () -> Unit
+    navigateUp: (String) -> Unit = {},
 ) {
     navigation(
         startDestination = SettingsScreens.Navigation.route,
@@ -47,7 +44,7 @@ fun NavGraphBuilder.settingsNavGraph(
                         }
 
                         SettingsMainScreenContract.Effect.Navigation.ToSystemNotificationsSettings -> {
-                            navigationState.navigateSingleTo(SettingsScreens.NotificationsSystem.route)
+                            navigateUp(AppScreens.NotificationsSettings.route)
                         }
 
                         SettingsMainScreenContract.Effect.Navigation.ToAbout -> {
@@ -80,7 +77,7 @@ fun NavGraphBuilder.settingsNavGraph(
                         }
 
                         SettingsProfileContract.Effect.Navigation.ToAuthorization -> {
-                            toAuthorizationRequested()
+                            navigateUp(AppScreens.Authorization.route)
                         }
                     }
                 }
@@ -88,21 +85,6 @@ fun NavGraphBuilder.settingsNavGraph(
             BackHandler {
                 viewModel.setEvent(SettingsProfileContract.Event.ActionBack)
             }
-        }
-
-        composable(route = SettingsScreens.NotificationsSystem.route) {
-            val viewModel: SettingsNotificationsViewModel = hiltViewModel()
-            SettingsNotificationsScreen(
-                effectFlow = viewModel.effect,
-                sendEvent = viewModel::setEvent,
-                navigation = { navigationEffect ->
-                    when (navigationEffect) {
-                        SettingsNotificationsContract.Effect.Navigation.Back -> {
-                            navigationState.navController.popBackStack()
-                        }
-                    }
-                }
-            )
         }
 
         composable(SettingsScreens.LeaveYourWishes.route) {
@@ -150,7 +132,9 @@ fun NavGraphBuilder.settingsNavGraph(
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationEffect ->
                     when (navigationEffect) {
-                        SettingsAboutTeamContract.Effect.Navigation.Back -> navigationState.navController.popBackStack()
+                        SettingsAboutTeamContract.Effect.Navigation.Back -> {
+                            navigationState.navController.popBackStack()
+                        }
                     }
                 }
             )
