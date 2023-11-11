@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.settings.notifications_request
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,14 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
+import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
-@Preview
 @Composable
 fun NotificationRequestScreen(
+    state: NotificationRequestContract.State,
     effectFlow: Flow<ViewSideEffect>? = null,
     sendEvent: (event: NotificationRequestContract.Event) -> Unit = {},
     navigation: (navigationEffect: NotificationRequestContract.Effect.Navigation) -> Unit = {}
@@ -48,27 +51,30 @@ fun NotificationRequestScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {
+        ImageView()
         Column(
             modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 16.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ImageView()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                TextView()
-                Spacer(modifier = Modifier.height(32.dp))
-                ButtonView(
-                    onRejectClicked = { sendEvent(NotificationRequestContract.Event.OnNext) },
-                    onAllowClicked = { sendEvent(NotificationRequestContract.Event.OnSettings) },
-                )
-            }
+            TextView()
+            Spacer(modifier = Modifier.height(32.dp))
+            ButtonView(
+                onRejectClicked = { sendEvent(NotificationRequestContract.Event.OnReject) },
+                onAllowClicked = { sendEvent(NotificationRequestContract.Event.OnSettings) },
+            )
+        }
+        if (state.isConfirmation) {
+            ReUseAlertDialog(
+                titleId = R.string.settings_notifications_allow_reconfirmation_title,
+                descriptionId = R.string.settings_notifications_allow_reconfirmation_text,
+                dismissId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
+                confirmId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
+                onDismiss = { sendEvent(NotificationRequestContract.Event.OnNext) },
+                onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
+            )
         }
     }
 }
@@ -120,6 +126,26 @@ private fun ImageView() {
             .fillMaxWidth(),
         painter = painterResource(R.drawable.warning),
         contentDescription = null,
+        alignment = Alignment.TopCenter,
         contentScale = ContentScale.FillWidth
     )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+fun NotificationRequestScreenPreview() {
+    MyBADTheme {
+        NotificationRequestScreen(state = NotificationRequestContract.State(true))
+    }
 }

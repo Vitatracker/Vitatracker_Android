@@ -120,6 +120,11 @@
     <string name="settings_notifications_allow_button_next">Відхилити</string>
     <string name="settings_notifications_allow_button_settings">Дозволити</string>
 
+    <string name="settings_notifications_allow_reconfirmation_title">Ви дійсно хочете пропустити навчання з налаштування повідомлень?</string>
+    <string name="settings_notifications_allow_reconfirmation_text">Ви впевнені, що не хочете вирішити всі потенційні проблеми, які можуть спричинити неотримання повідомлень вчасно?</string>
+    <string name="settings_notifications_allow_reconfirmation_button_dismiss">Пропустити</string>
+    <string name="settings_notifications_allow_reconfirmation_button_confirm">Налаштувати</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>

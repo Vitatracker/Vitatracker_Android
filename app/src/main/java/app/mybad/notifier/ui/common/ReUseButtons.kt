@@ -1,15 +1,17 @@
 package app.mybad.notifier.ui.common
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -69,15 +71,21 @@ fun ReUseOutlinedButton(
     }
 }
 
-@Preview
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
 @Composable
 fun ReUseButtonContinuePreview() {
     MyBADTheme {
-        ReUseFilledButton(
-            modifier = Modifier
-                .width(45.dp)
-                .height(50.dp),
-            textId = R.string.text_continue
-        )
+        Surface(modifier = Modifier.fillMaxSize()) {
+            ReUseFilledButton(
+                modifier = Modifier
+                    .height(50.dp),
+                textId = R.string.text_continue
+            )
+        }
     }
 }

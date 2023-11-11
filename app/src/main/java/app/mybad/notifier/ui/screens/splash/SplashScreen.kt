@@ -1,11 +1,11 @@
 package app.mybad.notifier.ui.screens.splash
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.ReUseFilledButton
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
@@ -49,20 +50,13 @@ fun StartSplashScreen(
     }
     Surface(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxWidth(),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ImageView()
-            NewUserGreeting(
-                isButtonVisible = state.startButtonVisible,
-                onBeginClicked = { sendEvent(SplashScreenContract.Event.OnAuthorization) }
-            )
-        }
+        ImageView()
+        NewUserGreeting(
+            isButtonVisible = state.startButtonVisible,
+            onBeginClicked = { sendEvent(SplashScreenContract.Event.OnAuthorization) }
+        )
     }
 }
 
@@ -73,6 +67,7 @@ private fun ImageView() {
             .fillMaxWidth(),
         painter = painterResource(R.drawable.welcome),
         contentDescription = null,
+        alignment = Alignment.TopCenter,
         contentScale = ContentScale.FillWidth
     )
 }
@@ -116,8 +111,21 @@ private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit
     }
 }
 
-@Preview
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
 @Composable
 fun StartSplashScreenPreview() {
-    StartSplashScreen(SplashScreenContract.State(startButtonVisible = true))
+    MyBADTheme {
+        StartSplashScreen(SplashScreenContract.State(startButtonVisible = true))
+    }
 }

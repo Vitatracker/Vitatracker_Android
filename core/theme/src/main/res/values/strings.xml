@@ -148,6 +148,11 @@
     <string name="settings_notifications_allow_button_next">Reject</string>
     <string name="settings_notifications_allow_button_settings">Allow</string>
 
+    <string name="settings_notifications_allow_reconfirmation_title">Do you really want to skip the tutorial on setting up notifications?</string>
+    <string name="settings_notifications_allow_reconfirmation_text">Are you sure you don\'t want to resolve all the potential issues that could be causing you to not receive notifications on time?</string>
+    <string name="settings_notifications_allow_reconfirmation_button_dismiss">Skip</string>
+    <string name="settings_notifications_allow_reconfirmation_button_confirm">Setup</string>
+
     <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
     <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>

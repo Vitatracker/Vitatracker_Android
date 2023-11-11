@@ -8,9 +8,12 @@ class NotificationRequestContract {
     sealed interface Event : ViewEvent {
         data object OnSettings : Event
         data object OnNext : Event
+        data object OnReject : Event
     }
 
-    data object State : ViewState
+    data class State(
+        val isConfirmation: Boolean = false,
+    ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {

@@ -57,6 +57,7 @@ fun AppNavGraph() {
             composable(route = AppScreens.NotificationRequest.route) {
                 val viewModel: NotificationRequestViewModel = hiltViewModel()
                 NotificationRequestScreen(
+                    state = viewModel.viewState.value,
                     effectFlow = viewModel.effect,
                     sendEvent = viewModel::setEvent,
                     navigation = { navigationAction ->
