@@ -22,7 +22,7 @@ interface AuthorizationApi {
     suspend fun loginUser(@Body loginModel: UserLoginRequestModel): AuthorizationNetworkModel
 
     @POST(value = "api/v1/auth/register")
-    suspend fun registrationUser(@Body registrationModel: UserRegistrationRequestModel): AuthorizationNetworkModel
+    suspend fun registrationUser(@Body registrationModel: UserRegistrationRequestModel): Response<AuthorizationNetworkModel>
 
     @POST(value = "api/v1/auth/refresh-token")
     suspend fun refreshToken(): AuthorizationNetworkModel

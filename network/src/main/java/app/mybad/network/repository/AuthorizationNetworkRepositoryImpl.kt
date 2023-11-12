@@ -2,6 +2,7 @@ package app.mybad.network.repository
 
 import android.util.Log
 import app.mybad.domain.models.AuthToken
+import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.SetNewPasswordDomainModel
 import app.mybad.domain.models.VerificationCodeDomainModel
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
@@ -53,13 +54,30 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         userName: String
     ) = withContext(dispatcher) {
         runCatching {
-            authorizationApi.registrationUser(
+            Log.w("VTTAG", "AuthorizationNetworkRepository::registrationUser: in")
+            val response = authorizationApi.registrationUser(
                 UserRegistrationRequestModel(
                     email = login,
                     password = password,
                     name = userName
                 )
-            ).mapToDomain()
+            )
+            if (response.isSuccessful && response.body() != null) {
+                response.body()!!.mapToDomain()
+            } else {
+                // response.message() - это не работает и строка пустая
+                val message = response.message().ifBlank {
+                    val pattern = """^.*message":"(.+?)",".*$""".toRegex()
+                    response.errorBody()?.string()?.let { message ->
+                        pattern.find(message)?.let { it.groupValues[1] }
+                    } ?: "Error: unknown network error!"
+                }
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationNetworkRepository::registrationUser: message=$message"
+                )
+                AuthorizationDomainModel(message = message)
+            }
         }
     }
 
@@ -80,11 +98,12 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendVerificationCode(code: Int): Result<VerificationCodeDomainModel> = withContext(dispatcher) {
-        runCatching {
-            authorizationApi.sendVerificationCode(code).mapToDomain()
+    override suspend fun sendVerificationCode(code: Int): Result<VerificationCodeDomainModel> =
+        withContext(dispatcher) {
+            runCatching {
+                authorizationApi.sendVerificationCode(code).mapToDomain()
+            }
         }
-    }
 
     override suspend fun changeUserPassword(
         oldPassword: String,
@@ -100,7 +119,11 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setNewUserPassword(token: String, password: String, email: String): Result<SetNewPasswordDomainModel> = withContext(dispatcher) {
+    override suspend fun setNewUserPassword(
+        token: String,
+        password: String,
+        email: String
+    ): Result<SetNewPasswordDomainModel> = withContext(dispatcher) {
         runCatching {
             authorizationApi.setNewUserPassword(
                 UserSetNewPasswordRequestModel(

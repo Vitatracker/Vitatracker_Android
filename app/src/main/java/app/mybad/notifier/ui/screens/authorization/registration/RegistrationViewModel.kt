@@ -27,7 +27,7 @@ class RegistrationViewModel @Inject constructor(
 
     override fun handleEvents(event: RegistrationContract.Event) {
         when (event) {
-            RegistrationContract.Event.ActionBack -> setEffect { RegistrationContract.Effect.Navigation.Back }
+            RegistrationContract.Event.OnBack -> setEffect { RegistrationContract.Effect.Navigation.Back }
 
             is RegistrationContract.Event.CreateAccount -> {
                 registration(event.email, event.password, event.confirmationPassword)
@@ -73,6 +73,8 @@ class RegistrationViewModel @Inject constructor(
                 setState {
                     copy(
                         error = null,
+                        isErrorEmail = false,
+                        isErrorPassword = false,
                         isLoading = true,
                         isRegistrationButtonEnabled = false,
                     )
@@ -84,24 +86,26 @@ class RegistrationViewModel @Inject constructor(
                 login = login,
                 password = password,
             ).onSuccess { result ->
-                // добавить в локальную db user и получим userId
-                val userId: Long = getUserIdUseCase(email = login) ?: createUserUseCase(
-                    email = login,
-                    name = "",
-                )
-                log(
-                    "Ok: userId=$userId token=${result.token} date=${
-                        result.tokenDate
-                    } exp=${result.tokenDate.toDateTimeUTC()}"
-                )
-                updateUserAuthTokenUseCase(
-                    userId = userId,
-                    token = result.token,
-                    tokenDate = result.tokenDate,
-                    tokenRefresh = result.tokenRefresh,
-                    tokenRefreshDate = result.tokenRefreshDate,
-                )
-                setEffect { RegistrationContract.Effect.Navigation.ToMain }
+                if (result.message.isBlank()) {
+                    // добавить в локальную db user и получим userId
+                    val userId: Long = getUserIdUseCase(email = login) ?: createUserUseCase(
+                        email = login,
+                        name = "",
+                    )
+                    log(
+                        "Ok: userId=$userId token=${result.token} date=${
+                            result.tokenDate
+                        } exp=${result.tokenDate.toDateTimeUTC()}"
+                    )
+                    updateUserAuthTokenUseCase(
+                        userId = userId,
+                        token = result.token,
+                        tokenDate = result.tokenDate,
+                        tokenRefresh = result.tokenRefresh,
+                        tokenRefreshDate = result.tokenRefreshDate,
+                    )
+                    setEffect { RegistrationContract.Effect.Navigation.ToMain }
+                } else checkErrorMessage(result.message)
             }.onFailure { error ->
                 log("Error", error)
                 //TODO(" сделать отображение ошибки возможно такой пользователь уже существует или не правильная почта или пароль")
@@ -115,6 +119,8 @@ class RegistrationViewModel @Inject constructor(
         password: String,
         confirmPassword: String
     ): Boolean {
+        var isErrorEmail = false
+        var isErrorPassword = false
         val registrationError = when {
             password != confirmPassword -> {
                 log("Error: passwords mismatch")
@@ -122,11 +128,13 @@ class RegistrationViewModel @Inject constructor(
             }
 
             !login.isValidEmail() -> {
+                isErrorEmail = true
                 log("Error: email is not valid!")
                 RegistrationContract.RegistrationError.WrongEmailFormat
             }
 
             !password.isValidPassword() -> {
+                isErrorPassword = true
                 log("Error: password is not valid!")
                 RegistrationContract.RegistrationError.WrongPassword
             }
@@ -138,6 +146,8 @@ class RegistrationViewModel @Inject constructor(
                 setState {
                     copy(
                         error = error,
+                        isErrorEmail = isErrorEmail,
+                        isErrorPassword = isErrorPassword,
                         isLoading = false
                     )
                 }
@@ -148,11 +158,39 @@ class RegistrationViewModel @Inject constructor(
 
     private fun checkErrorMessage(message: String) {
         viewModelScope.launch {
+            log("checkErrorMessage message=$message")
+            var isErrorEmail = false
+            var isErrorPassword = false
+            val error = when {
+                message.contains("user", ignoreCase = true) &&
+                    message.contains("already exists", ignoreCase = true) -> {
+                    log("checkErrorMessage isErrorEmail = true")
+                    isErrorEmail = true
+                    RegistrationContract.RegistrationError.UserEmailExists
+                }
+
+                message.contains("email", ignoreCase = true) -> {
+                    log("checkErrorMessage isErrorEmail = true")
+                    isErrorEmail = true
+                    RegistrationContract.RegistrationError.WrongEmailFormat
+                }
+
+                message.contains("password", ignoreCase = true) -> {
+                    log("checkErrorMessage isErrorPassword = true")
+                    isErrorPassword = true
+                    RegistrationContract.RegistrationError.WrongPassword
+                }
+
+                else -> {
+                    //TODO("тут нужно вывести тост")
+                    RegistrationContract.RegistrationError.Error(message)
+                }
+            }
             setState {
                 copy(
-                    error = if (message.contains("email", ignoreCase = true)) {
-                        RegistrationContract.RegistrationError.WrongEmailFormat
-                    } else RegistrationContract.RegistrationError.WrongPassword,
+                    error = error,
+                    isErrorEmail = isErrorEmail,
+                    isErrorPassword = isErrorPassword,
                     isLoading = false,
                 )
             }
@@ -168,6 +206,8 @@ class RegistrationViewModel @Inject constructor(
             setState {
                 copy(
                     error = null,
+                    isErrorEmail = false,
+                    isErrorPassword = false,
                     email = email,
                     password = password,
                     confirmationPassword = confirmationPassword,
@@ -179,7 +219,8 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun log(message: String, tr: Throwable? = null) {
-        Log.w("VTTAG", "RegistrationViewModel::registration: $message", tr)
+        if (tr == null) Log.w("VTTAG", "RegistrationViewModel::registration: $message")
+        else Log.e("VTTAG", "RegistrationViewModel::registration: $message", tr)
     }
 
     private fun signInWithGoogle() {

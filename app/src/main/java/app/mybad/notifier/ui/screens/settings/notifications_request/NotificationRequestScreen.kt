@@ -54,7 +54,7 @@ fun NotificationRequestScreen(
         ImageView()
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(vertical = 24.dp, horizontal = 16.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,

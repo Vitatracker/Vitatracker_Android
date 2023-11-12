@@ -267,6 +267,7 @@
     <string name="password_recovery">Password recovery</string>
     <string name="password_recovery_enter_mail">Please enter your Email address to send password recovery information</string>
 
+    <string name="user_email_exists">A user with this Email already exists!</string>
     <string name="incorrect_email">Email format is invalid</string>
     <string name="incorrect_password">Password is empty</string>
     <string name="incorrect_credentials">Invalid credentials</string>

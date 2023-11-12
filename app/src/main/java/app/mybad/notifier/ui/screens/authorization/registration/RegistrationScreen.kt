@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,13 +24,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.SignInWithGoogle
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -38,10 +42,10 @@ fun StartRegistrationScreen(
     state: RegistrationContract.State,
     effectFlow: Flow<RegistrationContract.Effect>? = null,
     sendEvent: (event: RegistrationContract.Event) -> Unit = {},
-    navigation: (navigationEffect: RegistrationContract.Effect.Navigation) -> Unit
+    navigation: (navigationEffect: RegistrationContract.Effect.Navigation) -> Unit = {},
 ) {
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
                 is RegistrationContract.Effect.Navigation -> navigation(effect)
@@ -53,7 +57,7 @@ fun StartRegistrationScreen(
         topBar = {
             ReUseTopAppBar(
                 titleResId = R.string.authorization_screen_registration,
-                onBackPressed = { sendEvent(RegistrationContract.Event.ActionBack) }
+                onBackPressed = { sendEvent(RegistrationContract.Event.OnBack) }
             )
         }
     ) { contentPadding ->
@@ -117,8 +121,6 @@ private fun RegistrationScreenBaseForSignIn(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val isEmailFormatError =
-            state.error is RegistrationContract.RegistrationError.WrongEmailFormat
         val isPasswordMismatch =
             state.error is RegistrationContract.RegistrationError.PasswordsMismatch
 
@@ -131,8 +133,12 @@ private fun RegistrationScreenBaseForSignIn(
                 imeAction = ImeAction.Next
             ),
             enabled = !state.isLoading,
-            isError = isEmailFormatError,
-            errorTextId = if (isEmailFormatError) R.string.incorrect_email else null
+            isError = state.isErrorEmail,
+            errorTextId = when(state.error) {
+                is RegistrationContract.RegistrationError.UserEmailExists -> R.string.user_email_exists
+                is RegistrationContract.RegistrationError.WrongEmailFormat -> R.string.incorrect_email
+                else -> null
+            }
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -141,8 +147,8 @@ private fun RegistrationScreenBaseForSignIn(
             label = stringResource(id = R.string.login_password),
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdatePassword(it)) },
             enabled = !state.isLoading,
-            isError = state.error is RegistrationContract.RegistrationError.WrongPassword,
-            errorTextId = R.string.password_format,
+            isError = state.isErrorPassword,
+            errorTextId = if (state.isErrorPassword) R.string.password_format else null,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
@@ -156,7 +162,26 @@ private fun RegistrationScreenBaseForSignIn(
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdateConfirmationPassword(it)) },
             enabled = !state.isLoading,
             isError = isPasswordMismatch,
-            errorTextId = if (isPasswordMismatch) R.string.password_mismatch else null
+            errorTextId = if (isPasswordMismatch) R.string.password_mismatch else null,
         )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 720, heightDp = 1220,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+fun StartRegistrationScreenPreview() {
+    MyBADTheme {
+        StartRegistrationScreen(RegistrationContract.State())
     }
 }
