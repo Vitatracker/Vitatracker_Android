@@ -366,5 +366,7 @@
         <item quantity="many">%1$d дней</item>
         <item quantity="other">%1$d дней</item>
     </plurals>
+    <string name="password_changed_sign_in">Sign in</string>
+    <string name="password_changed_successfully">Password changed\nsuccessfully</string>
 
 </resources>

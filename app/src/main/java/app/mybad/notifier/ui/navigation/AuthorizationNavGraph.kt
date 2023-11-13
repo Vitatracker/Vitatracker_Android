@@ -12,6 +12,7 @@ import app.mybad.notifier.ui.screens.authorization.login.MainLoginScreen
 import app.mybad.notifier.ui.screens.authorization.newpassword.NewPasswordScreen
 import app.mybad.notifier.ui.screens.authorization.newpassword.NewPasswordScreenContract
 import app.mybad.notifier.ui.screens.authorization.newpassword.NewPasswordScreenViewModel
+import app.mybad.notifier.ui.screens.authorization.passwordchanged.PasswordChangedScreen
 import app.mybad.notifier.ui.screens.authorization.passwords.PasswordRecoveryScreenContract
 import app.mybad.notifier.ui.screens.authorization.passwords.PasswordRecoveryViewModel
 import app.mybad.notifier.ui.screens.authorization.passwords.StartPasswordRecoveryScreen
@@ -188,7 +189,7 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                     when (navigationAction) {
                         NewPasswordScreenContract.Effect.Navigation.ToAuthorization -> {
                             navigationState.navController.popBackStack()
-                            navigationState.navigateSingleTo(AuthorizationScreens.Login.route)
+                            navigationState.navigateSingleTo(AuthorizationScreens.PasswordChanged.route)
                         }
 
                         NewPasswordScreenContract.Effect.Navigation.Back -> {
@@ -197,6 +198,12 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                     }
                 }
             )
+        }
+        composable(AuthorizationScreens.PasswordChanged.route) {
+            PasswordChangedScreen {
+                navigationState.navController.popBackStack()
+                navigationState.navigateSingleTo(AuthorizationScreens.Login.route)
+            }
         }
     }
 }
