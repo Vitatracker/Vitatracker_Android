@@ -19,8 +19,8 @@ sdk-compile = "34"
 sdk-min = "26"
 
 # Gradle
-agp = "8.1.4"
-#agp = "8.3.0-alpha12"
+agp = "8.3.2"
+#agp = "8.4.0"
 
 # kotlin
 # kotlin & compose-compiler https://developer.android.com/jetpack/androidx/releases/compose-kotlin
@@ -28,9 +28,9 @@ kotlin = "1.9.23"
 # Kotlin Symbol Processing API https://github.com/google/ksp
 ksp = "1.9.23-1.0.20"
 
-kotlinx-coroutines = "1.8.0-RC"
+kotlinx-coroutines = "1.8.0"
 kotlinx-datetime = "0.4.1"
-kotlinx-serialization-json = "1.6.0"
+kotlinx-serialization-json = "1.6.3"
 
 # java
 java = "17"
@@ -67,7 +67,7 @@ hilt-common = "1.2.0"
 
 # Retrofit
 retrofit = "2.9.0"
-okhttp-interceptor = "5.0.0-alpha.11"
+okhttp-interceptor = "5.0.0-alpha.12"
 moshi = "1.14.0"
 retrofit-kotlinx-serialization-json = "1.0.0"
 
