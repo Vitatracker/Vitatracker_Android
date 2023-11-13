@@ -122,6 +122,9 @@ dependencies {
     implementation(libs.work.hilt)
     ksp(libs.hilt.compiler)
 
+    // status bar color controller
+    implementation(libs.systemuicontroller)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
