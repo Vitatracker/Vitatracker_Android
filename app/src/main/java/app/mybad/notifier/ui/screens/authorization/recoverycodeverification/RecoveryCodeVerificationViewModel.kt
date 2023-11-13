@@ -42,6 +42,7 @@ class RecoveryCodeVerificationViewModel @Inject constructor(
             Contract.Event.ReSendCodeToEmail -> resendCodeToEmail()
             Contract.Event.SendVerificationCode -> sendVerificationCode()
             is Contract.Event.UpdateCode -> {
+                if (event.code.any { !it.isDigit() }) return
                 val sendingCodeState = if (event.code.length == 6)
                     Contract.SendingCodeState.Active
                 else

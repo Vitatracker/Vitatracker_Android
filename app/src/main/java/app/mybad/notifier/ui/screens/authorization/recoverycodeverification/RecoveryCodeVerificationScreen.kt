@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -33,8 +34,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
@@ -175,7 +178,10 @@ fun OtpTextField(
     isError: Boolean,
     onOtpTextChange: (String) -> Unit
 ) {
-
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val spaceBetweenItems = 8.dp
+    val itemWidth = (screenWidth - 48.dp - (otpCount - 1) * spaceBetweenItems) / otpCount
     BasicTextField(
         modifier = modifier,
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
@@ -191,10 +197,11 @@ fun OtpTextField(
                     CharView(
                         index = index,
                         text = otpText,
-                        isError = isError
+                        isError = isError,
+                        itemWidth = itemWidth
                     )
                     if (index < otpCount - 1) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(spaceBetweenItems))
                     }
                 }
             }
@@ -207,6 +214,7 @@ private fun CharView(
     index: Int,
     text: String,
     isError: Boolean,
+    itemWidth: Dp
 ) {
     val isFocused = text.length == index
     val char = when {
@@ -227,8 +235,8 @@ private fun CharView(
     ) {
         Text(
             modifier = Modifier
-                .width(48.dp)
-                .height(48.dp)
+                .width(itemWidth)
+                .height(itemWidth)
                 .wrapContentHeight(),
             text = char,
             textAlign = TextAlign.Center,
