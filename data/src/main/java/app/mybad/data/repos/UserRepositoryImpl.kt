@@ -22,7 +22,6 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override fun isDarkTheme(userId: Long) = db.isDarkTheme(userId)
-        .map { it != null && it == 1L }
         .catch {
             Log.w("VTTAG", "UserRepositoryImpl::isDarkTheme: error userId=$userId", it)
         }

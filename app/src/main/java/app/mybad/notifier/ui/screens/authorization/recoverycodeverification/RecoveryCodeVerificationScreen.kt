@@ -162,7 +162,7 @@ private fun ScreenContent(
     } else {
         ReUseFilledButton(
             modifier = Modifier.fillMaxWidth(),
-            isEnabled = state.sendingCodeState is RecoveryCodeVerificationScreenContract.SendingCodeState.Active,
+            enabled = state.sendingCodeState is RecoveryCodeVerificationScreenContract.SendingCodeState.Active,
             textId = R.string.text_continue
         ) {
             sendEvent(RecoveryCodeVerificationScreenContract.Event.SendVerificationCode)

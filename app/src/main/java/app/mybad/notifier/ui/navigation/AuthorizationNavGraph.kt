@@ -24,7 +24,7 @@ import app.mybad.notifier.ui.screens.authorization.registration.RegistrationView
 import app.mybad.notifier.ui.screens.authorization.registration.StartRegistrationScreen
 import app.mybad.notifier.ui.screens.authorization.start.AuthorizationContract
 import app.mybad.notifier.ui.screens.authorization.start.AuthorizationViewModel
-import app.mybad.notifier.ui.screens.authorization.start.StartAuthorizationScreen
+import app.mybad.notifier.ui.screens.authorization.start.AuthorizationScreen
 
 fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
     navigation(
@@ -33,7 +33,7 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
     ) {
         composable(route = AuthorizationScreens.ChooseMode.route) {
             val viewModel: AuthorizationViewModel = hiltViewModel()
-            StartAuthorizationScreen(
+            AuthorizationScreen(
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationAction ->

@@ -184,7 +184,7 @@ fun MyCourseEditNotificationScreen(
             }
             ReUseFilledButton(
                 textId = R.string.navigation_next,
-                isEnabled = state.nextAllowed,
+                enabled = state.nextAllowed,
             ) {
                 sendEvent(
                     MyCoursesEditContract.Event.NotificationUpdateAndEnd(

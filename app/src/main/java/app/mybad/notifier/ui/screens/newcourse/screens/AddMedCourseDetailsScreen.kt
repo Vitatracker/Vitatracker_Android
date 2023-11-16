@@ -85,7 +85,8 @@ fun AddMedCourseDetailsScreen(
             onDismissRequest = { sendEvent(CreateCourseContract.Event.ActionCollapse) },
             sheetState = bottomSheetState,
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            scrimColor = MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
         ) {
             RemindNewCourseBottomSheet(
                 modifier = Modifier.padding(16.dp),

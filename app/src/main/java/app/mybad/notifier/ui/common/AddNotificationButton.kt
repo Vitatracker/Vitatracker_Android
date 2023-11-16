@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Icon
@@ -23,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.Typography
@@ -38,9 +38,10 @@ fun AddNotificationButton(
     onClick: () -> Unit = {},
 ) {
     Surface(
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiaryContainer),
+        contentColor = MaterialTheme.colorScheme.primary,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier.clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() },
@@ -52,7 +53,7 @@ fun AddNotificationButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.AddCircleOutline,
@@ -65,11 +66,13 @@ fun AddNotificationButton(
             Text(
                 text = stringResource(R.string.add_notifications_choose_time),
                 style = Typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onTertiary,
             )
             Spacer(Modifier.weight(1f))
             Text(
                 text = dose.toText(),
                 style = Typography.bodyMedium,
+                textAlign = TextAlign.End,
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
                     .widthIn(min = 25.dp)

@@ -21,9 +21,9 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
-            val isDarkTheme by viewModel.isDarkTheme.collectAsStateWithLifecycle(false)
+            val isDarkTheme by viewModel.isDarkTheme.collectAsStateWithLifecycle(null)
 
-            MyBADTheme(darkTheme = isDarkTheme, dynamicColor = false) {
+            MyBADTheme(darkThemeInit = isDarkTheme, dynamicColor = false) {
                 AppNavGraph()
             }
         }

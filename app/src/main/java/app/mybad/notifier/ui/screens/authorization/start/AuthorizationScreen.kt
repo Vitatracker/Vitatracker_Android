@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.start
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,12 +27,12 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedButton
 import app.mybad.notifier.ui.common.SignInWithGoogle
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
-@Preview
 @Composable
-fun StartAuthorizationScreen(
+fun AuthorizationScreen(
     modifier: Modifier = Modifier,
     effectFlow: Flow<AuthorizationContract.Effect>? = null,
     sendEvent: (event: AuthorizationContract.Event) -> Unit = {},
@@ -50,14 +51,14 @@ fun StartAuthorizationScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        AuthorizationScreen(
+        AuthorizationView(
             sendEvent = sendEvent,
         )
     }
 }
 
 @Composable
-fun AuthorizationScreen(
+fun AuthorizationView(
     modifier: Modifier = Modifier,
     sendEvent: (event: AuthorizationContract.Event) -> Unit = {}
 ) {
@@ -102,3 +103,23 @@ private fun AuthorizationImage() {
         contentScale = ContentScale.Fit
     )
 }
+
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+fun StartAuthorizationScreenPreview() {
+    MyBADTheme {
+        AuthorizationScreen()
+    }
+}
+

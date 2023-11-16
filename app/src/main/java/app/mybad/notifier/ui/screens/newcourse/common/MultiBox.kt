@@ -19,12 +19,13 @@ import androidx.compose.ui.unit.dp
 fun MultiBox(
     vararg items: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.surfaceContainer,
     outlineColor: Color = MaterialTheme.colorScheme.primary,
     itemsPadding: PaddingValues,
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.background,
+        color = color,
         border = BorderStroke(1.dp, outlineColor),
         modifier = modifier.fillMaxWidth()
     ) {

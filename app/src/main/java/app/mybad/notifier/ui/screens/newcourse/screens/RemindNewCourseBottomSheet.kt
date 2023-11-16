@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -116,6 +117,7 @@ fun RemindNewCourseBottomSheet(
                         onClick = { selectedInput = 3 }
                     )
                 },
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 itemsPadding = PaddingValues(16.dp)
             )
         }
@@ -138,9 +140,9 @@ fun RemindNewCourseBottomSheet(
 
     selectedInput?.let {
         Dialog(onDismissRequest = { selectedInput = null }) {
-            androidx.compose.material.Surface(
+            Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.primaryContainer
             ) {
                 when (selectedInput) {
                     1 -> DateDelaySelector(

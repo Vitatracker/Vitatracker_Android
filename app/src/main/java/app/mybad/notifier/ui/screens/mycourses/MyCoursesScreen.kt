@@ -50,7 +50,6 @@ import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.getFormsPluralsArray
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.ui.theme.iconEditing
 import app.mybad.theme.R
 import app.mybad.utils.displayDate
 import app.mybad.utils.toText
@@ -134,8 +133,8 @@ private fun CourseItem(
             .wrapContentHeight(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         Column(
@@ -207,7 +206,7 @@ private fun CourseItem(
                         ReUseIcon(
                             painterId = R.drawable.icon_pencil,
                             color = MaterialTheme.colorScheme.primary,
-                            tint = iconEditing,
+                            tint = MaterialTheme.colorScheme.surfaceBright,
                             iconSize = 16.dp,
                             modifier = Modifier
                                 .size(24.dp),
@@ -233,7 +232,7 @@ private fun CourseItem(
                         val end = courseDisplay.endDate.displayDate()
                         Text(
                             text = start, fontSize = 12.sp, fontWeight = FontWeight(500),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Icon(
                             painter = painterResource(R.drawable.arrow_right),
@@ -245,7 +244,7 @@ private fun CourseItem(
                         )
                         Text(
                             text = end, fontSize = 12.sp, fontWeight = FontWeight(500),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     // отобразить старт нового курса через ...
@@ -254,7 +253,7 @@ private fun CourseItem(
                             Spacer(Modifier.size(16.dp))
                             Surface(
                                 shape = RoundedCornerShape(5.dp),
-                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                color = MaterialTheme.colorScheme.primaryContainer,
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                             ) {
                                 Text(
@@ -262,7 +261,7 @@ private fun CourseItem(
                                         R.string.mycourse_remaining,
                                         courseDisplay.interval
                                     ),
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                                     style = Typography.bodySmall,
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                                 )

@@ -29,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -63,9 +65,10 @@ fun NotificationItem(
 
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
+        shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.background,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiaryContainer),
+        contentColor = MaterialTheme.colorScheme.primary,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -89,6 +92,7 @@ fun NotificationItem(
                     .clickable(onClick = onTimeClick),
                 text = time.displayWithDateTimeInMinutes(), // отображает время с учетом даты и часового пояса
                 style = Typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onTertiary,
             )
             Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {
                 BasicTextField(
@@ -100,7 +104,10 @@ fun NotificationItem(
                             }
                         },
                     value = field,
-                    textStyle = TextStyle.Default.copy(textAlign = TextAlign.End),
+                    textStyle = TextStyle.Default.copy(
+                        textAlign = TextAlign.End,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
                     onValueChange = {
                         field = it.copy(
                             text = it.text
@@ -121,7 +128,7 @@ fun NotificationItem(
                             field = field.copy(selection = TextRange.Zero)
                             isDone = !isDone
                         }
-                    )
+                    ),
                 )
                 Text(
                     text = forms[form],

@@ -50,7 +50,7 @@ data class UserModel(
     val deleteLocalDate: Long = 0,
 
     @ColumnInfo(name = UserContract.Columns.IS_DARK_THEME)
-    val isDarkTheme: Long = 0,
+    val isDarkTheme: Boolean? = null,
     @ColumnInfo(name = UserContract.Columns.SYNCHRONIZE_DATE)
     val synchronizeDate: Long = 0,
 )

@@ -72,7 +72,7 @@ fun StartRegistrationScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ReUseFilledButton(
                 textId = R.string.registration_create_account,
-                isEnabled = state.isRegistrationButtonEnabled && !state.isLoading,
+                enabled = state.isRegistrationButtonEnabled && !state.isLoading,
                 onClick = {
                     sendEvent(
                         RegistrationContract.Event.CreateAccount(

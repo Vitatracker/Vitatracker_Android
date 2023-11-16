@@ -70,9 +70,6 @@ import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.notifier.ui.theme.Typography
-import app.mybad.notifier.ui.theme.textColorFirst
-import app.mybad.notifier.ui.theme.textColorSecond
-import app.mybad.notifier.ui.theme.textColorThird
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.changeDate
@@ -235,7 +232,9 @@ private fun NotificationWeekPager(
                 },
             shape = RoundedCornerShape(5.dp),
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
-            color = if (stateDay.currentPage == page) MaterialTheme.colorScheme.primary else Color.Transparent
+            color = if (stateDay.currentPage == page) MaterialTheme.colorScheme.primary else Color.Transparent,
+            contentColor = if (stateDay.currentPage == page) MaterialTheme.colorScheme.surfaceBright
+            else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
         ) {
             Column(
                 modifier = Modifier
@@ -546,9 +545,9 @@ private fun getFontWeight(page: Int, month: Int) = when (page) {
 @Composable
 private fun getMonthColor(page: Int, month: Int) = when (page) {
     month -> MaterialTheme.colorScheme.primary
-    (month + 1), (month - 1) -> textColorFirst
-    (month + 2), (month - 2) -> textColorSecond
-    else -> textColorThird
+    (month + 1), (month - 1) -> MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+    (month + 2), (month - 2) -> MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+    else -> MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
 }
 
 // цвет рамки вокруг карточки

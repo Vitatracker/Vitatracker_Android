@@ -129,7 +129,7 @@ fun AddMedNotificationsScreen(
             }
             ReUseFilledButton(
                 textId = R.string.navigation_next,
-                isEnabled = state.nextAllowed,
+                enabled = state.nextAllowed,
             ) {
                 sendEvent(CreateCourseContract.Event.Finish)
                 sendEvent(CreateCourseContract.Event.ActionNext)

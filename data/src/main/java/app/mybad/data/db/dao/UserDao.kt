@@ -17,9 +17,9 @@ interface UserDao {
     @Query(
         "select ${UserContract.Columns.IS_DARK_THEME} from ${UserContract.TABLE_NAME} where ${
             UserContract.Columns.ID
-        } = :userId limit 1"
+        } = :userId"
     )
-    fun isDarkTheme(userId: Long): Flow<Long?>
+    fun isDarkTheme(userId: Long): Flow<Boolean?>
 
     @Query("SELECT COUNT(${UserContract.Columns.ID}) FROM ${UserContract.TABLE_NAME}")
     suspend fun getNumberOfUsers(): Long

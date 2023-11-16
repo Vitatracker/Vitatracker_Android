@@ -111,7 +111,7 @@ private fun LoginScreen(
             ReUseFilledButton(
                 textId = R.string.sign_in,
                 onClick = { sendEvent(LoginContract.Event.SignIn(state.email, state.password)) },
-                isEnabled = state.isLoginButtonEnabled && !state.isLoading
+                enabled = state.isLoginButtonEnabled && !state.isLoading
             )
             Spacer(modifier = Modifier.height(32.dp))
             SignInWithGoogle(

@@ -12,17 +12,19 @@ val Typography = Typography(
         fontSize = 57.sp,
         lineHeight = 64.sp,
     ),
+    // Заголовки окон
     displayMedium = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 30.sp,
     ),
+    // название месяца
     displaySmall = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
     ),
     headlineLarge = TextStyle(
         fontFamily = SFProFontFamily,
@@ -78,10 +80,11 @@ val Typography = Typography(
         fontSize = 12.sp,
         lineHeight = 16.sp
     ),
+    // TextButton
     labelLarge = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
     labelMedium = TextStyle(
@@ -90,10 +93,11 @@ val Typography = Typography(
         fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
+    // год в календаре
     labelSmall = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
+        fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
 )

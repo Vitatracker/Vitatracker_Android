@@ -27,6 +27,8 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
+import app.mybad.notifier.ui.common.ReUseOutlinedButton
+import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
@@ -61,42 +63,25 @@ fun NotificationRequestScreen(
         ) {
             TextView()
             Spacer(modifier = Modifier.height(32.dp))
-            ButtonView(
-                onRejectClicked = { sendEvent(NotificationRequestContract.Event.OnReject) },
-                onAllowClicked = { sendEvent(NotificationRequestContract.Event.OnSettings) },
+            ReUseTwoButtons(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                dismissId = R.string.settings_notifications_allow_button_next,
+                onDismiss = { sendEvent(NotificationRequestContract.Event.OnReject) },
+                confirmId = R.string.settings_notifications_allow_button_settings,
+                onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
         if (state.isConfirmation) {
             ReUseAlertDialog(
                 titleId = R.string.settings_notifications_allow_reconfirmation_title,
-                descriptionId = R.string.settings_notifications_allow_reconfirmation_text,
+                textId = R.string.settings_notifications_allow_reconfirmation_text,
                 dismissId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
                 confirmId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
                 onDismiss = { sendEvent(NotificationRequestContract.Event.OnNext) },
                 onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
-    }
-}
-
-@Composable
-private fun ButtonView(onRejectClicked: () -> Unit, onAllowClicked: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        ReUseFilledButton(
-            modifier = Modifier.weight(0.5f),
-            textId = R.string.settings_notifications_allow_button_next,
-            onClick = onRejectClicked,
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        ReUseFilledButton(
-            modifier = Modifier.weight(0.5f),
-            textId = R.string.settings_notifications_allow_button_settings,
-            onClick = onAllowClicked,
-        )
     }
 }
 

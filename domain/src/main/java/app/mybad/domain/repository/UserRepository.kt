@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    fun isDarkTheme(userId: Long): Flow<Boolean>
+    fun isDarkTheme(userId: Long): Flow<Boolean?>
     suspend fun getNumberOfUsers(): Long
     suspend fun getUserIdByEmail(email: String): Long?
     suspend fun getUserByEmail(email: String): UserDomainModel

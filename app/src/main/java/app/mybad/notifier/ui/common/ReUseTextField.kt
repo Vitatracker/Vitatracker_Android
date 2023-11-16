@@ -66,7 +66,8 @@ fun ReUseOutlinedTextField(
         placeholder = { Text(text = label) },
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
             errorBorderColor = MaterialTheme.colorScheme.errorContainer
         )
     )
@@ -121,7 +122,8 @@ fun ReUsePasswordOutlinedTextField(
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
             errorBorderColor = MaterialTheme.colorScheme.errorContainer
         )
     )

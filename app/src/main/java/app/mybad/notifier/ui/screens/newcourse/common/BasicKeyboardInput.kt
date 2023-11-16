@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +47,10 @@ fun BasicKeyboardInput(
             capitalization = capitalization
         ),
         keyboardActions = KeyboardActions(onGo = { lfm.clearFocus(true) }),
-        textStyle = if (!alignRight) style else style.copy(textAlign = TextAlign.End),
+        textStyle = style.copy(
+            textAlign = if (alignRight) TextAlign.End else TextAlign.Start,
+            color = MaterialTheme.colorScheme.onPrimary,
+        ),
     ) { innerTextField ->
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -54,17 +58,17 @@ fun BasicKeyboardInput(
         ) {
             prefix()
             Box(
-                contentAlignment = if (!alignRight) Alignment.CenterStart else Alignment.CenterEnd
+                contentAlignment = if (alignRight) Alignment.CenterEnd else Alignment.CenterStart
             ) {
                 if (init.isNullOrBlank()) {
                     Text(
                         text = label,
                         modifier = Modifier.alpha(0.3f),
-                        style = if (!alignRight) {
-                            style.copy(fontWeight = FontWeight.Bold)
-                        } else {
-                            style.copy(textAlign = TextAlign.End, fontWeight = FontWeight.Bold)
-                        }
+                        style = style.copy(
+                            textAlign = if (alignRight) TextAlign.End else TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        ),
                     )
                 }
                 innerTextField()

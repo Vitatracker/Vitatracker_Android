@@ -86,7 +86,7 @@ private fun PasswordRecoveryScreen(
         Spacer(modifier = Modifier.height(32.dp))
         ReUseFilledButton(
             textId = R.string.action_recover,
-            isEnabled = state.isRecoveryButtonEnabled
+            enabled = state.isRecoveryButtonEnabled
         ) {
             sendEvent(PasswordRecoveryScreenContract.Event.Recovery(state.email))
         }
