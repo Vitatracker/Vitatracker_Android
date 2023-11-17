@@ -17,10 +17,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import app.mybad.theme.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,8 +50,7 @@ fun TitleText(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         color = MaterialTheme.colorScheme.primary,
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.displayMedium,
         textAlign = textAlign
     )
 }
