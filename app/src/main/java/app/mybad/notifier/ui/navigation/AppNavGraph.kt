@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +30,12 @@ fun AppNavGraph() {
 
     Scaffold { paddingValues ->
         NavHost(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(
+                start = 0.dp,
+                end = 0.dp,
+                top = paddingValues.calculateTopPadding(),
+                bottom = 0.dp
+            ),
             navController = navigationState.navController,
             startDestination = AppScreens.Splash.route,
         ) {

@@ -61,8 +61,12 @@ fun AddMedFirstScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {

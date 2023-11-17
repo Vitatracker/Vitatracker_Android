@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,7 +26,12 @@ fun MainNavGraph(
     navigateUp: (String) -> Unit = {},
 ) {
     NavHost(
-        modifier = Modifier.padding(paddingValues),
+        modifier = Modifier.padding(
+            start = 0.dp,
+            end = 0.dp,
+            top = paddingValues.calculateTopPadding(),
+            bottom = 0.dp
+        ),
         navController = navigationState.navController,
         startDestination = MainScreens.Notifications.route
     ) {

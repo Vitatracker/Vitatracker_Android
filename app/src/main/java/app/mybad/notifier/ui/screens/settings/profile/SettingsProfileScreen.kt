@@ -61,9 +61,13 @@ fun SettingsProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
                 .verticalScroll(rememberScrollState())
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
         ) {
             SettingsProfileTop(state, sendEvent)
             SettingsProfileBottom(sendEvent)

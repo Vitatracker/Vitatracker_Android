@@ -48,8 +48,12 @@ fun SettingsAboutTeamScreen(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(start = 24.dp, end = 24.dp)
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
         ) {
             val appName: String = stringResource(id = R.string.app_name)
             Text(

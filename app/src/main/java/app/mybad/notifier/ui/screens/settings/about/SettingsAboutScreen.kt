@@ -55,8 +55,12 @@ fun SettingsAboutScreen(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
         ) {
             Text(
                 text = stringResource(R.string.settings_version, version), //BuildConfig.VERSION_NAME

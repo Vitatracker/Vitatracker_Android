@@ -87,7 +87,12 @@ fun MyCoursesScreen(
     ) { paddingValues ->
         LazyColumn(
             Modifier
-                .padding(paddingValues),
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
             contentPadding = PaddingValues(
                 top = 8.dp,
                 start = 8.dp,

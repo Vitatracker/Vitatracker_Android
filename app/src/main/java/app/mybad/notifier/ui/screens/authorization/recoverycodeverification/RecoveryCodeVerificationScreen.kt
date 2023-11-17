@@ -71,8 +71,12 @@ fun RecoveryCodeVerificationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(start = 24.dp, end = 24.dp)
+                .padding(
+                    start = 24.dp,
+                    end = 24.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
         ) {
             ScreenContent(state, sendEvent)
         }

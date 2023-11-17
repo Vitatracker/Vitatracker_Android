@@ -104,10 +104,14 @@ fun SettingsNotificationsScreen(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(rememberScrollState())
-        ) {
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
+            ) {
             SetupNotifications(context, sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

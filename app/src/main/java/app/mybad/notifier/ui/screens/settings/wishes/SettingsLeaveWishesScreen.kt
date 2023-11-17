@@ -65,8 +65,12 @@ fun SettingsLeaveWishesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 16.dp
+                ),
         ) {
             Text(
                 text = stringResource(id = R.string.wishes_text_header),
