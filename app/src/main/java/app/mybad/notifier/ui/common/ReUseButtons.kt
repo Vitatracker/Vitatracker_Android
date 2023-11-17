@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -39,7 +38,7 @@ fun ReUseFilledButton(
 ) {
     Button(
         modifier = modifier
-        .heightIn(min = 52.dp, max = 100.dp),
+            .heightIn(min = 52.dp, max = 100.dp),
         enabled = enabled,
         onClick = onClick,
         shape = MaterialTheme.shapes.small,

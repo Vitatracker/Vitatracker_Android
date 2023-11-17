@@ -32,7 +32,7 @@ fun SettingsAboutScreen(
     navigation: (navigationEffect: SettingsAboutContract.Effect.Navigation) -> Unit
 ) {
     val context = LocalContext.current
-    val version = remember {context.packageVersionName}
+    val version = remember { context.packageVersionName }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
 //        version = context.packageVersionName
@@ -63,7 +63,10 @@ fun SettingsAboutScreen(
                 ),
         ) {
             Text(
-                text = stringResource(R.string.settings_version, version), //BuildConfig.VERSION_NAME
+                text = stringResource(
+                    R.string.settings_version,
+                    version
+                ), //BuildConfig.VERSION_NAME
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp,
                 modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)

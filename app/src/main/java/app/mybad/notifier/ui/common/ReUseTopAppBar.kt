@@ -25,12 +25,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReUseTopAppBar(titleResId: Int?, onBackPressed: () -> Unit) {
+fun ReUseTopAppBar(
+    @StringRes titleResId: Int?,
+    onBackPressed: () -> Unit
+) {
     TopAppBar(
         title = {
-            if (titleResId != null) {
-                TitleText(textStringRes = titleResId)
-            }
+            titleResId?.let { TitleText(it) }
         },
         navigationIcon = {
             NavigateBackIconButton(onBackPressed)
@@ -40,8 +41,8 @@ fun ReUseTopAppBar(titleResId: Int?, onBackPressed: () -> Unit) {
 
 @Composable
 fun TitleText(
-    modifier: Modifier = Modifier,
     @StringRes textStringRes: Int,
+    modifier: Modifier = Modifier,
     textAlign: TextAlign? = null
 ) {
     Text(

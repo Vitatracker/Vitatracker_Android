@@ -4,14 +4,10 @@
     <style name="Theme.MyBAD" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.AppSplashScreen" parent="Theme.SplashScreen">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowBackground">@color/background</item>
-        <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/splash_screen_icon_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.MyBAD</item>
-        <item name="windowSplashScreenAnimationDuration">500</item>
     </style>
 
 </resources>

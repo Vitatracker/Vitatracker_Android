@@ -20,14 +20,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun BasicKeyboardInput(
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    init: String? = null,
     label: String,
-    style: TextStyle = Typography.bodyMedium,
+    init: String? = null,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.Words,
     keyboardType: KeyboardType = KeyboardType.Text,
     hideOnGo: Boolean = false,
