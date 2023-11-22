@@ -14,12 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,11 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.models.patternToCount
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
@@ -49,7 +43,6 @@ import app.mybad.notifier.ui.common.ReUseIcon
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.getFormsPluralsArray
 import app.mybad.notifier.ui.theme.PickColor
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.displayDate
 import app.mybad.utils.toText
@@ -95,9 +88,9 @@ fun MyCoursesScreen(
                 ),
             contentPadding = PaddingValues(
                 top = 8.dp,
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 72.dp
+                start = 0.dp,
+                end = 0.dp,
+                bottom = 82.dp
             ),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -128,152 +121,166 @@ private fun CourseItem(
     @PluralsRes type: Int,
     onClick: () -> Unit = {},
 ) {
-
-    // кол-во приемов, минимальное и максимальное кол-во за 1 прием
-    val (countPerDay, countPerDoseMin, countPerDoseMax) = courseDisplay.patternUsages.patternToCount()
-
-    Card(
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.inversePrimary),
     ) {
         Column(
             modifier = Modifier
+                .padding(16.dp)
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 24.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ReUseIcon(
-                    painterId = icon,
-                    color = PickColor.getColor(courseDisplay.color),
-                    tint = MaterialTheme.colorScheme.outline,
-                    iconSize = 24.dp,
-                    modifier = Modifier
-                        .size(36.dp),
+            // Название курса и кнопка редактирования курса
+            CourseNameAndEditButton(
+                courseDisplay = courseDisplay,
+                icon = icon,
+                type = type,
+                onClick = onClick
+            )
+            Spacer(Modifier.height(12.dp))
+            CourseDates(courseDisplay = courseDisplay)
+        }
+    }
+}
+
+@Composable
+private fun CourseNameAndEditButton(
+    courseDisplay: CourseDisplayDomainModel,
+    @DrawableRes icon: Int,
+    @PluralsRes type: Int,
+    onClick: () -> Unit = {},
+) {
+    // кол-во приемов, минимальное и максимальное кол-во за 1 прием
+    val (countPerDay, countPerDoseMin, countPerDoseMax) = courseDisplay.patternUsages.patternToCount()
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        ReUseIcon(
+            painterId = icon,
+            tint = MaterialTheme.colorScheme.primary, //outline
+            color = PickColor.getColor(courseDisplay.color),
+            iconSize = 24.dp,
+            border = false,
+            modifier = Modifier
+                .size(36.dp),
+        )
+        Spacer(Modifier.width(12.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)) {
+                // Название курса
+                Text(
+                    text = courseDisplay.name.replaceFirstChar { it.uppercase() },
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
-                Spacer(Modifier.width(12.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(Modifier.fillMaxWidth(0.85f)) {
-                        Text(
-                            text = courseDisplay.name.replaceFirstChar { it.uppercase() },
-                            style = Typography.bodyLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        if (countPerDoseMax > 0 || countPerDay > 0) {
-                            Row {
-                                if (countPerDoseMax > 0) {
-                                    Text(
-                                        // тут ерунда получается, у нас доза "0.5 таблетки 2 раза, утро и вечер", "по 1-й таблетки 3 раза в день"
-                                        text = pluralStringResource(
-                                            id = type,
-                                            count = countPerDoseMax.toInt(),
-                                            Pair(countPerDoseMin, countPerDoseMax).toText()
-                                        ),
-                                        style = Typography.labelMedium
-                                    )
-                                    VerticalDivider(
-                                        thickness = 1.dp,
-                                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                        modifier = Modifier
-                                            .height(16.dp)
-                                            .padding(horizontal = 8.dp)
-                                            .width(1.dp)
-                                    )
-                                }
-                                if (countPerDay > 0) {
-                                    Text(
-                                        text = stringResource(
-                                            R.string.mycourse_per_day_listitem,
-                                            countPerDay,
-                                        ),
-                                        style = Typography.labelMedium
-                                    )
-                                }
-                            }
+                if (countPerDoseMax > 0 || countPerDay > 0) {
+                    Row {
+                        if (countPerDoseMax > 0) {
+                            Text(
+                                // тут ерунда получается, у нас доза "0.5 таблетки 2 раза, утро и вечер",
+                                // "по 1-й таблетки 3 раза в день"
+                                text = pluralStringResource(
+                                    id = type,
+                                    count = countPerDoseMax.toInt(),
+                                    Pair(countPerDoseMin, countPerDoseMax).toText()
+                                ),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                            VerticalDivider(
+                                thickness = 1.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                modifier = Modifier
+                                    .height(16.dp)
+                                    .padding(horizontal = 8.dp)
+                                    .width(1.dp)
+                            )
                         }
-                    }
-                    // иконка редактирования курса
-                    if (courseDisplay.remindDate != null || courseDisplay.interval == 0L || courseDisplay.idOld > 0) {
-                        ReUseIcon(
-                            painterId = R.drawable.icon_pencil,
-                            color = MaterialTheme.colorScheme.primary,
-                            tint = MaterialTheme.colorScheme.surfaceBright,
-                            iconSize = 16.dp,
-                            modifier = Modifier
-                                .size(24.dp),
-                            onClick = onClick,
-                        )
+                        if (countPerDay > 0) {
+                            Text(
+                                text = stringResource(
+                                    R.string.mycourse_per_day_listitem,
+                                    countPerDay,
+                                ),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
                     }
                 }
             }
-            Spacer(Modifier.height(12.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+            // иконка редактирования курса
+            ReUseIcon(
+                painterId = R.drawable.icon_pencil,
+                tint = MaterialTheme.colorScheme.surfaceBright,
+                iconSize = 12.dp,
+                color = MaterialTheme.colorScheme.primary,
+                border = false,
+                modifier = Modifier
+                    .size(24.dp),
+                onClick = onClick,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        // дата старта и окончание курса
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            val start = courseDisplay.startDate.displayDate()
+            val end = courseDisplay.endDate.displayDate()
+            Text(
+                text = start,
+                style = MaterialTheme.typography.labelMedium
+            )
+            Icon(
+                painter = painterResource(R.drawable.arrow_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .height(10.dp)
+            )
+            Text(
+                text = end,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+        // отобразить старт нового курса через ...
+        if (courseDisplay.remindDate == null && courseDisplay.interval > 0) {
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color = MaterialTheme.colorScheme.inverseSurface,
+                contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    // дата старта и окончание курса
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        val start = courseDisplay.startDate.displayDate()
-                        val end = courseDisplay.endDate.displayDate()
-                        Text(
-                            text = start, fontSize = 12.sp, fontWeight = FontWeight(500),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_right),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .padding(start = 12.dp, end = 12.dp)
-                                .height(10.dp)
-                        )
-                        Text(
-                            text = end, fontSize = 12.sp, fontWeight = FontWeight(500),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                    // отобразить старт нового курса через ...
-                    if (courseDisplay.remindDate == null && courseDisplay.interval > 0) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Spacer(Modifier.size(16.dp))
-                            Surface(
-                                shape = RoundedCornerShape(5.dp),
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                            ) {
-                                Text(
-                                    text = stringResource(
-                                        R.string.mycourse_remaining,
-                                        courseDisplay.interval
-                                    ),
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    style = Typography.bodySmall,
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+                Text(
+                    text = stringResource(
+                        R.string.mycourse_remaining,
+                        courseDisplay.interval
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                )
             }
         }
     }
