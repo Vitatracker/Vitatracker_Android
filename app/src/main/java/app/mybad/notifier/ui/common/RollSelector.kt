@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,7 +26,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlin.math.absoluteValue
 
@@ -76,7 +74,7 @@ fun RollSelectorView(
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
-                shape = RoundedCornerShape(10.dp),
+                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .alpha(alpha)
                     .wrapContentWidth()
@@ -84,7 +82,7 @@ fun RollSelectorView(
             ) {
                 Text(
                     text = list[it % list.size],
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
                 )

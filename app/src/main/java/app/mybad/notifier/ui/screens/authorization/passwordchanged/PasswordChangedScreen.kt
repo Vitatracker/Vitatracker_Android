@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 
 @Composable
@@ -36,7 +35,7 @@ fun PasswordChangedScreen(onBack: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.password_changed_successfully),
             fontWeight = FontWeight.Bold,
-            style = Typography.headlineSmall,
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )

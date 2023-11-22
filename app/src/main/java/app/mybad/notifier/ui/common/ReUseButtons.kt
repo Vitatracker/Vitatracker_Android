@@ -21,12 +21,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 
 @Composable
@@ -50,7 +50,7 @@ fun ReUseFilledButton(
     ) {
         Text(
             text = stringResource(id = textId),
-            style = Typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge,
         )
     }
 }
@@ -71,8 +71,8 @@ fun ReUseOutlinedButton(
         shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (errorColor) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.secondary,
-            contentColor = if (errorColor) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSecondary,
+            containerColor = Color.Transparent,
+            contentColor = if (errorColor) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,
         ),
         border = BorderStroke(
             width = 1.dp,
@@ -81,7 +81,7 @@ fun ReUseOutlinedButton(
     ) {
         Text(
             text = stringResource(id = textId),
-            style = Typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Normal,
         )
     }
@@ -97,7 +97,7 @@ fun ReUseTextButton(
         modifier = modifier,
         onClick = onClick,
     ) {
-        Text(text = stringResource(textId), style = Typography.labelMedium)
+        Text(text = stringResource(textId), style = MaterialTheme.typography.labelMedium)
     }
 }
 

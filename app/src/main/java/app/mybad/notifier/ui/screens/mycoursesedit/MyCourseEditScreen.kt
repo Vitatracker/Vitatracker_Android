@@ -36,6 +36,7 @@ import app.mybad.data.models.CourseSelectInput
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
+import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.notifier.ui.common.usagesPatternPreview
@@ -44,7 +45,6 @@ import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.displayDateFull
 import kotlinx.coroutines.flow.Flow
@@ -114,7 +114,7 @@ fun MyCourseEditScreen(
             Column {
                 Text(
                     text = stringResource(R.string.mycourse_edit_icon),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
                 MultiBox(
@@ -130,7 +130,7 @@ fun MyCourseEditScreen(
                 )
                 Text(
                     text = stringResource(R.string.mycourse_edit_icon_color),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
                 MultiBox(
@@ -145,7 +145,7 @@ fun MyCourseEditScreen(
                 )
                 Text(
                     text = stringResource(R.string.mycourse_dosage_and_usage),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
                 MultiBox(
@@ -153,7 +153,7 @@ fun MyCourseEditScreen(
                         BasicKeyboardInput(
                             label = name,
                             init = remedyInternal.name,
-                            style = Typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge,
                             hideOnGo = true,
                             onChange = { remedyInternal = remedyInternal.copy(name = it) }
                         )
@@ -191,7 +191,7 @@ fun MyCourseEditScreen(
                             prefix = {
                                 Text(
                                     text = dose,
-                                    style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                                 )
                             },
                             onChange = {
@@ -247,11 +247,10 @@ fun MyCourseEditScreen(
                     },
                     modifier = Modifier,
                     itemsPadding = PaddingValues(16.dp),
-                    outlineColor = MaterialTheme.colorScheme.primary,
                 )
                 Text(
                     text = stringResource(R.string.mycourse_duration),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
                 MultiBox(
@@ -284,7 +283,6 @@ fun MyCourseEditScreen(
                         Text(text = stringResource(R.string.add_notifications_time_set))
                     },
                     itemsPadding = PaddingValues(16.dp),
-                    outlineColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
@@ -316,7 +314,7 @@ fun MyCourseEditScreen(
                 },
                 dismissId = R.string.mycourse_delete,
                 onDismiss = {
-                    sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id))
+                    sendEvent(MyCoursesEditContract.Event.ConfirmationDelete)
                 },
             )
         }
@@ -338,6 +336,19 @@ fun MyCourseEditScreen(
                 onRegimeSelected = {
                     courseInternal = courseInternal.copy(regime = it)
                 }
+            )
+        }
+
+        if (state.confirmation) {
+            ReUseAlertDialog(
+                drawableId = R.drawable.medicines,
+                textId = R.string.mycourse_confirmation_delete_text,
+                dismissId = R.string.mycourse_delete,
+                confirmId = R.string.mycourse_delete_cancel,
+                textButton = false,
+                dismissErrorColor = true,
+                onDismiss = { sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id)) },
+                onConfirm = { sendEvent(MyCoursesEditContract.Event.CancelDelete) },
             )
         }
     }

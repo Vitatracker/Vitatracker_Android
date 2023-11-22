@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 
 @Composable
@@ -39,7 +38,7 @@ fun AboutItem(
     ) {
         Text(
             text = text,
-            style = Typography.bodyLarge.copy(fontSize = 16.sp),
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
             fontWeight = FontWeight.Bold
         )
         Surface(

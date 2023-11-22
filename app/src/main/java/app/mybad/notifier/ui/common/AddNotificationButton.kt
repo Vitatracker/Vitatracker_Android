@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.toText
 
@@ -65,13 +64,13 @@ fun AddNotificationButton(
             Spacer(Modifier.width(16.dp))
             Text(
                 text = stringResource(R.string.add_notifications_choose_time),
-                style = Typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onTertiary,
             )
             Spacer(Modifier.weight(1f))
             Text(
                 text = dose.toText(),
-                style = Typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.End,
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
@@ -79,7 +78,7 @@ fun AddNotificationButton(
             )
             Text(
                 text = forms[form],
-                style = Typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(start = 4.dp)
             )
         }

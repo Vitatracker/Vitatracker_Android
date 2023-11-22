@@ -35,7 +35,6 @@ import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -96,7 +95,7 @@ private fun SecondScreenContent(
     Column {
         Text(
             text = stringResource(R.string.add_med_reception),
-            style = Typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -138,7 +137,7 @@ private fun SecondScreenContent(
                     prefix = {
                         Text(
                             text = dose,
-                            style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                         )
                     },
                     onChange = {
@@ -205,12 +204,9 @@ private fun SecondScreenContent(
                 }
             },
             itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
-            outlineColor = MaterialTheme.colorScheme.primary,
         )
     }
-    ReUseFilledButton(
-        textId = R.string.navigation_next
-    ) {
+    ReUseFilledButton(textId = R.string.navigation_next) {
         sendEvent(CreateCourseContract.Event.ActionNext)
     }
 }

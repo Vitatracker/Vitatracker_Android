@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.mybad.theme.R
-import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun NavigationRow(
@@ -37,7 +36,7 @@ fun NavigationRow(
         ) {
             Text(
                 text = backLabel,
-                style = Typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         Button(
@@ -50,7 +49,7 @@ fun NavigationRow(
         ) {
             Text(
                 text = nextLabel,
-                style = Typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.data.models.CourseSelectInput
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.LIMIT_END_MAX
@@ -349,11 +348,11 @@ private fun CalendarDayItem(
             ) {
                 Text(
                     text = date.displayDay(),
-                    style = if (isInitDate) Typography.bodyLarge.copy(
-                        fontSize = Typography.bodyLarge.fontSize.times(
+                    style = if (isInitDate) MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(
                             1.2f
                         )
-                    ) else Typography.bodyLarge,
+                    ) else MaterialTheme.typography.bodyLarge,
                     color = if (isInRange) MaterialTheme.colorScheme.primary else Color.Unspecified
                 )
             }

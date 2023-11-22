@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun DeleteAccountItem(
@@ -53,7 +52,7 @@ fun DeleteAccountItem(
             ) {
                 Text(
                     text = label,
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error
                 )
                 Spacer(modifier = Modifier.width(5.dp))

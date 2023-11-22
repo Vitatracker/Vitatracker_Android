@@ -25,6 +25,6 @@ class NotificationRequestViewModel : BaseViewModel<
     }
 
     private fun showConfirmation(show: Boolean) {
-        setState { copy(isConfirmation = show) }
+        setState { copy(confirmation = show) }
     }
 }

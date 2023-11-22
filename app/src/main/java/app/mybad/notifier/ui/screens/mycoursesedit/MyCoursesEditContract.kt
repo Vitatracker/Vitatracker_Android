@@ -11,7 +11,8 @@ class MyCoursesEditContract {
     sealed interface Event : ViewEvent {
         object ActionBack : Event
         data class Delete(val courseId: Long) : Event
-
+        object ConfirmationDelete : Event
+        object CancelDelete : Event
         object AddUsagesPattern : Event
         data class DeleteUsagePattern(val pattern: UsageFormat) : Event
         data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
@@ -43,6 +44,7 @@ class MyCoursesEditContract {
         val remindBeforePeriod: Int = 0,
 
         val nextAllowed: Boolean = false,
+        val confirmation: Boolean = false,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {

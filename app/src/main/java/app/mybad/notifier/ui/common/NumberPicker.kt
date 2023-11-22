@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,7 +25,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.utils.toText
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -96,7 +96,7 @@ fun NumberPicker(
         ) {
             Text(
                 text = items[index % items.size].toText(),
-                style = Typography.headlineLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 fontSize = 20.sp
             )
         }

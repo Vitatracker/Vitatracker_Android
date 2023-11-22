@@ -19,7 +19,7 @@ private val LightColorScheme = lightColorScheme(
     primary = accent_color,
     onPrimary = light_text,
 
-    // BottomNavBar, Card, карточка курса, поверхность
+    // BottomNavBar, карточка курса, поверхность
     primaryContainer = light_primary_container,
     onPrimaryContainer = light_text,
 
@@ -46,23 +46,26 @@ private val LightColorScheme = lightColorScheme(
     background = light_background,
     onBackground = light_text,
 
-    surface = light_background,
+    surface = light_surface,
     onSurface = light_text,
 
     // AlertDialog
     surfaceVariant = light_surface_variant,
-    onSurfaceVariant = light_text,
+    onSurfaceVariant = accent_color,
 
-    outline = light_border,
+    outline = border,
     // для border Настроить напоминание
-    outlineVariant = light_border_variant,
+    outlineVariant = border_variant,
 
-    inverseSurface = seed,
-    inverseOnSurface = seed,
+    // старт курса через
+    inverseSurface = light_surface_high,
+    inverseOnSurface = light_surface_high_text,
 
-    inversePrimary = seed,
+    // карточка курса, border
+    inversePrimary = light_border_card,
 
-    surfaceTint = settings_icon_tint,
+    // AlertDialog задний фон
+    surfaceTint = light_surface_tint,
 
     scrim = seed, // холст
 
@@ -75,11 +78,13 @@ private val LightColorScheme = lightColorScheme(
     // подсвечивание времени при выборе
     surfaceContainerHigh = light_surface_select, // поверхность Контейнер Высокий
 
-    surfaceContainerHighest = seed, // поверхность Контейнер Высший
+    surfaceContainerHighest = settings_icon_tint, // поверхность Контейнер Высший
+
     surfaceContainerLow = seed, // поверхность Контейнер Низкий
+
     surfaceContainerLowest = seed, // поверхность Контейнер Самый низкий
 
-    surfaceDim = seed, // поверхность Тусклый
+    surfaceDim = placeholder_text, // поверхность Тусклый
 )
 
 
@@ -110,21 +115,21 @@ private val DarkColorScheme = darkColorScheme(
     background = dark_background,
     onBackground = dark_text,
 
-    surface = dark_background,
+    surface = dark_surface,
     onSurface = dark_text,
 
     surfaceVariant = dark_surface_variant,
     onSurfaceVariant = dark_text,
 
-    outline = dark_border,
-    outlineVariant = dark_border_variant,
+    outline = border,
+    outlineVariant = border_variant,
 
-    inverseSurface = seed,
-    inverseOnSurface = seed,
+    inverseSurface = dark_surface_high,
+    inverseOnSurface = dark_surface_high_text,
 
-    inversePrimary = seed,
+    inversePrimary = dark_border_card,
 
-    surfaceTint = settings_icon_tint,
+    surfaceTint = dark_surface_tint,
 
     scrim = seed,
 
@@ -133,11 +138,11 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainer = dark_surface_container,
 
     surfaceContainerHigh = dark_surface_select, // поверхность Контейнер Высокий
-    surfaceContainerHighest = seed, // поверхность Контейнер Высший
+    surfaceContainerHighest = settings_icon_tint, // поверхность Контейнер Высший
     surfaceContainerLow = seed, // поверхность Контейнер Низкий
     surfaceContainerLowest = seed, // поверхность Контейнер Самый низкий
 
-    surfaceDim = seed, // поверхность Тусклый
+    surfaceDim = placeholder_text, // поверхность Тусклый
 )
 
 /*

@@ -30,7 +30,6 @@ import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -91,7 +90,7 @@ fun AddMedFirstScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.add_med_icon),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -115,12 +114,11 @@ fun AddMedFirstScreen(
                         top = 20.dp,
                         bottom = 20.dp
                     ),
-                    outlineColor = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = stringResource(R.string.add_med_icon_color),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -143,12 +141,9 @@ fun AddMedFirstScreen(
                         top = 20.dp,
                         bottom = 20.dp
                     ),
-                    outlineColor = MaterialTheme.colorScheme.primary,
                 )
             }
-            ReUseFilledButton(
-                textId = R.string.navigation_next
-            ) {
+            ReUseFilledButton(textId = R.string.navigation_next) {
                 sendEvent(CreateCourseContract.Event.ActionNext)
             }
         }

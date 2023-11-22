@@ -67,13 +67,19 @@ class MyCoursesEditViewModel @Inject constructor(
 //        TODO("Not yet implemented")
         viewModelScope.launch {
             when (event) {
+                is MyCoursesEditContract.Event.ConfirmationDelete -> {
+                    if (!viewState.value.confirmation) confirmation()
+                }
+
+                is MyCoursesEditContract.Event.CancelDelete -> {
+                    if (viewState.value.confirmation) confirmation(false)
+                }
+
                 is MyCoursesEditContract.Event.Delete -> {
-                    //TODO("проверить было ли использование")
-                    deleteCourseFullUseCase(event.courseId, currentDateTimeSystem())
-                    //TODO("запустить воркер удаления курса на беке")
-                    // синхронизировать
-                    AuthToken.requiredSynchronize()
-                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
+                    if (viewState.value.confirmation) {
+                        confirmation(false)
+                        deleteCourse(event.courseId)
+                    }
                 }
 
                 is MyCoursesEditContract.Event.DeleteUsagePattern -> {
@@ -257,6 +263,25 @@ class MyCoursesEditViewModel @Inject constructor(
                 usagesPatternEdit = viewState.value.usagesPattern
             )
         }
+    }
+
+    private fun confirmation(show: Boolean = true) {
+        viewModelScope.launch {
+            setState {
+                copy(
+                    confirmation = show
+                )
+            }
+        }
+    }
+
+    private suspend fun deleteCourse(courseId: Long) {
+        //TODO("проверить было ли использование")
+        deleteCourseFullUseCase(courseId, currentDateTimeSystem())
+        //TODO("запустить воркер удаления курса на беке")
+        // синхронизировать
+        AuthToken.requiredSynchronize()
+        setEffect { MyCoursesEditContract.Effect.Navigation.Back }
     }
 
     private suspend fun saveCourse() {

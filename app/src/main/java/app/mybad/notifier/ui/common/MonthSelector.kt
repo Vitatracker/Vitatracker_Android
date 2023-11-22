@@ -71,7 +71,7 @@ fun MonthSelector(
             }
             Text(
                 text = newDate.year.toString(),
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 modifier = modifier.alpha(0.5f)
             )
         }

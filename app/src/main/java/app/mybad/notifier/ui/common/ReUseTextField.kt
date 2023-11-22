@@ -66,9 +66,17 @@ fun ReUseOutlinedTextField(
         placeholder = { Text(text = label) },
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
-            errorBorderColor = MaterialTheme.colorScheme.errorContainer
+            focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            disabledBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(0.38f),
+
+            cursorColor = MaterialTheme.colorScheme.onPrimary,
+
+            errorBorderColor = MaterialTheme.colorScheme.errorContainer,
+
+            focusedPlaceholderColor = MaterialTheme.colorScheme.surfaceDim,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.surfaceDim,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.surfaceDim.copy(0.38f),
         )
     )
 }

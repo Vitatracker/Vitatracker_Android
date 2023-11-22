@@ -12,7 +12,7 @@ class NotificationRequestContract {
     }
 
     data class State(
-        val isConfirmation: Boolean = false,
+        val confirmation: Boolean = false,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {

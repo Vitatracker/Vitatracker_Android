@@ -30,7 +30,6 @@ import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelector
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.days
 import app.mybad.utils.displayDateTime
@@ -83,7 +82,7 @@ fun RemindNewCourseBottomSheet(
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = stringResource(R.string.add_med_settings),
-                style = Typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -117,7 +116,6 @@ fun RemindNewCourseBottomSheet(
                         onClick = { selectedInput = 3 }
                     )
                 },
-                color = MaterialTheme.colorScheme.surfaceVariant,
                 itemsPadding = PaddingValues(16.dp)
             )
         }

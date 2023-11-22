@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 
 @Composable
 fun ParameterIndicator(
@@ -43,13 +42,13 @@ fun ParameterIndicator(
         if (!name.isNullOrBlank()) {
             Text(
                 text = name,
-                style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = value.toString(),
-                style = Typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onTertiary,
             )
             if (!name.isNullOrBlank()) {

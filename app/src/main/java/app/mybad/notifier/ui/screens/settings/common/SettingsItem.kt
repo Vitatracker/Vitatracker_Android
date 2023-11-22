@@ -27,7 +27,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 
 @Composable
@@ -50,14 +49,14 @@ fun SettingsItem(
             Icon(
                 imageVector = ImageVector.vectorResource(id = icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = MaterialTheme.colorScheme.surfaceContainerHighest,
                 modifier = Modifier
                     .size(24.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = stringResource(label),
-                style = Typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         Icon(

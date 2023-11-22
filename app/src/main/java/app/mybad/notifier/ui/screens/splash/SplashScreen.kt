@@ -30,7 +30,6 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -91,7 +90,7 @@ private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit
                     append(stringResource(id = R.string.app_name))
                 }
             },
-            style = Typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -99,7 +98,7 @@ private fun NewUserGreeting(isButtonVisible: Boolean, onBeginClicked: () -> Unit
             modifier = Modifier
                 .fillMaxWidth(),
             text = stringResource(id = R.string.splash_welcome_text),
-            style = Typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))

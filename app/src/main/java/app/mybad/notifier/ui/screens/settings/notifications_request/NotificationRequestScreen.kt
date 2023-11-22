@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,6 @@ import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -68,7 +68,7 @@ fun NotificationRequestScreen(
                 onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
-        if (state.isConfirmation) {
+        if (state.confirmation) {
             ReUseAlertDialog(
                 titleId = R.string.settings_notifications_allow_reconfirmation_title,
                 textId = R.string.settings_notifications_allow_reconfirmation_text,
@@ -87,7 +87,7 @@ private fun TextView() {
         modifier = Modifier
             .fillMaxWidth(),
         text = stringResource(id = R.string.settings_notifications_allow_title),
-        style = Typography.titleMedium,
+        style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.height(24.dp))
@@ -95,7 +95,7 @@ private fun TextView() {
         modifier = Modifier
             .fillMaxWidth(),
         text = stringResource(id = R.string.settings_notifications_allow_text),
-        style = Typography.bodyLarge,
+        style = MaterialTheme.typography.bodyLarge,
         textAlign = TextAlign.Center
     )
 }

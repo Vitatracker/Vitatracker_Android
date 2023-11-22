@@ -20,7 +20,7 @@ fun MultiBox(
     vararg items: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceContainer,
-    outlineColor: Color = MaterialTheme.colorScheme.primary,
+    outlineColor: Color = MaterialTheme.colorScheme.outlineVariant,
     itemsPadding: PaddingValues,
 ) {
     Surface(

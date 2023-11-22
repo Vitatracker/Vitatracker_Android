@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.theme
 
 import androidx.compose.ui.graphics.Color
+
 // при изменении цвета, подписать для каких элементов цвет
 // не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы
 
@@ -9,9 +10,10 @@ val dark_primary = Color(0xFF0D3D3D)
 
 // text: light
 val light_text = Color(0xFF203839)
+
 // text: dark
 val dark_text = Color(0xFFFFFFFF)
-val secondary_text = Color(0xFFFFFFFF)
+val placeholder_text = Color(0xFF7B8A8A)
 val tertiary_text = Color(0xFFB5BDBE)
 
 val light_secondary = Color(0xFFFFFFFF)
@@ -25,11 +27,24 @@ val light_primary_container = Color(0xFFF0FCFD)
 val dark_primary_container = Color(0xFF0E4E4E)
 
 // surface and background
+val light_surface = Color(0xFFFFFFFF)
+val dark_surface = Color(0xFF0D3D3D)
+
 val light_surface_variant = Color(0xFFFFFFFF)
 val dark_surface_variant = Color(0xFF058484)
 
+// старт курса через
+val light_surface_high = Color(0xFFDDF7FB)
+val dark_surface_high = Color(0xFF0E4E4E)
+
+val light_surface_high_text = Color(0xFF203839)
+val dark_surface_high_text = Color(0xFF10D2D2)
+
 val light_surface_container = Color(0xFFFFFFFF)
 val dark_surface_container = Color(0xFF0E4E4E)
+
+val light_surface_tint = Color(0xFFFFFFFF)
+val dark_surface_tint = Color(0xFFFFFFFF)
 
 // подсвечивание времени при выборе
 val light_surface_select = Color(0xFFF9FAFE)
@@ -45,19 +60,17 @@ val secondary_buttons = Color(0xFF10D2D2)
 val google_buttons = Color(0xFFEDF2F0)
 val google_buttons_text = Color(0xFF203839)
 
-// elements
-val element = Color(0xFFC3F4F4)
-
 // error
 val error_primary = Color(0xFFF23939)
 val error_container = Color(0x80F23939)
 
 // для border Настроить напоминание
-val light_border_variant = Color(0x4098AFB0)
-val dark_border_variant = Color(0x40C3F4F4)
+val border_variant = Color(0x4010D2D2)
 
-val light_border = Color(0xFF899294)
-val dark_border = Color(0xFF899294)
+val border = Color(0xFF899294)
+// карточка курса
+val light_border_card = Color.Transparent
+val dark_border_card = Color(0xFFC3F4F4)
 
 // иконка редактирования курса, всегда белая
 val surface_bright = Color(0xFFFFFFFF)
@@ -73,11 +86,14 @@ val primary100 = Color(0xFFFFFFFF)
 val primary99 = Color(0xFFFAFDFC)
 val primary90 = Color(0xFF58F8F8)
 val primary80 = Color(0xFF2CDCDC)
+
 //Accent (stroke, buttons): light & dark
 val primary60 = Color(0xFF10D2D2)
 val primary40 = Color(0xFF058484)
+
 // buttons
 val primary30 = Color(0xFF004F4F)
+
 // surface: dark
 val primary20 = Color(0xFF0D3D3D)
 val primary01 = Color(0xFF191C1C)
@@ -86,6 +102,7 @@ val primary00 = Color(0xFF000000)
 val secondary100 = Color(0xFFFFFFFF)
 val secondary90 = Color(0xFFE0E3E2)
 val secondary40 = Color(0xFFEDF2F0)
+
 // text: light
 val secondary30 = Color(0xFF203839)
 val secondary20 = Color(0xFF0D3D3D)
@@ -119,7 +136,7 @@ val textColorThird = Color.LightGray
 // при изменении цвета, подписать для каких элементов цвет
 // не использовать цвета во вьюшках, только из MaterialTheme.colorScheme для поддержки темной темы
 
-val seed = Color(0xFFFFB3AC)
+val seed = Color(0xFF930010)
 val Error = Color(0xFFF23939)
 val light_Error = Color(0xFFBE091B)
 val light_onError = Color(0xFFFFFFFF)

@@ -44,7 +44,6 @@ import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.displayDateFull
 import app.mybad.utils.displayDateTime
@@ -128,7 +127,7 @@ fun AddMedCourseDetailsScreen(
             Column {
                 Text(
                     text = stringResource(R.string.mycourse_duration),
-                    style = Typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(8.dp))

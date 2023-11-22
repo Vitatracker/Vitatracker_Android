@@ -69,7 +69,6 @@ import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.changeDate
@@ -377,7 +376,7 @@ private fun NotificationCourseItem(
                         // название препарата
                         Text(
                             text = usage.name,
-                            style = Typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
@@ -389,18 +388,18 @@ private fun NotificationCourseItem(
                         // количество и тип
                         Text(
                             text = "${usage.quantity.toText()} $type",
-                            style = Typography.labelMedium
+                            style = MaterialTheme.typography.labelMedium
                         )
                         Text(
                             text = "|",
                             modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                            style = Typography.labelMedium,
+                            style = MaterialTheme.typography.labelMedium,
                             color = Color.Gray,
                             fontSize = 12.sp
                         )
                         Text(
                             text = relation,
-                            style = Typography.labelMedium,
+                            style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.padding(end = 8.dp)
                         )
                     }

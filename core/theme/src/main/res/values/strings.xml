@@ -171,6 +171,8 @@
     <string name="mycourse_dosage_and_usage">Dosage and usage</string>
     <string name="mycourse_per_day">Takes per day</string>
     <string name="mycourse_delete">Delete</string>
+    <string name="mycourse_delete_cancel">Cancel</string>
+    <string name="mycourse_confirmation_delete_text">Are you sure you want to remove the medicine?</string>
 
     <!--CALENDAR -->
     <string name="calendar_title">My calendar</string>

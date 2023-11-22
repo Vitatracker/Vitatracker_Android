@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 
 @Composable
@@ -63,7 +62,7 @@ fun SignInWithGoogle(
             Spacer(Modifier.size(ButtonDefaults.IconSize))
             Text(
                 text = stringResource(id = R.string.google),
-                style = Typography.labelLarge,
+                style = MaterialTheme.typography.labelLarge,
             )
         }
     }

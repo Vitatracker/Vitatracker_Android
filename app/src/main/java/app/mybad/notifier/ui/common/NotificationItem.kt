@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.utils.displayWithDateTimeInMinutes
 import app.mybad.utils.toText
 
@@ -88,7 +87,7 @@ fun NotificationItem(
                 modifier = Modifier
                     .clickable(onClick = onTimeClick),
                 text = time.displayWithDateTimeInMinutes(), // отображает время с учетом даты и часового пояса
-                style = Typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onTertiary,
             )
             Row(modifier = Modifier.weight(0.4f), horizontalArrangement = Arrangement.End) {
@@ -129,7 +128,7 @@ fun NotificationItem(
                 )
                 Text(
                     text = forms[form],
-                    style = Typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }

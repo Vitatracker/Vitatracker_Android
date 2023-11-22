@@ -2,6 +2,7 @@ package app.mybad.notifier.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -56,10 +57,11 @@ val Typography = Typography(
         fontSize = 20.sp,
         lineHeight = 26.sp,
     ),
+    // Название лекарства в моем курсе
     titleSmall = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
     bodyLarge = TextStyle(
@@ -87,17 +89,18 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 20.sp,
     ),
+    // кнопки и год в календаре, дата в карточке курса
     labelMedium = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
     ),
-    // год в календаре
+    // в карточке курса информация о приеме в день
     labelSmall = TextStyle(
         fontFamily = SFProFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontWeight = FontWeight.Normal,
+        fontSize = 11.sp,
         lineHeight = 16.sp,
     ),
 )

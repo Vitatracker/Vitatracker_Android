@@ -162,6 +162,8 @@
     <string name="mycourse_dosage_and_usage">Дозування та прийом</string>
     <string name="mycourse_per_day">Прийомів на день</string>
     <string name="mycourse_delete">Видалити</string>
+    <string name="mycourse_delete_cancel">Пропустити</string>
+    <string name="mycourse_confirmation_delete_text">Ви дійсно хочете видалити ліки?</string>
 
     <!--CALENDAR -->
     <string name="calendar_title">Мій календар</string>

@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.common.DaySelectorSlider
 import app.mybad.notifier.ui.theme.PickColor
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.utils.toText
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
@@ -89,7 +88,7 @@ fun DailyUsages(
                 // день и месяц
                 Text(
                     text = date.displayDayAndMonthFull(),
-                    style = Typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 Icon(
                     imageVector = Icons.Default.Close,
@@ -199,13 +198,13 @@ private fun SingleUsageItem(
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text(text = usage.name, style = Typography.bodyLarge)
+                    Text(text = usage.name, style = MaterialTheme.typography.bodyLarge)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 4.dp)
                     ) {
-                        Text(text = relation, style = Typography.labelMedium)
+                        Text(text = relation, style = MaterialTheme.typography.labelMedium)
                         VerticalDivider(
                             thickness = 1.dp,
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
@@ -216,7 +215,7 @@ private fun SingleUsageItem(
                         )
                         Text(
                             text = "${usage.quantity.toText()} $type",
-                            style = Typography.labelMedium
+                            style = MaterialTheme.typography.labelMedium
                         )
                     }
                 }

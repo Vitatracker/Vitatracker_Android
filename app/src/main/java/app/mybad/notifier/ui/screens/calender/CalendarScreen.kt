@@ -37,7 +37,6 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.BottomSlideInDialog
 import app.mybad.notifier.ui.common.MonthSelector
 import app.mybad.notifier.ui.common.TitleText
-import app.mybad.notifier.ui.theme.Typography
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
@@ -232,7 +231,7 @@ private fun CalendarDayItem(
             )
             Text(
                 text = date?.dayOfMonth.toString(),
-                style = Typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
             )
         }
