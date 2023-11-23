@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -20,7 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,7 +42,8 @@ fun ReUseOutlinedTextField(
     errorTextId: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true,
-    trailingIcon: @Composable (() -> Unit)? = null
+    @DrawableRes trailingIcon: Int? = null,
+    tint: Color = LocalContentColor.current,
 ) {
     OutlinedTextField(
         value = value,
@@ -54,7 +59,12 @@ fun ReUseOutlinedTextField(
         singleLine = singleLine,
         trailingIcon = {
             if (trailingIcon != null) {
-                trailingIcon()
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = ImageVector.vectorResource(trailingIcon),
+                    contentDescription = null,
+                    tint = tint
+                )
             } else if (errorTextId != null) {
                 Icon(
                     modifier = Modifier.size(24.dp),

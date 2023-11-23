@@ -88,10 +88,10 @@
     <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
     <string name="settings_notifications_setup_notifications_2">Повідомлення включено</string>
     <string name="settings_notifications_setup_notifications_3">Повідомлення вимкнуто</string>
-    <string name="settings_notifications_setup_notifications_4">Убедитесь, что ваши уведомления включены</string>
+    <string name="settings_notifications_setup_notifications_4">Переконайтеся, що ваші повідомлення увімкнені та канали сповіщень налаштовані</string>
     <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
-    <string name="settings_notifications_setup_notifications_tracker_button">Налаштувати повідомлення про прийом</string>
-    <string name="settings_notifications_setup_notifications_info_button">Налаштувати повідомлення інформаційні</string>
+    <string name="settings_notifications_setup_notifications_tracker_button">Про прийом</string>
+    <string name="settings_notifications_setup_notifications_info_button">Інформаційні повідомлення</string>
     <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
     <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
     <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
@@ -112,7 +112,6 @@
     <string name="settings_notifications_alarms">Додаток повинен мати дозвіл на встановлення оповіщення, якщо ви хочете отримати повідомлення про час прийому препаратів.</string>
     <string name="settings_notifications_alarms_can">Дозволено встановлювати оповіщення</string>
     <string name="settings_notifications_alarms_can_not">Не дозволено встановлювати оповіщення</string>
-    <string name="settings_notifications_alarms_request_button">Запитати дозвіл</string>
     <string name="settings_notifications_alarms_button">Налаштувати оповіщення</string>
 
     <string name="settings_notifications_allow_title">Дозвольте застосунку надсилати повідомлення</string>

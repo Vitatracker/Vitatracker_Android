@@ -10,7 +10,6 @@ class SettingsNotificationsContract {
         object SetupNotificationsClicked : Event
         object SetupNotificationsTrackerClicked : Event
         object SetupNotificationsInfoClicked : Event
-        object SetupAlarmsRequestClicked : Event
         object SetupAlarmsClicked : Event
         object SetupSleepRegimeClicked : Event
         object ContactUsClicked : Event
@@ -22,7 +21,6 @@ class SettingsNotificationsContract {
         object SetupNotifications : Effect
         object SetupNotificationsTracker : Effect
         object SetupNotificationsInfo : Effect
-        object SetupAlarmsRequest : Effect
         object SetupAlarms : Effect
         object SetupSleepRegime : Effect
         object ContactUs : Effect

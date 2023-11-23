@@ -89,10 +89,10 @@
     <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
     <string name="settings_notifications_setup_notifications_2">Уведомления включены</string>
     <string name="settings_notifications_setup_notifications_3">Уведомления отключены</string>
-    <string name="settings_notifications_setup_notifications_4">Убедитесь, что ваши уведомления включены</string>
+    <string name="settings_notifications_setup_notifications_4">Убедитесь, что ваши уведомления включены и каналы уведомлений настроены</string>
     <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
-    <string name="settings_notifications_setup_notifications_tracker_button">Настройка сообщения о приеме</string>
-    <string name="settings_notifications_setup_notifications_info_button">Настроить уведомления информационные</string>
+    <string name="settings_notifications_setup_notifications_tracker_button">О приеме</string>
+    <string name="settings_notifications_setup_notifications_info_button">Информационные уведомления</string>
     <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
     <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
     <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
@@ -113,7 +113,6 @@
     <string name="settings_notifications_alarms">Приложение должно иметь разрешения на устанавку оповещения, если вы хотите получать уведомления о времени приема препаратов.</string>
     <string name="settings_notifications_alarms_can">Разрешено устанавливать оповещения</string>
     <string name="settings_notifications_alarms_can_not">Не разрешено устанавливать оповещения</string>
-    <string name="settings_notifications_alarms_request_button">Запросить разрешение</string>
     <string name="settings_notifications_alarms_button">Настроить оповещения</string>
 
     <string name="settings_notifications_allow_title">Разрешите приложению отправлять уведомления</string>

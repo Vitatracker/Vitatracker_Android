@@ -70,6 +70,7 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 20.sp
     ),
+    // текст настроек
     bodyMedium = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Normal,

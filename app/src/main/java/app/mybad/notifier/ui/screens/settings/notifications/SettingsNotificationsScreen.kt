@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,18 +70,12 @@ fun SettingsNotificationsScreen(
                     )
                 }
 
-                SettingsNotificationsContract.Effect.SetupAlarmsRequest -> {
+                SettingsNotificationsContract.Effect.SetupAlarms -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         context.openAppSettings(
                             Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             isData = true
                         )
-                    }
-                }
-
-                SettingsNotificationsContract.Effect.SetupAlarms -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        context.openAppSettings(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                     }
                 }
 
@@ -111,7 +106,7 @@ fun SettingsNotificationsScreen(
                     top = paddingValues.calculateTopPadding(),
                     bottom = 16.dp
                 ),
-            ) {
+        ) {
             SetupNotifications(context, sendEvent)
             Spacer(modifier = Modifier.height(32.dp))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -134,13 +129,13 @@ fun SettingsNotificationsScreen(
 private fun ContactUs(sendEvent: (event: SettingsNotificationsContract.Event) -> Unit) {
     Text(
         text = stringResource(R.string.settings_notifications_contact_us_5),
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = stringResource(R.string.settings_notifications_contact_us_6),
+        style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
@@ -156,7 +151,7 @@ private fun DonStopForcefully(appName: String) {
     Text(
         text = stringResource(R.string.settings_notifications_contact_us_3),
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
@@ -164,7 +159,7 @@ private fun DonStopForcefully(appName: String) {
             stringResource(R.string.settings_notifications_contact_us_4),
             appName
         ),
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 
@@ -172,8 +167,8 @@ private fun DonStopForcefully(appName: String) {
 private fun CheckApps(appName: String) {
     Text(
         text = stringResource(R.string.settings_notifications_contact_us_1),
+        style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
@@ -181,7 +176,7 @@ private fun CheckApps(appName: String) {
             stringResource(R.string.settings_notifications_contact_us_2),
             appName
         ),
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 
@@ -213,14 +208,14 @@ private fun SetupNotifications(
         R.string.settings_notifications_setup_notifications_3
     }
     Text(
-        text = stringResource(R.string.settings_notifications_setup_notifications_4),
+        text = stringResource(notificationId),
+        style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
-        text = stringResource(notificationId),
-        fontSize = 14.sp
+        text = stringResource(R.string.settings_notifications_setup_notifications_4),
+        style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
@@ -250,17 +245,6 @@ private fun SetupAlarms(
     context: Context,
     sendEvent: (event: SettingsNotificationsContract.Event) -> Unit
 ) {
-    Text(
-        text = stringResource(R.string.settings_notifications_alarms_title),
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-    Text(
-        text = stringResource(R.string.settings_notifications_alarms),
-        fontSize = 14.sp
-    )
-    Spacer(modifier = Modifier.height(32.dp))
     //TODO("проверить точность проверки параметра")
     val alarmsId = if (context.canAlarms()) {
         // Уведомления включены для вашего приложения
@@ -271,14 +255,13 @@ private fun SetupAlarms(
     }
     Text(
         text = stringResource(alarmsId),
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Bold,
     )
-    Spacer(modifier = Modifier.height(32.dp))
-    ReUseFilledButton(
-        textId = R.string.settings_notifications_alarms_request_button,
-        onClick = {
-            sendEvent(SettingsNotificationsContract.Event.SetupAlarmsRequestClicked)
-        }
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = stringResource(R.string.settings_notifications_alarms),
+        style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
@@ -293,13 +276,13 @@ private fun SetupAlarms(
 private fun SleepMode(sendEvent: (event: SettingsNotificationsContract.Event) -> Unit) {
     Text(
         text = stringResource(R.string.settings_notifications_sleep_regime_1),
+        style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = stringResource(R.string.settings_notifications_sleep_regime_2),
-        fontSize = 14.sp
+        style = MaterialTheme.typography.bodyMedium,
     )
     Spacer(modifier = Modifier.height(32.dp))
     ReUseFilledButton(
