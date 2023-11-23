@@ -5,7 +5,9 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
@@ -59,9 +61,17 @@ class AlarmService : Service() {
         }
         notification?.let {
             log("Intent: notification id=${it.first}")
-            startForeground(it.first, it.second)
+            startForegroundWithType(it.first, it.second)
         }
         stopForeground(STOP_FOREGROUND_DETACH)
+    }
+
+    private fun startForegroundWithType(id: Int, notification:Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE)
+        } else {
+            startForeground(id, notification)
+        }
     }
 
     private fun showUsageNotification(intent: Intent): Pair<Int, Notification> {

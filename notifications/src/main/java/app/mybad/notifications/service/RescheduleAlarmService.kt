@@ -3,6 +3,8 @@ package app.mybad.notifications.service
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
@@ -51,13 +53,24 @@ class RescheduleAlarmService : Service() {
     private fun process() {
         isServiceStarted = true
         Log.w("VTTAG", "NotifiTag::RescheduleAlarmService: process")
-        startForeground(NOTIFICATION_ID, getNotification(R.string.notifications_reschedule_text))
+        startForegroundWithType(
+            NOTIFICATION_ID,
+            getNotification(R.string.notifications_reschedule_text)
+        )
         scope.launch {
             // может не быть активного пользователя, но тут будет проверка если пользователь залогинен
             notificationsScheduler.rescheduleAlarm()
             stopForeground(STOP_FOREGROUND_REMOVE)
             isServiceStarted = false
             stopSelf()
+        }
+    }
+
+    private fun startForegroundWithType(id: Int, notification: Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(id, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE)
+        } else {
+            startForeground(id, notification)
         }
     }
 

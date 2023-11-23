@@ -2,6 +2,8 @@ package app.mybad.data.repos
 
 import android.app.Notification
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
@@ -60,8 +62,13 @@ class SynchronizationCourseWorker @AssistedInject constructor(
         setForeground(createForegroundInfo("Synchronization: $progress"))
     }
 
-    private fun createForegroundInfo(progress: String) =
-        ForegroundInfo(NOTIFICATION_ID, getNotification(progress))
+    private fun createForegroundInfo(progress: String) = ForegroundInfo(
+        NOTIFICATION_ID,
+        getNotification(progress),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+        } else 0
+    )
 
     private fun getNotification(progress: String) = notificationBuilder
         .setContentText(progress)
