@@ -91,7 +91,8 @@ class MyCoursesViewModel @Inject constructor(
                             startDate = startDate,
                             endDate = endDate,
                             remindDate = null,
-                            interval = startDate.betweenDays(currentDate.atEndOfDay()), // старт курса через ... дней
+                            interval = startDate.betweenDays(currentDate.atEndOfDay()) // старт курса через ... дней
+                                .plus(1),// для отображения завтра
                         )
                     )
                 }

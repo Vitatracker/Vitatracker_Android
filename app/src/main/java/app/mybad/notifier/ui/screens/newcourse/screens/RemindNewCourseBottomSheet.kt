@@ -49,23 +49,28 @@ fun RemindNewCourseBottomSheet(
 ) {
     var selectedInput: Int? by remember { mutableStateOf(null) }
 
-    val (remindTimeInit, intervalInit, beforeDayInit) = endDate.nextCourseIntervals(
-        remindDate,
-        interval
-    )
+    // remindTime, coursesInterval, remindBeforePeriod
+    val remindTimeInit by remember(endDate, remindDate, interval) {
+        mutableStateOf(
+            endDate.nextCourseIntervals(
+                remindDate,
+                interval
+            )
+        )
+    }
+    var remindTime by remember(remindTimeInit) { mutableIntStateOf(remindTimeInit.first) }
+    var coursesInterval by remember(remindTimeInit) { mutableIntStateOf(remindTimeInit.second) }
+    var remindBeforePeriod by remember(remindTimeInit) { mutableIntStateOf(remindTimeInit.third) }
     Log.w(
         "VTTAG",
         "RemindNewCourseBottomSheet::RemindNewCourseBottomSheet: endDate=${
             endDate.displayDateTime()
-        } interval=$intervalInit remindDate=${
+        } interval=$coursesInterval remindDate=${
             remindDate?.displayDateTime()
         } remindTime=${
-            remindTimeInit.displayTimeInMinutes()
-        } beforeDay=$beforeDayInit"
+            remindTime.displayTimeInMinutes()
+        } beforeDay=$remindBeforePeriod"
     )
-    var coursesInterval by remember { mutableIntStateOf(intervalInit) }
-    var remindBeforePeriod by remember { mutableIntStateOf(beforeDayInit) }
-    var remindTime by remember { mutableIntStateOf(remindTimeInit) }
 
     Column(
         modifier = modifier

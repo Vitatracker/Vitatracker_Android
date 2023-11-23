@@ -179,7 +179,8 @@ private fun CourseNameAndEditButton(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .weight(1f)) {
+                    .weight(1f)
+            ) {
                 // Название курса
                 Text(
                     text = courseDisplay.name.replaceFirstChar { it.uppercase() },
@@ -223,16 +224,18 @@ private fun CourseNameAndEditButton(
                 }
             }
             // иконка редактирования курса
-            ReUseIcon(
-                painterId = R.drawable.icon_pencil,
-                tint = MaterialTheme.colorScheme.surfaceBright,
-                iconSize = 12.dp,
-                color = MaterialTheme.colorScheme.primary,
-                border = false,
-                modifier = Modifier
-                    .size(24.dp),
-                onClick = onClick,
-            )
+            if (courseDisplay.remindDate != null || courseDisplay.interval == 0L || courseDisplay.idOld > 0) {
+                ReUseIcon(
+                    painterId = R.drawable.icon_pencil,
+                    tint = MaterialTheme.colorScheme.surfaceBright,
+                    iconSize = 12.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    border = false,
+                    modifier = Modifier
+                        .size(24.dp),
+                    onClick = onClick,
+                )
+            }
         }
     }
 }
@@ -250,7 +253,8 @@ private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
             val end = courseDisplay.endDate.displayDate()
             Text(
                 text = start,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(vertical = 5.dp)
             )
             Icon(
                 painter = painterResource(R.drawable.arrow_right),
@@ -262,11 +266,13 @@ private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
             )
             Text(
                 text = end,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(vertical = 5.dp),
             )
         }
         // отобразить старт нового курса через ...
         if (courseDisplay.remindDate == null && courseDisplay.interval > 0) {
+            val interval = courseDisplay.interval - 1 // для отображения завтра
             Surface(
                 shape = MaterialTheme.shapes.small,
                 color = MaterialTheme.colorScheme.inverseSurface,
@@ -274,10 +280,8 @@ private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = stringResource(
-                        R.string.mycourse_remaining,
-                        courseDisplay.interval
-                    ),
+                    text = if (interval > 0) stringResource(R.string.mycourse_remaining, interval)
+                    else stringResource(R.string.mycourse_remaining_tomorrow),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                 )

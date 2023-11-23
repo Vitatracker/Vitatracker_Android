@@ -184,7 +184,9 @@
     <string name="add_notifications_time_set">Set up notification time *</string>
 
     <string name="mycourse_remaining">Remains days: %d</string>
+    <string name="mycourse_remaining_tomorrow">Start tomorrow</string>
     <string name="mycourse_per_day_listitem">%1$d per day</string>
+
     <string name="mycourse_reminders">Reminders *</string>
     <string name="mycourse_edit_icon">Edit icon</string>
     <string name="mycourse_edit_icon_color">Edit icon color</string>

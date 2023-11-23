@@ -177,6 +177,7 @@
     <string name="add_notifications_time_set">Настроить напоминание *</string>
 
     <string name="mycourse_remaining">Старт через %s д.</string>
+    <string name="mycourse_remaining_tomorrow">Старт завтра</string>
     <string name="mycourse_per_day_listitem">%1$d в день</string>
 
     <string name="mycourse_reminders">Напоминания *</string>

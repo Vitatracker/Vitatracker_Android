@@ -428,7 +428,8 @@ fun LocalDateTime.nextCourseStart(
                 .changeTime(minutes = remindTime)
         } else null
         val interval = remindDate?.let {
-            nextCourseStart.betweenDays(this.atStartOfDay()) // тут чтобы не было 0, на следующий день значит +1
+            nextCourseStart.betweenDays(this.atStartOfDay())
+                .plus(1) // тут чтобы не было 0, на следующий день значит +1
         } ?: 0L
         remindDate to interval
     } catch (_: Error) {
@@ -446,14 +447,15 @@ fun LocalDateTime.nextCourseIntervals(
     if (remindDate == null) return Triple(0, 0, 0)
 
     return try {
-        val intervalCorrect =
-            interval.minus(1) // -1 день, тут чтобы не было 0, на следующий день значит +1
-                .takeIf { it in 0..390 } // не больше 12 месяцев и 30 дней
-                ?: 0
+        val intervalCorrect = interval
+            .minus(1) // -1 день, тут чтобы не было 0, на следующий день значит +1
+            .takeIf { it in 0..390 } // не больше 12 месяцев и 30 дней
+            ?: 0
 
         val remindTime = remindDate.timeInMinutes()
         val nextCourseStart = this.plusDays(intervalCorrect).atStartOfDay()
-        val beforeDay = nextCourseStart.betweenDays(remindDate.atStartOfDay())
+        val beforeDay = nextCourseStart.betweenDays(remindDate)
+            .plus(1) // корректировка
             .takeIf { it in 0..390 } // не больше 12 месяцев и 30 дней
             ?: 0
 
