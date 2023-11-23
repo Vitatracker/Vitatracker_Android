@@ -10,18 +10,18 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <application
         android:name=".di.AppModule"
-        android:usesCleartextTraffic="true"
-        android:configChanges="uiMode"
         android:allowBackup="true"
+        android:configChanges="uiMode"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -29,13 +29,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppSplashScreen"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppSplashScreen"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppSplashScreen"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,8 +48,9 @@
         </activity>
         <receiver
             android:name="app.mybad.notifications.AlarmReceiver"
-            android:exported="true"
             android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="shortService"
             android:permission="android.permission.FOREGROUND_SERVICE">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -63,17 +65,20 @@
                 <action android:name="android.intent.action.FORCE_CLOSE" />
                 <action android:name="android.intent.action.TAKE_INTENT" />
                 <action android:name="android.intent.action.DELAY_INTENT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="app.mybad.notifications.service.AlarmService"
             android:directBootAware="true"
             android:enabled="true"
             android:exported="false"
+            android:foregroundServiceType="shortService"
             android:isolatedProcess="false"
-            android:foregroundServiceType="shortService">
+            android:permission="android.permission.FOREGROUND_SERVICE">
             <intent-filter>
                 <action android:name="android.intent.action.NOTIFICATION" />
                 <action android:name="android.intent.action.COURSE_NOTIFICATION" />
@@ -86,9 +91,9 @@
             android:directBootAware="true"
             android:enabled="true"
             android:exported="false"
+            android:foregroundServiceType="shortService"
             android:isolatedProcess="false"
-            android:foregroundServiceType="shortService">
-        </service>
+            android:permission="android.permission.FOREGROUND_SERVICE" />
         <service
             android:name="app.mybad.notifications.service.TakeOrDelayUsageService"
             android:directBootAware="true"
@@ -100,10 +105,13 @@
                 <action android:name="android.intent.action.DELAY_INTENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:permission="android.permission.FOREGROUND_SERVICE"
             tools:node="merge">
             <meta-data
                 android:name="androidx.lifecycle.ProcessLifecycleInitializer"
@@ -111,6 +119,7 @@
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"
                 android:authorities="${applicationId}.workmanager-init"
+                android:foregroundServiceType="dataSync"
                 tools:node="remove" />
         </provider>
     </application>
