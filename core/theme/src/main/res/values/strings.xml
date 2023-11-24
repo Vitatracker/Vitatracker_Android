@@ -45,7 +45,7 @@
     <string name="start_screen_go">Go</string>
 
     <!--AUTHORIZATION-->
-    <string name="authorization_screen_login">Login</string>
+    <string name="authorization_screen_login">Sing in</string>
     <string name="authorization_screen_registration">Registration</string>
     <string name="authorization_screen_text_recomendation">Sign in with</string>
 

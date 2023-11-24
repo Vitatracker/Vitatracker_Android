@@ -129,7 +129,7 @@
     <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>
 
     <!--AUTHORIZATION-->
-    <string name="authorization_screen_login">Логін</string>
+    <string name="authorization_screen_login">Увійти</string>
     <string name="authorization_screen_registration">Реєстрація</string>
     <string name="authorization_screen_text_recomendation">Увійдіть за допомогою</string>
 

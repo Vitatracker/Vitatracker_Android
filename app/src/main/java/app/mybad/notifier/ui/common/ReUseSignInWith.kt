@@ -63,6 +63,7 @@ fun SignInWithGoogle(
             Text(
                 text = stringResource(id = R.string.google),
                 style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Normal,
             )
         }
     }
