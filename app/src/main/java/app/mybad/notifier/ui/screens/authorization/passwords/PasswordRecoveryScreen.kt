@@ -76,7 +76,7 @@ private fun PasswordRecoveryScreen(
         Spacer(modifier = Modifier.height(24.dp))
         ReUseOutlinedTextField(
             value = state.email,
-            label = stringResource(id = R.string.login_email),
+            placeholder = R.string.login_email,
             onValueChanged = {
                 sendEvent(PasswordRecoveryScreenContract.Event.UpdateEmail(it))
             },

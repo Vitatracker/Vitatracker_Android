@@ -1,6 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import android.content.res.Configuration
+import  android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -126,7 +126,7 @@ private fun RegistrationScreenBaseForSignIn(
 
         ReUseOutlinedTextField(
             value = state.email,
-            label = stringResource(id = R.string.login_email),
+            placeholder = R.string.login_email,
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdateEmail(it)) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -144,7 +144,7 @@ private fun RegistrationScreenBaseForSignIn(
 
         ReUsePasswordOutlinedTextField(
             value = state.password,
-            label = stringResource(id = R.string.login_password),
+            placeholder = R.string.login_password,
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdatePassword(it)) },
             enabled = !state.isLoading,
             isError = state.isErrorPassword,
@@ -158,7 +158,7 @@ private fun RegistrationScreenBaseForSignIn(
 
         ReUsePasswordOutlinedTextField(
             value = state.confirmationPassword,
-            label = stringResource(id = R.string.login_password_confirm),
+            placeholder = R.string.login_password_confirm,
             onValueChanged = { sendEvent(RegistrationContract.Event.UpdateConfirmationPassword(it)) },
             enabled = !state.isLoading,
             isError = isPasswordMismatch,

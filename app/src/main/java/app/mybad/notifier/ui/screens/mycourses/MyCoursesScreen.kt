@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.mycourses
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.compose.foundation.BorderStroke
@@ -42,6 +43,8 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseIcon
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.getFormsPluralsArray
+import app.mybad.notifier.ui.screens.authorization.start.AuthorizationScreen
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.theme.R
 import app.mybad.utils.displayDate
@@ -55,7 +58,7 @@ fun MyCoursesScreen(
     state: MyCoursesContract.State,
     effectFlow: Flow<MyCoursesContract.Effect>? = null,
     sendEvent: (event: MyCoursesContract.Event) -> Unit = {},
-    navigation: (navigationEffect: MyCoursesContract.Effect.Navigation) -> Unit,
+    navigation: (navigationEffect: MyCoursesContract.Effect.Navigation) -> Unit = {},
 ) {
 
     val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
@@ -287,6 +290,25 @@ private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
                 )
             }
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+fun MyCoursesScreenPreview() {
+    MyBADTheme {
+        MyCoursesScreen(MyCoursesContract.State())
     }
 }
 

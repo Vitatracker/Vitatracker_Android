@@ -71,7 +71,7 @@ fun AddMedFirstScreen(
             Column {
                 ReUseOutlinedTextField(
                     value = state.remedy.name ?: "",
-                    label = stringResource(R.string.enter_med_name),
+                    placeholder = R.string.enter_med_name,
                     onValueChanged = {
                         sendEvent(
                             CreateCourseContract.Event.UpdateRemedy(

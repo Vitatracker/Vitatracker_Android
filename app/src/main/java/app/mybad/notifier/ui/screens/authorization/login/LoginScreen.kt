@@ -1,9 +1,9 @@
 package app.mybad.notifier.ui.screens.authorization.login
 
+import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,11 +18,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
@@ -31,6 +31,7 @@ import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.SignInWithGoogle
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -58,22 +59,21 @@ fun MainLoginScreen(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        content = { contentPadding ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding)
-            ) {
-                LoginScreen(
-                    sendEvent = sendEvent,
-                    state = state
-                )
-                if (state.isLoading) {
-                    ReUseProgressDialog()
-                }
+    ) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+        ) {
+            LoginScreen(
+                state = state,
+                sendEvent = sendEvent,
+            )
+            AnimatedVisibility(visible = state.isLoading) {
+                ReUseProgressDialog()
             }
         }
-    )
+    }
 }
 
 @Composable
@@ -81,44 +81,39 @@ private fun LoginScreen(
     state: LoginContract.State,
     sendEvent: (LoginContract.Event) -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(PaddingValues(start = 16.dp, end = 16.dp))
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
+        LoginScreenEnteredEmail(
+            login = state.email,
+            updateLogin = { sendEvent(LoginContract.Event.UpdateLogin(it)) },
+            enabled = !state.isLoading,
+            isError = state.isErrorEmail
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LoginScreenEnteredPassword(
+            password = state.password,
+            updatePassword = { sendEvent(LoginContract.Event.UpdatePassword(it)) },
+            enabled = !state.isLoading,
+            isError = state.isErrorPassword,
+            errorTextId = if (state.isError) R.string.incorrect_credentials else null
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LoginScreenForgotPassword { sendEvent(LoginContract.Event.ForgotPassword) }
+        Spacer(modifier = Modifier.height(32.dp))
+        ReUseFilledButton(
+            textId = R.string.sign_in,
+            onClick = { sendEvent(LoginContract.Event.SignIn(state.email, state.password)) },
+            enabled = state.isLoginButtonEnabled && !state.isLoading
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        SignInWithGoogle(
+            enabled = !state.isLoading
         ) {
-            LoginScreenEnteredEmail(
-                login = state.email,
-                updateLogin = { sendEvent(LoginContract.Event.UpdateLogin(it)) },
-                enabled = !state.isLoading,
-                isError = state.isErrorEmail
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LoginScreenEnteredPassword(
-                password = state.password,
-                updatePassword = { sendEvent(LoginContract.Event.UpdatePassword(it)) },
-                enabled = !state.isLoading,
-                isError = state.isErrorPassword,
-                errorTextId = if (state.isError) R.string.incorrect_credentials else null
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            LoginScreenForgotPassword { sendEvent(LoginContract.Event.ForgotPassword) }
-            Spacer(modifier = Modifier.height(32.dp))
-            ReUseFilledButton(
-                textId = R.string.sign_in,
-                onClick = { sendEvent(LoginContract.Event.SignIn(state.email, state.password)) },
-                enabled = state.isLoginButtonEnabled && !state.isLoading
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle(
-                enabled = !state.isLoading
-            ) {
-                sendEvent(LoginContract.Event.SignInWithGoogle)
-            }
+            sendEvent(LoginContract.Event.SignInWithGoogle)
         }
     }
 }
@@ -132,7 +127,7 @@ private fun LoginScreenEnteredEmail(
 ) {
     ReUseOutlinedTextField(
         value = login,
-        label = stringResource(id = R.string.login_email),
+        placeholder = R.string.login_email,
         onValueChanged = updateLogin::invoke,
         enabled = enabled,
         isError = isError,
@@ -146,14 +141,14 @@ private fun LoginScreenEnteredEmail(
 @Composable
 private fun LoginScreenEnteredPassword(
     password: String,
-    updatePassword: (String) -> Unit,
     enabled: Boolean,
     isError: Boolean,
-    errorTextId: Int?
+    errorTextId: Int?,
+    updatePassword: (String) -> Unit,
 ) {
     ReUsePasswordOutlinedTextField(
         value = password,
-        label = stringResource(id = R.string.login_password),
+        placeholder = R.string.login_password,
         onValueChanged = updatePassword::invoke,
         enabled = enabled,
         isError = isError,
@@ -167,4 +162,23 @@ private fun LoginScreenForgotPassword(onForgotPasswordClicked: () -> Unit) {
         modifier = Modifier.clickable { onForgotPasswordClicked() },
         text = stringResource(id = R.string.login_forgot_password)
     )
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+fun MainLoginScreenPreview() {
+    MyBADTheme {
+        MainLoginScreen(LoginContract.State())
+    }
 }

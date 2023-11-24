@@ -134,9 +134,9 @@
     <string name="authorization_screen_text_recomendation">Увійдіть за допомогою</string>
 
     <!--LOGIN-->
-    <string name="sign_in">Вхід</string>
-    <string name="sign_in_with_google">Войти с помощью Google</string>
-    <string name="login_email">Електронна пошта</string>
+    <string name="sign_in">Увійти</string>
+    <string name="sign_in_with_google">Увійдіть за допомогою Google</string>
+    <string name="login_email">Email</string>
     <string name="login_password">Пароль</string>
     <string name="login_password_confirm">Підтвердження паролю</string>
     <string name="login_forgot_password">Забули пароль?</string>

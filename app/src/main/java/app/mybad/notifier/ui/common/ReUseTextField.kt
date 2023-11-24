@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.common
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,15 +36,15 @@ import androidx.compose.ui.unit.dp
 fun ReUseOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String = "",
-    label: String = "",
+    @StringRes placeholder: Int,
     enabled: Boolean = true,
-    onValueChanged: (String) -> Unit = {},
     isError: Boolean = false,
     errorTextId: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true,
     @DrawableRes trailingIcon: Int? = null,
     tint: Color = LocalContentColor.current,
+    onValueChanged: (String) -> Unit = {},
 ) {
     OutlinedTextField(
         value = value,
@@ -58,22 +59,17 @@ fun ReUseOutlinedTextField(
         },
         singleLine = singleLine,
         trailingIcon = {
-            if (trailingIcon != null) {
+            if (trailingIcon != null || errorTextId != null) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    imageVector = ImageVector.vectorResource(trailingIcon),
+                    imageVector = if (errorTextId != null) Icons.Default.Error
+                    else ImageVector.vectorResource(trailingIcon!!),
                     contentDescription = null,
                     tint = tint
                 )
-            } else if (errorTextId != null) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Default.Error,
-                    contentDescription = null
-                )
             }
         },
-        placeholder = { Text(text = label) },
+        placeholder = { Text(stringResource(placeholder)) },
         keyboardOptions = keyboardOptions,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
@@ -95,15 +91,15 @@ fun ReUseOutlinedTextField(
 fun ReUsePasswordOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String = "",
-    label: String = "",
+    @StringRes placeholder: Int,
     enabled: Boolean = true,
     isError: Boolean = false,
-    onValueChanged: (String) -> Unit = {},
     errorTextId: Int? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done
     ),
+    onValueChanged: (String) -> Unit = {},
 ) {
     var showPassword by remember { mutableStateOf(false) }
 
@@ -115,34 +111,31 @@ fun ReUsePasswordOutlinedTextField(
         singleLine = true,
         isError = isError,
         enabled = enabled,
-        supportingText = {
-            if (errorTextId != null) {
-                Text(text = stringResource(id = errorTextId))
-            }
-        },
-        placeholder = { Text(text = label) },
+        supportingText = { if (errorTextId != null) Text(stringResource(errorTextId)) },
+        placeholder = { Text(stringResource(placeholder)) },
         keyboardOptions = keyboardOptions,
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
-            //TODO("изменить, взять цвет из темы")
-            val (icon, iconColor) = if (showPassword) {
-                Pair(Icons.Filled.Visibility, Color.Black)
-            } else {
-                Pair(Icons.Filled.VisibilityOff, Color.Black)
-            }
-
             IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
-                    icon,
+                    if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                     contentDescription = null,
-                    tint = iconColor
+                    tint = Color.Black,
                 )
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer.copy(0.5f),
-            errorBorderColor = MaterialTheme.colorScheme.errorContainer
+            focusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            disabledBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(0.38f),
+
+            cursorColor = MaterialTheme.colorScheme.onPrimary,
+
+            errorBorderColor = MaterialTheme.colorScheme.errorContainer,
+
+            focusedPlaceholderColor = MaterialTheme.colorScheme.surfaceDim,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.surfaceDim,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.surfaceDim.copy(0.38f),
         )
     )
 }

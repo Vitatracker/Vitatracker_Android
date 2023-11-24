@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.newpassword
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,7 +59,7 @@ fun NewPasswordScreen(
                 ReUsePasswordOutlinedTextField(
                     value = state.newPassword,
                     errorTextId = R.string.password_format,
-                    label = stringResource(id = R.string.settings_new_password),
+                    placeholder = R.string.settings_new_password,
                     isError = isPasswordsMismatch || isWrongPassword,
                     onValueChanged = {
                         sendEvent(NewPasswordScreenContract.Event.UpdateNewPassword(it))
@@ -67,12 +68,12 @@ fun NewPasswordScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 ReUsePasswordOutlinedTextField(
                     value = state.confirmPassword,
-                    label = stringResource(id = R.string.settings_repeat_new_password),
+                    placeholder = R.string.settings_repeat_new_password,
                     isError = isPasswordsMismatch,
+                    errorTextId = if (isPasswordsMismatch) R.string.password_mismatch else null,
                     onValueChanged = {
                         sendEvent(NewPasswordScreenContract.Event.UpdateConfirmationPassword(it))
-                    },
-                    errorTextId = if (isPasswordsMismatch) R.string.password_mismatch else null
+                    }
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 ReUseFilledButton(
@@ -82,7 +83,7 @@ fun NewPasswordScreen(
                 }
             }
         }
-        if (state.isLoading) {
+        AnimatedVisibility (state.isLoading) {
             ReUseProgressDialog()
         }
     }

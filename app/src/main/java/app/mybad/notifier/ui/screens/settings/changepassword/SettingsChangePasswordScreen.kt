@@ -77,7 +77,7 @@ private fun ChangePasswordTop(
     Column {
         ReUsePasswordOutlinedTextField(
             value = state.currentPassword,
-            label = stringResource(id = R.string.settings_current_password),
+            placeholder = R.string.settings_current_password,
             onValueChanged = {
                 sendEvent(SettingsChangePasswordContract.Event.OnCurrentPasswordChanged(it))
             },
@@ -86,7 +86,7 @@ private fun ChangePasswordTop(
         )
         ReUsePasswordOutlinedTextField(
             value = state.newPassword,
-            label = stringResource(id = R.string.settings_new_password),
+            placeholder = R.string.settings_new_password,
             onValueChanged = {
                 sendEvent(SettingsChangePasswordContract.Event.OnNewPasswordChanged(it))
             },
@@ -96,7 +96,7 @@ private fun ChangePasswordTop(
 
         ReUsePasswordOutlinedTextField(
             value = state.newPasswordRepeat,
-            label = stringResource(id = R.string.settings_repeat_new_password),
+            placeholder = R.string.settings_repeat_new_password,
             onValueChanged = {
                 sendEvent(SettingsChangePasswordContract.Event.OnNewPasswordConfirmChanged(it))
             },
