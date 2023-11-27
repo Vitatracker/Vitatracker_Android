@@ -120,7 +120,7 @@ fun ReUsePasswordOutlinedTextField(
                 Icon(
                     if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                     contentDescription = null,
-                    tint = Color.Black,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         },

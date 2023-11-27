@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
@@ -54,8 +53,10 @@ fun NewPasswordScreen(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                val isPasswordsMismatch = state.isError is NewPasswordScreenContract.PasswordsError.PasswordsMismatch
-                val isWrongPassword = state.isError is NewPasswordScreenContract.PasswordsError.WrongPassword
+                val isPasswordsMismatch =
+                    state.isError is NewPasswordScreenContract.PasswordsError.PasswordsMismatch
+                val isWrongPassword =
+                    state.isError is NewPasswordScreenContract.PasswordsError.WrongPassword
                 ReUsePasswordOutlinedTextField(
                     value = state.newPassword,
                     errorTextId = R.string.password_format,
@@ -83,7 +84,7 @@ fun NewPasswordScreen(
                 }
             }
         }
-        AnimatedVisibility (state.isLoading) {
+        AnimatedVisibility(state.isLoading) {
             ReUseProgressDialog()
         }
     }

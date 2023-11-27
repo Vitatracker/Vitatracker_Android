@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
 import  android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,12 +62,12 @@ fun StartRegistrationScreen(
                 onBackPressed = { sendEvent(RegistrationContract.Event.OnBack) }
             )
         }
-    ) { contentPadding ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(contentPadding)
+                .padding(paddingValues)
                 .padding(16.dp)
         ) {
             RegistrationScreenBaseForSignIn(state, sendEvent)
@@ -84,7 +86,11 @@ fun StartRegistrationScreen(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            ClickableText(modifier = Modifier.fillMaxWidth(), text = getAgreementText()) {
+            ClickableText(
+                modifier = Modifier.fillMaxWidth(),
+                text = getAgreementText(),
+                style = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.surfaceDim),
+            ) {
                 sendEvent(RegistrationContract.Event.ShowUserAgreement)
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -94,7 +100,7 @@ fun StartRegistrationScreen(
                 onClick = { sendEvent(RegistrationContract.Event.SignInWithGoogle) }
             )
         }
-        if (state.isLoading) {
+        AnimatedVisibility(visible = state.isLoading) {
             ReUseProgressDialog()
         }
     }
@@ -134,7 +140,7 @@ private fun RegistrationScreenBaseForSignIn(
             ),
             enabled = !state.isLoading,
             isError = state.isErrorEmail,
-            errorTextId = when(state.error) {
+            errorTextId = when (state.error) {
                 is RegistrationContract.RegistrationError.UserEmailExists -> R.string.user_email_exists
                 is RegistrationContract.RegistrationError.WrongEmailFormat -> R.string.incorrect_email
                 else -> null
