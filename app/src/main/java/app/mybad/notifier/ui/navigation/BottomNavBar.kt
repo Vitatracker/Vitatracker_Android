@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -28,8 +29,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -54,7 +59,6 @@ fun BottomNavBar(
             color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 26.dp)
                 .height(80.dp)
         ) {
             Row(
@@ -94,29 +98,32 @@ fun BottomNavBar(
                 Spacer(Modifier.width(0.dp))
             }
         }
-        Surface(
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shape = CircleShape,
+        Box(
             modifier = Modifier
-                .padding(bottom = 24.dp)
+                .padding(bottom = 12.dp)
                 .size(84.dp)
+                .background(color = MaterialTheme.colorScheme.primaryContainer, shape = CircleShape)
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center,
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
+            Surface(
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape,
+                tonalElevation = 4.dp,
+                shadowElevation = 3.dp,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(64.dp)
+                    .semantics { role = Role.Button }
             ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape,
-                    shadowElevation = 2.dp,
+                Icon(
                     modifier = Modifier
-                        .size(64.dp)
-                        .clickable {
-                            onAddItemClicked()
-                        }
-                ) {
-                    Icon(painterResource(R.drawable.plus_small), null, tint = Color.White)
-                }
+                        .fillMaxSize()
+                        .clickable { onAddItemClicked() },
+                    painter = painterResource(R.drawable.plus_small),
+                    contentDescription = null,
+                    tint = Color.White
+                )
             }
         }
     }
@@ -135,7 +142,7 @@ private fun MainNavigationItem(
             durationMillis = 300,
             delayMillis = 40,
             easing = LinearOutSlowInEasing
-        )
+        ), label = ""
     )
     val iconAlpha by animateFloatAsState(
         targetValue = if (isSelected) 1f else 0.5f,
@@ -143,7 +150,7 @@ private fun MainNavigationItem(
             durationMillis = 300,
             delayMillis = 40,
             easing = LinearOutSlowInEasing
-        )
+        ), label = ""
     )
 
     Column(
