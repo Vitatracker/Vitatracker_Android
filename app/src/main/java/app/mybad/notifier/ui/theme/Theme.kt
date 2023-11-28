@@ -274,7 +274,7 @@ fun MyBADTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val darkTheme: Boolean = darkThemeInit ?: isSystemInDarkTheme()
+    darkTheme = darkThemeInit ?: isSystemInDarkTheme()
 
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -303,3 +303,6 @@ fun MyBADTheme(
         content = content,
     )
 }
+
+var darkTheme: Boolean = false
+    private set

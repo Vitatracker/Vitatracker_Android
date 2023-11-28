@@ -50,6 +50,7 @@ val Typography = Typography(
         fontSize = 22.sp,
         lineHeight = 28.sp,
     ),
+    // NotificationTimeCourse
     titleMedium = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Bold,

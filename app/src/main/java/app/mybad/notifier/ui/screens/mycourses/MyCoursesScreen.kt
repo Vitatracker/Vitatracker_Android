@@ -43,7 +43,6 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseIcon
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.getFormsPluralsArray
-import app.mybad.notifier.ui.screens.authorization.start.AuthorizationScreen
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.theme.R
@@ -83,10 +82,11 @@ fun MyCoursesScreen(
     ) { paddingValues ->
         LazyColumn(
             Modifier
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = 0.dp,
                     bottom = 16.dp
                 ),
             contentPadding = PaddingValues(

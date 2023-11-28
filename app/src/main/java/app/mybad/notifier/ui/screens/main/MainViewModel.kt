@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.UsageDisplayDomainModel
-import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.domain.usecases.patternusage.GetPatternUsagesActiveWithParamsBetween
+import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
@@ -14,7 +14,6 @@ import app.mybad.utils.atStartOfDay
 import app.mybad.utils.correctTimeInMinutes
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
-import app.mybad.utils.displayDateTimeShort
 import app.mybad.utils.systemToEpochSecond
 import app.mybad.utils.systemToInstant
 import app.mybad.utils.timeInMinutes
@@ -84,7 +83,7 @@ class MainViewModel @Inject constructor(
 //                )
                 pattern.copy(
                     // для тестов, потом удалить name
-                    name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
+//                    name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
                     useTime = useTime,
                     timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
                 )
