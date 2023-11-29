@@ -128,12 +128,15 @@ fun MainNotificationScreen(
                     date = state.selectedDate,
                     changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
                 )
-                NotificationLazyMedicines(
-                    usagesDisplay = state.patternsAndUsages,
-                    types = types,
-                    relations = relations,
-                    icons = icons,
-                ) { sendEvent(MainContract.Event.SetUsageFactTime(it)) }
+                if (state.patternsAndUsages.isNotEmpty()) {
+                    NotificationLazyMedicines(
+                        usagesDisplay = state.patternsAndUsages,
+                        types = types,
+                        relations = relations,
+                        icons = icons,
+                        setUsageFactTime = { sendEvent(MainContract.Event.SetUsageFactTime(it)) },
+                    )
+                } else NotificationRemedyClear()
             }
         }
     }
@@ -285,46 +288,43 @@ private fun NotificationLazyMedicines(
     icons: TypedArray,
     setUsageFactTime: (String) -> Unit,
 ) {
-    if (usagesDisplay.isNotEmpty()) {
-
-        val state = rememberSaveable(
-            usagesDisplay.size,
-            saver = LazyListState.Saver,
-            key = "usagesDisplay"
-        ) {
-            LazyListState(
-                firstVisibleItemIndex = 0,
-                firstVisibleItemScrollOffset = 0,
+    val state = rememberSaveable(
+        usagesDisplay.size,
+        saver = LazyListState.Saver,
+        key = "usagesDisplay"
+    ) {
+        LazyListState(
+            firstVisibleItemIndex = 0,
+            firstVisibleItemScrollOffset = 0,
+        )
+    }
+    val usages = remember(usagesDisplay) {
+        usagesDisplay.entries.toList()
+    }
+    NotificationTextCategory()
+    Log.w(
+        "VTTAG",
+        "MainNotificationScreen::NotificationLazyMedicines: usages=${usagesDisplay.size}"
+    )
+    LazyColumn(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        contentPadding = PaddingValues(bottom = 84.dp),
+        state = state,
+    ) {
+        items(usages, key = { it.key }) { usageEntry ->
+            //TODO("переделать так же как и BottomSheetUsages")
+            val usage = usageEntry.value
+            NotificationCourseItem(
+                usage = usage,
+                isDone = usage.factUseTime != null,
+                relation = relations[usage.beforeFood],
+                type = types[usage.type],
+                icon = icons.getResourceId(usage.icon, 0),
+                onClick = { setUsageFactTime(usageEntry.key) },
             )
         }
-        val usages = remember(usagesDisplay) {
-            usagesDisplay.entries.toList()
-        }
-        NotificationTextCategory()
-        Log.w(
-            "VTTAG",
-            "MainNotificationScreen::NotificationLazyMedicines: usages=${usagesDisplay.size}"
-        )
-        LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            contentPadding = PaddingValues(bottom = 84.dp),
-            state = state,
-        ) {
-            items(usages, key = { it.key }) { usageEntry ->
-                //TODO("переделать так же как и BottomSheetUsages")
-                val usage = usageEntry.value
-                NotificationCourseItem(
-                    usage = usage,
-                    isDone = usage.factUseTime != null,
-                    relation = relations[usage.beforeFood],
-                    type = types[usage.type],
-                    icon = icons.getResourceId(usage.icon, 0),
-                    onClick = { setUsageFactTime(usageEntry.key) },
-                )
-            }
-        }
-    } else NotificationRemedyClear()
+    }
 }
 
 @SuppressLint("Recycle")
@@ -450,9 +450,9 @@ private fun NotificationRemedyClear() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         NotificationRemedyClearText()
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(22.dp))
         NotificationRemedyClearImage()
     }
 }
@@ -477,13 +477,17 @@ private fun NotificationRemedyClearText() {
 
 @Composable
 private fun NotificationRemedyClearImage() {
-    Box(modifier = Modifier.fillMaxSize(), Alignment.BottomCenter) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 10.dp, end = 10.dp, bottom = 70.dp),
+        Alignment.BottomCenter
+    ) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.main_screen_clear_med),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 15.dp)
         )
     }
 }
