@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -44,7 +43,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -288,16 +286,6 @@ private fun NotificationLazyMedicines(
     icons: TypedArray,
     setUsageFactTime: (String) -> Unit,
 ) {
-    val state = rememberSaveable(
-        usagesDisplay.size,
-        saver = LazyListState.Saver,
-        key = "usagesDisplay"
-    ) {
-        LazyListState(
-            firstVisibleItemIndex = 0,
-            firstVisibleItemScrollOffset = 0,
-        )
-    }
     val usages = remember(usagesDisplay) {
         usagesDisplay.entries.toList()
     }
@@ -310,7 +298,6 @@ private fun NotificationLazyMedicines(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 4.dp),
         contentPadding = PaddingValues(bottom = 84.dp),
-        state = state,
     ) {
         items(usages, key = { it.key }) { usageEntry ->
             //TODO("переделать так же как и BottomSheetUsages")
