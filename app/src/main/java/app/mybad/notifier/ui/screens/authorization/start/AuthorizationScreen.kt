@@ -61,7 +61,7 @@ fun AuthorizationView(
             imageVector = R.drawable.enter_screen,
             modifier = Modifier
                 .fillMaxSize(0.87f)
-                .padding(bottom = 16.dp)
+                .padding(bottom = 42.dp)
                 .weight(1f)
         )
         Column {

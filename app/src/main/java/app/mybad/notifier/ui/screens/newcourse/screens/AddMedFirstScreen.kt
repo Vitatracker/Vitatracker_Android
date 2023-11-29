@@ -57,6 +57,7 @@ fun AddMedFirstScreen(
             onBackPressed = { sendEvent(CreateCourseContract.Event.ActionBack) }
         )
     }) { paddingValues ->
+        val modifierSpacer = Modifier.height(8.dp)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,6 +70,12 @@ fun AddMedFirstScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
+                Text(
+                    text = stringResource(R.string.add_med_name),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = modifierSpacer)
                 ReUseOutlinedTextField(
                     value = state.remedy.name ?: "",
                     placeholder = R.string.enter_med_name,
@@ -87,13 +94,13 @@ fun AddMedFirstScreen(
                         imeAction = ImeAction.Done,
                     ),
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifierSpacer)
                 Text(
                     text = stringResource(R.string.add_med_icon),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifierSpacer)
                 MultiBox(
                     {
                         IconSelector(
@@ -111,17 +118,17 @@ fun AddMedFirstScreen(
                     itemsPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
-                        top = 20.dp,
-                        bottom = 20.dp
+                        top = 8.dp,
+                        bottom = 8.dp
                     ),
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = stringResource(R.string.add_med_icon_color),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = modifierSpacer)
                 MultiBox(
                     {
                         ColorSelector(
@@ -138,8 +145,8 @@ fun AddMedFirstScreen(
                     itemsPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
-                        top = 20.dp,
-                        bottom = 20.dp
+                        top = 8.dp,
+                        bottom = 8.dp
                     ),
                 )
             }
