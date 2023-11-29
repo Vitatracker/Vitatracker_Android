@@ -24,11 +24,11 @@ class CloseCourseUseCase @Inject constructor(
                 )
             )
         }
-        // пометить паттерн как закрытый
-        patternUsageRepository.finishedPatternUsageByCourseId(courseId)
+        // удалим паттерн
+        patternUsageRepository.deletePatternUsagesByCourseId(courseId)
         // пометить usage как закрытый
         usageRepository.finishedUsageByCourseId(courseId)
-        // удалить usage после даты закрытия
-        usageRepository.markDeletionUsagesAfterByCourseId(courseId)
+        // не удалять usage после даты закрытия, так как таблетки уже выпиты
+//        usageRepository.markDeletionUsagesAfterByCourseId(courseId)
     }
 }

@@ -325,47 +325,68 @@ class MyCoursesEditViewModel @Inject constructor(
                 )
                 createRemedyUseCase(remedy).getOrNull()
             } ?: viewState.value.remedy.id
-        // если таблетка старая, то idn не поменялся иначе будет новый
-        val remedyIdn = if (remedyId == viewState.value.remedy.id) viewState.value.remedy.idn else {
-            Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new remedyId=$remedyId")
-            0
-        }
         // сформировать паттерн usages
         val patternUsages = viewState.value.usagesPatternEdit.toPattern()
-        // для нового курса startDate не меняем, у нас прием лекарства через несколько дней может сбиться.
-        val course = viewState.value.course.copy(
-            id = 0,
-            idn = 0,
+        // если таблетка старая, то idn не поменялся иначе будет новый
+        if (remedyId == viewState.value.remedy.id) {
+           // отредактируем курс
+            updateCourseUseCase(
+                viewState.value.course.copy(
+                    isInfinite = false,
+                    isFinished = false,
+                    notUsed = false,
+                    patternUsages = patternUsages,
 
-            remedyId = remedyId,
-            remedyIdn = remedyIdn,
+                    updateNetworkDate = 0,
+                )
+            ).onSuccess { courseId ->
+                Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
+                // обновим паттерн
+                updatePatternUsages(
+                    courseId = courseId,
+                    usagesPattern = viewState.value.usagesPatternEdit
+                )
+            }.onFailure {
 
-            isInfinite = false,
-            isFinished = false,
-            notUsed = false,
-            patternUsages = patternUsages,
+            }
+        } else {
+            // для нового курса startDate не меняем, у нас прием лекарства через несколько дней может сбиться.
+            val course = viewState.value.course.copy(
+                id = 0,
+                idn = 0,
 
-            createdDate = 0,
+                remedyId = remedyId,
+                remedyIdn = 0,
 
-            updateNetworkDate = 0,
-        )
-        Log.w(
-            "VTTAG",
-            "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
-        )
-        // закроем курс
-        closeCourseUseCase(
-            courseId = viewState.value.course.id,
-            endDate = dateNew.atEndOfDay() // с учетом часового пояса
-        )
-        // создадим новый курс
-        createCourseUseCase(course).onSuccess { courseId ->
-            Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
-            // обновим паттерн
-            updatePatternUsages(
-                courseId = courseId,
-                usagesPattern = viewState.value.usagesPatternEdit
+                isInfinite = false,
+                isFinished = false,
+                notUsed = false,
+                patternUsages = patternUsages,
+
+                createdDate = 0,
+
+                updateNetworkDate = 0,
             )
+            Log.w(
+                "VTTAG",
+                "MyCoursesViewModel::createNewCourse: closed courseId=${viewState.value.course.id}"
+            )
+            // закроем курс
+            closeCourseUseCase(
+                courseId = viewState.value.course.id,
+                endDate = dateNew.atEndOfDay() // с учетом часового пояса
+            )
+            // создадим новый курс
+            createCourseUseCase(course).onSuccess { courseId ->
+                Log.w("VTTAG", "MyCoursesViewModel::createNewCourse: new courseId=$courseId")
+                // обновим паттерн
+                updatePatternUsages(
+                    courseId = courseId,
+                    usagesPattern = viewState.value.usagesPatternEdit
+                )
+            }.onFailure {
+
+            }
         }
     }
 
