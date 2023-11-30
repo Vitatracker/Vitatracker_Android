@@ -51,6 +51,7 @@ fun ReUseFilledButton(
         Text(
             text = stringResource(id = textId),
             style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
         )
     }
 }
@@ -83,6 +84,7 @@ fun ReUseOutlinedButton(
             text = stringResource(id = textId),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Normal,
+            maxLines = 1,
         )
     }
 }

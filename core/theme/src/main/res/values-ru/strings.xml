@@ -165,7 +165,7 @@
     <string name="mycourse_dosage_and_usage">Дозировка и приём</string>
     <string name="mycourse_per_day">Приёмов в день</string>
     <string name="mycourse_delete">Удалить</string>
-    <string name="mycourse_delete_cancel">Скасувати</string>
+    <string name="mycourse_delete_cancel">Отменить</string>
     <string name="mycourse_confirmation_delete_text">Вы действительно хотите удалить лекарство?</string>
 
     <!--CALENDAR -->
