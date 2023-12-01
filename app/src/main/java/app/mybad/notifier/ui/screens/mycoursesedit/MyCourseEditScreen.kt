@@ -343,12 +343,12 @@ fun MyCourseEditScreen(
             ReUseAlertDialog(
                 drawableId = R.drawable.medicines,
                 textId = R.string.mycourse_confirmation_delete_text,
-                dismissId = R.string.mycourse_delete,
-                confirmId = R.string.mycourse_delete_cancel,
                 textButton = false,
-                dismissErrorColor = true,
-                onDismiss = { sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id)) },
-                onConfirm = { sendEvent(MyCoursesEditContract.Event.CancelDelete) },
+                firstErrorColor = true,
+                firstId = R.string.mycourse_delete,
+                onClickFirst = { sendEvent(MyCoursesEditContract.Event.Delete(courseInternal.id)) },
+                secondId = R.string.mycourse_delete_cancel,
+                onClickSecond = { sendEvent(MyCoursesEditContract.Event.CancelDelete) },
             )
         }
     }

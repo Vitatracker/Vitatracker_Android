@@ -6,24 +6,27 @@ import app.mybad.notifier.ui.base.ViewState
 
 class SettingsProfileContract {
     sealed interface Event : ViewEvent {
-        object ActionBack : Event
-        object ChangePassword : Event
-        object SignOut : Event
-        object DeleteAccount : Event
+        data object ActionBack : Event
+        data object ChangePassword : Event
+        data object SignOut : Event
+        data object Cancel : Event
+        data object DeleteAccount : Event
+        data object DeleteConfirmation : Event
         data class OnUserNameChanged(val name: String = "") : Event
     }
 
     data class State(
         val name: String = "",
         val email: String = "",
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val confirmDelete: Boolean = false,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {
-            object ToChangePassword : Navigation
-            object ToAuthorization : Navigation
-            object Back : Navigation
+            data object ToChangePassword : Navigation
+            data object ToAuthorization : Navigation
+            data object Back : Navigation
         }
     }
 }

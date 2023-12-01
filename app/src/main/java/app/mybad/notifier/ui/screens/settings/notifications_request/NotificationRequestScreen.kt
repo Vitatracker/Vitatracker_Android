@@ -72,10 +72,10 @@ fun NotificationRequestScreen(
             ReUseAlertDialog(
                 titleId = R.string.settings_notifications_allow_reconfirmation_title,
                 textId = R.string.settings_notifications_allow_reconfirmation_text,
-                dismissId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
-                confirmId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
-                onDismiss = { sendEvent(NotificationRequestContract.Event.OnNext) },
-                onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
+                firstId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
+                onClickFirst = { sendEvent(NotificationRequestContract.Event.OnNext) },
+                secondId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
+                onClickSecond = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
     }

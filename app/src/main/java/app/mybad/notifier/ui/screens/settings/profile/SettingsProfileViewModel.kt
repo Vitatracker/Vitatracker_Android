@@ -55,6 +55,15 @@ class SettingsProfileViewModel @Inject constructor(
             }
 
             SettingsProfileContract.Event.DeleteAccount -> deleteAccount()
+
+            SettingsProfileContract.Event.DeleteConfirmation -> {
+                setState { copy(confirmDelete = true) }
+            }
+
+            SettingsProfileContract.Event.Cancel -> {
+                setState { copy(confirmDelete = false) }
+            }
+
             SettingsProfileContract.Event.SignOut -> signOut()
         }
     }
@@ -64,6 +73,8 @@ class SettingsProfileViewModel @Inject constructor(
         viewModelScope.launch {
             if (deleteUserAccountUseCase()) {
                 setEffect { SettingsProfileContract.Effect.Navigation.ToAuthorization }
+            } else {
+                setState { copy(confirmDelete = false) }
             }
         }
     }

@@ -82,6 +82,11 @@
     <string name="settings_add_alarm">Add Alarm (For testing)</string>
     <string name="settings_quit">Logout</string>
     <string name="settings_delete_account">Delete account</string>
+    <string name="settings_delete_account_confirm_title">Are you sure you want to delete your account?</string>
+    <string name="settings_delete_account_confirm_text">All associated data will be lost. Select \'Confirm\' to delete or \'Cancel\' to keep your account.</string>
+    <string name="settings_delete_account_confirm_button_delete">Confirm</string>
+    <string name="settings_delete_account_confirm_button_cancel">Cancel</string>
+
     <string name="settings_change_password">Change password</string>
     <string name="settings_cancel">Cancel</string>
     <string name="settings_save">Save</string>

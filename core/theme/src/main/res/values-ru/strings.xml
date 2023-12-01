@@ -52,6 +52,11 @@
     <string name="settings_add_alarm">Add Alarm (На этапе тестирования)</string>
     <string name="settings_quit">Выйти из учетной записи</string>
     <string name="settings_delete_account">Удалить учетную запись</string>
+    <string name="settings_delete_account_confirm_title">Вы уверены, что хотите удалить свою учетную запись?</string>
+    <string name="settings_delete_account_confirm_text">Все связанные данные будут утрачены. Выберите \'Подтвердить\' для удаления или \'Отмена\', чтобы сохранить аккаунт.</string>
+    <string name="settings_delete_account_confirm_button_delete">Подтвердить</string>
+    <string name="settings_delete_account_confirm_button_cancel">Отмена</string>
+
     <string name="settings_change_password">Поменять пароль</string>
     <string name="settings_cancel">Отменить</string>
     <string name="settings_save">Сохранить</string>

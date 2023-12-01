@@ -43,7 +43,7 @@ data-store = "1.1.0-alpha06"
 # Material
 google-material = "1.10.0"
 material = "1.5.4"
-material3 = "1.2.0-alpha11"
+material3 = "1.2.0-alpha12"
 
 # Compose
 compose-bom = "2023.10.01"
@@ -146,10 +146,10 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
 compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "compose-compiler" }
-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-compiler" }
 
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose-ui" }
-
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
+#compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-ui" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 #compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose-ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

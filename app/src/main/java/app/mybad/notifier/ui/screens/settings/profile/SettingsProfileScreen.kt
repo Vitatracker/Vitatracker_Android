@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.screens.settings.profile
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.screens.settings.common.BaseHorizontalDivider
@@ -70,16 +72,32 @@ fun SettingsProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = 0.dp,
                     bottom = 120.dp
                 ),
         ) {
             SettingsProfileTop(state, sendEvent)
             SettingsProfileBottom(sendEvent)
         }
+    }
+    AnimatedVisibility(state.confirmDelete) {
+        ReUseAlertDialog(
+            titleId = R.string.settings_delete_account_confirm_title,
+            textId = R.string.settings_delete_account_confirm_text,
+            textButton = false,
+
+            firstErrorColor = true,
+            firstId = R.string.settings_delete_account_confirm_button_delete,
+            onClickFirst = { sendEvent(SettingsProfileContract.Event.DeleteAccount) },
+            secondId = R.string.settings_delete_account_confirm_button_cancel,
+            onClickSecond = { sendEvent(SettingsProfileContract.Event.Cancel) },
+
+            onClickOutside = { sendEvent(SettingsProfileContract.Event.Cancel) },
+        )
     }
 }
 
@@ -129,7 +147,7 @@ private fun SettingsProfileBottom(
         )
         SettingsProfileBottomElement(
             text = R.string.settings_delete_account,
-            onClick = { sendEvent(SettingsProfileContract.Event.DeleteAccount) }
+            onClick = { sendEvent(SettingsProfileContract.Event.DeleteConfirmation) }
         )
     }
 }

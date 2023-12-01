@@ -35,12 +35,12 @@ fun ReUseAlertDialog(
     textButton: Boolean = true,
     onClickOutside: (() -> Unit)? = null,
 
-    @StringRes dismissId: Int? = null,
-    dismissErrorColor: Boolean = false,
-    onDismiss: () -> Unit = {},
+    @StringRes firstId: Int? = null,
+    firstErrorColor: Boolean = false,
+    onClickFirst: () -> Unit = {},
 
-    @StringRes confirmId: Int,
-    onConfirm: () -> Unit = {},
+    @StringRes secondId: Int,
+    onClickSecond: () -> Unit = {},
 ) {
 
     AlertDialog(
@@ -78,19 +78,19 @@ fun ReUseAlertDialog(
             }
         },
         dismissButton = {
-            dismissId?.let {
+            firstId?.let {
                 if (textButton) {
                     ReUseTextButton(
-                        textId = dismissId,
-                        onClick = onDismiss,
+                        textId = firstId,
+                        onClick = onClickFirst,
                     )
                 } else {
                     ReUseOutlinedButton(
                         modifier = Modifier
                             .fillMaxWidth(0.48f),
-                        errorColor = dismissErrorColor,
-                        textId = dismissId,
-                        onClick = onDismiss,
+                        errorColor = firstErrorColor,
+                        textId = firstId,
+                        onClick = onClickFirst,
                     )
                 }
             }
@@ -98,22 +98,22 @@ fun ReUseAlertDialog(
         confirmButton = {
             if (textButton) {
                 ReUseTextButton(
-                    textId = confirmId,
-                    onClick = onConfirm,
+                    textId = secondId,
+                    onClick = onClickSecond,
                 )
             } else {
                 ReUseFilledButton(
                     modifier = Modifier
                         .fillMaxWidth(0.48f),
-                    textId = confirmId,
-                    onClick = onConfirm,
+                    textId = secondId,
+                    onClick = onClickSecond,
                 )
             }
         },
         properties = DialogProperties(
             dismissOnBackPress = onClickOutside != null,
             dismissOnClickOutside = onClickOutside != null,
-            securePolicy = SecureFlagPolicy.SecureOff,
+            securePolicy = SecureFlagPolicy.SecureOn,
         ),
         shape = MaterialTheme.shapes.medium,
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -138,8 +138,8 @@ private fun ReUseFilledButtonPreview() {
                 textButton = false,
                 titleId = R.string.settings_notifications_allow_reconfirmation_title,
                 textId = R.string.settings_notifications_allow_reconfirmation_text,
-                dismissId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
-                confirmId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
+                firstId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
+                secondId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
             )
         }
     }

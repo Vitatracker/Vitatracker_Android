@@ -52,6 +52,11 @@
     <string name="settings_add_alarm">Add Alarm (На етапi тестування)</string>
     <string name="settings_quit">Вийти</string>
     <string name="settings_delete_account">Видалити обліковий запис</string>
+    <string name="settings_delete_account_confirm_title">Ви впевнені, що хочете видалити свій обліковий запис?</string>
+    <string name="settings_delete_account_confirm_text">Усі пов\'язані дані будуть втрачені. Виберіть \'Підтвердити\', щоб видалити або \'Скасувати\', щоб зберегти обліковий запис.</string>
+    <string name="settings_delete_account_confirm_button_delete">Підтвердити</string>
+    <string name="settings_delete_account_confirm_button_cancel">Відміна</string>
+
     <string name="settings_change_password">Змінити пароль</string>
     <string name="settings_cancel">Скасувати</string>
     <string name="settings_save">Зберегти</string>
