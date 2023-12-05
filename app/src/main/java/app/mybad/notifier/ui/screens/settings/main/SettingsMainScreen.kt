@@ -45,11 +45,12 @@ fun SettingsMainScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
+                    top = 0.dp,
+                    bottom = 120.dp
                 ),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally

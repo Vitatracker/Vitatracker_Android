@@ -40,7 +40,7 @@ fun SettingsLeaveWishesScreen(
     val context = LocalContext.current
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
-        effectFlow?.collect {effect->
+        effectFlow?.collect { effect ->
             when (effect) {
                 is SettingsLeaveWishesContract.Effect.Navigation -> navigation(effect)
 
@@ -65,11 +65,12 @@ fun SettingsLeaveWishesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
+                    top = 0.dp,
+                    bottom = 120.dp
                 ),
         ) {
             Text(

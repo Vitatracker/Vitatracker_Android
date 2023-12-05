@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.settings.notifications_request
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -68,7 +69,7 @@ fun NotificationRequestScreen(
                 onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
-        if (state.confirmation) {
+        AnimatedVisibility(state.confirmation) {
             ReUseAlertDialog(
                 titleId = R.string.settings_notifications_allow_reconfirmation_title,
                 textId = R.string.settings_notifications_allow_reconfirmation_text,

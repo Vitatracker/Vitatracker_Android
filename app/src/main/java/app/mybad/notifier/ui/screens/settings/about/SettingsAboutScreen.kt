@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.screens.settings.common.BaseHorizontalDivider
@@ -35,7 +35,6 @@ fun SettingsAboutScreen(
     val version = remember { context.packageVersionName }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
-//        version = context.packageVersionName
         effectFlow?.collect { effect ->
             when (effect) {
                 is SettingsAboutContract.Effect.Navigation -> navigation(effect)
@@ -55,11 +54,12 @@ fun SettingsAboutScreen(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
+                    top = 0.dp,
+                    bottom = 120.dp
                 ),
         ) {
             Text(
@@ -67,9 +67,9 @@ fun SettingsAboutScreen(
                     R.string.settings_version,
                     version
                 ), //BuildConfig.VERSION_NAME
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                modifier = Modifier.padding(vertical = 16.dp)
             )
             Text(text = stringResource(R.string.settings_current_build_year))
             BaseHorizontalDivider()

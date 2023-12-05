@@ -44,6 +44,7 @@ val Typography = Typography(
         fontSize = 24.sp,
         lineHeight = 32.sp,
     ),
+    // используется
     titleLarge = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Normal,

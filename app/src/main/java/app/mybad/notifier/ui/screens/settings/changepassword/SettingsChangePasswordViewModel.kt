@@ -79,7 +79,10 @@ class SettingsChangePasswordViewModel @Inject constructor(
         }
         viewModelScope.launch {
             changePasswordUseCase(oldPass = oldPass, newPass = newPass).onSuccess {
-                Log.w("VTTAG", "SettingsChangePasswordViewModel::changePasswordUseCase onSuccess: oldPass = $oldPass, newPass = $newPass")
+                Log.w(
+                    "VTTAG",
+                    "SettingsChangePasswordViewModel::changePasswordUseCase onSuccess: oldPass = $oldPass, newPass = $newPass"
+                )
 
                 setState {
                     copy(
@@ -89,7 +92,10 @@ class SettingsChangePasswordViewModel @Inject constructor(
                 }
                 setEffect { SettingsChangePasswordContract.Effect.Navigation.Back }
             }.onFailure { throwable ->
-                Log.w("VTTAG", "SettingsChangePasswordViewModel::changePasswordUseCase onFailure: message =${throwable.message}")
+                Log.w(
+                    "VTTAG",
+                    "SettingsChangePasswordViewModel::changePasswordUseCase onFailure: message =${throwable.message}"
+                )
                 setState {
                     copy(
                         error = SettingsChangePasswordContract.StateErrors.NewPasswordIsInvalid,

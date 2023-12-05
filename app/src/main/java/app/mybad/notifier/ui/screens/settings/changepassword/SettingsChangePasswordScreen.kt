@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.settings.changepassword
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,11 +47,12 @@ fun SettingsChangePasswordScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
+                    top = 0.dp,
+                    bottom = 120.dp
                 ),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -63,7 +65,7 @@ fun SettingsChangePasswordScreen(
             }
         }
     }
-    if (state.isLoading) {
+    AnimatedVisibility(state.isLoading) {
         ReUseProgressDialog()
     }
 }

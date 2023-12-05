@@ -100,10 +100,11 @@ fun SettingsNotificationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = 0.dp,
                     bottom = 16.dp
                 ),
         ) {
