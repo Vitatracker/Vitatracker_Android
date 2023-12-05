@@ -6,16 +6,17 @@ import app.mybad.data.models.UsageFormat
 import app.mybad.data.models.UsageFormat.Companion.toPattern
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.PatternUsageDomainModel
-import app.mybad.domain.usecases.notification.AddNotificationsByCourseIdUseCase
 import app.mybad.domain.usecases.courses.CreateCourseUseCase
-import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
+import app.mybad.domain.usecases.notification.AddNotificationsByCourseIdUseCase
 import app.mybad.domain.usecases.patternusage.CreatePatternUsagesUseCase
+import app.mybad.domain.usecases.remedies.CreateRemedyUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +27,8 @@ class CreateCourseViewModel @Inject constructor(
 
     private val addNotifications: AddNotificationsByCourseIdUseCase,
 ) : BaseViewModel<CreateCourseContract.Event, CreateCourseContract.State, CreateCourseContract.Effect>() {
+
+    private var confirmBack = false
 
     init {
         Log.w("VTTAG", "NewCourseNavGraph::CreateCourseViewModel: init")
@@ -44,15 +47,7 @@ class CreateCourseViewModel @Inject constructor(
             is CreateCourseContract.Event.UpdateCourse -> setState { copy(course = event.course) }
 
             is CreateCourseContract.Event.UpdateCourseRemindDate -> {
-                setState {
-                    copy(
-                        course = viewState.value.course.copy(
-                            remindDate = event.remindDate,
-                            interval = event.interval
-                        ),
-                        courseIntervalEntered = event.remindDate?.let { true } ?: false
-                    )
-                }
+                updateCourseRemindDate(event.remindDate, event.interval)
             }
 
             is CreateCourseContract.Event.UpdateUsages -> setState { copy(usages = event.usages) }
@@ -81,18 +76,31 @@ class CreateCourseViewModel @Inject constructor(
                 if (!viewState.value.updateCourseStartDate) setCourseDate()
             }
 
-            is CreateCourseContract.Event.ActionNext -> {
-                if (viewState.value.remedy.name.isNullOrBlank()) {
-                    setState { copy(isError = true) }
-                } else {
-                    setEffect { CreateCourseContract.Effect.Navigation.Next }
-                }
+            is CreateCourseContract.Event.ActionNext -> next()
+
+            CreateCourseContract.Event.ActionBack -> {
+                if (confirmBack) showConfirm(true) else back()
             }
 
-            CreateCourseContract.Event.ActionBack -> setEffect { CreateCourseContract.Effect.Navigation.Back }
+            is CreateCourseContract.Event.ConfirmBack -> confirmBack = event.confirm
+
+            CreateCourseContract.Event.Cancel -> showConfirm(false)
 
             CreateCourseContract.Event.ActionCollapse -> setEffect { CreateCourseContract.Effect.Collapse }
+
             CreateCourseContract.Event.ActionExpand -> setEffect { CreateCourseContract.Effect.Expand }
+        }
+    }
+
+    private fun updateCourseRemindDate(remindDate: LocalDateTime?, interval: Long) {
+        setState {
+            copy(
+                course = viewState.value.course.copy(
+                    remindDate = remindDate,
+                    interval = interval
+                ),
+                courseIntervalEntered = remindDate?.let { true } ?: false
+            )
         }
     }
 
@@ -145,6 +153,12 @@ class CreateCourseViewModel @Inject constructor(
                     viewState.value.remedy.id
                 } userId=${viewState.value.remedy.userId}"
             )
+            // отобразить лоадер
+            launch {
+                setState {
+                    copy(loader = true)
+                }
+            }
             // записать remedy и получить remedyId
             createRemedyUseCase(viewState.value.remedy).onSuccess { remedyId ->
                 log("finishCreation: remedyId=$remedyId")
@@ -181,17 +195,22 @@ class CreateCourseViewModel @Inject constructor(
                         log("finishCreation: addNotifications courseId=${viewState.value.course.id}")
                         // добавляем оповещение
                         addNotifications(courseId = viewState.value.course.id)
-                        newState()
+//                        newState()
                         // синхронизировать
                         AuthToken.requiredSynchronize()
+                        //
+                        next()
                     }.onFailure {
-                        err("finishCreation: error createPatternUsagesUseCase", it)
+                        log("finishCreation: error createPatternUsagesUseCase", it)
+                        error(it.localizedMessage)
                     }
                 }.onFailure {
-                    err("finishCreation: error createCourseUseCase", it)
+                    log("finishCreation: error createCourseUseCase", it)
+                    error(it.localizedMessage)
                 }
             }.onFailure {
-                err("finishCreation: error createRemedyUseCase", it)
+                log("finishCreation: error createRemedyUseCase", it)
+                error(it.localizedMessage)
             }
         }
     }
@@ -226,11 +245,38 @@ class CreateCourseViewModel @Inject constructor(
         super.onCleared()
     }
 
-    private fun log(text: String) {
-        Log.w("VTTAG", "CreateCourseViewModel::$text")
+    private fun cancel() {
+        setState { copy(confirmBack = false) }
     }
 
-    private fun err(text: String, e: Throwable) {
-        Log.e("VTTAG", "CreateCourseViewModel::$text", e)
+    private fun showConfirm(show: Boolean) {
+        setState { copy(confirmBack = show) }
+    }
+
+    private fun back() {
+        setState { copy(confirmBack = false) }
+        setEffect { CreateCourseContract.Effect.Navigation.Back }
+    }
+
+    private fun next() {
+        if (viewState.value.remedy.name.isNullOrBlank()) {
+            setState { copy(isError = true) }
+        } else {
+            setEffect { CreateCourseContract.Effect.Navigation.Next }
+        }
+    }
+
+    private fun error(message: String?) {
+        setState {
+            copy(loader = false)
+        }
+        message?.let {
+            setEffect { CreateCourseContract.Effect.Toast(message) }
+        }
+    }
+
+    private fun log(text: String, e: Throwable? = null) {
+        if (e == null) Log.w("VTTAG", "CreateCourseViewModel::$text")
+        else Log.e("VTTAG", "CreateCourseViewModel::$text", e)
     }
 }

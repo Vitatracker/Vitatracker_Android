@@ -19,18 +19,20 @@ class CreateCourseContract {
         data class UpdateUsages(val usages: List<UsageDomainModel>) : Event
         data class UpdateUsagePatterns(val patterns: List<UsageFormat>) : Event
 
-        object AddUsagesPattern : Event
+        data object AddUsagesPattern : Event
         data class DeleteUsagePattern(val pattern: UsageFormat) : Event
         data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
 
-        object UpdateCourseStartDate : Event
-        object Drop : Event
-        object Finish : Event
-        object ActionBack : Event
-        object ActionNext : Event
-        object ActionCollapse : Event
-        object ActionExpand : Event
+        data object UpdateCourseStartDate : Event
+        data object Drop : Event
+        data object Finish : Event
+        data object ActionBack : Event
+        data class ConfirmBack(val confirm: Boolean) : Event
+        data object Cancel : Event
+        data object ActionNext : Event
+        data object ActionCollapse : Event
+        data object ActionExpand : Event
     }
 
     data class State(
@@ -44,14 +46,17 @@ class CreateCourseContract {
         val courseIntervalEntered: Boolean = false,
         val updateCourseStartDate: Boolean = false,
         val nextAllowed: Boolean = false,
+        val confirmBack: Boolean = false,
+        val loader: Boolean = false,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-        object Collapse : Effect
-        object Expand : Effect
+        data object Collapse : Effect
+        data object Expand : Effect
+        data class Toast(val message: String) : Effect
         sealed interface Navigation : Effect {
-            object Next : Navigation
-            object Back : Navigation
+            data object Next : Navigation
+            data object Back : Navigation
         }
     }
 }

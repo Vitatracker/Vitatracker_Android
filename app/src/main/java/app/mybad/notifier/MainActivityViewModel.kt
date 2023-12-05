@@ -14,6 +14,7 @@ import app.mybad.utils.displayDateTimeUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
@@ -57,6 +58,7 @@ class MainActivityViewModel @Inject constructor(
                 AuthToken.synchronization
                     .debounce(20000)
                     .collect { time ->
+                        delay(10000)
                         log("synchronization: date=${time}")
                         synchronizationCourseUseCase(time).onFailure {
                             // TODO("отобразить ошибку синхронизации")

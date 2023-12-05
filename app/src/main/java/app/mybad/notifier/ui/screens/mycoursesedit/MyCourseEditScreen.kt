@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseAlertDialog
+import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.notifier.ui.common.usagesPatternPreview
@@ -319,27 +321,29 @@ fun MyCourseEditScreen(
             )
         }
 
-        selectedInput?.let { select ->
-            CalendarAndRegimeSelectorDialog(
-                selectedInput = select,
-                startDate = courseInternal.startDate,
-                endDate = courseInternal.endDate,
-                regime = courseInternal.regime,
-                regimeList = regimeList.toList(),
-                onDismissRequest = { selectedInput = null },
-                onDateSelected = {
-                    courseInternal = courseInternal.copy(
-                        startDate = it.first,
-                        endDate = it.second,
-                    )
-                },
-                onRegimeSelected = {
-                    courseInternal = courseInternal.copy(regime = it)
-                }
-            )
+        AnimatedVisibility(selectedInput != null) {
+            selectedInput?.let { select ->
+                CalendarAndRegimeSelectorDialog(
+                    selectedInput = select,
+                    startDate = courseInternal.startDate,
+                    endDate = courseInternal.endDate,
+                    regime = courseInternal.regime,
+                    regimeList = regimeList.toList(),
+                    onDismissRequest = { selectedInput = null },
+                    onDateSelected = {
+                        courseInternal = courseInternal.copy(
+                            startDate = it.first,
+                            endDate = it.second,
+                        )
+                    },
+                    onRegimeSelected = {
+                        courseInternal = courseInternal.copy(regime = it)
+                    }
+                )
+            }
         }
 
-        if (state.confirmation) {
+        AnimatedVisibility(state.confirmation) {
             ReUseAlertDialog(
                 drawableId = R.drawable.medicines,
                 textId = R.string.mycourse_confirmation_delete_text,
@@ -350,6 +354,10 @@ fun MyCourseEditScreen(
                 secondId = R.string.mycourse_delete_cancel,
                 onClickSecond = { sendEvent(MyCoursesEditContract.Event.CancelDelete) },
             )
+        }
+
+        AnimatedVisibility(state.loader) {
+            ReUseProgressDialog()
         }
     }
 }

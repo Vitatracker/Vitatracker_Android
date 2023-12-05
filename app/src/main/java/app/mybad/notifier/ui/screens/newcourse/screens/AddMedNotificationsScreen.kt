@@ -1,6 +1,7 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +33,9 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.AddNotificationButton
 import app.mybad.notifier.ui.common.NotificationItem
 import app.mybad.notifier.ui.common.ReUseFilledButton
+import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.common.usagesPatternPreview
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.TimeSelectorDialog
@@ -48,13 +52,17 @@ fun AddMedNotificationsScreen(
 ) {
     val forms = stringArrayResource(R.array.types)
     var selectedItem: UsageFormat? by remember { mutableStateOf(null) }
+    var canPress by remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
+        sendEvent(CreateCourseContract.Event.ConfirmBack(false))
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
                 is CreateCourseContract.Effect.Collapse -> {}
                 is CreateCourseContract.Effect.Expand -> {}
+                is CreateCourseContract.Effect.Toast -> context.showToast(effect.message)
             }
         }
     }
@@ -70,10 +78,11 @@ fun AddMedNotificationsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = 0.dp,
                     bottom = 16.dp
                 ),
             verticalArrangement = Arrangement.SpaceBetween
@@ -129,10 +138,13 @@ fun AddMedNotificationsScreen(
             }
             ReUseFilledButton(
                 textId = R.string.navigation_next,
-                enabled = state.nextAllowed,
+                enabled = state.nextAllowed && !state.loader,
             ) {
-                sendEvent(CreateCourseContract.Event.Finish)
-                sendEvent(CreateCourseContract.Event.ActionNext)
+                if (canPress) {
+                    // запретим нажимать кнопку
+//                    canPress = false
+                    sendEvent(CreateCourseContract.Event.Finish)
+                }
             }
         }
     }
@@ -149,6 +161,11 @@ fun AddMedNotificationsScreen(
             )
             selectedItem = null
         }
+    }
+    AnimatedVisibility(visible = state.loader) {
+        ReUseProgressDialog()
+        // разрешим нажимать кнопку
+//        canPress = true
     }
 }
 

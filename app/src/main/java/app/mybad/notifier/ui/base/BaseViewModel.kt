@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ abstract class BaseViewModel<Event : ViewEvent, UiState : ViewState, Effect : Vi
     val viewState: State<UiState> = _viewState
 
     private val _event = MutableSharedFlow<Event>()
+    private var eventOld: Event? = null
 
     private val _effect: Channel<Effect> = Channel()
     val effect = _effect.receiveAsFlow()
@@ -48,7 +50,13 @@ abstract class BaseViewModel<Event : ViewEvent, UiState : ViewState, Effect : Vi
     }
 
     fun setEvent(event: Event) {
-        viewModelScope.launch { _event.emit(event) }
+        viewModelScope.launch {
+            if (event == eventOld) return@launch
+            eventOld = event
+            _event.emit(event)
+            delay(1000)
+            eventOld = null
+        }
     }
 
     protected fun setState(reducer: UiState.() -> UiState) {

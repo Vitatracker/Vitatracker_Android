@@ -14,6 +14,10 @@
     <string name="add_med_icon">Select icon</string>
     <string name="enter_med_name">Enter the name of the medicament</string>
     <string name="add_med_reception">Reception</string>
+    <string name="add_med_confirm_cancel_title">Oh!</string>
+    <string name="add_med_confirm_cancel_text">It looks like you accidentally completed adding a new medicine. Confirm your decision by clicking \'Confirm\' or cancel by selecting \'Cancel\'.</string>
+    <string name="add_med_confirm_cancel_button_confirm">Confirm</string>
+    <string name="add_med_confirm_cancel_button_cancel">Cancel</string>
     <string name="edit_med_title">Edit the medicament</string>
 
     <string name="navigation_back">Back</string>

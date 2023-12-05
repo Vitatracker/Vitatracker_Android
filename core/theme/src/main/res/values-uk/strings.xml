@@ -13,6 +13,10 @@
     <string name="add_med_icon">Виберіть іконку</string>
     <string name="enter_med_name">Введіть найменування препарату</string>
     <string name="add_med_reception">Рецепція</string>
+    <string name="add_med_confirm_cancel_title">Ой!</string>
+    <string name="add_med_confirm_cancel_text">Схоже, ви випадково завершили додавання нових ліків. Підтвердьте ваше рішення, натиснувши \'Підтвердити\', або скасуйте, вибравши \'Скасувати\'.</string>
+    <string name="add_med_confirm_cancel_button_confirm">Підтвердити</string>
+    <string name="add_med_confirm_cancel_button_cancel">Скасувати</string>
     <string name="edit_med_title">Редагування препарату</string>
 
     <string name="navigation_back">Назад</string>

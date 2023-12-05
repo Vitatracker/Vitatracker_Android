@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +42,7 @@ import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
@@ -61,8 +63,10 @@ fun AddMedCourseDetailsScreen(
     val regimeList = stringArrayResource(R.array.regime)
     var selectedInput by remember { mutableStateOf<CourseSelectInput?>(null) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val context = LocalContext.current
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
+        sendEvent(CreateCourseContract.Event.ConfirmBack(false))
         // обновим начальную дату курса и пределы дат
         sendEvent(CreateCourseContract.Event.UpdateCourseStartDate)
         effectFlow?.collect { effect ->
@@ -76,37 +80,9 @@ fun AddMedCourseDetailsScreen(
                 is CreateCourseContract.Effect.Expand -> {
                     bottomSheetState.expand()
                 }
+
+                is CreateCourseContract.Effect.Toast -> context.showToast(effect.message)
             }
-        }
-    }
-    if (bottomSheetState.isVisible) {
-        ModalBottomSheet(
-            onDismissRequest = { sendEvent(CreateCourseContract.Event.ActionCollapse) },
-            sheetState = bottomSheetState,
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            scrimColor = MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
-        ) {
-            RemindNewCourseBottomSheet(
-                modifier = Modifier.padding(16.dp),
-                endDate = state.course.endDate,
-                remindDate = state.course.remindDate,
-                interval = state.course.interval,
-                onSave = { remindDate, interval ->
-                    Log.w(
-                        "VTTAG",
-                        "AddMedCourseDetailsScreen:: remindDate=${remindDate?.displayDateTime()} interval=$interval"
-                    )
-                    sendEvent(
-                        CreateCourseContract.Event.UpdateCourseRemindDate(
-                            remindDate = remindDate,
-                            interval = interval,
-                        )
-                    )
-                    sendEvent(CreateCourseContract.Event.ActionCollapse)
-                }
-            )
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
     Scaffold(
@@ -116,13 +92,18 @@ fun AddMedCourseDetailsScreen(
                 onBackPressed = { sendEvent(CreateCourseContract.Event.ActionBack) }
             )
         }
-    ) {
+    ) { paddingValues ->
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(16.dp)
+                .padding(paddingValues)
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 0.dp,
+                    bottom = 16.dp
+                ),
         ) {
             Column {
                 Text(
@@ -219,6 +200,37 @@ fun AddMedCourseDetailsScreen(
                 sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
             }
         )
+    }
+
+    if (bottomSheetState.isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { sendEvent(CreateCourseContract.Event.ActionCollapse) },
+            sheetState = bottomSheetState,
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            scrimColor = MaterialTheme.colorScheme.background.copy(alpha = 0.8f),
+        ) {
+            RemindNewCourseBottomSheet(
+                modifier = Modifier.padding(16.dp),
+                endDate = state.course.endDate,
+                remindDate = state.course.remindDate,
+                interval = state.course.interval,
+                onSave = { remindDate, interval ->
+                    Log.w(
+                        "VTTAG",
+                        "AddMedCourseDetailsScreen:: remindDate=${remindDate?.displayDateTime()} interval=$interval"
+                    )
+                    sendEvent(
+                        CreateCourseContract.Event.UpdateCourseRemindDate(
+                            remindDate = remindDate,
+                            interval = interval,
+                        )
+                    )
+                    sendEvent(CreateCourseContract.Event.ActionCollapse)
+                }
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -22,9 +24,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.ColorSelector
 import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
@@ -41,12 +45,16 @@ fun AddMedFirstScreen(
     navigation: (navigationEffect: CreateCourseContract.Effect.Navigation) -> Unit = {},
 ) {
 
+    val context = LocalContext.current
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
+        sendEvent(CreateCourseContract.Event.ConfirmBack(true))
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
                 is CreateCourseContract.Effect.Collapse -> {}
                 is CreateCourseContract.Effect.Expand -> {}
+                is CreateCourseContract.Effect.Toast -> context.showToast(effect.message)
             }
         }
     }
@@ -61,10 +69,11 @@ fun AddMedFirstScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
+                    top = 0.dp,
                     bottom = 16.dp
                 ),
             verticalArrangement = Arrangement.SpaceBetween
@@ -154,6 +163,24 @@ fun AddMedFirstScreen(
                 sendEvent(CreateCourseContract.Event.ActionNext)
             }
         }
+    }
+    AnimatedVisibility(state.confirmBack) {
+        ReUseAlertDialog(
+            titleId = R.string.add_med_confirm_cancel_title,
+            textId = R.string.add_med_confirm_cancel_text,
+            textButton = false,
+
+            firstErrorColor = true,
+            firstId = R.string.add_med_confirm_cancel_button_confirm,
+            onClickFirst = {
+                sendEvent(CreateCourseContract.Event.ConfirmBack(false))
+                sendEvent(CreateCourseContract.Event.ActionBack)
+            },
+            secondId = R.string.add_med_confirm_cancel_button_cancel,
+            onClickSecond = { sendEvent(CreateCourseContract.Event.Cancel) },
+
+            onClickOutside = { sendEvent(CreateCourseContract.Event.Cancel) },
+        )
     }
 }
 

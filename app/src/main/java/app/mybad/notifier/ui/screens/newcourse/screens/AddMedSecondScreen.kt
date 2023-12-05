@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,7 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
@@ -46,12 +48,16 @@ fun AddMedSecondScreen(
     navigation: (navigationEffect: CreateCourseContract.Effect.Navigation) -> Unit = {},
 ) {
     Log.w("VTTAG", "NewCourseNavGraph::AddMedSecondScreen: start")
+    val context = LocalContext.current
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
+        sendEvent(CreateCourseContract.Event.ConfirmBack(false))
         effectFlow?.collect { effect ->
             when (effect) {
                 is CreateCourseContract.Effect.Navigation -> navigation(effect)
                 is CreateCourseContract.Effect.Collapse -> {}
                 is CreateCourseContract.Effect.Expand -> {}
+                is CreateCourseContract.Effect.Toast -> context.showToast(effect.message)
             }
         }
     }

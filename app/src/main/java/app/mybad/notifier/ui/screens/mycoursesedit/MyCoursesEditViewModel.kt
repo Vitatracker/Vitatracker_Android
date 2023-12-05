@@ -64,7 +64,6 @@ class MyCoursesEditViewModel @Inject constructor(
     override fun setInitialState() = MyCoursesEditContract.State()
 
     override fun handleEvents(event: MyCoursesEditContract.Event) {
-//        TODO("Not yet implemented")
         viewModelScope.launch {
             when (event) {
                 is MyCoursesEditContract.Event.ConfirmationDelete -> {
@@ -76,10 +75,11 @@ class MyCoursesEditViewModel @Inject constructor(
                 }
 
                 is MyCoursesEditContract.Event.Delete -> {
-                    if (viewState.value.confirmation) {
-                        confirmation(false)
-                        deleteCourse(event.courseId)
-                    }
+                    deleteCourse(event.courseId)
+                    //TODO("запустить воркер удаления курса на беке")
+                    // синхронизировать
+                    AuthToken.requiredSynchronize()
+                    setEffect { MyCoursesEditContract.Effect.Navigation.Back }
                 }
 
                 is MyCoursesEditContract.Event.DeleteUsagePattern -> {
@@ -275,16 +275,25 @@ class MyCoursesEditViewModel @Inject constructor(
         }
     }
 
+    private fun showLoader(show: Boolean = true) {
+        viewModelScope.launch {
+            setState {
+                copy(
+                    confirmation = false,
+                    loader = show
+                )
+            }
+        }
+    }
+
     private suspend fun deleteCourse(courseId: Long) {
+        showLoader()
         //TODO("проверить было ли использование")
         deleteCourseFullUseCase(courseId, currentDateTimeSystem())
-        //TODO("запустить воркер удаления курса на беке")
-        // синхронизировать
-        AuthToken.requiredSynchronize()
-        setEffect { MyCoursesEditContract.Effect.Navigation.Back }
     }
 
     private suspend fun saveCourse() {
+        showLoader()
         //TODO("тут необходимо переделать, закрывать старый курс и пересоздавать курс с новой датой")
         // проверить есть ли использование таблетки
         val isUseUsage = checkUseUsagesInCourseUseCase(viewState.value.course.id)
@@ -329,7 +338,7 @@ class MyCoursesEditViewModel @Inject constructor(
         val patternUsages = viewState.value.usagesPatternEdit.toPattern()
         // если таблетка старая, то idn не поменялся иначе будет новый
         if (remedyId == viewState.value.remedy.id) {
-           // отредактируем курс
+            // отредактируем курс
             updateCourseUseCase(
                 viewState.value.course.copy(
                     isInfinite = false,

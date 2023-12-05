@@ -9,11 +9,11 @@ import app.mybad.notifier.ui.base.ViewState
 
 class MyCoursesEditContract {
     sealed interface Event : ViewEvent {
-        object ActionBack : Event
+        data object ActionBack : Event
         data class Delete(val courseId: Long) : Event
-        object ConfirmationDelete : Event
-        object CancelDelete : Event
-        object AddUsagesPattern : Event
+        data object ConfirmationDelete : Event
+        data object CancelDelete : Event
+        data object AddUsagesPattern : Event
         data class DeleteUsagePattern(val pattern: UsageFormat) : Event
         data class ChangeQuantityUsagePattern(val pattern: UsageFormat, val quantity: Float) : Event
         data class ChangeTimeUsagePattern(val pattern: UsageFormat, val time: Int) : Event
@@ -23,8 +23,8 @@ class MyCoursesEditContract {
             val remedy: RemedyDomainModel,
         ) : Event
 
-        object Save : Event
-        object NotificationEditing : Event
+        data object Save : Event
+        data object NotificationEditing : Event
         data class NotificationUpdateAndEnd(
             val remindTime: Int,// тут в минутах HH:mm
             val coursesInterval: Int, // дней
@@ -45,13 +45,13 @@ class MyCoursesEditContract {
 
         val nextAllowed: Boolean = false,
         val confirmation: Boolean = false,
+        val loader: Boolean = false,
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-
         sealed interface Navigation : Effect {
-            object Back : Navigation
-            object NotificationEditing : Navigation
+            data object Back : Navigation
+            data object NotificationEditing : Navigation
         }
     }
 }
