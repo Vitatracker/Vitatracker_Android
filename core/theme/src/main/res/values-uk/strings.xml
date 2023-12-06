@@ -190,8 +190,8 @@
 
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Щоденник нагадувань</string>
-    <string name="main_screen_meds_clear_start">Починаємо!</string>
-    <string name="main_screen_meds_clear_add">Додайте перший препарат</string>
+    <string name="main_screen_meds_clear_start">Починаємо!\nДодайте перший препарат</string>
+    <string name="main_screen_meds_dont_have_today">У Вас немає прийому ліків сьогодні!</string>
     <string name="add_notifications_choose_time">Виберіть час</string>
     <string name="add_med_error_empty_name">Назва не заповнена</string>
 

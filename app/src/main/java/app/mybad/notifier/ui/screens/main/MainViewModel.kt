@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.UsageDisplayDomainModel
+import app.mybad.domain.usecases.courses.CountActiveCourseUseCase
 import app.mybad.domain.usecases.patternusage.GetPatternUsagesActiveWithParamsBetween
 import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
@@ -20,12 +21,18 @@ import app.mybad.utils.timeInMinutes
 import app.mybad.utils.toDateTimeSystem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.sample
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import javax.inject.Inject
@@ -35,6 +42,7 @@ class MainViewModel @Inject constructor(
     private val getPatternUsagesActiveWithParamsBetween: GetPatternUsagesActiveWithParamsBetween,
     private val getUsagesWithNameAndDateBetweenUseCase: GetUsagesWithNameAndDateBetweenUseCase,
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
+    private val countActiveCourseUseCase: CountActiveCourseUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     override fun setInitialState() = MainContract.State()
@@ -47,10 +55,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private val dateTime = MutableStateFlow(viewState.value.selectedDate)
+    private val _dateTime = MutableStateFlow(currentDateTimeSystem().atNoonOfDay())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val patternsAndUsages = dateTime.flatMapLatest { date ->
+    val dateTime = _dateTime.flatMapLatest { date ->
         val startDate = date.atStartOfDay().systemToEpochSecond()
         val endDate = date.atEndOfDay().systemToEpochSecond()
         Log.w(
@@ -92,10 +100,15 @@ class MainViewModel @Inject constructor(
         }
     }
         .onEach(::changeState)
+        .map { _dateTime.value }
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5000),
+            initialValue = _dateTime.value
+        )
 
     init {
         observeAuthorization()
-        receivingCourses()
     }
 
     private fun observeAuthorization() {
@@ -108,26 +121,21 @@ class MainViewModel @Inject constructor(
 
     private fun transformPatternUsages(
         patterns: List<UsageDisplayDomainModel>
-    ): Map<String, UsageDisplayDomainModel> = patterns.filter { it.checkDate(dateTime.value) }
+    ): Map<String, UsageDisplayDomainModel> = patterns.filter { it.checkDate(_dateTime.value) }
         .associateBy { it.toUsageKey() }
-
-    private fun receivingCourses() {
-        viewModelScope.launch {
-            //TODO("заменить и использованием жизненного цикла экрана")
-            patternsAndUsages.collect()
-        }
-    }
 
     private fun changeState(pu: Map<String, UsageDisplayDomainModel>) {
         viewModelScope.launch {
             Log.w(
                 "VTTAG",
-                "MainViewModel::changeState: date=${dateTime.value.displayDateTime()} changeState=${pu.size}"
+                "MainViewModel::changeState: date=${_dateTime.value.displayDateTime()} changeState=${pu.size}"
             )
+            val isEmpty = countActiveCourseUseCase(AuthToken.userId).getOrDefault(0L) == 0L
             setState {
                 copy(
                     patternsAndUsages = pu,
-                    selectedDate = dateTime.value,
+                    updateDate = _dateTime.value,
+                    isEmpty = isEmpty,
                 )
             }
         }
@@ -135,7 +143,7 @@ class MainViewModel @Inject constructor(
 
     private fun changeDate(date: LocalDateTime) {
         viewModelScope.launch {
-            dateTime.value = date.atNoonOfDay()
+            _dateTime.value = date.atNoonOfDay()
             Log.d("VTTAG", "MainViewModel::changeData: date=${date.displayDateTime()}")
         }
     }

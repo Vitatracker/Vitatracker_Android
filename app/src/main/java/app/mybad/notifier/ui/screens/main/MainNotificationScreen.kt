@@ -5,12 +5,12 @@ import android.content.res.Resources
 import android.content.res.TypedArray
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -62,7 +62,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
@@ -82,6 +82,8 @@ import app.mybad.utils.plusSeconds
 import app.mybad.utils.toText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 
@@ -89,11 +91,13 @@ import kotlinx.datetime.LocalDateTime
 @Composable
 fun MainNotificationScreen(
     state: MainContract.State,
+    dateTime: StateFlow<LocalDateTime>,
     effectFlow: Flow<ViewSideEffect>? = null,
     sendEvent: (event: MainContract.Event) -> Unit = {},
     navigation: (navigationEffect: MainContract.Effect.Navigation) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val selectedDate by dateTime.collectAsStateWithLifecycle()
     val types: Array<String> = stringArrayResource(R.array.types)
     val relations: Array<String> = stringArrayResource(R.array.food_relations)
     val icons: TypedArray = LocalContext.current.resources.obtainTypedArray(R.array.icons)
@@ -123,7 +127,7 @@ fun MainNotificationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 NotificationMonthPager(
-                    date = state.selectedDate,
+                    date = selectedDate,
                     changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
                 )
                 if (state.patternsAndUsages.isNotEmpty()) {
@@ -134,7 +138,12 @@ fun MainNotificationScreen(
                         icons = icons,
                         setUsageFactTime = { sendEvent(MainContract.Event.SetUsageFactTime(it)) },
                     )
-                } else NotificationRemedyClear()
+                } else {
+                    NotificationRemedyClear(
+                        if (state.isEmpty) R.string.main_screen_meds_clear_start
+                        else R.string.main_screen_meds_dont_have_today
+                    )
+                }
             }
         }
     }
@@ -431,48 +440,25 @@ private fun NotificationTimeCourse(
 }
 
 @Composable
-private fun NotificationRemedyClear() {
+private fun NotificationRemedyClear(
+    @StringRes text: Int,
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
-        NotificationRemedyClearText()
-        Spacer(modifier = Modifier.height(22.dp))
-        NotificationRemedyClearImage()
-    }
-}
-
-@Composable
-private fun NotificationRemedyClearText() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = stringResource(id = R.string.main_screen_meds_clear_start),
-            fontSize = 25.sp,
-            textAlign = TextAlign.Justify,
-            fontWeight = FontWeight.Bold
+            text = stringResource(text),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
         )
-        Text(
-            text = stringResource(id = R.string.main_screen_meds_clear_add),
-            fontSize = 25.sp,
-            textAlign = TextAlign.Justify,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-private fun NotificationRemedyClearImage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 10.dp, end = 10.dp, bottom = 70.dp),
-        Alignment.BottomCenter
-    ) {
         Image(
             imageVector = ImageVector.vectorResource(id = R.drawable.main_screen_clear_med),
             contentDescription = null,
+            alignment = Alignment.BottomCenter,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -652,7 +638,8 @@ fun MainNotificationScreenPreview() {
                 patternsAndUsages = sortedMapOf<String, UsageDisplayDomainModel>().apply {
                     patternsAndUsages.map { it.toUsageKey() to it }
                 },
-            )
+            ),
+            dateTime = MutableStateFlow(currentDateTimeSystem()),
         )
     }
 }

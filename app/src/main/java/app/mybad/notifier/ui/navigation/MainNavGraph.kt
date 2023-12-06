@@ -41,6 +41,7 @@ fun MainNavGraph(
 
             MainNotificationScreen(
                 state = viewModel.viewState.value,
+                dateTime = viewModel.dateTime,
                 effectFlow = viewModel.effect,
                 sendEvent = viewModel::setEvent,
                 navigation = { navigationAction ->
