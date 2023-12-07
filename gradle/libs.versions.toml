@@ -8,7 +8,7 @@ namespace-domain = "app.mybad.domain"
 namespace-network = "app.mybad.network"
 namespace-notifications = "app.mybad.notifications"
 code = "1"
-name = "2.11"
+name = "2.12"
 
 # SDK
 sdk-compile = "34"
@@ -38,7 +38,7 @@ core-splashscreen = "1.0.1"
 appcompat = "1.6.1"
 constraint = "2.1.4"
 lifecycle = "2.6.2"
-data-store = "1.1.0-alpha06"
+data-store = "1.1.0-alpha07"
 
 # Material
 google-material = "1.10.0"
@@ -75,10 +75,10 @@ google-flowlayout = "0.28.0"
 play-services-auth = "20.7.0"
 
 # RoomDB
-room = "2.6.0"
+room = "2.6.1"
 
 # WorkManager
-work = "2.8.1"
+work = "2.9.0"
 work-hilt = "1.1.0"
 
 # Other

@@ -8,6 +8,7 @@ import app.mybad.domain.usecases.courses.CountActiveCourseUseCase
 import app.mybad.domain.usecases.patternusage.GetPatternUsagesActiveWithParamsBetween
 import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
 import app.mybad.domain.usecases.usages.GetUsagesWithNameAndDateBetweenUseCase
+import app.mybad.domain.usecases.usages.UpdateTimerUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atNoonOfDay
@@ -21,17 +22,13 @@ import app.mybad.utils.timeInMinutes
 import app.mybad.utils.toDateTimeSystem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
@@ -43,6 +40,7 @@ class MainViewModel @Inject constructor(
     private val getUsagesWithNameAndDateBetweenUseCase: GetUsagesWithNameAndDateBetweenUseCase,
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
     private val countActiveCourseUseCase: CountActiveCourseUseCase,
+    private val updateTimerUseCase: UpdateTimerUseCase,
 ) : BaseViewModel<MainContract.Event, MainContract.State, MainContract.Effect>() {
 
     override fun setInitialState() = MainContract.State()
@@ -55,10 +53,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private val _dateTime = MutableStateFlow(currentDateTimeSystem().atNoonOfDay())
+    private val _updateTime = MutableStateFlow(currentDateTimeSystem())
+    private val updateTime = _updateTime.onEach(::setTimer)
+
+    private val _selectDate = MutableStateFlow(viewState.value.selectDate)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val dateTime = _dateTime.flatMapLatest { date ->
+    private val usages = _selectDate.flatMapLatest { date ->
         val startDate = date.atStartOfDay().systemToEpochSecond()
         val endDate = date.atEndOfDay().systemToEpochSecond()
         Log.w(
@@ -76,36 +77,20 @@ class MainViewModel @Inject constructor(
                 startTime = startDate,
                 endTime = endDate,
             ),
-        ) { p, u ->
-            // тут нужна подмена для useTime и timeInMinutes для pattern
-            p.plus(u).map {
-                val pattern = it.value
-                val useTime = if (pattern.isPattern) {
-                    date.correctTimeInMinutes(pattern.timeInMinutes)
-                } else pattern.useTime // с учетом часового пояса
-//                Log.w(
-//                    "VTTAG",
-//                    "MainViewModel::patternsAndUsages: isPattern=${pattern.isPattern} useTime=${useTime.displayDateTime()} correct=${currentDateTimeSystem().timeCorrect()} time=${pattern.timeInMinutes.displayTimeInMinutes()} - ${
-//                        pattern.timeInMinutes.timeCorrectToSystem().displayTimeInMinutes()
-//                    } id=${pattern.id}"
-//                )
-                pattern.copy(
-                    // для тестов, потом удалить name
-//                    name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
-                    useTime = useTime,
-                    timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
-                )
-
-            }.sortedBy { it.useTime.systemToInstant() }.associateBy { it.toUsageKey() }
-        }
+            ::Pair
+        ).map(::changeState)
     }
-        .onEach(::changeState)
-        .map { _dateTime.value }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileSubscribed(5000),
-            initialValue = _dateTime.value
-        )
+
+    val update = combine(
+        usages,
+        updateTime
+    ) { _, date ->
+        date
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileSubscribed(5000),
+        initialValue = currentDateTimeSystem()
+    )
 
     init {
         observeAuthorization()
@@ -121,31 +106,66 @@ class MainViewModel @Inject constructor(
 
     private fun transformPatternUsages(
         patterns: List<UsageDisplayDomainModel>
-    ): Map<String, UsageDisplayDomainModel> = patterns.filter { it.checkDate(_dateTime.value) }
-        .associateBy { it.toUsageKey() }
+    ): Map<String, UsageDisplayDomainModel> =
+        patterns.filter { it.checkDate(_selectDate.value) }
+            .associateBy { it.toUsageKey() }
 
-    private fun changeState(pu: Map<String, UsageDisplayDomainModel>) {
-        viewModelScope.launch {
-            Log.w(
-                "VTTAG",
-                "MainViewModel::changeState: date=${_dateTime.value.displayDateTime()} changeState=${pu.size}"
+    private suspend fun changeState(
+        pu: Pair<Map<String, UsageDisplayDomainModel>, Map<String, UsageDisplayDomainModel>>
+    ) = pu.first.plus(pu.second).map {
+        val pattern = it.value
+        val useTime = if (pattern.isPattern) {
+            _selectDate.value.correctTimeInMinutes(pattern.timeInMinutes)
+        } else pattern.useTime // с учетом часового пояса
+        pattern.copy(
+            // для тестов, потом удалить name
+//                    name = "${pattern.name}|${if (pattern.isPattern) "P" else "U"}|${useTime.displayDateTimeShort()}",
+            useTime = useTime,
+            timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
+        )
+    }.sortedBy { it.useTime.systemToInstant() }.associateBy { it.toUsageKey() }.also {
+        log("changeState: date=${_selectDate.value.displayDateTime()} changeState=${it.size}")
+        val isEmpty = countActiveCourseUseCase(AuthToken.userId).getOrDefault(0L) == 0L
+        setState {
+            copy(
+                patternsAndUsages = it,
+                selectDate = _selectDate.value,
+                isEmpty = isEmpty,
             )
-            val isEmpty = countActiveCourseUseCase(AuthToken.userId).getOrDefault(0L) == 0L
-            setState {
-                copy(
-                    patternsAndUsages = pu,
-                    updateDate = _dateTime.value,
-                    isEmpty = isEmpty,
-                )
-            }
         }
+        _updateTime.value = currentDateTimeSystem()
+    }
+
+    private fun setTimer(date: LocalDateTime) {
+        val usages = viewState.value.patternsAndUsages.values.toList()
+        log("startUpdateTimer: in size=${usages.size} date=${date.displayDateTime()}")
+        if (usages.isNotEmpty()) {
+            val endTime = date.atEndOfDay()
+            usages.firstOrNull {
+                it.factUseTime == null && it.useTime > date && it.useTime <= endTime
+            }?.let { usage ->
+//                log("startUpdateTimer: start=${date.displayDateTime()} -> ${usage.useTime.displayDateTime()}")
+                updateTimerUseCase.start(
+                    usage.useTime.systemToEpochSecond(),
+                    {
+                        log("startUpdateTimer: tick=$it")
+                    },
+                    {
+                        viewModelScope.launch {
+                            updateTimerUseCase.stop()
+                            _updateTime.value = currentDateTimeSystem()
+                            log("startUpdateTimer: updateTime=${_updateTime.value.displayDateTime()}")
+                        }
+                    }
+                )
+            } ?: updateTimerUseCase.stop()
+        } else updateTimerUseCase.stop()
+        log("startUpdateTimer: out")
     }
 
     private fun changeDate(date: LocalDateTime) {
-        viewModelScope.launch {
-            _dateTime.value = date.atNoonOfDay()
-            Log.d("VTTAG", "MainViewModel::changeData: date=${date.displayDateTime()}")
-        }
+        _selectDate.value = date.atNoonOfDay()
+        log("changeData: date=${_selectDate.value.displayDateTime()}")
     }
 
     private fun setUsagesFactTime(usageKey: String) {
@@ -171,4 +191,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun log(text: String, e: Throwable? = null) {
+        if (e == null) Log.w("VTTAG", "MainViewModel::$text")
+        else Log.e("VTTAG", "MainViewModel::$text", e)
+    }
 }

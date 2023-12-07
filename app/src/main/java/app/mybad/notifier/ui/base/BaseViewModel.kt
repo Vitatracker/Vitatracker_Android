@@ -54,7 +54,7 @@ abstract class BaseViewModel<Event : ViewEvent, UiState : ViewState, Effect : Vi
             if (event == eventOld) return@launch
             eventOld = event
             _event.emit(event)
-            delay(1000)
+            delay(500)
             eventOld = null
         }
     }
