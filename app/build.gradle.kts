@@ -18,6 +18,8 @@ android {
         versionCode = libs.versions.code.get().toInt()
         versionName = libs.versions.name.get()
 
+        manifestPlaceholders["appAuthRedirectScheme"] = libs.versions.namespace.app.get()
+
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "app.mybad.data.test.HiltTestRunner"
         vectorDrawables {

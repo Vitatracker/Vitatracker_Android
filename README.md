@@ -1,6 +1,6 @@
 # VitaTracker
 
-![Language](https://img.shields.io/badge/Kotlin-1.9.20-blue) ![Compose](https://img.shields.io/badge/Compose-1.5.4-magenta) ![License](https://img.shields.io/aur/license/android-studio)
+![Language](https://img.shields.io/badge/Kotlin-1.9.21-blue) ![Compose](https://img.shields.io/badge/Compose-1.5.6-magenta) ![License](https://img.shields.io/aur/license/android-studio)
 
 VitaTracker
 Веб-сайт и мобильное приложение-напоминалка для приема БАДов
