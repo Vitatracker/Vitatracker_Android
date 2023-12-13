@@ -5,6 +5,9 @@ import app.mybad.data.mapToData
 import app.mybad.data.mapToDomain
 import app.mybad.domain.models.PatternUsageDomainModel
 import app.mybad.domain.repository.PatternUsageRepository
+import app.mybad.utils.DAYS_IN_MONTH
+import app.mybad.utils.LIMIT_START_MIN
+import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.toEpochSecond
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.math.min
 
 class PatternUsageRepositoryImpl @Inject constructor(
     private val db: PatternUsageDao,
@@ -127,10 +131,15 @@ class PatternUsageRepositoryImpl @Inject constructor(
         endTime: Long
     ) = db.getFutureWithParamsBetween(
         userId = userId,
-        startTime = startTime,
-        endTime = endTime
+        // захватим интервал от минимального старта курса
+        startTime = min(0L, startTime - LIMIT_START_MIN * DAYS_IN_MONTH * SECONDS_IN_DAY),
+        endTime = endTime,
     )
-        .map { it.mapToDomain(startTime) }
+        .map { usages ->
+            usages.filter { usage ->
+                usage.isInfinite || (endTime >= usage.startDate && startTime <= usage.endDate)
+            }.mapToDomain(startTime)
+        }
         .flowOn(dispatcher)
 
     override suspend fun insertPatternUsage(pattern: PatternUsageDomainModel) =

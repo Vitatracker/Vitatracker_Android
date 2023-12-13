@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.calender
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,12 +25,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mybad.domain.models.UsageDisplayDomainModel
@@ -37,6 +40,7 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.BottomSlideInDialog
 import app.mybad.notifier.ui.common.MonthSelector
 import app.mybad.notifier.ui.common.TitleText
+import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
@@ -46,22 +50,24 @@ import app.mybad.utils.displayDateTime
 import app.mybad.utils.isEqualsMonth
 import app.mybad.utils.isNotEqualsMonth
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
     state: CalendarContract.State,
-    dateUpdate: Flow<LocalDateTime>,
-    effectFlow: Flow<CalendarContract.Effect>,
+    dateUpdate: StateFlow<LocalDateTime>,
+    effectFlow: Flow<CalendarContract.Effect>? = null,
     sendEvent: (event: CalendarContract.Event) -> Unit = {},
-    navigation: (navigationEffect: CalendarContract.Effect.Navigation) -> Unit,
+    navigation: (navigationEffect: CalendarContract.Effect.Navigation) -> Unit = {},
 ) {
 
-    val currentDate = dateUpdate.collectAsStateWithLifecycle(initialValue = currentDateTimeSystem())
+    val currentDate by dateUpdate.collectAsStateWithLifecycle()
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
-        effectFlow.collect { effect ->
+        effectFlow?.collect { effect ->
             when (effect) {
                 is CalendarContract.Effect.Navigation -> navigation(effect)
             }
@@ -77,12 +83,8 @@ fun CalendarScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
-                ),
+                .padding(paddingValues)
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -94,7 +96,7 @@ fun CalendarScreen(
             Spacer(Modifier.height(16.dp))
             CalendarItem(
                 date = state.date,
-                currentDate = currentDate.value,
+                currentDate = currentDate,
                 datesWeeks = state.datesWeeks,
                 usagesWeeks = state.usagesWeeks,
                 onSelect = { sendEvent(CalendarContract.Event.SelectElement(it)) }
@@ -235,5 +237,27 @@ private fun CalendarDayItem(
                 color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified
             )
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 1080, heightDp = 1920,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreview"
+)
+@Preview(
+    showBackground = true,
+    widthDp = 320, heightDp = 400,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Composable
+private fun CalendarScreenPreview() {
+    MyBADTheme {
+        CalendarScreen(
+            state = CalendarContract.State(),
+            dateUpdate = MutableStateFlow(currentDateTimeSystem())
+        )
     }
 }

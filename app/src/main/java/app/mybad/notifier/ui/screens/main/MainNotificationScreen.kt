@@ -92,7 +92,6 @@ import kotlinx.datetime.LocalDateTime
 fun MainNotificationScreen(
     state: MainContract.State,
     update: StateFlow<LocalDateTime>,
-//    update: StateFlow<Pair<Map<String, UsageDisplayDomainModel>, LocalDateTime>>,
     effectFlow: Flow<ViewSideEffect>? = null,
     sendEvent: (event: MainContract.Event) -> Unit = {},
     navigation: (navigationEffect: MainContract.Effect.Navigation) -> Unit = {},

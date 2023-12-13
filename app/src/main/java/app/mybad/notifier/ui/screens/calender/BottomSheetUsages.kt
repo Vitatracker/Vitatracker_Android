@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -220,50 +221,53 @@ private fun SingleUsageItem(
                     }
                 }
                 //TODO("вынести и реализовать логику проверки, галка или нет и будущий курс или история")
-                when (now.betweenSecondsSystem(useTime)) {
-                    in Long.MIN_VALUE..-TIME_IS_UP -> {
-                        Icon(
-                            painter = painterResource(R.drawable.locked),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                        )
-                    }
+                when {
+                    usage.notUsed -> IconLocked()
+                    isTaken -> IconClick(true, outlineColor, onClick)
+                    else -> {
+                        when (now.betweenSecondsSystem(useTime)) {
+                            in Long.MIN_VALUE..-TIME_IS_UP -> IconLocked()
 
-                    in -TIME_IS_UP..TIME_IS_UP -> {
-                        Icon(
-                            painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
-                            contentDescription = null,
-                            tint = outlineColor,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    onClick()
-                                }
-                        )
-                    }
+                            in -TIME_IS_UP..TIME_IS_UP -> IconClick(false, outlineColor, onClick)
 
-                    in TIME_IS_UP..Long.MAX_VALUE -> {
-                        Icon(
-                            painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
-                            contentDescription = null,
-                            tint = outlineColor,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    onClick()
-                                }
-                        )
+                            in TIME_IS_UP..Long.MAX_VALUE -> IconClick(false, outlineColor, onClick)
+                        }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun IconClick(
+    isTaken: Boolean,
+    tint: Color,
+    onClick: () -> Unit,
+) {
+    Icon(
+        painter = painterResource(if (isTaken) R.drawable.done else R.drawable.undone),
+        contentDescription = null,
+        tint = tint,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable {
+                onClick()
+            }
+    )
+}
+
+@Composable
+private fun IconLocked() {
+    Icon(
+        painter = painterResource(R.drawable.locked),
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.outline,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .size(40.dp)
+            .clip(CircleShape)
+    )
 }

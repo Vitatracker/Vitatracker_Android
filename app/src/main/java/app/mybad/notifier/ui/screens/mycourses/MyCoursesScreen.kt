@@ -306,7 +306,7 @@ private fun CourseDates(courseDisplay: CourseDisplayDomainModel) {
     name = "DefaultPreviewDark"
 )
 @Composable
-fun MyCoursesScreenPreview() {
+private fun MyCoursesScreenPreview() {
     MyBADTheme {
         MyCoursesScreen(MyCoursesContract.State())
     }

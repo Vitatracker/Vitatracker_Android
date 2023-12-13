@@ -10,6 +10,7 @@ import app.mybad.data.db.models.PatternUsageContract
 import app.mybad.data.db.models.PatternUsageModel
 import app.mybad.data.db.models.PatternUsageWithNameAndDateModel
 import app.mybad.data.db.models.RemedyContract
+import app.mybad.utils.SECONDS_IN_DAY
 import app.mybad.utils.currentDateTimeInSeconds
 import kotlinx.coroutines.flow.Flow
 
@@ -310,9 +311,9 @@ interface PatternUsageDao {
             CourseContract.Columns.IDN
         }, B.${
             CourseContract.Columns.REMEDY_ID
-        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * 86400) as ${
+        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * $SECONDS_IN_DAY) as ${
             CourseContract.Columns.START_DATE
-        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * 86400 + B.${CourseContract.Columns.END_DATE} - B.${CourseContract.Columns.START_DATE}) as ${
+        }, (B.${CourseContract.Columns.END_DATE} + B.${CourseContract.Columns.INTERVAL} * $SECONDS_IN_DAY + B.${CourseContract.Columns.END_DATE} - B.${CourseContract.Columns.START_DATE}) as ${
             CourseContract.Columns.END_DATE
         }, B.${
             CourseContract.Columns.IS_INFINITE
@@ -345,20 +346,20 @@ interface PatternUsageDao {
         } C ON B.${CourseContract.Columns.REMEDY_ID} = C.${
             RemedyContract.Columns.ID
         } where A.${PatternUsageContract.Columns.USER_ID} = :userId and B.${
-            CourseContract.Columns.DELETED_DATE
+            CourseContract.Columns.DELETED_DATE // не удален
         } = 0 and B.${
-            CourseContract.Columns.INTERVAL
-        } > 0 and :endTime >= ${
+            CourseContract.Columns.INTERVAL // интервал между курсами
+        } > 0 and ((:endTime >= ${
             CourseContract.Columns.START_DATE
-        } and (:startTime <= ${
+        } and :startTime <= ${
             CourseContract.Columns.END_DATE
-        } or B.${
+        }) or B.${
             CourseContract.Columns.IS_INFINITE
         } > 0) order by A.${PatternUsageContract.Columns.ID}, C.${RemedyContract.Columns.NAME}"
     )
-    fun getFutureWithParamsBetween( // тут только будущее, где INTERVAL > 0
+    fun getFutureWithParamsBetween( // тут только будущее, где INTERVAL > 0, но брать все, кроме удаленных
         userId: Long,
-        startTime: Long,
+        startTime: Long, // тут ограничиваем + интервал минимального старта курса
         endTime: Long
     ): Flow<List<PatternUsageWithNameAndDateModel>>
 

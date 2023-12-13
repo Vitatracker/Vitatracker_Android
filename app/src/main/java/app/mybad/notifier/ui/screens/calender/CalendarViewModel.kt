@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.domain.usecases.patternusage.GetPatternUsagesFutureWithParamsBetweenUseCase
 import app.mybad.domain.usecases.patternusage.GetPatternUsagesWithParamsBetweenUseCase
-import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
 import app.mybad.domain.usecases.patternusage.SetFactUseTimeOrInsertUsageUseCase
+import app.mybad.domain.usecases.usages.GetUsagesWithParamsBetweenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
 import app.mybad.utils.DAYS_A_WEEK
 import app.mybad.utils.WEEKS_PER_MONTH
@@ -16,7 +16,6 @@ import app.mybad.utils.correctTimeInMinutes
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDateTimeShort
-import app.mybad.utils.displayDateTimeUTC
 import app.mybad.utils.firstDayOfMonth
 import app.mybad.utils.minusDays
 import app.mybad.utils.plusDays
@@ -27,8 +26,11 @@ import app.mybad.utils.timeInMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import javax.inject.Inject
@@ -59,11 +61,11 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    private val dateMonth = MutableStateFlow(viewState.value.date)
-
     private var patternsMonth: List<UsageDisplayDomainModel> = emptyList()
     private var usagesMonth: List<UsageDisplayDomainModel> = emptyList()
     private var futureMonth: List<UsageDisplayDomainModel> = emptyList()
+
+    private val dateMonth = MutableStateFlow(viewState.value.date)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var dateUpdate = dateMonth.flatMapLatest { date ->
@@ -78,7 +80,7 @@ class CalendarViewModel @Inject constructor(
 
         Log.w(
             "VTTAG",
-            "CalendarViewModel::changeDateForMonth: date=$date start=${dateMin.displayDateTimeUTC()} end=${dateMax.displayDateTimeUTC()}" // UTC
+            "CalendarViewModel::changeDateForMonth: date=$date start=${dateMin.displayDateTime()} end=${dateMax.displayDateTime()}"
         )
 
         combine(
@@ -94,19 +96,13 @@ class CalendarViewModel @Inject constructor(
                 startTime = dateMin,
                 endTime = dateMax,
             ),
-        ) { patterns, usages, future ->
-            patternsMonth = patterns
-            usagesMonth = usages
-            futureMonth = future
-            Log.w(
-                "VTTAG",
-                "CalendarViewModel::changeDateForMonth: patternsMonth=${patternsMonth.size} usagesMonth=${usagesMonth.size} futureMonth=${futureMonth.size}"
-            )
-
-            calculateByWeekAndSetState(date)
-        }
-
-    }
+            ::Triple
+        ).map(::calculateByWeekAndSetState)
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileSubscribed(5000),
+        initialValue = currentDateTimeSystem()
+    )
 
     private fun changeDateForMonth(date: LocalDateTime) {
         viewModelScope.launch {
@@ -114,11 +110,17 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    private fun calculateByWeekAndSetState(date: LocalDateTime): LocalDateTime {
+    private fun calculateByWeekAndSetState(
+        usages: Triple<List<UsageDisplayDomainModel>, List<UsageDisplayDomainModel>, List<UsageDisplayDomainModel>>
+    ): LocalDateTime {
+        patternsMonth = usages.first
+        usagesMonth = usages.second
+        futureMonth = usages.third
         Log.w(
             "VTTAG",
-            "CalendarViewModel::calculateByWeekAndSetState: in"
+            "CalendarViewModel::calculateByWeekAndSetState: patternsMonth=${patternsMonth.size} usagesMonth=${usagesMonth.size} futureMonth=${futureMonth.size}"
         )
+        val date = dateMonth.value
         date.repeatWeekAndDayOfMonth { week, day, dateTime ->
             viewState.value.datesWeeks[week][day] = dateTime
             viewState.value.usagesWeeks[week][day] = getUsagesOnDate(dateTime)
@@ -141,7 +143,7 @@ class CalendarViewModel @Inject constructor(
             .map { pattern ->
                 val useTime = date.correctTimeInMinutes(pattern.timeInMinutes)
                 pattern.copy(
-                    name = "${pattern.name}|P|${useTime.displayDateTimeShort()}",
+                    name = "${pattern.name}|P|${useTime.displayDateTimeShort()}", // TODO("для теста, закоментить потом")
                     useTime = useTime,
                     timeInMinutes = useTime.timeInMinutes()
                 )
@@ -150,17 +152,20 @@ class CalendarViewModel @Inject constructor(
             .map { pattern ->
                 val useTime = date.correctTimeInMinutes(pattern.timeInMinutes)
                 pattern.copy(
-                    name = "${pattern.name}|F|${useTime.displayDateTimeShort()}",
+                    name = "${pattern.name}|F|${useTime.displayDateTimeShort()}", // TODO("для теста, закоментить потом")
                     useTime = useTime,
-                    timeInMinutes = useTime.timeInMinutes()
+                    timeInMinutes = useTime.timeInMinutes(),
+                    notUsed = true, // нельзя нажать
                 )
             }.associateBy { it.toUsageKey() }
         val usages = usagesMonth.filter { it.checkDate(date) }
+            // TODO("для теста, закоментить потом map")
             .map { usage ->
                 usage.copy(
                     name = "${usage.name}|U|${usage.useTime.displayDateTimeShort()}",
                 )
-            }.associateBy { it.toUsageKey() }
+            }
+            .associateBy { it.toUsageKey() }
         val pattensAndUsages =
             pattens.plus(future).plus(usages).values.sortedBy { it.useTime.systemToInstant() }
         Log.w(
