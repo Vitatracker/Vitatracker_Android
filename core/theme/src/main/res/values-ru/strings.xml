@@ -14,7 +14,7 @@
     <string name="enter_med_name">Введите наименование лекарства</string>
     <string name="add_med_reception">Прием</string>
     <string name="add_med_confirm_cancel_title">Ой!</string>
-    <string name="add_med_confirm_cancel_text">Похоже, вы случайно завершили добавление нового лекарства. Подтвердите ваше решение, нажав \'Подтвердить\', или отмените, выбрав \'Отмена\'.</string>
+    <string name="add_med_confirm_cancel_text">Похоже, вы случайно завершили добавление нового лекарства. Подтвердите ваше решение, нажав \'Подтвердить\', или отмените, выбрав \'Отменить\'.</string>
     <string name="add_med_confirm_cancel_button_confirm">Подтвердить</string>
     <string name="add_med_confirm_cancel_button_cancel">Отменить</string>
     <string name="edit_med_title">Редактирование лекарства</string>
