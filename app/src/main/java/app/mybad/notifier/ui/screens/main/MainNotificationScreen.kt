@@ -307,8 +307,8 @@ private fun NotificationLazyMedicines(
     )
     LazyColumn(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        contentPadding = PaddingValues(bottom = 84.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 0.dp),
+        contentPadding = PaddingValues(bottom = 16.dp),
     ) {
         items(usages, key = { it.key }) { usageEntry ->
             //TODO("переделать так же как и BottomSheetUsages")

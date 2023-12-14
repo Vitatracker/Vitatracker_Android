@@ -70,7 +70,7 @@ fun SettingsLeaveWishesScreen(
                     start = 16.dp,
                     end = 16.dp,
                     top = 0.dp,
-                    bottom = 120.dp
+                    bottom = 32.dp
                 ),
         ) {
             Text(

@@ -83,18 +83,8 @@ fun MyCoursesScreen(
         LazyColumn(
             Modifier
                 .padding(paddingValues)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 0.dp,
-                    bottom = 16.dp
-                ),
-            contentPadding = PaddingValues(
-                top = 8.dp,
-                start = 0.dp,
-                end = 0.dp,
-                bottom = 82.dp
-            ),
+                .padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             // Отображение текущих курсов таблеток

@@ -73,7 +73,12 @@ fun SettingsProfileScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 120.dp),
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 0.dp,
+                    bottom = 32.dp
+                ),
         ) {
             SettingsProfileTop(state, sendEvent)
             SettingsProfileBottom(sendEvent)

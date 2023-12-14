@@ -34,7 +34,13 @@ fun MainNavGraph(
     var calendarScreenToday = remember { true }
 
     NavHost(
-        modifier = Modifier.padding(0.dp),
+        modifier = Modifier
+            .padding(
+                start = 0.dp,
+                top = 0.dp,
+                end = 0.dp,
+                bottom = 80.dp,
+            ),
         navController = navigationState.navController,
         startDestination = MainScreens.Notifications.route,
         enterTransition = {
