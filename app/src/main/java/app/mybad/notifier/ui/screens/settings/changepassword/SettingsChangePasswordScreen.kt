@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
-import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
 
@@ -53,11 +53,12 @@ fun SettingsChangePasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ChangePasswordTop(state, sendEvent)
-            ReUseFilledButton(
-                textId = R.string.action_confirm
-            ) {
-                sendEvent(SettingsChangePasswordContract.Event.Save)
-            }
+            ReUseTwoButtons(
+                dismissId = R.string.action_cancel,
+                onDismiss = { sendEvent(SettingsChangePasswordContract.Event.Cancel) },
+                confirmId = R.string.action_confirm,
+                onConfirm = { sendEvent(SettingsChangePasswordContract.Event.Save) },
+            )
         }
     }
     ReUseAnimatedVisibility(state.isLoading) {

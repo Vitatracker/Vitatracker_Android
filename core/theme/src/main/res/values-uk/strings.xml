@@ -213,7 +213,7 @@
     <string name="notifications_time_to_use_text">Прийміть %1$s!\n %2$s - %3$s %4$s</string>
     <string name="notifications_action_take">Брати</string>
     <string name="notifications_action_delay">Затримка</string>
-    <string name="notifications_action_cancel">Пропустити</string>
+    <string name="notifications_action_skip">Пропустити</string>
 
     <string name="notifications_new_course_start_title">Починається новий курс!</string>
     <string name="notifications_new_course_start_text">Новий курс починається %1$s!\nПрепарат: %2$s, %3$d %4$s, %5$s</string>
@@ -265,7 +265,8 @@
     <string name="splash_welcome_in">Добро пожаловать в\n</string>
 
     <string name="continue_with">Продолжить с помощью</string>
-    <string name="action_confirm">Подтвердить</string>
+    <string name="action_confirm">Підтвердити</string>
+    <string name="action_cancel">Скасувати</string>
     <string name="password_recovery">Восстановление пароля</string>
     <string name="password_recovery_enter_mail">Пожалуйста, введите ваш Email для отправки информации по восстановлению пароля</string>
 

@@ -7,9 +7,9 @@ import app.mybad.notifier.ui.base.ViewState
 class SettingsChangePasswordContract {
 
     sealed class Event : ViewEvent {
-        object ActionBack : Event()
-        object Save : Event()
-        object Cancel : Event()
+        data object ActionBack : Event()
+        data object Save : Event()
+        data object Cancel : Event()
         data class OnCurrentPasswordChanged(val newValue: String) : Event()
         data class OnNewPasswordChanged(val newValue: String) : Event()
         data class OnNewPasswordConfirmChanged(val newValue: String) : Event()
@@ -31,14 +31,14 @@ class SettingsChangePasswordContract {
     sealed class Effect : ViewSideEffect {
 
         sealed class Navigation : Effect() {
-            object Back : Navigation()
+            data object Back : Navigation()
         }
     }
 
     sealed class StateErrors {
-        object Empty : StateErrors()
-        object PasswordsMismatch : StateErrors()
-        object OldPasswordIsInvalid : StateErrors()
-        object NewPasswordIsInvalid : StateErrors()
+        data object Empty : StateErrors()
+        data object PasswordsMismatch : StateErrors()
+        data object OldPasswordIsInvalid : StateErrors()
+        data object NewPasswordIsInvalid : StateErrors()
     }
 }

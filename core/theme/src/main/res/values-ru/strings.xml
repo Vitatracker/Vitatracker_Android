@@ -218,7 +218,7 @@
     <string name="notifications_time_to_use_text">Примите %1$s!\n %2$s - %3$s %4$s</string>
     <string name="notifications_action_take">Брать</string>
     <string name="notifications_action_delay">Отсрочка</string>
-    <string name="notifications_action_cancel">Пропустить</string>
+    <string name="notifications_action_skip">Пропустить</string>
 
     <string name="notifications_new_course_start_title">Старт нового курса!</string>
     <string name="notifications_new_course_start_text">Новый курс начинается %1$s!\nПрепарат: %2$s, %3$d %4$s, %5$s</string>
@@ -271,6 +271,7 @@
 
     <string name="continue_with">Продолжить с помощью</string>
     <string name="action_confirm">Подтвердить</string>
+    <string name="action_cancel">Отменить</string>
     <string name="password_recovery">Восстановление пароля</string>
     <string name="password_recovery_enter_mail">Пожалуйста, введите ваш Email для отправки информации по восстановлению пароля</string>
 
