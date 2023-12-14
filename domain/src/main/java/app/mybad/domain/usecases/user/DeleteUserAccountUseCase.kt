@@ -26,28 +26,31 @@ class DeleteUserAccountUseCase @Inject constructor(
 
     suspend operator fun invoke(): Boolean {
         //TODO("пересмотреть репозитории и базы и доделать удаление пользователя")
-        if (AuthToken.userId > 0) {
+        return if (AuthToken.userId > 0) {
             val userId = AuthToken.userId
             val user = userRepository.getUserById(userId)
             // вначале удаляем с сервера, если ошибка, то локально не удаляем
             userNetworkRepository.deleteUser(user.idn).onSuccess {
-                if (it) {
-                    usageRepository.deleteUsagesByUserId(userId)
-                    patternUsageRepository.deletePatternUsagesByUserId(userId)
-                    courseRepository.deleteCoursesByUserId(userId)
-                    remedyRepository.deleteRemediesByUserId(userId)
-
-                    notificationsScheduler.cancelAlarm(userId)
-                    notificationRepository.deleteNotificationByUserId(userId)
-
-                    userRepository.deleteUserById(userId)
-                    AuthToken.clear()
-                    return true
-                }
+                deleteLocal(userId)
             }.onFailure {
             }
-        }
-        return false
+            deleteLocal(userId)
+        } else false
     }
 
+    private suspend fun deleteLocal(userId:Long) = try {
+        usageRepository.deleteUsagesByUserId(userId)
+        patternUsageRepository.deletePatternUsagesByUserId(userId)
+        courseRepository.deleteCoursesByUserId(userId)
+        remedyRepository.deleteRemediesByUserId(userId)
+
+        notificationsScheduler.cancelAlarm(userId)
+        notificationRepository.deleteNotificationByUserId(userId)
+
+        userRepository.deleteUserById(userId)
+        AuthToken.clear()
+        true
+    } catch (e:Error){
+        false
+    }
 }
