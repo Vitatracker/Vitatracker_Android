@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mybad.notifier.ui.common.ParameterIndicator
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.screens.newcourse.common.DateDelaySelector
@@ -141,7 +142,7 @@ fun RemindNewCourseBottomSheet(
         )
     }
 
-    selectedInput?.let {
+    ReUseAnimatedVisibility(visible = selectedInput != null) {
         Dialog(onDismissRequest = { selectedInput = null }) {
             Surface(
                 shape = RoundedCornerShape(20.dp),

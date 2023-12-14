@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.screens
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +31,7 @@ import app.mybad.data.models.UsageFormat
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.AddNotificationButton
 import app.mybad.notifier.ui.common.NotificationItem
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
@@ -52,7 +52,6 @@ fun AddMedNotificationsScreen(
 ) {
     val forms = stringArrayResource(R.array.types)
     var selectedItem: UsageFormat? by remember { mutableStateOf(null) }
-    var canPress by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
@@ -79,12 +78,7 @@ fun AddMedNotificationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 0.dp,
-                    bottom = 16.dp
-                ),
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
@@ -140,32 +134,28 @@ fun AddMedNotificationsScreen(
                 textId = R.string.navigation_next,
                 enabled = state.nextAllowed && !state.loader,
             ) {
-                if (canPress) {
-                    // запретим нажимать кнопку
-//                    canPress = false
-                    sendEvent(CreateCourseContract.Event.Finish)
-                }
+                sendEvent(CreateCourseContract.Event.Finish)
             }
         }
     }
-    selectedItem?.let {
-        TimeSelectorDialog(
-            initTime = it.timeInMinutes,
-            onDismiss = { selectedItem = null },
-        ) { time ->
-            sendEvent(
-                CreateCourseContract.Event.ChangeTimeUsagePattern(
-                    pattern = it,
-                    time = time
+    ReUseAnimatedVisibility(visible = selectedItem != null) {
+        selectedItem?.let {
+            TimeSelectorDialog(
+                initTime = it.timeInMinutes,
+                onDismiss = { selectedItem = null },
+            ) { time ->
+                sendEvent(
+                    CreateCourseContract.Event.ChangeTimeUsagePattern(
+                        pattern = it,
+                        time = time
+                    )
                 )
-            )
-            selectedItem = null
+                selectedItem = null
+            }
         }
     }
-    AnimatedVisibility(visible = state.loader) {
+    ReUseAnimatedVisibility(visible = state.loader) {
         ReUseProgressDialog()
-        // разрешим нажимать кнопку
-//        canPress = true
     }
 }
 

@@ -43,6 +43,13 @@ class CalendarViewModel @Inject constructor(
     private val setFactUseTimeOrInsertUsageUseCase: SetFactUseTimeOrInsertUsageUseCase,
 ) : BaseViewModel<CalendarContract.Event, CalendarContract.State, CalendarContract.Effect>() {
 
+    init {
+        Log.w(
+            "VTTAG",
+            "CalendarViewModel::init: ---------------------------------------"
+        )
+    }
+
     override fun setInitialState() = CalendarContract.State()
 
     override fun handleEvents(event: CalendarContract.Event) {
@@ -104,10 +111,12 @@ class CalendarViewModel @Inject constructor(
         initialValue = currentDateTimeSystem()
     )
 
+    fun setToday() {
+        changeDateForMonth(currentDateTimeSystem())
+    }
+
     private fun changeDateForMonth(date: LocalDateTime) {
-        viewModelScope.launch {
-            dateMonth.value = date.firstDayOfMonth()
-        }
+        dateMonth.value = date.firstDayOfMonth()
     }
 
     private fun calculateByWeekAndSetState(

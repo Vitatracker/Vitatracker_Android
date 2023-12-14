@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseAlertDialog
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseTopAppBar
@@ -66,16 +67,12 @@ fun AddMedFirstScreen(
         )
     }) { paddingValues ->
         val modifierSpacer = Modifier.height(8.dp)
+        val itemsPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 0.dp,
-                    bottom = 16.dp
-                ),
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -124,12 +121,7 @@ fun AddMedFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
-                    ),
+                    itemsPadding = itemsPadding,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
@@ -151,12 +143,7 @@ fun AddMedFirstScreen(
                             }
                         )
                     },
-                    itemsPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
-                    ),
+                    itemsPadding = itemsPadding,
                 )
             }
             ReUseFilledButton(textId = R.string.navigation_next) {
@@ -164,7 +151,7 @@ fun AddMedFirstScreen(
             }
         }
     }
-    AnimatedVisibility(state.confirmBack) {
+    ReUseAnimatedVisibility(state.confirmBack) {
         ReUseAlertDialog(
             titleId = R.string.add_med_confirm_cancel_title,
             textId = R.string.add_med_confirm_cancel_text,

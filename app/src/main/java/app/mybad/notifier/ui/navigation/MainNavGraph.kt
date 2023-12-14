@@ -1,11 +1,16 @@
 package app.mybad.notifier.ui.navigation
 
 import android.util.Log
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,17 +30,28 @@ fun MainNavGraph(
     paddingValues: PaddingValues,
     navigateUp: (String) -> Unit = {},
 ) {
+    var calendarScreenToday = remember { true }
+
     NavHost(
-        modifier = Modifier.padding(
-            start = 0.dp,
-            end = 0.dp,
-            top = paddingValues.calculateTopPadding(),
-            bottom = 0.dp
-        ),
+        modifier = Modifier.padding(paddingValues),
         navController = navigationState.navController,
-        startDestination = MainScreens.Notifications.route
+        startDestination = MainScreens.Notifications.route,
+        enterTransition = {
+            slideInHorizontally(
+                animationSpec = tween(500),
+                initialOffsetX = { it },
+            ) + fadeIn(animationSpec = tween(500))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(500),
+            ) + fadeOut(animationSpec = tween(500))
+        },
     ) {
         composable(route = MainScreens.Notifications.route) {
+
+            calendarScreenToday = true
 
             val viewModel: MainViewModel = hiltViewModel()
 
@@ -54,6 +70,8 @@ fun MainNavGraph(
             )
         }
         composable(route = MainScreens.Courses.route) {
+
+            calendarScreenToday = true
 
             val viewModel: MyCoursesViewModel = hiltViewModel()
 
@@ -81,6 +99,14 @@ fun MainNavGraph(
         composable(route = MainScreens.Calendar.route) {
 
             val viewModel: CalendarViewModel = hiltViewModel()
+            if (calendarScreenToday) {
+                viewModel.setToday()
+                calendarScreenToday = false
+            }
+            Log.w(
+                "VTTAG",
+                "MainNavGraph::CalendarViewModel: CalendarViewModel"
+            )
 
             CalendarScreen(
                 state = viewModel.viewState.value,
@@ -97,6 +123,6 @@ fun MainNavGraph(
             )
         }
         //route = MainScreens.Settings.route
-        settingsNavGraph(navigationState, navigateUp)
+        settingsNavGraph(navigationState, { calendarScreenToday = true }, navigateUp)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
@@ -69,7 +70,7 @@ fun MainLoginScreen(
                 state = state,
                 sendEvent = sendEvent,
             )
-            AnimatedVisibility(visible = state.isLoading) {
+            ReUseAnimatedVisibility(visible = state.isLoading) {
                 ReUseProgressDialog()
             }
         }

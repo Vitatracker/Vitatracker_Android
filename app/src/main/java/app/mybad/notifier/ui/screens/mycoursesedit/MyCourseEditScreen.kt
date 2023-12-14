@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.mycoursesedit
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +37,7 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
 import app.mybad.notifier.ui.common.ParameterIndicator
 import app.mybad.notifier.ui.common.ReUseAlertDialog
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.ReUseTwoButtons
@@ -105,12 +105,8 @@ fun MyCourseEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
-                ),
+                .padding(paddingValues)
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -321,7 +317,7 @@ fun MyCourseEditScreen(
             )
         }
 
-        AnimatedVisibility(selectedInput != null) {
+        ReUseAnimatedVisibility(selectedInput != null) {
             selectedInput?.let { select ->
                 CalendarAndRegimeSelectorDialog(
                     selectedInput = select,
@@ -343,7 +339,7 @@ fun MyCourseEditScreen(
             }
         }
 
-        AnimatedVisibility(state.confirmation) {
+        ReUseAnimatedVisibility(state.confirmation) {
             ReUseAlertDialog(
                 drawableId = R.drawable.medicines,
                 textId = R.string.mycourse_confirmation_delete_text,
@@ -356,7 +352,7 @@ fun MyCourseEditScreen(
             )
         }
 
-        AnimatedVisibility(state.loader) {
+        ReUseAnimatedVisibility(state.loader) {
             ReUseProgressDialog()
         }
     }

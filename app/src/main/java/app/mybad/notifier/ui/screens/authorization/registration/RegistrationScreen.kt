@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
-import  android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
@@ -100,9 +100,9 @@ fun StartRegistrationScreen(
                 onClick = { sendEvent(RegistrationContract.Event.SignInWithGoogle) }
             )
         }
-        AnimatedVisibility(visible = state.isLoading) {
-            ReUseProgressDialog()
-        }
+    }
+    ReUseAnimatedVisibility(visible = state.isLoading) {
+        ReUseProgressDialog()
     }
 }
 

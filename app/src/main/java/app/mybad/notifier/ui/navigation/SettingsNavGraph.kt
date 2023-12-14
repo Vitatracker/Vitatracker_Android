@@ -26,6 +26,7 @@ import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishesViewMode
 
 fun NavGraphBuilder.settingsNavGraph(
     navigationState: NavigationState,
+    onInScreen: ()->Unit = {},
     navigateUp: (String) -> Unit = {},
 ) {
     navigation(
@@ -33,6 +34,7 @@ fun NavGraphBuilder.settingsNavGraph(
         route = MainScreens.Settings.route
     ) {
         composable(route = SettingsScreens.Navigation.route) {
+            onInScreen()
             val viewModel: SettingsMainViewModel = hiltViewModel()
             SettingsMainScreen(
                 effectFlow = viewModel.effect,

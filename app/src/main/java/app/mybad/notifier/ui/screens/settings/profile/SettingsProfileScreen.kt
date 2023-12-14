@@ -3,7 +3,6 @@ package app.mybad.notifier.ui.screens.settings.profile
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.mybad.notifier.ui.common.ReUseAlertDialog
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.screens.settings.common.BaseHorizontalDivider
@@ -73,18 +73,13 @@ fun SettingsProfileScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 0.dp,
-                    bottom = 120.dp
-                ),
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 120.dp),
         ) {
             SettingsProfileTop(state, sendEvent)
             SettingsProfileBottom(sendEvent)
         }
     }
-    AnimatedVisibility(state.confirmDelete) {
+    ReUseAnimatedVisibility(state.confirmDelete) {
         ReUseAlertDialog(
             titleId = R.string.settings_delete_account_confirm_title,
             textId = R.string.settings_delete_account_confirm_text,

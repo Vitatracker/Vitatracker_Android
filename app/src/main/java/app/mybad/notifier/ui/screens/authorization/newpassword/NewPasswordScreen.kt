@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
@@ -84,7 +85,7 @@ fun NewPasswordScreen(
                 }
             }
         }
-        AnimatedVisibility(state.isLoading) {
+        ReUseAnimatedVisibility(state.isLoading) {
             ReUseProgressDialog()
         }
     }

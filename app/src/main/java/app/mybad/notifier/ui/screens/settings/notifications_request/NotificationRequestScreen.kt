@@ -1,7 +1,6 @@
 package app.mybad.notifier.ui.screens.settings.notifications_request
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.ReUseAlertDialog
+import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseTwoButtons
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
@@ -46,6 +46,7 @@ fun NotificationRequestScreen(
             }
         }
     }
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -69,16 +70,16 @@ fun NotificationRequestScreen(
                 onConfirm = { sendEvent(NotificationRequestContract.Event.OnSettings) },
             )
         }
-        AnimatedVisibility(state.confirmation) {
-            ReUseAlertDialog(
-                titleId = R.string.settings_notifications_allow_reconfirmation_title,
-                textId = R.string.settings_notifications_allow_reconfirmation_text,
-                firstId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
-                onClickFirst = { sendEvent(NotificationRequestContract.Event.OnNext) },
-                secondId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
-                onClickSecond = { sendEvent(NotificationRequestContract.Event.OnSettings) },
-            )
-        }
+    }
+    ReUseAnimatedVisibility(state.confirmation) {
+        ReUseAlertDialog(
+            titleId = R.string.settings_notifications_allow_reconfirmation_title,
+            textId = R.string.settings_notifications_allow_reconfirmation_text,
+            firstId = R.string.settings_notifications_allow_reconfirmation_button_dismiss,
+            onClickFirst = { sendEvent(NotificationRequestContract.Event.OnNext) },
+            secondId = R.string.settings_notifications_allow_reconfirmation_button_confirm,
+            onClickSecond = { sendEvent(NotificationRequestContract.Event.OnSettings) },
+        )
     }
 }
 
