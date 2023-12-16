@@ -281,6 +281,8 @@
     <string name="password_recovery_dialog_body">Cсылка для восстановления пароля отправлена на электронную почту %s.</string>
 
     <string name="action_navigate">Перейти</string>
+    <string name="action_save">Зберегти</string>
+
     <string name="text_continue">Продовжити</string>
 
     <string name="enter_verification_code">Введите 6-значный код</string>

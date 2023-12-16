@@ -23,10 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,10 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.mybad.data.models.CourseSelectInput
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
-import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
-import app.mybad.notifier.ui.common.ParameterIndicator
+import app.mybad.notifier.ui.common.ParameterIndicatorCalendarSelector
+import app.mybad.notifier.ui.common.ParameterIndicatorSelector
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.showToast
@@ -47,7 +42,6 @@ import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
-import app.mybad.utils.displayDateFull
 import app.mybad.utils.displayDateTime
 import kotlinx.coroutines.flow.Flow
 
@@ -61,7 +55,6 @@ fun AddMedCourseDetailsScreen(
 ) {
     Log.w("VTTAG", "AddMedCourseDetailsScreen:: start")
     val regimeList = stringArrayResource(R.array.regime)
-    var selectedInput by remember { mutableStateOf<CourseSelectInput?>(null) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
 
@@ -114,25 +107,30 @@ fun AddMedCourseDetailsScreen(
                 Spacer(Modifier.height(8.dp))
                 MultiBox(
                     {
-                        ParameterIndicator(
-                            name = stringResource(R.string.add_course_start_time),
-                            value = state.course.startDate.displayDateFull(),
-                            onClick = { selectedInput = CourseSelectInput.SELECT_START_DATE }
-                        )
+                        // начало курса
+                        ParameterIndicatorCalendarSelector(
+                            parameter = R.string.add_course_start_time,
+                            startDate = state.course.startDate,
+                            endDate = state.course.endDate,
+                            editStart = true,
+                        ) { sendEvent(CreateCourseContract.Event.UpdateCourse(date = it)) }
                     },
                     {
-                        ParameterIndicator(
-                            name = stringResource(R.string.add_course_end_time),
-                            value = state.course.endDate.displayDateFull(),
-                            onClick = { selectedInput = CourseSelectInput.SELECT_END_DATE }
-                        )
+                        // окончание курса
+                        ParameterIndicatorCalendarSelector(
+                            parameter = R.string.add_course_end_time,
+                            startDate = state.course.startDate,
+                            endDate = state.course.endDate,
+                            editStart = false,
+                        ) { sendEvent(CreateCourseContract.Event.UpdateCourse(date = it)) }
                     },
                     {
-                        ParameterIndicator(
-                            name = stringResource(R.string.medication_regime),
-                            value = regimeList[state.course.regime],
-                            onClick = { selectedInput = CourseSelectInput.SELECT_REGIME }
-                        )
+                        // график приема
+                        ParameterIndicatorSelector(
+                            parameter = R.string.medication_regime,
+                            value = state.course.regime,
+                            items = regimeList,
+                        ) { sendEvent(CreateCourseContract.Event.UpdateCourse(regime = it)) }
                     },
                     itemsPadding = PaddingValues(16.dp)
                 )
@@ -178,28 +176,6 @@ fun AddMedCourseDetailsScreen(
                 sendEvent(CreateCourseContract.Event.ActionNext)
             }
         }
-    }
-
-    selectedInput?.let { select ->
-        CalendarAndRegimeSelectorDialog(
-            selectedInput = select,
-            startDate = state.course.startDate,
-            endDate = state.course.endDate,
-            regime = state.course.regime,
-            regimeList = regimeList.toList(),
-            onDismissRequest = { selectedInput = null },
-            onDateSelected = {
-                val newCourse = state.course.copy(
-                    startDate = it.first,
-                    endDate = it.second,
-                )
-                sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-            },
-            onRegimeSelected = {
-                val newCourse = state.course.copy(regime = it)
-                sendEvent(CreateCourseContract.Event.UpdateCourse(newCourse))
-            }
-        )
     }
 
     if (bottomSheetState.isVisible) {

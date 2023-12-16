@@ -290,6 +290,7 @@
     <string name="action_recover">Recover</string>
     <string name="password_recovery_dialog_body">The link for password recovery has been sent to the email %s.</string>
     <string name="action_navigate">Navigate</string>
+    <string name="action_save">Save</string>
 
     <string name="enter_verification_code">Введите 6-значный код</string>
     <string name="verification_code_sent_to">На почту %s отправлен 6-значный код. Введите его для продолжения</string>

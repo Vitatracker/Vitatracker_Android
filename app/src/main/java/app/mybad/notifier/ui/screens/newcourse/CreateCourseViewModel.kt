@@ -44,7 +44,7 @@ class CreateCourseViewModel @Inject constructor(
 
             is CreateCourseContract.Event.UpdateRemedy -> setState { copy(remedy = event.remedy) }
 
-            is CreateCourseContract.Event.UpdateCourse -> setState { copy(course = event.course) }
+            is CreateCourseContract.Event.UpdateCourse -> updateCourse(event.date, event.regime)
 
             is CreateCourseContract.Event.UpdateCourseRemindDate -> {
                 updateCourseRemindDate(event.remindDate, event.interval)
@@ -70,7 +70,10 @@ class CreateCourseViewModel @Inject constructor(
                 changeTimeUsagePattern(event.pattern, event.time)
             }
 
-            is CreateCourseContract.Event.UpdateRemedyName -> updateRemedyName(name = event.newName)
+            is CreateCourseContract.Event.UpdateRemedyName -> updateRemedyName(event.value)
+            is CreateCourseContract.Event.UpdateRemedyType -> updateRemedyType(event.value)
+            is CreateCourseContract.Event.UpdateRemedyUnit -> updateRemedyUnit(event.value)
+            is CreateCourseContract.Event.UpdateRemedyRelations -> updateRemedyRelations(event.value)
 
             CreateCourseContract.Event.UpdateCourseStartDate -> {
                 if (!viewState.value.updateCourseStartDate) setCourseDate()
@@ -89,6 +92,19 @@ class CreateCourseViewModel @Inject constructor(
             CreateCourseContract.Event.ActionCollapse -> setEffect { CreateCourseContract.Effect.Collapse }
 
             CreateCourseContract.Event.ActionExpand -> setEffect { CreateCourseContract.Effect.Expand }
+        }
+    }
+
+    private fun updateCourse(date: Pair<LocalDateTime, LocalDateTime>?, regime: Int?) {
+        date?.let {
+            setState {
+                copy(course = course.copy(startDate = date.first, endDate = date.second))
+            }
+        }
+        regime?.let {
+            setState {
+                copy(course = course.copy(regime = regime))
+            }
         }
     }
 
@@ -143,6 +159,21 @@ class CreateCourseViewModel @Inject constructor(
 
     private fun updateRemedyName(name: String) {
         val newRemedy = viewState.value.remedy.copy(name = name)
+        setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
+    }
+
+    private fun updateRemedyType(value: Int) {
+        val newRemedy = viewState.value.remedy.copy(type = value)
+        setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
+    }
+
+    private fun updateRemedyUnit(value: Int) {
+        val newRemedy = viewState.value.remedy.copy(measureUnit = value)
+        setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
+    }
+
+    private fun updateRemedyRelations(value: Int) {
+        val newRemedy = viewState.value.remedy.copy(beforeFood = value)
         setState { copy(remedy = newRemedy, isError = newRemedy.name.isNullOrBlank()) }
     }
 

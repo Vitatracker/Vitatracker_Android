@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,12 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import app.mybad.data.models.CourseSelectInput
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
-import app.mybad.notifier.ui.common.CalendarAndRegimeSelectorDialog
-import app.mybad.notifier.ui.common.ParameterIndicator
+import app.mybad.notifier.ui.common.ParameterIndicatorCalendarSelector
+import app.mybad.notifier.ui.common.ParameterIndicatorSelector
 import app.mybad.notifier.ui.common.ReUseAlertDialog
 import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseProgressDialog
@@ -48,7 +44,6 @@ import app.mybad.notifier.ui.screens.newcourse.common.IconSelector
 import app.mybad.notifier.ui.screens.newcourse.common.MultiBox
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
-import app.mybad.utils.displayDateFull
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -62,21 +57,10 @@ fun MyCourseEditScreen(
     val units = stringArrayResource(R.array.units)
     val relations = stringArrayResource(R.array.food_relations)
 
-    val name = stringResource(R.string.add_med_name)
-    val form = stringResource(R.string.add_med_form)
-    val dose = stringResource(R.string.mycourse_dosage_and_usage)
-    val unit = stringResource(R.string.add_med_unit)
-    val rel = stringResource(R.string.add_med_food_relation)
-
-    val startLabel = stringResource(R.string.add_course_start_time)
-    val endLabel = stringResource(R.string.add_course_end_time)
-    val regimeLabel = stringResource(R.string.medication_regime)
     val regimeList = stringArrayResource(R.array.regime)
 
     var remedyInternal by remember(state.course.id) { mutableStateOf(state.remedy) }
     var courseInternal by remember(state.course.id) { mutableStateOf(state.course) }
-
-    var selectedInput: CourseSelectInput? by remember(state.course.id) { mutableStateOf(null) }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
@@ -146,10 +130,12 @@ fun MyCourseEditScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
+                // при редактировании изменить и в AddMedSecondScreen, дублируется код с разным дизайном
                 MultiBox(
                     {
+                        // название лекарства
                         BasicKeyboardInput(
-                            label = name,
+                            label = R.string.add_med_name,
                             init = remedyInternal.name,
                             style = MaterialTheme.typography.bodyLarge,
                             hideOnGo = true,
@@ -157,38 +143,24 @@ fun MyCourseEditScreen(
                         )
                     },
                     {
-                        var exp by remember { mutableStateOf(false) }
-                        ParameterIndicator(
-                            name = form,
-                            value = types[remedyInternal.type],
-                            onClick = { exp = true }
-                        )
-                        DropdownMenu(
-                            expanded = exp,
-                            onDismissRequest = { exp = false },
-                            offset = DpOffset(x = 300.dp, y = 0.dp)
-                        ) {
-                            types.forEachIndexed { index, item ->
-                                DropdownMenuItem(
-                                    text = { Text(item) },
-                                    onClick = {
-                                        remedyInternal = remedyInternal.copy(type = index)
-                                        exp = false
-                                    }
-                                )
-                            }
-                        }
+                        // форма выпуска
+                        ParameterIndicatorSelector(
+                            parameter = R.string.add_med_form,
+                            value = remedyInternal.type,
+                            items = types,
+                        ) { remedyInternal = remedyInternal.copy(type = it) }
                     },
                     {
+                        // дозировка
                         BasicKeyboardInput(
-                            label = dose,
+                            label = R.string.mycourse_dosage_and_usage,
                             init = if (remedyInternal.dose == 0) "" else remedyInternal.dose.toString(),
                             hideOnGo = true,
                             keyboardType = KeyboardType.Number,
                             alignRight = true,
                             prefix = {
                                 Text(
-                                    text = dose,
+                                    text = stringResource(id = R.string.mycourse_dosage_and_usage),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                                 )
                             },
@@ -198,50 +170,20 @@ fun MyCourseEditScreen(
                         )
                     },
                     {
-                        var exp by remember { mutableStateOf(false) }
-                        ParameterIndicator(
-                            name = unit,
-                            value = units[remedyInternal.measureUnit],
-                            onClick = { exp = true }
-                        )
-                        DropdownMenu(
-                            expanded = exp,
-                            onDismissRequest = { exp = false },
-                            offset = DpOffset(x = 300.dp, y = 0.dp)
-                        ) {
-                            units.forEachIndexed { index, item ->
-                                DropdownMenuItem(
-                                    text = { Text(item) },
-                                    onClick = {
-                                        remedyInternal = remedyInternal.copy(measureUnit = index)
-                                        exp = false
-                                    }
-                                )
-                            }
-                        }
+                        // измерение
+                        ParameterIndicatorSelector(
+                            parameter = R.string.add_med_unit,
+                            value = remedyInternal.measureUnit,
+                            items = units,
+                        ) { remedyInternal = remedyInternal.copy(measureUnit = it) }
                     },
                     {
-                        var exp by remember { mutableStateOf(false) }
-                        ParameterIndicator(
-                            name = rel,
-                            value = relations[remedyInternal.beforeFood],
-                            onClick = { exp = true }
-                        )
-                        DropdownMenu(
-                            expanded = exp,
-                            onDismissRequest = { exp = false },
-                            offset = DpOffset(x = 300.dp, y = 0.dp)
-                        ) {
-                            relations.forEachIndexed { index, item ->
-                                DropdownMenuItem(
-                                    text = { Text(item) },
-                                    onClick = {
-                                        remedyInternal = remedyInternal.copy(beforeFood = index)
-                                        exp = false
-                                    }
-                                )
-                            }
-                        }
+                        // Правила приема лекарственных препаратов по отношению к еде: до еды, после еды, во время еды
+                        ParameterIndicatorSelector(
+                            parameter = R.string.add_med_food_relation,
+                            value = remedyInternal.beforeFood,
+                            items = relations,
+                        ) { remedyInternal = remedyInternal.copy(beforeFood = it) }
                     },
                     modifier = Modifier,
                     itemsPadding = PaddingValues(16.dp),
@@ -253,25 +195,40 @@ fun MyCourseEditScreen(
                 )
                 MultiBox(
                     {
-                        ParameterIndicator(
-                            name = startLabel,
-                            value = courseInternal.startDate.displayDateFull(),
-                            onClick = { selectedInput = CourseSelectInput.SELECT_START_DATE }
-                        )
+                        // начало курса
+                        ParameterIndicatorCalendarSelector(
+                            parameter = R.string.add_course_start_time,
+                            startDate = courseInternal.startDate,
+                            endDate = courseInternal.endDate,
+                            editStart = true,
+                        ) {
+                            courseInternal = courseInternal.copy(
+                                startDate = it.first,
+                                endDate = it.second,
+                            )
+                        }
                     },
                     {
-                        ParameterIndicator(
-                            name = endLabel,
-                            value = courseInternal.endDate.displayDateFull(),
-                            onClick = { selectedInput = CourseSelectInput.SELECT_END_DATE }
-                        )
+                        // окончание курса
+                        ParameterIndicatorCalendarSelector(
+                            parameter = R.string.add_course_end_time,
+                            startDate = courseInternal.startDate,
+                            endDate = courseInternal.endDate,
+                            editStart = false,
+                        ) {
+                            courseInternal = courseInternal.copy(
+                                startDate = it.first,
+                                endDate = it.second,
+                            )
+                        }
                     },
                     {
-                        ParameterIndicator(
-                            name = regimeLabel,
-                            value = regimeList[courseInternal.regime],
-                            onClick = { selectedInput = CourseSelectInput.SELECT_REGIME }
-                        )
+                        // график приема
+                        ParameterIndicatorSelector(
+                            parameter = R.string.medication_regime,
+                            value = courseInternal.regime,
+                            items = regimeList,
+                        ) { courseInternal = courseInternal.copy(regime = it) }
                     },
                     itemsPadding = PaddingValues(16.dp)
                 )
@@ -315,28 +272,6 @@ fun MyCourseEditScreen(
                     sendEvent(MyCoursesEditContract.Event.ConfirmationDelete)
                 },
             )
-        }
-
-        ReUseAnimatedVisibility(selectedInput != null) {
-            selectedInput?.let { select ->
-                CalendarAndRegimeSelectorDialog(
-                    selectedInput = select,
-                    startDate = courseInternal.startDate,
-                    endDate = courseInternal.endDate,
-                    regime = courseInternal.regime,
-                    regimeList = regimeList.toList(),
-                    onDismissRequest = { selectedInput = null },
-                    onDateSelected = {
-                        courseInternal = courseInternal.copy(
-                            startDate = it.first,
-                            endDate = it.second,
-                        )
-                    },
-                    onRegimeSelected = {
-                        courseInternal = courseInternal.copy(regime = it)
-                    }
-                )
-            }
         }
 
         ReUseAnimatedVisibility(state.confirmation) {

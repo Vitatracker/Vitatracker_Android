@@ -13,8 +13,11 @@ class CreateCourseContract {
     sealed interface Event : ViewEvent {
         //        data class SetUsage(val usage: UsageDomainModel) : Event
         data class UpdateRemedy(val remedy: RemedyDomainModel) : Event
-        data class UpdateRemedyName(val newName: String) : Event
-        data class UpdateCourse(val course: CourseDomainModel) : Event
+        data class UpdateRemedyName(val value: String) : Event
+        data class UpdateRemedyType(val value: Int) : Event
+        data class UpdateRemedyUnit(val value: Int) : Event
+        data class UpdateRemedyRelations(val value: Int) : Event
+        data class UpdateCourse(val date:Pair<LocalDateTime, LocalDateTime>?=null, val regime: Int? = null) : Event
         data class UpdateCourseRemindDate(val remindDate: LocalDateTime?, val interval: Long) : Event
         data class UpdateUsages(val usages: List<UsageDomainModel>) : Event
         data class UpdateUsagePatterns(val patterns: List<UsageFormat>) : Event

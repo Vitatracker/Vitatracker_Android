@@ -1,5 +1,6 @@
 package app.mybad.notifier.ui.screens.newcourse.common
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -23,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun BasicKeyboardInput(
-    label: String,
+    @StringRes label: Int,
     init: String? = null,
     modifier: Modifier = Modifier.fillMaxWidth(),
     style: TextStyle = MaterialTheme.typography.bodyMedium,
@@ -61,7 +63,7 @@ fun BasicKeyboardInput(
             ) {
                 if (init.isNullOrBlank()) {
                     Text(
-                        text = label,
+                        text = stringResource(id = label),
                         modifier = Modifier.alpha(0.3f),
                         style = style.copy(
                             textAlign = if (alignRight) TextAlign.End else TextAlign.Start,

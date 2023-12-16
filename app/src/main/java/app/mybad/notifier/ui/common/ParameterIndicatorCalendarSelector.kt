@@ -1,7 +1,8 @@
 package app.mybad.notifier.ui.common
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
+import androidx.annotation.StringRes
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -9,12 +10,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.mybad.data.models.CourseSelectInput
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import app.mybad.utils.DAYS_A_WEEK
@@ -44,6 +42,7 @@ import app.mybad.utils.atEndOfDay
 import app.mybad.utils.atStartOfDay
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.displayDateFull
 import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayDay
 import app.mybad.utils.firstDayOfMonth
@@ -57,87 +56,60 @@ import app.mybad.utils.minusMonths
 import app.mybad.utils.plusMonths
 import kotlinx.datetime.LocalDateTime
 
-@Preview
 @Composable
-private fun CalendarAndRegimeSelectorDialogPreview() {
-    MyBADTheme {
-        val startDate = LocalDateTime(2023, 5, 4, 5, 5, 5)
-        val endDate = LocalDateTime(2023, 5, 10, 5, 5, 5)
-        CalendarAndRegimeSelectorDialog(
-            selectedInput = CourseSelectInput.SELECT_START_DATE,
+fun ParameterIndicatorCalendarSelector(
+    @StringRes parameter: Int,
+    startDate: LocalDateTime,
+    endDate: LocalDateTime,
+    editStart: Boolean,
+    onSelect: (Pair<LocalDateTime, LocalDateTime>) -> Unit = {},
+) {
+    var expanded by remember { mutableStateOf(false) }
+    ParameterIndicator(
+        name = parameter,
+        value = (if (editStart) startDate else endDate).displayDateFull(),
+        onClick = { expanded = true }
+    )
+    ReUseAnimatedVisibility(visible = expanded) {
+        CalendarSelectorDialog(
             startDate = startDate,
             endDate = endDate,
-
-            regime = 1,
-            regimeList = listOf("Regime 1, Regime 2, Regime 3"),
+            editStart = editStart,
+            onDismiss = { expanded = false },
+            onDateSelected = onSelect::invoke,
         )
     }
 }
 
 @Composable
-fun CalendarAndRegimeSelectorDialog(
-    selectedInput: CourseSelectInput,
+private fun CalendarSelectorDialog(
     startDate: LocalDateTime,
     endDate: LocalDateTime,
-    regime: Int,
-    regimeList: List<String>,
-    modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit = {},
+    editStart: Boolean,
+    onDismiss: () -> Unit = {},
     onDateSelected: (Pair<LocalDateTime, LocalDateTime>) -> Unit = {},
-    onRegimeSelected: (regime: Int) -> Unit = {},
 ) {
-    Dialog(
-        onDismissRequest = onDismissRequest
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.background,
-            modifier = modifier,
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            when (selectedInput) {
-                CourseSelectInput.SELECT_START_DATE -> {
-                    CalendarPairSelectorView(
-                        editStart = true,
-                        startDate = startDate,
-                        endDate = endDate,
-                        dateOfMonth = startDate,// начальный отображаемый месяц
-                        onSelect = {
-                            onDateSelected(it)
-                            onDismissRequest()
-                        }
-                    )
+            CalendarPairSelectorView(
+                editStart = editStart,
+                startDate = startDate,
+                endDate = endDate,
+                dateOfMonth = if (editStart) startDate else endDate,// начальный отображаемый месяц
+                onSelect = {
+                    onDismiss()
+                    onDateSelected(it)
                 }
-
-                CourseSelectInput.SELECT_END_DATE -> {
-                    CalendarPairSelectorView(
-                        editStart = false,
-                        startDate = startDate,
-                        endDate = endDate,
-                        dateOfMonth = endDate,// начальный отображаемый месяц
-                        onSelect = {
-                            onDateSelected(it)
-                            onDismissRequest()
-                        }
-                    )
-                }
-
-                CourseSelectInput.SELECT_REGIME -> {
-                    RollSelectorView(
-                        list = regimeList,
-                        startOffset = regime,
-                        onSelect = {
-                            onRegimeSelected(it)
-                            onDismissRequest()
-                        }
-                    )
-                }
-            }
+            )
         }
     }
 }
 
 @Composable
-fun CalendarPairSelectorView(
+private fun CalendarPairSelectorView(
     modifier: Modifier = Modifier,
     startDate: LocalDateTime,
     endDate: LocalDateTime,
@@ -233,7 +205,7 @@ fun CalendarPairSelectorView(
 }
 
 @Composable
-fun CalendarPairSelector(
+private fun CalendarPairSelector(
     modifier: Modifier = Modifier,
     date: LocalDateTime,
     editStart: Boolean,
@@ -273,7 +245,7 @@ fun CalendarPairSelector(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(vertical = 8.dp)
                     .fillMaxWidth()
             )
             if (datesWeeks.size == WEEKS_PER_MONTH && datesWeeks.all { it.size == DAYS_A_WEEK }) {
@@ -291,16 +263,16 @@ fun CalendarPairSelector(
                                         .padding(bottom = 8.dp)
                                         .fillMaxWidth()
                                         .weight(1f, false),
-                                    isInitDate = datesWeeks[week][day].isEqualsDay(
+                                    initDate = datesWeeks[week][day].isEqualsDay(
                                         if (editStart) startDate else endDate
                                     ),
                                     date = datesWeeks[week][day],
-                                    isInRange = datesWeeks[week][day].isBetweenDay(
+                                    inRange = datesWeeks[week][day].isBetweenDay(
                                         startDate,
                                         endDate
                                     ),
-                                    isOtherMonth = datesWeeks[week][day].isNotEqualsMonth(date),
-                                    onSelect = onSelect
+                                    otherMonth = datesWeeks[week][day].isNotEqualsMonth(date),
+                                    onSelect = onSelect::invoke,
                                 )
                             }
                         }
@@ -314,158 +286,51 @@ fun CalendarPairSelector(
 @Composable
 private fun CalendarDayItem(
     modifier: Modifier = Modifier,
-    isInitDate: Boolean,
     date: LocalDateTime,
-    isInRange: Boolean = false, // в диапазоне
-    isOtherMonth: Boolean = false,
+    initDate: Boolean,
+    inRange: Boolean = false, // в диапазоне
+    otherMonth: Boolean = false,
     onSelect: (LocalDateTime) -> Unit = {}
 ) {
-    val outlineColor = MaterialTheme.colorScheme.primary
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .height(40.dp)
-            .alpha(if (isOtherMonth) 0.5f else 1f)
+            .padding(2.dp)
+            .border(
+                1.dp,
+                if (inRange) MaterialTheme.colorScheme.primary else Color.Transparent,
+                CircleShape
+            )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                onSelect(date)
-            }
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onSelect(date) },
+            )
     ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(3.dp),
-            shape = CircleShape,
-            border = if (isInRange) BorderStroke(1.dp, outlineColor) else null
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = date.displayDay(),
-                    style = if (isInitDate) MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(
-                            1.2f
-                        )
-                    ) else MaterialTheme.typography.bodyLarge,
-                    color = if (isInRange) MaterialTheme.colorScheme.primary else Color.Unspecified
+        Text(
+            modifier = Modifier.alpha(if (otherMonth) 0.5f else 1f),
+            text = date.displayDay(),
+            style = if (initDate) MaterialTheme.typography.bodyLarge.copy(
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize.times(
+                    1.2f
                 )
-            }
-        }
-    }
-}
-
-/*
-@Composable
-fun SingleDayCalendarSelector(
-    modifier: Modifier = Modifier,
-    initDay: LocalDateTime,
-    date: LocalDateTime = currentDateTime(),
-    onSelect: (date: LocalDateTime?) -> Unit
-) {
-    var sDate by remember { mutableStateOf(date) }
-    var selectedDay by remember { mutableStateOf(initDay) }
-
-    Column(
-        modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column {
-            MonthSelector(
-                date = sDate.atStartOfDaySystemToUTC(),
-                onSwitch = { sDate = it }
-            )
-            Spacer(Modifier.height(16.dp))
-            SingleDaySelector(
-                date = sDate,
-                startDay = selectedDay,
-                onSelect = { sd ->
-                    selectedDay = sd
-                }
-            )
-        }
-        Spacer(Modifier.height(16.dp))
-        ReUseFilledButton(
-            textId = R.string.settings_save,
-            onClick = {
-                onSelect(selectedDay)
-            }
+            ) else MaterialTheme.typography.bodyLarge,
+            color = if (inRange) MaterialTheme.colorScheme.primary else Color.Unspecified
         )
     }
 }
 
+@Preview
 @Composable
-private fun SingleDaySelector(
-    modifier: Modifier = Modifier,
-    date: LocalDateTime,
-    startDay: LocalDateTime,
-    onSelect: (date: LocalDateTime) -> Unit = {}
-) {
-    var selectedDate by remember { mutableStateOf(startDay) }
-    val datesWeeks = initWeekAndDayOfMonth(date)
-
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(0.5f)
-        ) {
-            repeat(DAYS_A_WEEK) { day ->
-                Text(
-                    text = day.dayShortDisplay(),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f, false)
-                )
-            }
-        }
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
+private fun CalendarSelectorDialogPreview() {
+    MyBADTheme {
+        val startDate = LocalDateTime(2023, 5, 4, 5, 5, 5)
+        val endDate = LocalDateTime(2023, 5, 10, 5, 5, 5)
+        CalendarSelectorDialog(
+            startDate = startDate,
+            endDate = endDate,
+            editStart = true,
         )
-        repeat(WEEKS_PER_MONTH) { week ->
-            if (datesWeeks[week].any { it.isEqualsMonth(date) }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    repeat(DAYS_A_WEEK) { day ->
-                        val thisDate = datesWeeks[week][day]
-                        CalendarDayItem(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .fillMaxWidth()
-                                .weight(1f, false),
-                            date = thisDate,
-                            isInRange = thisDate.atStartOfDay() == selectedDate.atStartOfDay(),
-                            isOtherMonth = thisDate.isNotEqualsMonth(date)
-                        ) {
-                            selectedDate = it
-                            onSelect(selectedDate)
-                        }
-                    }
-                }
-            } else if (week > 4) Spacer(Modifier.height(48.dp))
-        }
     }
 }
-*/

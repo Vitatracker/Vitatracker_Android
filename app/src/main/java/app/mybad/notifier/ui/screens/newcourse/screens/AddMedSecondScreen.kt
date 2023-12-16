@@ -4,21 +4,13 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
@@ -26,12 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
-import app.mybad.notifier.ui.common.ParameterIndicator
+import app.mybad.notifier.ui.common.ParameterIndicatorSelector
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseTopAppBar
+import app.mybad.notifier.ui.common.VerticalSpacerMedium
 import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.screens.newcourse.CreateCourseContract
 import app.mybad.notifier.ui.screens.newcourse.common.BasicKeyboardInput
@@ -72,17 +64,16 @@ fun AddMedSecondScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = 16.dp
-                ),
+                .padding(paddingValues)
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
         ) {
             SecondScreenContent(
                 state = state,
                 sendEvent = sendEvent
             )
+            ReUseFilledButton(textId = R.string.navigation_next) {
+                sendEvent(CreateCourseContract.Event.ActionNext)
+            }
         }
     }
 }
@@ -95,8 +86,6 @@ private fun SecondScreenContent(
     val types = stringArrayResource(R.array.types)
     val units = stringArrayResource(R.array.units)
     val relations = stringArrayResource(R.array.food_relations)
-    val dose = stringResource(R.string.add_med_dose)
-    val unit = stringResource(R.string.add_med_unit)
 
     Column {
         Text(
@@ -104,45 +93,29 @@ private fun SecondScreenContent(
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        VerticalSpacerMedium()
+        // при редактировании изменить и в MyCourseEditScreen, дублируется код с разным дизайном
         MultiBox(
             {
-                var menuExpanded by remember { mutableStateOf(false) }
-                ParameterIndicator(
-                    name = stringResource(R.string.add_med_form),
-                    value = types[state.remedy.type],
-                    onClick = { menuExpanded = true }
+                // форма выпуска
+                ParameterIndicatorSelector(
+                    parameter = R.string.add_med_form,
+                    value = state.remedy.type,
+                    items = types,
+                    onSelect = { sendEvent(CreateCourseContract.Event.UpdateRemedyType(it)) },
                 )
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                    offset = DpOffset(x = 300.dp, y = 0.dp)
-                ) {
-                    types.forEachIndexed { index, item ->
-                        DropdownMenuItem(
-                            text = { Text(item) },
-                            onClick = {
-                                sendEvent(
-                                    CreateCourseContract.Event.UpdateRemedy(
-                                        state.remedy.copy(type = index)
-                                    )
-                                )
-                                menuExpanded = false
-                            }
-                        )
-                    }
-                }
             },
             {
+                // дозировка
                 BasicKeyboardInput(
-                    label = dose,
+                    label = R.string.add_med_dose,
                     init = if (state.remedy.dose == 0) "" else state.remedy.dose.toString(),
                     hideOnGo = true,
                     keyboardType = KeyboardType.Number,
                     alignRight = true,
                     prefix = {
                         Text(
-                            text = dose,
+                            text = stringResource(id = R.string.add_med_dose),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                         )
                     },
@@ -156,64 +129,25 @@ private fun SecondScreenContent(
                 )
             },
             {
-                var menuExpanded by remember { mutableStateOf(false) }
-                ParameterIndicator(
-                    name = unit,
-                    value = units[state.remedy.measureUnit],
-                    onClick = { menuExpanded = true }
+                // измерение
+                ParameterIndicatorSelector(
+                    parameter = R.string.add_med_unit,
+                    value = state.remedy.measureUnit,
+                    items = units,
+                    onSelect = { sendEvent(CreateCourseContract.Event.UpdateRemedyUnit(it)) },
                 )
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                    offset = DpOffset(x = 300.dp, y = 0.dp)
-                ) {
-                    units.forEachIndexed { index, item ->
-                        DropdownMenuItem(
-                            text = { Text(item) },
-                            onClick = {
-                                sendEvent(
-                                    CreateCourseContract.Event.UpdateRemedy(
-                                        state.remedy.copy(measureUnit = index)
-                                    )
-                                )
-                                menuExpanded = false
-                            }
-                        )
-                    }
-                }
             },
             {
-                var menuExpanded by remember { mutableStateOf(false) }
-                ParameterIndicator(
-                    name = stringResource(R.string.add_med_food_relation),
-                    value = relations[state.remedy.beforeFood],
-                    onClick = { menuExpanded = true }
+                // Правила приема лекарственных препаратов по отношению к еде: до еды, после еды, во время еды
+                ParameterIndicatorSelector(
+                    parameter = R.string.add_med_food_relation,
+                    value = state.remedy.beforeFood,
+                    items = relations,
+                    onSelect = { sendEvent(CreateCourseContract.Event.UpdateRemedyRelations(it)) },
                 )
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                    offset = DpOffset(x = 300.dp, y = 0.dp)
-                ) {
-                    relations.forEachIndexed { index, item ->
-                        DropdownMenuItem(
-                            text = { Text(item) },
-                            onClick = {
-                                sendEvent(
-                                    CreateCourseContract.Event.UpdateRemedy(
-                                        state.remedy.copy(beforeFood = index)
-                                    )
-                                )
-                                menuExpanded = false
-                            }
-                        )
-                    }
-                }
             },
-            itemsPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 20.dp),
+            itemsPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
         )
-    }
-    ReUseFilledButton(textId = R.string.navigation_next) {
-        sendEvent(CreateCourseContract.Event.ActionNext)
     }
 }
 

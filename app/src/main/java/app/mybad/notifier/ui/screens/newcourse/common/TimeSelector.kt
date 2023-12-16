@@ -55,7 +55,7 @@ fun TimeSelector(
                     .fillMaxWidth()
                     .height(48.dp)
                     .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            ) {}
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly,

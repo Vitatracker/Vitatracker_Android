@@ -95,7 +95,7 @@ fun RemindNewCourseBottomSheet(
             MultiBox(
                 {
                     ParameterIndicator(
-                        name = stringResource(R.string.add_next_course_interval),
+                        name = R.string.add_next_course_interval,
                         value = stringResource(
                             R.string.period_m_d,
                             coursesInterval.months(),
@@ -106,7 +106,7 @@ fun RemindNewCourseBottomSheet(
                 },
                 {
                     ParameterIndicator(
-                        name = stringResource(R.string.add_next_course_remind_before),
+                        name = R.string.add_next_course_remind_before,
                         value = stringResource(
                             R.string.period_m_d,
                             remindBeforePeriod.months(),
@@ -117,7 +117,7 @@ fun RemindNewCourseBottomSheet(
                 },
                 {
                     ParameterIndicator(
-                        name = stringResource(R.string.add_next_course_remind_time),
+                        name = R.string.add_next_course_remind_time,
                         value = remindTime.displayTimeInMinutes(),
                         onClick = { selectedInput = 3 }
                     )
