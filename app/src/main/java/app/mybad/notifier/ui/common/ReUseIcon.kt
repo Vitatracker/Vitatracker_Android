@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.theme.R
 
 @Composable
@@ -57,9 +58,28 @@ fun ReUseIcon(
     }
 }
 
+@Composable
+fun MedicineIcon(
+    @DrawableRes icon: Int,
+    color: Int,
+    border: Boolean = false,
+    onClick: () -> Unit = {},
+) {
+    ReUseIcon(
+        modifier = Modifier.size(40.dp),
+        painterId = icon,
+        tint = MaterialTheme.colorScheme.outline,
+        iconSize = 24.dp,
+        color = PickColor.getColor(color),
+        shape = CircleShape,
+        border = border,
+        onClick = onClick,
+    )
+}
+
 @Preview
 @Composable
-private fun ReUseIconPreview(){
+private fun ReUseIconPreview() {
     ReUseIcon(
         painterId = R.drawable.icon_pencil,
         tint = MaterialTheme.colorScheme.surfaceBright,

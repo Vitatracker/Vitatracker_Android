@@ -7,12 +7,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,7 +41,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.common.DaySelectorSlider
-import app.mybad.notifier.ui.theme.PickColor
+import app.mybad.notifier.ui.common.MedicineIcon
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.betweenSecondsSystem
@@ -175,25 +173,12 @@ private fun SingleUsageItem(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Surface(
-                    shape = CircleShape,
-                    color = PickColor.getColor(usage.color),
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(40.dp)
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Icon(
-                            painter = painterResource(icon),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.outline
-                        )
-                    }
-                }
+                // иконка лекарства
+                MedicineIcon(
+                    icon = icon,
+                    color = usage.color,
+                )
+                Spacer(Modifier.width(10.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

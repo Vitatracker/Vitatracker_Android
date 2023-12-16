@@ -11,6 +11,6 @@ enum class PickColor(val color: Color) {
     PICK_COLOR_RED(selectColorRed);
 
     companion object {
-        fun getColor(number: Int) = values()[number % values().lastIndex].color
+        fun getColor(number: Int) = entries[number % entries.lastIndex].color
     }
 }

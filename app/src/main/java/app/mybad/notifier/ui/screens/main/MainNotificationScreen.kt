@@ -66,6 +66,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mybad.domain.models.UsageDisplayDomainModel
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
+import app.mybad.notifier.ui.common.MedicineIcon
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
@@ -367,35 +368,24 @@ private fun NotificationCourseItem(
                 isDone = isDone
             )
             Spacer(modifier = Modifier.width(16.dp))
+            // иконка препарата
+            MedicineIcon(
+                icon = icon,
+                color = usage.color,
+            )
+            Spacer(modifier = Modifier.width(10.dp))
             Column(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    // иконка препарата
-                    Icon(
-                        painter = painterResource(icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(25.dp),
-                        tint = setTextColorTime(
-                            nowDate = updateTime,
-                            usageTime = usage.useTime,
-                            isDone = isDone
-                        )//PickColor.getColor(usage.color)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    // название препарата
-                    Text(
-                        text = usage.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
+                // название препарата
+                Text(
+                    text = usage.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

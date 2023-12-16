@@ -40,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.CourseDisplayDomainModel
 import app.mybad.domain.models.patternToCount
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
+import app.mybad.notifier.ui.common.MedicineIcon
 import app.mybad.notifier.ui.common.ReUseIcon
 import app.mybad.notifier.ui.common.TitleText
 import app.mybad.notifier.ui.common.getFormsPluralsArray
 import app.mybad.notifier.ui.theme.MyBADTheme
-import app.mybad.notifier.ui.theme.PickColor
 import app.mybad.theme.R
 import app.mybad.utils.displayDate
 import app.mybad.utils.toText
@@ -154,16 +154,12 @@ private fun CourseNameAndEditButton(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        ReUseIcon(
-            painterId = icon,
-            tint = MaterialTheme.colorScheme.primary, //outline
-            color = PickColor.getColor(courseDisplay.color),
-            iconSize = 24.dp,
-            border = false,
-            modifier = Modifier
-                .size(36.dp),
+        // иконка препарата
+        MedicineIcon(
+            icon = icon,
+            color = courseDisplay.color,
         )
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(10.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
