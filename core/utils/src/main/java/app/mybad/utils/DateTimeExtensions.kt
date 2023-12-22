@@ -129,6 +129,7 @@ private fun Instant.formatDayAndMonthFull(): String =
 
 private const val dayOfMonthFormatter = "%02d"
 fun LocalDateTime.displayDay() = dayOfMonthFormatter.format(this.dayOfMonth)
+fun LocalDateTime.displayYearShort() = this.year.toString().let { it.substring(it.length - 2) }
 
 private const val timeFormatter = "%02d:%02d" //HH:mm
 fun LocalDateTime.displayTime() = timeFormatter.format(hour, minute)
@@ -152,6 +153,7 @@ private fun LocalDateTime.formatISO() = dateTimeIsoFormatter.format(
 )
 
 // названия месяцев и дней
+fun LocalDateTime.monthShortDisplay() = month.ordinal.monthShortDisplay()
 fun Int.monthShortDisplay(): String = Month(this + 1).getDisplayName(
     TextStyle.SHORT_STANDALONE,
     Locale.getDefault()
@@ -209,6 +211,19 @@ private fun LocalDateTime.changeTime(
 )
 
 // month: 1..12, days: 1..31
+fun LocalDateTime.changeDateCorrectDay(
+    year: Int? = null,
+    month: Int? = null,
+) = this.changeDate(year = year, month = month, dayOfMonth = 1).let {
+    val lastDayOfMonth = it.getDaysOfMonth()
+    it.changeDate(dayOfMonth = if (this.dayOfMonth <= lastDayOfMonth) this.dayOfMonth else lastDayOfMonth)
+}
+
+fun LocalDateTime.changeDateCorrectDay(dayOfMonth: Int): LocalDateTime {
+    val lastDayOfMonth = getDaysOfMonth()
+    return changeDate(dayOfMonth = if (dayOfMonth <= lastDayOfMonth) dayOfMonth else lastDayOfMonth)
+}
+
 fun LocalDateTime.changeDate(year: Int? = null, month: Int? = null, dayOfMonth: Int? = null) =
     LocalDateTime(
         year = year ?: this.year,

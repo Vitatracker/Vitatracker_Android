@@ -181,7 +181,7 @@
     <string name="calendar_title">Мой календарь</string>
 
     <!--MAIN SCREEN-->
-    <string name="main_screen_text_category">Лекарства</string>
+    <string name="main_screen_text_category">Лекарства на %1$s</string>
     <string name="add_notifications_already_exist">Напоминание на это время уже существует!</string>
     <string name="add_notifications_time_set">Настроить напоминание *</string>
 
@@ -196,7 +196,7 @@
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Дневник напоминаний</string>
     <string name="main_screen_meds_clear_start">Давайте начнем!\nДобавьте первое лекарство</string>
-    <string name="main_screen_meds_dont_have_today">У Вас нет приема лекарств на сегодня!</string>
+    <string name="main_screen_meds_dont_have_today">У Вас нет приема лекарств\nна %1$s!</string>
     <string name="add_notifications_choose_time">Выберите время</string>
     <string name="add_med_error_empty_name">Наименование не заполнено</string>
 

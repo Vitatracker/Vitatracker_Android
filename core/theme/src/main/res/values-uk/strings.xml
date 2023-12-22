@@ -176,7 +176,7 @@
     <!--CALENDAR -->
     <string name="calendar_title">Мій календар</string>
 
-    <string name="main_screen_text_category">Препарати</string>
+    <string name="main_screen_text_category">Препарати на %1$s</string>
     <string name="add_notifications_already_exist">Нагадування на цей час вже існує!</string>
     <string name="add_notifications_time_set">Налаштувати нагадування *</string>
 
@@ -191,7 +191,7 @@
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Щоденник нагадувань</string>
     <string name="main_screen_meds_clear_start">Починаємо!\nДодайте перший препарат</string>
-    <string name="main_screen_meds_dont_have_today">У Вас немає прийому ліків сьогодні!</string>
+    <string name="main_screen_meds_dont_have_today">У Вас немає прийому ліків\nна %1$s!</string>
     <string name="add_notifications_choose_time">Виберіть час</string>
     <string name="add_med_error_empty_name">Назва не заповнена</string>
 

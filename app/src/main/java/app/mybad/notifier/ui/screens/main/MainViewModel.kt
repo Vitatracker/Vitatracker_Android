@@ -93,7 +93,15 @@ class MainViewModel @Inject constructor(
     )
 
     init {
+        Log.w(
+            "VTTAG",
+            "MainViewModel::NotificationMonthPager: init ----------------------------------------"
+        )
         observeAuthorization()
+    }
+
+    fun setToday() {
+        changeDate(currentDateTimeSystem())
     }
 
     private fun observeAuthorization() {

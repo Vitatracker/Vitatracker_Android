@@ -188,7 +188,7 @@
 
     <!--MAIN SCREEN-->
     <string name="main_screen_top_bar_name">Reminder dialy</string>
-    <string name="main_screen_text_category">Medicines</string>
+    <string name="main_screen_text_category">Medicines on %1$s</string>
 
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
     <string name="add_notifications_time_set">Set up notification time *</string>
@@ -202,7 +202,7 @@
     <string name="mycourse_edit_icon_color">Edit icon color</string>
 
     <string name="main_screen_meds_clear_start">Lets start!\nAdd the first medicines</string>
-    <string name="main_screen_meds_dont_have_today">You don\'t have any medications for today!</string>
+    <string name="main_screen_meds_dont_have_today">You don\'t have any medications\non %1$s!</string>
     <string name="add_notifications_choose_time">Choose time</string>
     <string name="add_med_error_empty_name">Medicine name is blank</string>
     <string name="version_code">"Version "</string>

@@ -9,7 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,7 +31,8 @@ fun MainNavGraph(
     paddingValues: PaddingValues,
     navigateUp: (String) -> Unit = {},
 ) {
-    var calendarScreenToday = remember { true }
+    var calendarScreenToday = rememberSaveable { true }
+    var notificationsScreenToday = rememberSaveable { false }
 
     NavHost(
         modifier = Modifier
@@ -61,6 +62,10 @@ fun MainNavGraph(
             calendarScreenToday = true
 
             val viewModel: MainViewModel = hiltViewModel()
+            if (notificationsScreenToday) {
+                viewModel.setToday()
+                notificationsScreenToday = false
+            }
 
             MainNotificationScreen(
                 state = viewModel.viewState.value,
@@ -79,6 +84,7 @@ fun MainNavGraph(
         composable(route = MainScreens.Courses.route) {
 
             calendarScreenToday = true
+            notificationsScreenToday = true
 
             val viewModel: MyCoursesViewModel = hiltViewModel()
 
@@ -105,6 +111,8 @@ fun MainNavGraph(
         }
         composable(route = MainScreens.Calendar.route) {
 
+            notificationsScreenToday = true
+
             val viewModel: CalendarViewModel = hiltViewModel()
             if (calendarScreenToday) {
                 viewModel.setToday()
@@ -130,6 +138,9 @@ fun MainNavGraph(
             )
         }
         //route = MainScreens.Settings.route
-        settingsNavGraph(navigationState, { calendarScreenToday = true }, navigateUp)
+        settingsNavGraph(navigationState, navigateUp) {
+            calendarScreenToday = true
+            notificationsScreenToday = true
+        }
     }
 }

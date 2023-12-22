@@ -27,7 +27,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,7 +38,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -68,20 +66,27 @@ import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.common.MedicineIcon
 import app.mybad.notifier.ui.common.TitleText
+import app.mybad.notifier.ui.common.VerticalSpacerSmall
 import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.notifier.ui.theme.darkTheme
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.changeDate
+import app.mybad.utils.changeDateCorrectDay
 import app.mybad.utils.currentDateTimeSystem
 import app.mybad.utils.dayShortDisplay
+import app.mybad.utils.displayDate
+import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayTime
+import app.mybad.utils.firstDayOfMonth
 import app.mybad.utils.getDaysOfMonth
+import app.mybad.utils.minusMonths
 import app.mybad.utils.monthShortDisplay
+import app.mybad.utils.plusDays
+import app.mybad.utils.plusMonths
 import app.mybad.utils.plusSeconds
 import app.mybad.utils.toText
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -133,6 +138,7 @@ fun MainNotificationScreen(
                 )
                 if (state.patternsAndUsages.isNotEmpty()) {
                     NotificationLazyMedicines(
+                        date = state.selectDate,
                         updateTime = updateDate,
                         usagesDisplay = state.patternsAndUsages,
                         types = types,
@@ -143,7 +149,8 @@ fun MainNotificationScreen(
                 } else {
                     NotificationRemedyClear(
                         if (state.isEmpty) R.string.main_screen_meds_clear_start
-                        else R.string.main_screen_meds_dont_have_today
+                        else R.string.main_screen_meds_dont_have_today,
+                        state.selectDate
                     )
                 }
             }
@@ -157,93 +164,190 @@ private fun NotificationMonthPager(
     date: LocalDateTime,
     changeData: (LocalDateTime) -> Unit = {}
 ) {
-    val stateMonth = rememberPagerState(date.month.ordinal) { 12 }
+    Log.w(
+        "VTTAG",
+        "NotificationMonthPager::init: date=${date.displayDateTime()}"
+    )
+
+    var datePage by remember(date.year, date.monthNumber) { mutableStateOf(date) }
+    val monthInit by remember(datePage) {
+        mutableStateOf(months + date.month.ordinal)
+    }
+
+    val pagerState = rememberPagerState(monthInit) { monthsSize }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(monthInit) {
+        scope.launch {
+            pagerState.scrollToPage(monthInit)
+        }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage < months || pagerState.currentPage >= monthsPair) {
+            scope.launch {
+                val newYear = pagerState.currentPage.toYear(datePage.year)
+                val nevIndex =
+                    pagerState.currentPage + if (newYear > datePage.year) -months else months
+                pagerState.scrollToPage(nevIndex)
+                datePage = datePage.changeDateCorrectDay(year = newYear)
+                Log.w(
+                    "VTTAG",
+                    "NotificationMonthPager::change: index=${pagerState.currentPage} nevIndex=$nevIndex datePage=${datePage.displayDateTime()}"
+                )
+            }
+        }
+    }
 
     HorizontalPager(
         modifier = Modifier
             .fillMaxWidth(),
-        state = stateMonth,
+        state = pagerState,
         pageSpacing = 8.dp,
         contentPadding = PaddingValues(
-            horizontal = ((LocalConfiguration.current.screenWidthDp - 60) / 2).dp
+            horizontal = ((LocalConfiguration.current.screenWidthDp - 50) / 2).dp
         ),
-        pageSize = PageSize.Fixed(54.dp)
-    ) { month ->
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.small
-        ) {
-            Text(
-                text = month.monthShortDisplay(),
-                color = getMonthColor(stateMonth.currentPage, month),
-                modifier = Modifier
-                    .padding(1.dp)
-                    .clickable {
-                        scope.launch { stateMonth.animateScrollToPage(month) }
-                    },
-                fontWeight = getFontWeight(stateMonth.currentPage, month),
-                maxLines = 1,
-                textAlign = TextAlign.Center
-            )
+        pageSize = PageSize.Fixed(50.dp),
+    ) { index ->
+        val dateView = datePage.changeDate(
+            year = index.toYear(datePage.year),
+            month = index.toMonth(),
+            dayOfMonth = 1,
+        )
+        Log.d("VTTAG", "NotificationMonthPager::month: dateView=${dateView.displayDateTime()}")
+
+        Text(
+            text = dateView.monthShortDisplay(),
+            color = getMonthColor(pagerState.currentPage, index),
+            fontWeight = getFontWeight(pagerState.currentPage, index),
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(1.dp)
+                .clickable {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
+        )
+    }
+    VerticalSpacerSmall()
+    NotificationWeekPager(
+        date = datePage.changeDateCorrectDay(month = pagerState.currentPage.toMonth()),
+        changeData = changeData::invoke,
+    ) {
+        scope.launch {
+            pagerState.scrollToPage(pagerState.currentPage + it)
         }
     }
-    NotificationWeekPager(
-        monthState = stateMonth.currentPage,
-        date = date,
-        changeData = changeData,
-    )
+}
+
+private fun Int.toMonth() = this % months + 1
+
+private fun Int.toYear(currentYear: Int) = when {
+    this < months -> currentYear - 1
+    this >= monthsPair -> currentYear + 1
+    else -> currentYear
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NotificationWeekPager(
-    monthState: Int,
     date: LocalDateTime,
     changeData: (LocalDateTime) -> Unit,
+    changeMonth: (Int) -> Unit,
 ) {
-    val paddingStart = 10.dp
-    val paddingEnd = 10.dp
-
-    var shortNameOfDay by remember { mutableStateOf("") }
-    var countDay by remember { mutableIntStateOf(0) }
-    val displayedDate by remember { mutableStateOf(date) }
-    val stateDay = rememberPagerState(date.dayOfMonth - 1) {
-        // количество дней в месяце с учетом высокосного года
-        displayedDate.changeDate(month = monthState + 1).getDaysOfMonth()
+    var datePage by remember(date.year, date.monthNumber) {
+        mutableStateOf(date.firstDayOfMonth().minusMonths(1))
+    }
+    val daysMonth by remember(datePage) {
+        mutableStateOf(
+            Triple(
+                datePage.getDaysOfMonth(),
+                datePage.plusMonths(1).getDaysOfMonth(),
+                datePage.plusMonths(2).getDaysOfMonth()
+            )
+        )
+    }
+    val dayInit by remember(daysMonth.first) {
+        mutableStateOf(daysMonth.first + date.dayOfMonth - 1)
+    }
+    val daysPagerState = rememberPagerState(dayInit) {
+        daysMonth.first + daysMonth.second + daysMonth.third
     }
     val scope = rememberCoroutineScope()
+    Log.w(
+        "VTTAG",
+        "NotificationMonthPager::NotificationWeekPager: init datePage=${datePage.displayDateTime()} date=${date.displayDateTime()}"
+    )
 
-    LaunchedEffect(stateDay.currentPage, monthState) {
-        delay(50)
-        val newDate = date.changeDate(
-            month = monthState + 1,
-            dayOfMonth = stateDay.currentPage + 1
-        )
-        changeData(newDate)
+    LaunchedEffect(dayInit) {
+        scope.launch {
+            daysPagerState.scrollToPage(dayInit)
+        }
+    }
+    LaunchedEffect(daysPagerState.currentPage, datePage) {
+        scope.launch {
+            if (daysPagerState.currentPage < daysMonth.first ||
+                daysPagerState.currentPage >= daysMonth.first + daysMonth.second
+            ) {
+                val nevIndex =
+                    daysPagerState.currentPage + if (daysPagerState.currentPage < daysMonth.first) {
+                        changeMonth(-1)
+                        datePage.minusMonths(1).getDaysOfMonth()
+                    } else {
+                        changeMonth(1)
+                        -daysMonth.first
+                    }
+                Log.d(
+                    "VTTAG",
+                    "NotificationMonthPager::NotificationWeekPager: change month datePage=${datePage.displayDateTime()} page=${daysPagerState.currentPage} nevIndex=$nevIndex"
+                )
+                daysPagerState.scrollToPage(nevIndex)
+            } else {
+                val newDate = datePage.plusDays(daysPagerState.currentPage)
+                Log.w(
+                    "VTTAG",
+                    "NotificationMonthPager::NotificationWeekPager: ----------------------------------------"
+                )
+                Log.d(
+                    "VTTAG",
+                    "NotificationMonthPager::NotificationWeekPager: init newDate=${newDate.displayDateTime()} date=${date.displayDateTime()}"
+                )
+                changeData(newDate)
+            }
+            Log.w(
+                "VTTAG",
+                "NotificationMonthPager::NotificationWeekPager: ----------------------------------------"
+            )
+        }
     }
 
     HorizontalPager(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp, start = paddingStart, end = paddingEnd),
-        state = stateDay,
-        pageSpacing = 13.dp,
+            .fillMaxWidth(),
+        state = daysPagerState,
+        pageSpacing = 8.dp,
         contentPadding = PaddingValues(
-            horizontal = ((Resources.getSystem().configuration.screenWidthDp - 60) / 2).dp
-        )
-    ) { page ->
+            horizontal = ((Resources.getSystem().configuration.screenWidthDp - 40) / 2).dp
+        ),
+        pageSize = PageSize.Fixed(40.dp),
+    ) { index ->
+        val selected = daysPagerState.currentPage == index
+        val dateShow = datePage.plusDays(index)
+        val nameOfDay = dateShow.dayShortDisplay()
+
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .alpha(if (stateDay.currentPage == page) 1f else 0.5f)
+                .alpha(if (selected) 1f else 0.5f)
                 .clickable {
-                    scope.launch { stateDay.animateScrollToPage(page) }
+                    scope.launch { daysPagerState.animateScrollToPage(index) }
                 },
-            shape = RoundedCornerShape(5.dp),
+            shape = MaterialTheme.shapes.small,
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
-            color = if (stateDay.currentPage == page) MaterialTheme.colorScheme.primary else Color.Transparent,
-            contentColor = if (stateDay.currentPage == page) MaterialTheme.colorScheme.surfaceBright
+            color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+            contentColor = if (selected) MaterialTheme.colorScheme.surfaceBright
             else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
         ) {
             Column(
@@ -253,21 +357,17 @@ private fun NotificationWeekPager(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                countDay = page + 1
-                shortNameOfDay = date
-                    .changeDate(month = monthState + 1, dayOfMonth = page + 1)
-                    .dayShortDisplay()
-
                 Text(
-                    text = AnnotatedString(countDay.toString()),
-                    modifier = Modifier,
+                    text = AnnotatedString(dateShow.dayOfMonth.toString()),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                     maxLines = 1,
                     textAlign = TextAlign.Center
                 )
-
                 Text(
-                    text = AnnotatedString(shortNameOfDay),
-                    modifier = Modifier,
+                    text = AnnotatedString(nameOfDay),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                     maxLines = 1,
                     textAlign = TextAlign.Center
                 )
@@ -277,9 +377,9 @@ private fun NotificationWeekPager(
 }
 
 @Composable
-private fun NotificationTextCategory() {
+private fun NotificationTextCategory(date: LocalDateTime) {
     Text(
-        text = stringResource(id = R.string.main_screen_text_category),
+        text = stringResource(id = R.string.main_screen_text_category, date.displayDate()),
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, top = 16.dp),
@@ -291,6 +391,7 @@ private fun NotificationTextCategory() {
 @SuppressLint("Recycle")
 @Composable
 private fun NotificationLazyMedicines(
+    date: LocalDateTime,
     updateTime: LocalDateTime,
     usagesDisplay: Map<String, UsageDisplayDomainModel>,
     types: Array<String>,
@@ -301,7 +402,7 @@ private fun NotificationLazyMedicines(
     val usages = remember(usagesDisplay) {
         usagesDisplay.entries.toList()
     }
-    NotificationTextCategory()
+    NotificationTextCategory(date)
     Log.w(
         "VTTAG",
         "MainNotificationScreen::NotificationLazyMedicines: usages=${usagesDisplay.size}"
@@ -454,16 +555,17 @@ private fun NotificationTimeCourse(
 @Composable
 private fun NotificationRemedyClear(
     @StringRes text: Int,
+    date: LocalDateTime,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 80.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(text),
+            text = stringResource(text, date.displayDate()),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
         )
@@ -640,3 +742,7 @@ private val patternsAndUsages = listOf(
         type = 1,
     ),
 )
+
+const val months = 12
+const val monthsPair = 24
+const val monthsSize = 36 // 12 * 3
