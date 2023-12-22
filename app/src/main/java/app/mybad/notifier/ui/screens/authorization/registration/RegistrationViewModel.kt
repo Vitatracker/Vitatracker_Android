@@ -206,13 +206,14 @@ class RegistrationViewModel @Inject constructor(
             setState {
                 copy(
                     error = null,
-                    isErrorEmail = false,
+                    isErrorEmail = password.isNotBlank() && email.isNotBlank() &&
+                        !(email.contains("@") && email.contains(".")),
                     isErrorPassword = false,
                     email = email,
                     password = password,
                     confirmationPassword = confirmationPassword,
                     isRegistrationButtonEnabled = email.isNotBlank() && password.isNotBlank() && confirmationPassword.isNotBlank()
-                        && email.contains("@")
+                        && email.contains("@") && email.contains(".")
                 )
             }
         }

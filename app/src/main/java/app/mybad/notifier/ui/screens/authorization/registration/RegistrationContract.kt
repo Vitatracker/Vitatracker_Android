@@ -12,12 +12,12 @@ class RegistrationContract {
             val confirmationPassword: String
         ) : Event
 
-        object OnBack : Event
-        object SignInWithGoogle : Event
+        data object OnBack : Event
+        data object SignInWithGoogle : Event
         data class UpdateEmail(val newEmail: String) : Event
         data class UpdatePassword(val newPassword: String) : Event
         data class UpdateConfirmationPassword(val newConfirmationPassword: String) : Event
-        object ShowUserAgreement : Event
+        data object ShowUserAgreement : Event
     }
 
     data class State(
@@ -32,17 +32,17 @@ class RegistrationContract {
     ) : ViewState
 
     sealed interface RegistrationError {
-        object PasswordsMismatch : RegistrationError
-        object WrongEmailFormat : RegistrationError
-        object UserEmailExists : RegistrationError
-        object WrongPassword : RegistrationError
+        data object PasswordsMismatch : RegistrationError
+        data object WrongEmailFormat : RegistrationError
+        data object UserEmailExists : RegistrationError
+        data object WrongPassword : RegistrationError
         data class Error(val message: String) : RegistrationError
     }
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {
-            object ToMain : Navigation
-            object Back : Navigation
+            data object ToMain : Navigation
+            data object Back : Navigation
         }
     }
 }

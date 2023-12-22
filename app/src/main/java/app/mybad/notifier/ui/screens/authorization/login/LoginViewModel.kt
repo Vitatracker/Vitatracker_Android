@@ -134,14 +134,15 @@ class LoginViewModel @Inject constructor(
             setState {
                 copy(
                     isError = false,
-                    isErrorEmail = false,
+                    isErrorEmail = password.isNotBlank() && email.isNotBlank() &&
+                        !(email.contains("@") && email.contains(".")),
                     isErrorPassword = false,
 
                     email = email,
                     password = password,
 
                     isLoginButtonEnabled = email.isNotBlank() && password.isNotBlank()
-                            && email.contains("@")
+                        && email.contains("@") && email.contains(".")
                 )
             }
         }
