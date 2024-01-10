@@ -72,6 +72,9 @@ class CalendarViewModel @Inject constructor(
     private var usagesMonth: List<UsageDisplayDomainModel> = emptyList()
     private var futureMonth: List<UsageDisplayDomainModel> = emptyList()
 
+    // это дата выбора элемента при смене месяца
+    private var dateSelectedElement: LocalDateTime? = null
+
     private val dateMonth = MutableStateFlow(viewState.value.date)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -112,6 +115,7 @@ class CalendarViewModel @Inject constructor(
     )
 
     fun setToday() {
+        dateSelectedElement = null
         changeDateForMonth(currentDateTimeSystem())
     }
 
@@ -144,6 +148,8 @@ class CalendarViewModel @Inject constructor(
                 usagesWeeks = viewState.value.usagesWeeks,
             )
         }
+        // если есть выбранная дата, то выберем елемент для указанную дату
+        dateSelectedElement?.let(::selectElementByDate)
         return dateUpdate
     }
 
@@ -184,9 +190,77 @@ class CalendarViewModel @Inject constructor(
         return pattensAndUsages
     }
 
+    private fun changeDateForDaily(date: LocalDateTime?) {
+        viewModelScope.launch {
+            if (date == null) {
+                Log.e(
+                    "VTTAG",
+                    "NotificationMonthPager::CalendarViewModel::changeDateForDaily: date=null selectElement=null"
+                )
+                selectElement(null)
+            } else {
+                Log.w(
+                    "VTTAG",
+                    "NotificationMonthPager::CalendarViewModel::changeDateForDaily: -+- date=${date.displayDateTime()} dateMonth=${dateMonth.value.displayDateTime()}"
+                )
+                // если в дате изменился месяц или год, то изменить месяц и загрузить данные
+                if (dateSelectedElement != null ||
+                    dateMonth.value.year != date.year ||
+                    dateMonth.value.monthNumber != date.monthNumber
+                ) {
+                    dateSelectedElement = date
+                    Log.e(
+                        "VTTAG",
+                        "NotificationMonthPager::CalendarViewModel::changeDateForDaily: -+- dateSelectedElement=${dateSelectedElement?.displayDateTime()}"
+                    )
+                    // после загрузки данных они отобразятся с вызовом функции selectElementByDate(selectedElementDate)
+                    changeDateForMonth(date)
+                } else selectElementByDate(date)
+            }
+        }
+    }
+
+    private fun selectElementByDate(date: LocalDateTime) {
+        val day =
+            dateSelectedElement?.dayOfWeek?.ordinal ?: date.dayOfWeek.ordinal // день определяется
+        // перебор по всем неделям
+        repeat(WEEKS_PER_MONTH) { week ->
+            if (date == viewState.value.datesWeeks[week][day]) {
+                Log.w(
+                    "VTTAG",
+                    "NotificationMonthPager::CalendarViewModel::selectElementByDate: date=${date.displayDateTime()} selectElement=$week, $day"
+                )
+                selectElement(element = week to day)
+                return
+            }
+        }
+        // повторим поиск по всем дням
+        repeat(WEEKS_PER_MONTH) { week ->
+            repeat(DAYS_A_WEEK) { day ->
+                if (date == viewState.value.datesWeeks[week][day]) {
+                    Log.w(
+                        "VTTAG",
+                        "NotificationMonthPager::CalendarViewModel::selectElementByDate: date=${date.displayDateTime()} selectElement=$week, $day"
+                    )
+                    selectElement(element = week to day)
+                    return
+                }
+            }
+        }
+        Log.e(
+            "VTTAG",
+            "NotificationMonthPager::CalendarViewModel::selectElementByDate: !!! element=null dateSelectedElement=${dateSelectedElement?.displayDateTime()} date=${date.displayDateTime()} date table=${viewState.value.datesWeeks[0][0].displayDateTime()}-${viewState.value.datesWeeks[WEEKS_PER_MONTH - 1][DAYS_A_WEEK - 1].displayDateTime()}"
+        )
+        selectElement(null)
+    }
+
     private fun selectElement(element: Pair<Int, Int>?) {
         viewModelScope.launch {
-            Log.w("VTTAG", "CalendarViewModel::selectElement: element=${element}")
+            Log.e(
+                "VTTAG",
+                "NotificationMonthPager::CalendarViewModel::selectElement: !!! element=$element"
+            )
+            dateSelectedElement = null
             val elementOrNull = try {
                 if (element != null && viewState.value.usagesWeeks[element.first][element.second].isNotEmpty()) {
                     element
@@ -199,28 +273,6 @@ class CalendarViewModel @Inject constructor(
                     selectedElement = elementOrNull,
                 )
             }
-        }
-    }
-
-    private fun changeDateForDaily(date: LocalDateTime?) {
-        viewModelScope.launch {
-            date?.let {
-                // TODO("алгоритм пересчета недели")
-//                val week = date.dayOfMonth % WEEKS_PER_MONTH // так не работает, у нас меняется месяц
-                val day = date.dayOfWeek.ordinal // день определяется
-                // перебор по всем неделям
-                repeat(WEEKS_PER_MONTH) { week ->
-                    if (date == viewState.value.datesWeeks[week][day]) {
-                        Log.w(
-                            "VTTAG",
-                            "CalendarViewModel::changeDateForDaily: date=${date.displayDateTime()} selectElement=$week, $day"
-                        )
-                        selectElement(week to day)
-                        return@launch
-                    }
-                }
-            }
-            selectElement(null)
         }
     }
 

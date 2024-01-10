@@ -32,6 +32,7 @@ val Typography = Typography(
         fontSize = 32.sp,
         lineHeight = 40.sp,
     ),
+    // используется
     headlineMedium = TextStyle(
         fontFamily = SFProFontFamily,
         fontWeight = FontWeight.Bold,

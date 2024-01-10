@@ -399,8 +399,9 @@ fun LocalDateTime.courseDuration(date: LocalDateTime) = this.atStartOfDay()
     .systemToInstant()
     .betweenDays(date.atStartOfDay().systemToInstant())
 
-fun LocalDateTime.isEqualsDay(date: LocalDateTime) = this.dayOfYear == date.dayOfYear &&
-    this.year == date.year
+fun LocalDateTime.isNotEqualsDay(date: LocalDateTime?) = this.isEqualsDay(date).not()
+fun LocalDateTime.isEqualsDay(date: LocalDateTime?)= if (date == null) false
+ else this.dayOfYear == date.dayOfYear && this.year == date.year
 
 fun LocalDateTime.isEqualsDay(dateInMilliseconds: Long) =
     if (dateInMilliseconds < MILES_SECONDS) false

@@ -17,7 +17,7 @@ class CalendarContract {
         data class ChangeMonth(val date: LocalDateTime) : Event
         data class SelectDate(val date: LocalDateTime?) : Event
         data class SelectElement(val element: Pair<Int, Int>?) : Event
-        object ActionBack : Event
+        data object ActionBack : Event
     }
 
     data class State(
@@ -55,7 +55,7 @@ class CalendarContract {
 
     sealed interface Effect : ViewSideEffect {
         sealed interface Navigation : Effect {
-            object Back : Navigation
+            data object Back : Navigation
         }
     }
 }

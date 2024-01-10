@@ -56,10 +56,11 @@ class MainViewModel @Inject constructor(
     private val _updateTime = MutableStateFlow(currentDateTimeSystem())
     private val updateTime = _updateTime.onEach(::setTimer)
 
-    private val _selectDate = MutableStateFlow(viewState.value.selectDate)
+    private val selectDateToday: LocalDateTime? = null
+    private val selectDate = MutableStateFlow(viewState.value.selectDate)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val usages = _selectDate.flatMapLatest { date ->
+    private val usages = selectDate.flatMapLatest { date ->
         val startDate = date.atStartOfDay().systemToEpochSecond()
         val endDate = date.atEndOfDay().systemToEpochSecond()
         Log.w(
@@ -115,7 +116,7 @@ class MainViewModel @Inject constructor(
     private fun transformPatternUsages(
         patterns: List<UsageDisplayDomainModel>
     ): Map<String, UsageDisplayDomainModel> =
-        patterns.filter { it.checkDate(_selectDate.value) }
+        patterns.filter { it.checkDate(selectDate.value) }
             .associateBy { it.toUsageKey() }
 
     private suspend fun changeState(
@@ -123,7 +124,7 @@ class MainViewModel @Inject constructor(
     ) = pu.first.plus(pu.second).map {
         val pattern = it.value
         val useTime = if (pattern.isPattern) {
-            _selectDate.value.correctTimeInMinutes(pattern.timeInMinutes)
+            selectDate.value.correctTimeInMinutes(pattern.timeInMinutes)
         } else pattern.useTime // с учетом часового пояса
         pattern.copy(
             // для тестов, потом удалить name
@@ -132,16 +133,16 @@ class MainViewModel @Inject constructor(
             timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
         )
     }.sortedBy { it.useTime.systemToInstant() }.associateBy { it.toUsageKey() }.also {
-        log("changeState: date=${_selectDate.value.displayDateTime()} changeState=${it.size}")
+        log("changeState: date=${selectDate.value.displayDateTime()} changeState=${it.size}")
         val isEmpty = countActiveCourseUseCase(AuthToken.userId).getOrDefault(0L) == 0L
         setState {
             copy(
                 patternsAndUsages = it,
-                selectDate = _selectDate.value,
+                selectDate = this@MainViewModel.selectDate.value,
                 isEmpty = isEmpty,
             )
         }
-        _updateTime.value = currentDateTimeSystem()
+        _updateTime.value = selectDateToday ?: currentDateTimeSystem()
     }
 
     private fun setTimer(date: LocalDateTime) {
@@ -172,8 +173,8 @@ class MainViewModel @Inject constructor(
     }
 
     private fun changeDate(date: LocalDateTime) {
-        _selectDate.value = date.atNoonOfDay()
-        log("changeData: date=${_selectDate.value.displayDateTime()}")
+        selectDate.value = date.atNoonOfDay()
+        log("changeData: date=${selectDate.value.displayDateTime()}")
     }
 
     private fun setUsagesFactTime(usageKey: String) {

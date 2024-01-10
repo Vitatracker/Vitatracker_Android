@@ -30,7 +30,7 @@
     <string name="add_course_comment">Comment</string>
     <string name="add_next_course_remind_before">Remind in, days</string>
     <string name="add_med_error_unfilled_fields">You should fill all fields</string>
-    <string name="add_course_congratulations">Cheers! Now you won\'t miss taking your medications!</string>
+    <string name="add_course_congratulations">Cheers!\nNow you\nwon\'t miss taking your medications!</string>
     <string name="add_course_months">Months</string>
     <string name="add_course_days">Days</string>
     <string name="add_next_course_interval">Start next course in</string>

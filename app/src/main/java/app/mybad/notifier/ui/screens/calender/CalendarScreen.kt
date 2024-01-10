@@ -88,7 +88,8 @@ fun CalendarScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Log.w("VTTAG", "CalendarViewModel::MonthSelector: date=${state.date.displayDateTime()}")
+            Log.w("VTTAG", "NotificationMonthPager::CalendarScreen:-------------------------------------------------------")
+            Log.w("VTTAG", "NotificationMonthPager::CalendarScreen: date=${state.date.displayDateTime()}")
             MonthSelector(
                 date = state.date,
                 onSwitch = { sendEvent(CalendarContract.Event.ChangeMonth(date = it)) }
@@ -104,7 +105,7 @@ fun CalendarScreen(
             state.selectedElement?.let { element ->
                 Log.w(
                     "VTTAG",
-                    "CalendarViewModel::selectElement: selectElement=${state.selectedElement}"
+                    "CalendarScreen::CalendarViewModel::selectElement: selectElement=${state.selectedElement}"
                 )
                 // проверка
                 val date = state.datesWeeks[element.first][element.second]

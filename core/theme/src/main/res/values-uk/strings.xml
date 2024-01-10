@@ -29,7 +29,7 @@
     <string name="add_course_comment">Коментар</string>
     <string name="add_next_course_remind_before">Нагадати за, днів</string>
     <string name="add_med_error_unfilled_fields">Потрібно заповнити усі поля</string>
-    <string name="add_course_congratulations">Вітаємо! Тепер ви не пропустите прийом</string>
+    <string name="add_course_congratulations">Вітаємо!\nТепер ви\nне пропустите прийом!</string>
     <string name="add_course_months">Місяці</string>
     <string name="add_course_days">Дні</string>
     <string name="add_next_course_interval">Почати наступний курс через</string>

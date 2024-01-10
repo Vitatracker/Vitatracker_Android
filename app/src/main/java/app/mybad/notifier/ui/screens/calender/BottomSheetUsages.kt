@@ -40,13 +40,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import app.mybad.domain.models.UsageDisplayDomainModel
-import app.mybad.notifier.ui.common.DaySelectorSlider
+import app.mybad.notifier.ui.common.DayOfWeekSelectorSlider
 import app.mybad.notifier.ui.common.MedicineIcon
+import app.mybad.notifier.ui.common.VerticalSpacerSmall
 import app.mybad.theme.R
 import app.mybad.utils.TIME_IS_UP
 import app.mybad.utils.betweenSecondsSystem
 import app.mybad.utils.currentDateTimeSystem
-import app.mybad.utils.displayDayAndMonthFull
+import app.mybad.utils.displayDateFull
+import app.mybad.utils.displayDateTime
 import app.mybad.utils.displayTime
 import app.mybad.utils.toText
 import kotlinx.datetime.LocalDateTime
@@ -57,13 +59,18 @@ fun DailyUsages(
     date: LocalDateTime,
     usagesDisplay: List<UsageDisplayDomainModel>,
     onDismiss: () -> Unit = {},
-    onNewDate: (LocalDateTime?) -> Unit = {},
+    onNewDate: (LocalDateTime) -> Unit = {},
     onUsed: (UsageDisplayDomainModel) -> Unit = {},
 ) {
     Log.d("VTTAG", "CalendarSelector::DailyUsages: start")
     val types = stringArrayResource(R.array.types)
     val relations = stringArrayResource(R.array.food_relations)
     val icons = LocalContext.current.resources.obtainTypedArray(R.array.icons)
+
+    Log.w(
+        "VTTAG",
+        "NotificationMonthPager::DailyUsages: init date=${date.displayDateTime()}"
+    )
 
     Surface(
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -86,7 +93,7 @@ fun DailyUsages(
             ) {
                 // день и месяц
                 Text(
-                    text = date.displayDayAndMonthFull(),
+                    text = date.displayDateFull(),
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Icon(
@@ -101,11 +108,12 @@ fun DailyUsages(
                         )
                 )
             }
-            DaySelectorSlider(
-                modifier = Modifier.padding(16.dp),
+            VerticalSpacerSmall()
+            DayOfWeekSelectorSlider(
                 date = date,
-                onSelect = onNewDate::invoke
+                onChangeData = onNewDate::invoke
             )
+            VerticalSpacerSmall()
             Log.d("VTTAG", "CalendarSelector::BottomSheetUsages:DailyUsages: LazyColumn")
             LazyColumn {
                 items(usagesDisplay) { usage ->

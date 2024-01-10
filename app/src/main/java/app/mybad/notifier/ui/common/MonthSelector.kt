@@ -42,7 +42,7 @@ fun MonthSelector(
     date: LocalDateTime = currentDateTimeSystem(),
     onSwitch: (LocalDateTime) -> Unit = {},
 ) {
-    var newDate by remember { mutableStateOf(date) }
+    var newDate by remember(date.year, date.monthNumber) { mutableStateOf(date) }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
