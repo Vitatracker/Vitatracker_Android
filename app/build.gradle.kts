@@ -18,7 +18,7 @@ android {
         versionCode = libs.versions.code.get().toInt()
         versionName = libs.versions.name.get()
 
-        manifestPlaceholders["appAuthRedirectScheme"] = libs.versions.namespace.app.get()
+        manifestPlaceholders["appAuthRedirectScheme"] = libs.versions.namespace.authRedirect.get()
 
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "app.mybad.data.test.HiltTestRunner"
@@ -123,6 +123,9 @@ dependencies {
     implementation(libs.work.runtime.ktx)
     implementation(libs.work.hilt)
     ksp(libs.hilt.compiler)
+
+    // AppAuth for Android in Java
+    implementation(libs.appauth)
 
     // Test
     testImplementation(libs.junit)

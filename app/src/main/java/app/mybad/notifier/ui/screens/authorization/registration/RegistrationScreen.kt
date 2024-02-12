@@ -1,6 +1,10 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
+import android.app.Activity
 import android.content.res.Configuration
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -35,9 +40,13 @@ import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.SignInWithGoogle
+import app.mybad.notifier.ui.common.showToast
+import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
 
 @Composable
 fun StartRegistrationScreen(
@@ -47,10 +56,35 @@ fun StartRegistrationScreen(
     navigation: (navigationEffect: RegistrationContract.Effect.Navigation) -> Unit = {},
 ) {
 
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {activity->
+        activity.data?.let { intent ->
+            val exception = AuthorizationException.fromIntent(intent)
+            if (exception == null && activity.resultCode == Activity.RESULT_OK) {
+                Log.w("VTTAG","AuthFragment|extractTokenCallback get")
+                AuthorizationResponse.fromIntent(intent)?.createTokenExchangeRequest()?.let {
+                    sendEvent(RegistrationContract.Event.TokenExchange(it))
+                } ?: context.showToast("Error: TokenExchange is null")
+            } else {
+                Log.w("VTTAG","AuthFragment|extractTokenCallback resultCode=${activity.resultCode}")
+                context.showToast("Error: Authorization - ${exception?.localizedMessage}")
+            }
+        }
+
+        sendEvent(RegistrationContract.Event.SignInWithGoogle)
+    }
+
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
                 is RegistrationContract.Effect.Navigation -> navigation(effect)
+                is RegistrationContract.Effect.OpenAuthPage -> {
+                    if (effect.intent.resolveActivity(context.packageManager) != null) {
+                        launcher.launch(effect.intent)
+                    }
+                }
             }
         }
     }
@@ -97,7 +131,7 @@ fun StartRegistrationScreen(
             SignInWithGoogle(
                 signInTextResource = R.string.continue_with,
                 enabled = !state.isLoading,
-                onClick = { sendEvent(RegistrationContract.Event.SignInWithGoogle) }
+                onClick = { sendEvent(RegistrationContract.Event.OpenGoogleLoginPage) }
             )
         }
     }

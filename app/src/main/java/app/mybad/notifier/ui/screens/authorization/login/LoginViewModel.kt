@@ -2,21 +2,27 @@ package app.mybad.notifier.ui.screens.authorization.login
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.usecases.authorization.GetLoginGoogleIntentUseCase
 import app.mybad.domain.usecases.authorization.LoginWithEmailUseCase
+import app.mybad.domain.usecases.authorization.LoginWithGoogleUseCase
 import app.mybad.domain.usecases.user.CreateUserUseCase
 import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
+import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
 import app.mybad.utils.toDateTimeUTC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import net.openid.appauth.TokenRequest
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginWithEmailUseCase: LoginWithEmailUseCase,
+    private val loginWithGoogleUseCase: LoginWithGoogleUseCase,
+    private val getLoginGoogleIntentUseCase: GetLoginGoogleIntentUseCase,
     private val getUserIdUseCase: GetUserIdUseCase,
     private val createUserUseCase: CreateUserUseCase,
     private val updateUserAuthTokenUseCase: UpdateUserAuthTokenUseCase,
@@ -37,6 +43,10 @@ class LoginViewModel @Inject constructor(
 
             LoginContract.Event.SignInWithGoogle -> signInWithGoogle()
 
+            LoginContract.Event.OpenGoogleLoginPage -> openGoogleLoginPage()
+
+            is LoginContract.Event.TokenExchange -> loginGoogle(event.tokenRequest)
+
             is LoginContract.Event.UpdateLogin -> {
                 checkParams(email = event.newLogin, password = viewState.value.password)
             }
@@ -44,7 +54,13 @@ class LoginViewModel @Inject constructor(
             is LoginContract.Event.UpdatePassword -> {
                 checkParams(email = viewState.value.email, password = event.newPassword)
             }
+
+
         }
+    }
+
+    private fun tokenExchange(tokenRequest: TokenRequest) {
+
     }
 
     private fun signIn(login: String, password: String) {
@@ -149,6 +165,55 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun signInWithGoogle() {
+    }
+
+    private fun openGoogleLoginPage() {
+        viewModelScope.launch {
+            log("openGoogleLoginPage: get intent")
+            val intent = getLoginGoogleIntentUseCase()
+            setEffect { LoginContract.Effect.OpenAuthPage(intent) }
+        }
+    }
+
+    private fun loginGoogle(tokenRequest: TokenRequest) {
+        viewModelScope.launch {
+            loginWithGoogleUseCase(tokenRequest)
+                .onSuccess { (login, result) ->
+                    // тут не только получение id, но и если его нет, то создается
+                    val userId: Long = getUserIdUseCase(email = login) ?: createUserUseCase(
+                        email = login,
+                        name = "",
+                    )
+                    log(
+                        "Ok: userId=$userId token=${
+                            result.token
+                        } date=${result.tokenDate} exp=${result.tokenDate.toDateTimeUTC()}"
+                    )
+                    updateUserAuthTokenUseCase(
+                        userId = userId,
+                        token = result.token,
+                        tokenDate = result.tokenDate,
+                        tokenRefresh = result.tokenRefresh,
+                        tokenRefreshDate = result.tokenRefreshDate,
+                    )
+                    setEffect { LoginContract.Effect.Navigation.ToMain }
+                }
+                .onFailure { error ->
+                    log("Error", error)
+                    //TODO("отобразить всплывающую ошибку")
+                    val errorMessage =
+                        error.message ?: error.localizedMessage ?: "Error: Authorization"
+                    setState {
+                        copy(
+                            isError = true,
+                            isErrorEmail = true,
+                            isErrorPassword = true,
+                            isLoading = false,
+                            isLoginButtonEnabled = true
+                        )
+                    }
+                }
+        }
     }
 
     private fun log(message: String, tr: Throwable? = null) {

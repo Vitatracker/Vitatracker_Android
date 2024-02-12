@@ -7,6 +7,9 @@ namespace-data = "app.mybad.data"
 namespace-domain = "app.mybad.domain"
 namespace-network = "app.mybad.network"
 namespace-notifications = "app.mybad.notifications"
+namespace-authRedirect = "com.herokuapp.vitatracker-heroku"
+#namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com"
+#namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com/login/oauth2/code/google"
 code = "1"
 name = "2.13a"
 
@@ -20,10 +23,10 @@ agp = "8.1.4"
 
 # kotlin
 # kotlin & compose-compiler https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-kotlin = "1.9.21"
-ksp = "1.9.21-1.0.15"
+kotlin = "1.9.22"
+ksp = "1.9.22-1.0.16"
 
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0-RC"
 kotlinx-datetime = "0.4.1"
 kotlinx-serialization-json = "1.6.0"
 
@@ -38,18 +41,18 @@ core-splashscreen = "1.0.1"
 # android
 appcompat = "1.6.1"
 constraint = "2.1.4"
-lifecycle = "2.6.2"
-data-store = "1.1.0-alpha07"
+lifecycle = "2.7.0"
+data-store = "1.1.0-beta01"
 
 # Material
 google-material = "1.11.0"
-material = "1.5.4"
-material3 = "1.2.0-beta01"
+material = "1.6.0"
+material3 = "1.2.0-rc01"
 
 # Compose
-compose-bom = "2023.10.01"
-compose-compiler = "1.5.6"
-compose-ui = "1.6.0-beta03"
+compose-bom = "2024.01.00"
+compose-compiler = "1.5.8"
+compose-ui = "1.6.0"
 compose-activity = "1.8.2"
 compose-navigation = "2.7.6"
 compose-paging = "3.2.1"
@@ -98,6 +101,11 @@ jjwt = "0.11.5"
 # facebook
 facebook-login = "16.2.0"
 systemuicontroller = "0.31.3-beta"
+
+# OAuth 2.0
+# AppAuth for Android in Java
+appauth = "0.11.1"
+browser = "1.7.0"
 
 # Test
 junit = "4.13.2"
@@ -216,6 +224,10 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 # facebook
 facebook-login = { group = "com.facebook.android", name = "facebook-login", version.ref = "facebook-login" }
+
+# AppAuth for Android
+appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
+browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 # google
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }

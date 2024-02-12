@@ -2,11 +2,13 @@ package app.mybad.notifier.ui.screens.authorization.registration
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import app.mybad.domain.usecases.authorization.GetLoginGoogleIntentUseCase
 import app.mybad.domain.usecases.authorization.RegistrationUserUseCase
 import app.mybad.domain.usecases.user.CreateUserUseCase
 import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
+import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
 import app.mybad.utils.toDateTimeUTC
@@ -20,6 +22,7 @@ class RegistrationViewModel @Inject constructor(
     private val getUserIdUseCase: GetUserIdUseCase,
     private val createUserUseCase: CreateUserUseCase,
     private val updateUserAuthTokenUseCase: UpdateUserAuthTokenUseCase,
+    private val getLoginGoogleIntentUseCase: GetLoginGoogleIntentUseCase,
 ) :
     BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
 
@@ -34,6 +37,10 @@ class RegistrationViewModel @Inject constructor(
             }
 
             RegistrationContract.Event.SignInWithGoogle -> signInWithGoogle()
+
+            RegistrationContract.Event.OpenGoogleLoginPage -> openGoogleLoginPage()
+
+            is RegistrationContract.Event.TokenExchange -> TODO()
 
             is RegistrationContract.Event.UpdateEmail -> {
                 checkParams(
@@ -62,6 +69,7 @@ class RegistrationViewModel @Inject constructor(
             RegistrationContract.Event.ShowUserAgreement -> {
                 //TODO("add user agreement navigation")
             }
+
         }
     }
 
@@ -226,4 +234,12 @@ class RegistrationViewModel @Inject constructor(
 
     private fun signInWithGoogle() {
     }
+
+    private fun openGoogleLoginPage() {
+        viewModelScope.launch {
+            val intent = getLoginGoogleIntentUseCase()
+            setEffect { RegistrationContract.Effect.OpenAuthPage(intent) }
+        }
+    }
+
 }

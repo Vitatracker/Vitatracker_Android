@@ -1,5 +1,6 @@
 package app.mybad.network.di
 
+import android.content.Context
 import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.api.CourseApi
 import app.mybad.network.api.RemedyApi
@@ -8,7 +9,9 @@ import app.mybad.network.api.UsageApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.openid.appauth.AuthorizationService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -93,4 +96,11 @@ object NetworkApiModule {
     @Provides
     fun provideSettingsApiService(retrofit: Retrofit): SettingsApi =
         retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideAuthorizationService(
+        @ApplicationContext context: Context
+    ): AuthorizationService = AuthorizationService(context)
+
 }

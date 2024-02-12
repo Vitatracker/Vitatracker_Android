@@ -64,4 +64,8 @@ dependencies {
 
     // Date Time
     implementation(libs.kotlinx.datetime)
+
+    // AppAuth for Android in Java
+    implementation(libs.appauth)
+    implementation(libs.browser)
 }

@@ -28,6 +28,7 @@ import app.mybad.utils.systemToInstant
 import app.mybad.utils.toDateTimeIso
 import app.mybad.utils.toDateTimeSystem
 import app.mybad.utils.toDateTimeUTCInSecond
+import net.openid.appauth.TokenRequest
 
 fun UserDomainModel.mapToNet() = UserNetworkModel(
     id = idn,
@@ -233,6 +234,13 @@ fun List<UsageNetworkModel>.mapToDomain(
         usageIdLoc = usageIdLoc,
     )
 }
+
+fun TokenRequest.mapToDomain() = AuthorizationDomainModel(
+    token = codeVerifier ?: "",
+    tokenDate = AuthorizationApi.decodeTokenDateExp(codeVerifier ?: ""),
+    tokenRefresh = refreshToken ?: "",
+    tokenRefreshDate = AuthorizationApi.decodeTokenDateExp(refreshToken ?: ""),
+)
 
 fun AuthorizationNetworkModel.mapToDomain() = AuthorizationDomainModel(
     token = token,

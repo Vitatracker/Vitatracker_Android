@@ -5,6 +5,7 @@ import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.AuthorizationDomainModel
 import app.mybad.domain.models.SetNewPasswordDomainModel
 import app.mybad.domain.models.VerificationCodeDomainModel
+import app.mybad.domain.repository.network.AuthorizationGoogleRepository
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import app.mybad.network.api.AuthorizationApi
 import app.mybad.network.models.mapToDomain
@@ -14,6 +15,7 @@ import app.mybad.network.models.request.UserRegistrationRequestModel
 import app.mybad.network.models.request.UserSetNewPasswordRequestModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import net.openid.appauth.TokenRequest
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -28,9 +30,9 @@ class AuthorizationNetworkRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun loginWithGoogle() = withContext(dispatcher) {
+    override suspend fun loginWithGoogle(tokenRequest: TokenRequest) = withContext(dispatcher) {
         runCatching {
-            TODO("Not yet implemented")
+            "google@gmail.com" to tokenRequest.mapToDomain()
         }
     }
 

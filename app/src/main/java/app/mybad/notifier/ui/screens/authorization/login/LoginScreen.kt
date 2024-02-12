@@ -1,6 +1,11 @@
 package app.mybad.notifier.ui.screens.authorization.login
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -19,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,9 +38,12 @@ import app.mybad.notifier.ui.common.ReUsePasswordOutlinedTextField
 import app.mybad.notifier.ui.common.ReUseProgressDialog
 import app.mybad.notifier.ui.common.ReUseTopAppBar
 import app.mybad.notifier.ui.common.SignInWithGoogle
+import app.mybad.notifier.ui.common.showToast
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
 
 @Composable
 fun MainLoginScreen(
@@ -44,10 +53,38 @@ fun MainLoginScreen(
     navigation: (navigationEffect: LoginContract.Effect.Navigation) -> Unit = {},
 ) {
 
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {activity->
+        activity.data?.let { intent ->
+            val exception = AuthorizationException.fromIntent(intent)
+            if (exception == null && activity.resultCode == Activity.RESULT_OK) {
+                Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback get")
+                AuthorizationResponse.fromIntent(intent)?.createTokenExchangeRequest()?.let {
+                    sendEvent(LoginContract.Event.TokenExchange(it))
+                } ?: context.showToast("Error: TokenExchange is null")
+            } else {
+                Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback resultCode=${activity.resultCode}")
+                context.showToast("Error: Authorization - ${exception?.localizedMessage}")
+            }
+        }
+
+        sendEvent(LoginContract.Event.SignInWithGoogle)
+    }
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.collect { effect ->
             when (effect) {
                 is LoginContract.Effect.Navigation -> navigation(effect)
+                is LoginContract.Effect.OpenAuthPage -> {
+                    Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback launcher")
+                    if (effect.intent.resolveActivity(context.packageManager) != null) {
+                        launcher.launch(effect.intent)
+                    } else {
+                        Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback launcher error")
+                        context.showToast("Error: intent is not resolveActivity!")
+                    }
+                }
             }
         }
     }
@@ -112,10 +149,16 @@ private fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         SignInWithGoogle(
-            enabled = !state.isLoading
-        ) {
-            sendEvent(LoginContract.Event.SignInWithGoogle)
-        }
+            enabled = true,
+//            enabled = !state.isLoading,
+            onClick = {
+                Log.w(
+                    "VTTAG",
+                    "LoginScreen|AuthFragment|extractTokenCallback sendEvent OpenGoogleLoginPage"
+                )
+                sendEvent(LoginContract.Event.OpenGoogleLoginPage)
+            }
+        )
     }
 }
 

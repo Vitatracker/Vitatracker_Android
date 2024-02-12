@@ -1,8 +1,11 @@
 package app.mybad.notifier.ui.screens.authorization.registration
 
+import android.content.Intent
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
+import app.mybad.notifier.ui.screens.authorization.login.LoginContract
+import net.openid.appauth.TokenRequest
 
 class RegistrationContract {
     sealed interface Event : ViewEvent {
@@ -14,10 +17,12 @@ class RegistrationContract {
 
         data object OnBack : Event
         data object SignInWithGoogle : Event
+        data object OpenGoogleLoginPage : Event
         data class UpdateEmail(val newEmail: String) : Event
         data class UpdatePassword(val newPassword: String) : Event
         data class UpdateConfirmationPassword(val newConfirmationPassword: String) : Event
         data object ShowUserAgreement : Event
+        data class TokenExchange(val tokenRequest: TokenRequest) : Event
     }
 
     data class State(
@@ -40,6 +45,8 @@ class RegistrationContract {
     }
 
     sealed interface Effect : ViewSideEffect {
+        data class OpenAuthPage(val intent: Intent) : Effect
+
         sealed interface Navigation : Effect {
             data object ToMain : Navigation
             data object Back : Navigation
