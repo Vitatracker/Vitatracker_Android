@@ -119,33 +119,29 @@
 
     <string name="settings_version">Version %s</string>
     <string name="settings_about_our_team">About team</string>
-    <string name="settings_about_our_team_hello">Здравствуйте!</string>
-    <string name="settings_about_our_team_body_1">Над приложением %s работала команда юных джунов айтишников, которые с заботой о людях создавали этот продукт.</string>
-    <string name="settings_about_our_team_body_2">По этой ссылке находится пост в линкедине о команде, где подробно рассказана история создания приложения и информация о каждом участнике.</string>
-    <string name="settings_about_our_team_end">С заботой о вас, команда %s!</string>
-    <string name="settings_notifications_setup_notifications_1">Некоторые устройства могут иметь проблемы с получением уведомлений. Вот несколько наиболее распространенных причин, почему это происходит.</string>
-    <string name="settings_notifications_setup_notifications_2">Notifications enabled</string>
-    <string name="settings_notifications_setup_notifications_3">Notifications disabled</string>
+    <string name="settings_about_our_team_hello">Hello!</string>
+    <string name="settings_about_our_team_body_1">A team of young jun IT specialists worked on the %s application, who created this product with care for people.</string>
+    <string name="settings_about_our_team_end">With care for you, the %s team!</string>
+    <string name="settings_notifications_setup_notifications_1">Some devices may have issues receiving notifications. Here are a few of the most common reasons why this happens:</string>
+    <string name="settings_notifications_setup_notifications_2">Notifications turned on</string>
+    <string name="settings_notifications_setup_notifications_3">Notifications turned off</string>
     <string name="settings_notifications_setup_notifications_4">Make sure your notifications are turned on and notification channels are configured</string>
-    <string name="settings_notifications_setup_notifications_button">Настроить уведомления</string>
+    <string name="settings_notifications_setup_notifications_button">Configure Notifications</string>
     <string name="settings_notifications_setup_notifications_tracker_button">Setup reception</string>
-    <string name="settings_notifications_setup_notifications_info_button">Setup informational</string>
-    <string name="settings_notifications_sleep_regime_1">Спящий режим</string>
-    <string name="settings_notifications_sleep_regime_2">Некоторые устройства не позволяют получать уведомления, когда они находятся в спящем режиме. Чтобы быть уверенным, что вы будете получать все уведомления, пожалуйста, позвольте вашему приложению всегда работать в фоновом режиме.</string>
-    <string name="settings_notifications_sleep_regime_button">Настроить режим сна</string>
-    <string name="settings_notifications_check_settings_1">Защищенные приложения</string>
-    <string name="settings_notifications_check_settings_2">Некоторые устройства могут иметь проблемы с получением уведомлений от неактивных приложений. Чтобы быть уверенным что вы получаете все уведомления, вы можете проверить настройки своего телефона. Некоторые производители могут вообще не иметь этих опций и получать все уведомления правильно, и в этом случае вам не нужно ничего делать.</string>
-    <string name="settings_notifications_check_settings_button">Проверить настройки</string>
-    <string name="settings_notifications_reload_settings_1">Уведомления были остановлены</string>
-    <string name="settings_notifications_reload_settings_2">Иногда уведомления могут быть остановлены системой по разным причинам. В этом случае вы должны перезапустить их.</string>
-    <string name="settings_notifications_reload_settings_button">Перезапустить уведомления</string>
-    <string name="settings_notifications_contact_us_1">Проверьте сторонние приложения</string>
-    <string name="settings_notifications_contact_us_2">Приложения для экономии батареи, анти-вирусы или убийцы задач, такие как Clean Master, 360 Security, CM Security, Fast Booster, могут прерывать работу напоминаний от %s и поставить ваше здоровье под угрозу. Пожалуйста, деактивируйте их, чтобы они не вмешивались в отправку уведомлений.</string>
-    <string name="settings_notifications_contact_us_3">Не «останавливайте принудительно» приложения</string>
-    <string name="settings_notifications_contact_us_4">Закрытие %s c помощью диспетчера задач (принудительная остановка) может блокировать ваши напоминания.</string>
-    <string name="settings_notifications_contact_us_5">Нужна дополнительная помощь?</string>
-    <string name="settings_notifications_contact_us_6">Свяжитесь со службой поддержки</string>
-    <string name="settings_notifications_contact_us_button">Связаться</string>
+    <string name="settings_notifications_setup_notifications_info_button">Configuring Information Settings</string>
+    <string name="settings_notifications_sleep_regime_1">Sleep mode</string>
+    <string name="settings_notifications_sleep_regime_2">Some devices do not allow notifications to be received while they are in sleep mode. To ensure that you receive all notifications, please allow your application to always run in the background.</string>
+    <string name="settings_notifications_sleep_regime_button">Configure sleep mode</string>
+    <string name="settings_notifications_reload_settings_1">Notifications disabled</string>
+    <string name="settings_notifications_reload_settings_2">Sometimes notifications can be stopped by the system for various reasons. In this case, you should restart them.</string>
+    <string name="settings_notifications_reload_settings_button">Restart notifications</string>
+    <string name="settings_notifications_contact_us_1">Check third-party applications</string>
+    <string name="settings_notifications_contact_us_2">Battery-saving apps, antivirus software, or other apps such as Clean Master, 360 Security, CM Security, Fast booster may interrupt the functioning of %s reminders and put your health at risk. Please disable them to prevent interference with notification delivery.</string>
+    <string name="settings_notifications_contact_us_3">Avoid forcefully stopping the Vitatracker app</string>
+    <string name="settings_notifications_contact_us_4">Using the task manager to stop %s may interrupt the delivery of reminders</string>
+    <string name="settings_notifications_contact_us_5">Do you have questions and need more help? </string>
+    <string name="settings_notifications_contact_us_6">Contact customer support</string>
+    <string name="settings_notifications_contact_us_button">Contact us</string>
     <string name="settings_notifications_alarms_title">Set alarms</string>
     <string name="settings_notifications_alarms">The application must have permission to set the notification if you want to receive notifications about the time of taking the medication.</string>
     <string name="settings_notifications_alarms_can">Allowed to set alarms</string>
@@ -162,9 +158,9 @@
     <string name="settings_notifications_allow_reconfirmation_button_dismiss">Skip</string>
     <string name="settings_notifications_allow_reconfirmation_button_confirm">Setup</string>
 
-    <string name="settings_profile_edit_avatar_dialog_1">Редактировать фото</string>
-    <string name="settings_profile_edit_avatar_dialog_2">Смотреть фото профиля</string>
-    <string name="settings_profile_edit_avatar_dialog_3">Обновить фото</string>
+    <string name="settings_profile_edit_avatar_dialog_1">Edit photo</string>
+    <string name="settings_profile_edit_avatar_dialog_2">View profile photo</string>
+    <string name="settings_profile_edit_avatar_dialog_3">Update photo</string>
 
     <!--NAVIGATION MAIN-->
     <string name="navigation_settings_main">Settings</string>
@@ -292,93 +288,93 @@
     <string name="action_navigate">Navigate</string>
     <string name="action_save">Save</string>
 
-    <string name="enter_verification_code">Введите 6-значный код</string>
-    <string name="verification_code_sent_to">На почту %s отправлен 6-значный код. Введите его для продолжения</string>
-    <string name="resend_verification_code">Отправить код повторно</string>
-    <string name="resend_verification_code_loading">Отправляется</string>
+    <string name="enter_verification_code">Enter 6-digit code</string>
+    <string name="verification_code_sent_to">A 6-digit code has been sent to %s. Enter it to continue</string>
+    <string name="resend_verification_code">Send the code again</string>
+    <string name="resend_verification_code_loading">Sending</string>
 
     <plurals name="verification_code_attempts_left">
-        <item quantity="one">Осталась %1$s попытка</item>
-        <item quantity="few">Осталось %1$s попытки</item>
-        <item quantity="many">Осталось %1$s попыток</item>
-        <item quantity="other">Осталось %1$s попытки</item>
+        <item quantity="one">There is %1$s attempt left</item>
+        <item quantity="few">There is %1$s attempts left</item>
+        <item quantity="many">There is %1$s attempts left</item>
+        <item quantity="other">There is %1$s attempts left</item>
     </plurals>
 
     <plurals name="plurals_types_tablet">
-        <item quantity="one">%1$s таблетка</item>
-        <item quantity="few">%1$s таблетки</item>
-        <item quantity="many">%1$s таблеток</item>
-        <item quantity="other">%1$s таблеток</item>
+        <item quantity="one">%1$s tablet</item>
+        <item quantity="few">%1$s tablets</item>
+        <item quantity="many">%1$s tablets</item>
+        <item quantity="other">%1$s tablets</item>
     </plurals>
 
     <plurals name="plurals_types_pill">
-        <item quantity="one">%1$s капсула</item>
-        <item quantity="few">%1$s капсулы</item>
-        <item quantity="many">%1$s капсул</item>
-        <item quantity="other">%1$s капсул</item>
+        <item quantity="one">%1$s capsule</item>
+        <item quantity="few">%1$s capsules</item>
+        <item quantity="many">%1$s capsules</item>
+        <item quantity="other">%1$s capsules</item>
     </plurals>
 
     <plurals name="plurals_types_inhalator">
-        <item quantity="one">%1$s ингаляция</item>
-        <item quantity="few">%1$s ингаляции</item>
-        <item quantity="many">%1$s ингаляций</item>
-        <item quantity="other">%1$s ингаляций</item>
+        <item quantity="one">%1$s inhaler</item>
+        <item quantity="few">%1$s inhalers</item>
+        <item quantity="many">%1$s inhalers</item>
+        <item quantity="other">%1$s inhalers</item>
     </plurals>
 
     <plurals name="plurals_types_injection">
-        <item quantity="one">%1$s инъекция</item>
-        <item quantity="few">%1$s инъекции</item>
-        <item quantity="many">%1$s инъекций</item>
-        <item quantity="other">%1$s инъекций</item>
+        <item quantity="one">%1$s injection</item>
+        <item quantity="few">%1$s injection</item>
+        <item quantity="many">%1$s injection</item>
+        <item quantity="other">%1$s injection</item>
     </plurals>
 
     <plurals name="plurals_types_drops">
-        <item quantity="one">%1$s капля</item>
-        <item quantity="few">%1$s капли</item>
-        <item quantity="many">%1$s капель</item>
-        <item quantity="other">%1$s капель</item>
+        <item quantity="one">%1$s drop</item>
+        <item quantity="few">%1$s drops</item>
+        <item quantity="many">%1$s drops</item>
+        <item quantity="other">%1$s drops</item>
     </plurals>
 
     <plurals name="plurals_types_solution">
-        <item quantity="one">%1$s раствор</item>
-        <item quantity="few">%1$s раствора</item>
-        <item quantity="many">%1$s растворов</item>
-        <item quantity="other">%1$s растворов</item>
+        <item quantity="one">%1$s solution</item>
+        <item quantity="few">%1$s of solutions</item>
+        <item quantity="many">%1$s of solutions</item>
+        <item quantity="other">%1$s of solutions</item>
     </plurals>
 
     <plurals name="plurals_types_suppository">
-        <item quantity="one">%1$s суппозиторий</item>
-        <item quantity="few">%1$s суппозитория</item>
-        <item quantity="many">%1$s суппозиториев</item>
-        <item quantity="other">%1$s суппозиториев</item>
+        <item quantity="one">%1$s suppository</item>
+        <item quantity="few">%1$s suppositories</item>
+        <item quantity="many">%1$s suppositories</item>
+        <item quantity="other">%1$s suppositories</item>
     </plurals>
 
     <plurals name="plurals_types_syrup">
-        <item quantity="one">%1$s сироп</item>
-        <item quantity="few">%1$s сиропа</item>
-        <item quantity="many">%1$s сиропов</item>
-        <item quantity="other">%1$s сиропов</item>
+        <item quantity="one">%1$s syrup</item>
+        <item quantity="few">%1$s syrups</item>
+        <item quantity="many">%1$s syrups</item>
+        <item quantity="other">%1$s syrups</item>
     </plurals>
 
     <plurals name="plurals_types_suspension">
-        <item quantity="one">%1$s спрей</item>
-        <item quantity="few">%1$s спрея</item>
-        <item quantity="many">%1$s спреев</item>
-        <item quantity="other">%1$s спреев</item>
+        <item quantity="one">%1$s suspension</item>
+        <item quantity="few">%1$s suspensions</item>
+        <item quantity="many">%1$s suspensions</item>
+        <item quantity="other">%1$s suspensions</item>
     </plurals>
 
     <plurals name="plurals_types_spray">
-        <item quantity="one">%1$s суспензия</item>
-        <item quantity="few">%1$s суспензии</item>
-        <item quantity="many">%1$s суспензий</item>
-        <item quantity="other">%1$s суспензий</item>
+        <item quantity="one">%1$s spray</item>
+        <item quantity="few">%1$s spray</item>
+        <item quantity="many">%1$s spray</item>
+        <item quantity="other">%1$s spray</item>
     </plurals>
 
     <plurals name="plurals_days">
-        <item quantity="one">%1$d день</item>
-        <item quantity="few">%1$d дня</item>
-        <item quantity="many">%1$d дней</item>
-        <item quantity="other">%1$d дней</item>
+        <item quantity="one">%1$d day</item>
+        <item quantity="few">%1$d days</item>
+        <item quantity="many">%1$d days</item>
+        <item quantity="other">%1$d days</item>
     </plurals>
     <string name="password_changed_sign_in">Sign in</string>
     <string name="password_changed_successfully">Password changed\nsuccessfully</string>
