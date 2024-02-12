@@ -103,7 +103,7 @@
     <string name="settings_enable_float_notifications">Floating notifications</string>
     <string name="settings_enable_float_notifications_description">Notifications will float over all items on your screen until you will react</string>
     <string name="settings_enable_medication_control">Medication control</string>
-    <string name="settings_enable_medication_control_description">This setting switches on and off medication control - you will be should mark usages pf all your medicaments in the end of the day</string>
+    <string name="settings_enable_medication_control_description">This setting switches on and off medication control - you will be should mark usages pf all your medicines in the end of the day</string>
     <string name="settings_enable_next_course_start">Next course start</string>
     <string name="settings_enable_next_course_start_description">This notification will inform you when one of your courses is near to start date</string>
     <string name="settings_user_name">Name</string>
@@ -187,7 +187,7 @@
     <string name="calendar_title">My calendar</string>
 
     <!--MAIN SCREEN-->
-    <string name="main_screen_top_bar_name">Reminder dialy</string>
+    <string name="main_screen_top_bar_name">Reminder daily</string>
     <string name="main_screen_text_category">Medicines on %1$s</string>
 
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>
