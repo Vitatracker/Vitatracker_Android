@@ -66,11 +66,6 @@ fun SettingsAboutTeamScreen(
                 text = stringResource(R.string.settings_about_our_team_body_1, appName),
                 style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.settings_about_our_team_body_2),
-                style = MaterialTheme.typography.bodyLarge
-            )
             Spacer(Modifier.height(32.dp))
             Text(
                 text = stringResource(R.string.settings_about_our_team_end, appName),
