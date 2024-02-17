@@ -1,11 +1,13 @@
 package app.mybad.network.di
 
+import app.mybad.domain.repository.network.AuthorizationFirebaseRepository
 import app.mybad.domain.repository.network.AuthorizationGoogleRepository
 import app.mybad.domain.repository.network.AuthorizationNetworkRepository
 import app.mybad.domain.repository.network.CourseNetworkRepository
 import app.mybad.domain.repository.network.RemedyNetworkRepository
 import app.mybad.domain.repository.network.SettingsNetworkRepository
 import app.mybad.domain.repository.network.UsageNetworkRepository
+import app.mybad.network.repository.AuthorizationFirebaseRepositoryImpl
 import app.mybad.network.repository.AuthorizationGoogleRepositoryImpl
 import app.mybad.network.repository.AuthorizationNetworkRepositoryImpl
 import app.mybad.network.repository.CourseNetworkRepositoryImpl
@@ -29,6 +31,10 @@ interface NetworkModule {
     @Binds
     @Singleton
     fun provideAuthorizationGoogleRepository(impl: AuthorizationGoogleRepositoryImpl): AuthorizationGoogleRepository
+
+    @Binds
+    @Singleton
+    fun provideAuthorizationFirebaseRepository(impl: AuthorizationFirebaseRepositoryImpl): AuthorizationFirebaseRepository
 
     @Binds
     @Singleton

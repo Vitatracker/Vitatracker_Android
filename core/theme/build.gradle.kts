@@ -11,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.sdk.min.get().toInt()
-        targetSdk = libs.versions.sdk.compile.get().toInt()
 
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner = "app.mybad.data.test.HiltTestRunner"

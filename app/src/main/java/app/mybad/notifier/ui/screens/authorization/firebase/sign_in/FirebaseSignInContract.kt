@@ -1,25 +1,26 @@
-package app.mybad.notifier.ui.screens.authorization.login
+package app.mybad.notifier.ui.screens.authorization.firebase.sign_in
 
+import android.app.PendingIntent
 import android.content.Intent
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
+import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import net.openid.appauth.TokenRequest
 
-class LoginContract {
+class FirebaseSignInContract {
 
     sealed interface Event : ViewEvent {
-        data class SignIn(val email: String, val password: String) : Event
         data object ActionBack : Event
-        data object ForgotPassword : Event
-        data object SignInWithGoogle : Event
         data object OpenGoogleLoginPage : Event
-        data class UpdateLogin(val newLogin: String) : Event
-        data class UpdatePassword(val newPassword: String) : Event
-        data class TokenExchange(val tokenRequest: TokenRequest) : Event
+        data class SignInWithGoogle(val intent: Intent) : Event
+        data class SignIn(val email: String, val password: String) : Event
     }
 
     data class State(
+        val isSignInSuccessful: Boolean = false,
+        val signInError: String? = null,
+
         val email: String = "",
         val password: String = "",
         val isLoading: Boolean = false,
@@ -30,11 +31,8 @@ class LoginContract {
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-        data class OpenAuthPage(val intent: Intent) : Effect
-
+        data class OpenAuthPage(val intent: PendingIntent) : Effect
         sealed interface Navigation : Effect {
-            data object ToGoogleLogin : Navigation
-            data object ToForgotPassword : Navigation
             data object ToMain : Navigation
             data object Back : Navigation
         }

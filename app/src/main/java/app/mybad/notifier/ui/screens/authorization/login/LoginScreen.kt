@@ -1,12 +1,10 @@
 package app.mybad.notifier.ui.screens.authorization.login
 
 import android.app.Activity
-import android.content.Intent
 import android.content.res.Configuration
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -56,16 +54,19 @@ fun MainLoginScreen(
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {activity->
+    ) { activity ->
         activity.data?.let { intent ->
             val exception = AuthorizationException.fromIntent(intent)
             if (exception == null && activity.resultCode == Activity.RESULT_OK) {
-                Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback get")
+                Log.w("VTTAG", "LoginScreen|AuthFragment|extractTokenCallback get")
                 AuthorizationResponse.fromIntent(intent)?.createTokenExchangeRequest()?.let {
                     sendEvent(LoginContract.Event.TokenExchange(it))
                 } ?: context.showToast("Error: TokenExchange is null")
             } else {
-                Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback resultCode=${activity.resultCode}")
+                Log.w(
+                    "VTTAG",
+                    "LoginScreen|AuthFragment|extractTokenCallback resultCode=${activity.resultCode}"
+                )
                 context.showToast("Error: Authorization - ${exception?.localizedMessage}")
             }
         }
@@ -77,11 +78,14 @@ fun MainLoginScreen(
             when (effect) {
                 is LoginContract.Effect.Navigation -> navigation(effect)
                 is LoginContract.Effect.OpenAuthPage -> {
-                    Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback launcher")
+                    Log.w("VTTAG", "LoginScreen|AuthFragment|extractTokenCallback launcher")
                     if (effect.intent.resolveActivity(context.packageManager) != null) {
                         launcher.launch(effect.intent)
                     } else {
-                        Log.w("VTTAG","LoginScreen|AuthFragment|extractTokenCallback launcher error")
+                        Log.w(
+                            "VTTAG",
+                            "LoginScreen|AuthFragment|extractTokenCallback launcher error"
+                        )
                         context.showToast("Error: intent is not resolveActivity!")
                     }
                 }
@@ -149,14 +153,13 @@ private fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         SignInWithGoogle(
-            enabled = true,
-//            enabled = !state.isLoading,
+            enabled = !state.isLoading,
             onClick = {
                 Log.w(
                     "VTTAG",
                     "LoginScreen|AuthFragment|extractTokenCallback sendEvent OpenGoogleLoginPage"
                 )
-                sendEvent(LoginContract.Event.OpenGoogleLoginPage)
+                sendEvent(LoginContract.Event.SignInWithGoogle)
             }
         )
     }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.gms)
     alias(libs.plugins.detekt)
 }
 
@@ -13,7 +14,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.sdk.min.get().toInt()
-        targetSdk = libs.versions.sdk.compile.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +64,15 @@ dependencies {
 
     // Date Time
     implementation(libs.kotlinx.datetime)
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.facebook.android.sdk)
+    implementation(libs.facebook.login)
+    implementation(libs.firebase.common.ktx)
+    implementation(libs.play.services.auth)
 
     // AppAuth for Android in Java
     implementation(libs.appauth)

@@ -25,7 +25,6 @@ import app.mybad.notifier.ui.common.ReUseImage
 import app.mybad.notifier.ui.common.ReUseOutlinedButton
 import app.mybad.notifier.ui.common.SignInWithGoogle
 import app.mybad.notifier.ui.common.showToast
-import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import app.mybad.notifier.ui.theme.MyBADTheme
 import app.mybad.theme.R
 import kotlinx.coroutines.flow.Flow
@@ -42,16 +41,19 @@ fun AuthorizationScreen(
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {activity->
+    ) { activity ->
         activity.data?.let { intent ->
             val exception = AuthorizationException.fromIntent(intent)
             if (exception == null && activity.resultCode == Activity.RESULT_OK) {
-                Log.w("VTTAG","AuthFragment|extractTokenCallback get")
+                Log.w("VTTAG", "AuthFragment|extractTokenCallback get")
                 AuthorizationResponse.fromIntent(intent)?.createTokenExchangeRequest()?.let {
                     sendEvent(AuthorizationContract.Event.TokenExchange(it))
                 } ?: context.showToast("Error: TokenExchange is null")
             } else {
-                Log.w("VTTAG","AuthFragment|extractTokenCallback resultCode=${activity.resultCode}")
+                Log.w(
+                    "VTTAG",
+                    "AuthFragment|extractTokenCallback resultCode=${activity.resultCode}"
+                )
                 context.showToast("Error: Authorization - ${exception?.localizedMessage}")
             }
         }

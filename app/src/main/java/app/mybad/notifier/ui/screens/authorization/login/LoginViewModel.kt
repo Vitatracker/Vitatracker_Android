@@ -9,7 +9,6 @@ import app.mybad.domain.usecases.user.CreateUserUseCase
 import app.mybad.domain.usecases.user.GetUserIdUseCase
 import app.mybad.domain.usecases.user.UpdateUserAuthTokenUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import app.mybad.notifier.utils.isValidEmail
 import app.mybad.notifier.utils.isValidPassword
 import app.mybad.utils.toDateTimeUTC
@@ -165,6 +164,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun signInWithGoogle() {
+        setEffect { LoginContract.Effect.Navigation.ToGoogleLogin }
     }
 
     private fun openGoogleLoginPage() {

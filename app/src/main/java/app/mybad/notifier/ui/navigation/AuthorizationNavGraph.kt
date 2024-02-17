@@ -6,6 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import app.mybad.notifier.ui.screens.authorization.firebase.sign_in.FirebaseSignInContract
+import app.mybad.notifier.ui.screens.authorization.firebase.sign_in.FirebaseSignInScreen
+import app.mybad.notifier.ui.screens.authorization.firebase.sign_in.FirebaseSignInViewModel
 import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import app.mybad.notifier.ui.screens.authorization.login.LoginViewModel
 import app.mybad.notifier.ui.screens.authorization.login.MainLoginScreen
@@ -45,6 +48,10 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                         AuthorizationContract.Effect.Navigation.ToRegistration -> {
                             navigationState.navigateSingleTo(AuthorizationScreens.Registration.route)
                         }
+
+                        AuthorizationContract.Effect.Navigation.ToOpenGoogleLoginPage -> {
+                            navigationState.navigateSingleTo(AuthorizationScreens.GoogleLogin.route)
+                        }
                     }
                 }
             )
@@ -62,6 +69,10 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                             navigationState.navigateSingleTo(AuthorizationScreens.PasswordRecovery.route)
                         }
 
+                        LoginContract.Effect.Navigation.ToGoogleLogin -> {
+                            navigationState.navigateSingleTo(AuthorizationScreens.GoogleLogin.route)
+                        }
+
                         LoginContract.Effect.Navigation.ToMain -> {
                             navigationState.navController.popBackStack(
                                 AuthorizationScreens.ChooseMode.route,
@@ -71,6 +82,30 @@ fun NavGraphBuilder.authorizationNavGraph(navigationState: NavigationState) {
                         }
 
                         LoginContract.Effect.Navigation.Back -> {
+                            navigationState.navController.popBackStack()
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(route = AuthorizationScreens.GoogleLogin.route) {
+            val viewModel: FirebaseSignInViewModel = hiltViewModel()
+            FirebaseSignInScreen(
+                state = viewModel.viewState.value,
+                effectFlow = viewModel.effect,
+                sendEvent = viewModel::setEvent,
+                navigation = { navigationAction ->
+                    when (navigationAction) {
+                        FirebaseSignInContract.Effect.Navigation.ToMain -> {
+                            navigationState.navController.popBackStack(
+                                AuthorizationScreens.ChooseMode.route,
+                                true
+                            )
+                            navigationState.navigateToMain()
+                        }
+
+                        FirebaseSignInContract.Effect.Navigation.Back -> {
                             navigationState.navController.popBackStack()
                         }
                     }

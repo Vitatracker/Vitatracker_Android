@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object AuthToken {
+    const val GOOGLE_CLIENT_ID = "447480675069-vis7jr0p9qpsc18lf5ttgrp54uo5c6l7.apps.googleusercontent.com"
+
+    var isFirebaseSignIn = false
+
     private val _isAuthorize = MutableStateFlow(false)
     val isAuthorize = _isAuthorize.asStateFlow()
 
@@ -57,6 +61,7 @@ object AuthToken {
 
     fun clear() {
         Log.e("VTTAG", "AuthToken::token: clear")
+        isFirebaseSignIn = false
         userId = -1L
         tokenDate = 0L
         tokenRefresh = ""

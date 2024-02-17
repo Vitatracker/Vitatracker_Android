@@ -3,6 +3,7 @@ package app.mybad.notifier.ui.navigation
 sealed class AuthorizationScreens(val route: String) {
     data object ChooseMode : AuthorizationScreens(ROUTE_SELECT_AUTHORIZATION_MODE)
     data object Login : AuthorizationScreens(ROUTE_LOGIN)
+    data object GoogleLogin : AuthorizationScreens(ROUTE_GOOGLE_LOGIN)
     data object Registration : AuthorizationScreens(ROUTE_REGISTRATION)
     data object PasswordRecovery : AuthorizationScreens(ROUTE_PASSWORD_RECOVERY)
     data object NewPassword : AuthorizationScreens(ROUTE_NEW_PASSWORD) {
@@ -28,6 +29,7 @@ sealed class AuthorizationScreens(val route: String) {
     private companion object {
         const val ROUTE_SELECT_AUTHORIZATION_MODE = "authorization_select_authorization_mode"
         const val ROUTE_LOGIN = "authorization_login"
+        const val ROUTE_GOOGLE_LOGIN = "authorization_google_login"
         const val ROUTE_REGISTRATION = "authorization_registration"
         const val ROUTE_PASSWORD_RECOVERY = "authorization_password_recovery"
         const val ROUTE_NEW_PASSWORD = "authorization_new_password/{${NewPassword.TOKEN_ARG}}/{${NewPassword.EMAIL_ARG}}"

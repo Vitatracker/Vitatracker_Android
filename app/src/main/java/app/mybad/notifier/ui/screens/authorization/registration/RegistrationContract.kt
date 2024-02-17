@@ -4,7 +4,6 @@ import android.content.Intent
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import app.mybad.notifier.ui.screens.authorization.login.LoginContract
 import net.openid.appauth.TokenRequest
 
 class RegistrationContract {

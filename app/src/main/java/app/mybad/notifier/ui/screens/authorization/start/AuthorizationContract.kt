@@ -4,7 +4,6 @@ import android.content.Intent
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import net.openid.appauth.TokenRequest
 
 class AuthorizationContract {
@@ -23,6 +22,7 @@ class AuthorizationContract {
         sealed interface Navigation : Effect {
             data object ToAuthorization : Navigation
             data object ToRegistration : Navigation
+            data object ToOpenGoogleLoginPage : Navigation
         }
     }
 }

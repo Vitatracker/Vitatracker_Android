@@ -68,7 +68,7 @@ abstract class BaseViewModel<Event : ViewEvent, UiState : ViewState, Effect : Vi
 
     protected fun setEffect(builder: () -> Effect) {
         val effectValue = builder()
-        Log.w("VTTAG", "BaseViewModel::setEffect: effect=$effectValue")
+        Log.d("VTTAG", "BaseViewModel::setEffect: effect=$effectValue")
         viewModelScope.launch { _effect.send(effectValue) }
     }
 

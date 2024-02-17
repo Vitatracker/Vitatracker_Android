@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import app.mybad.domain.usecases.authorization.GetLoginGoogleIntentUseCase
 import app.mybad.notifier.ui.base.BaseViewModel
-import app.mybad.notifier.ui.screens.authorization.registration.RegistrationContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import net.openid.appauth.TokenRequest
@@ -41,8 +40,9 @@ class AuthorizationViewModel @Inject constructor(
 
     private fun openGoogleLoginPage() {
         viewModelScope.launch {
-            val intent = getLoginGoogleIntentUseCase()
-            setEffect { AuthorizationContract.Effect.OpenAuthPage(intent) }
+//            val intent = getLoginGoogleIntentUseCase()
+//            setEffect { AuthorizationContract.Effect.OpenAuthPage(intent) }
+            setEffect { AuthorizationContract.Effect.Navigation.ToOpenGoogleLoginPage }
         }
     }
 

@@ -7,6 +7,7 @@ namespace-data = "app.mybad.data"
 namespace-domain = "app.mybad.domain"
 namespace-network = "app.mybad.network"
 namespace-notifications = "app.mybad.notifications"
+namespace-firebase = "app-mybad-notifier"
 namespace-authRedirect = "com.herokuapp.vitatracker-heroku"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com/login/oauth2/code/google"
@@ -70,10 +71,12 @@ moshi = "1.14.0"
 retrofit-kotlinx-serialization-json = "1.0.0"
 
 # Google
-firebaseBom = "31.2.0"
+firebase-bom = "32.7.2"
+firebase-ui-auth = "22.3.1"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
-gmsPlugin = "4.4.0"
+firebaseCommonKtx = "20.4.2"
+gmsPlugin = "4.4.1"
 secrets = "2.0.1"
 google-flowlayout = "0.28.0"
 play-services-auth = "20.7.0"
@@ -100,6 +103,7 @@ jjwt = "0.11.5"
 
 # facebook
 facebook-login = "16.2.0"
+facebook-android-sdk = "8.0.0"
 systemuicontroller = "0.31.3-beta"
 
 # OAuth 2.0
@@ -224,13 +228,19 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 # facebook
 facebook-login = { group = "com.facebook.android", name = "facebook-login", version.ref = "facebook-login" }
+facebook-android-sdk = { group = "com.facebook.android", name = "facebook-android-sdk", version.ref = "facebook-android-sdk" }
 
 # AppAuth for Android
 appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
 # google
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebase-ui-auth" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-ui-authe = { group = "com.firebaseui", name = "firebase-ui-authe" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+google-gms = { group = "com.google.gms", name = "google-services", version.ref = "gmsPlugin" }
 protobuf = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
 
 # accompanist
@@ -247,6 +257,7 @@ assertj = { group = "org.assertj", name = "assertj-core", version.ref = "assertj
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-ui-test-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 
 [bundles]
 compose-ui = ["compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview", "compose-foundation"]
