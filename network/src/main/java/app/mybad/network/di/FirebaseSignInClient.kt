@@ -16,6 +16,12 @@ object FirebaseSignInClient {
 
     @Singleton
     @Provides
+    fun provideSignInClient(
+        @ApplicationContext context: Context
+    ) = Identity.getSignInClient(context)
+
+    @Singleton
+    @Provides
     fun provideGoogleSignInClient(
         @ApplicationContext context: Context
     ) = Identity.getSignInClient(context)

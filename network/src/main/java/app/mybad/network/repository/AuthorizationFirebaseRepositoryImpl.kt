@@ -1,43 +1,44 @@
 package app.mybad.network.repository
 
-import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import app.mybad.domain.models.AuthToken
 import app.mybad.domain.models.AuthorizationFirebaseDomainModel
 import app.mybad.domain.repository.network.AuthorizationFirebaseRepository
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class AuthorizationFirebaseRepositoryImpl @Inject constructor(
-    private val oneTapClient: SignInClient,
+    @ApplicationContext private val context: Context,
     private val firebase: Firebase,
     @Named("IoDispatcher") private val dispatcher: CoroutineDispatcher,
 ) : AuthorizationFirebaseRepository {
-    override suspend fun getAuthRequestIntent(): PendingIntent? = withContext(dispatcher) {
-        try {
-            val intent = oneTapClient.beginSignIn(
-                buildSignInRequest()
-            ).await()
-            Log.w(
-                "VTTAG",
-                "AuthorizationFirebaseRepositoryImpl::getAuthRequestIntent: intent=${intent.pendingIntent.creatorPackage}"
-            )
-            intent?.pendingIntent
-        } catch (e: Exception) {
-            Log.w(
-                "VTTAG",
-                "AuthorizationFirebaseRepositoryImpl::getAuthRequestIntent: error=${e.localizedMessage}"
-            )
-            null
+
+    private val googleSignInClient: GoogleSignInClient by lazy {
+        GoogleSignIn.getClient(
+            context,
+            buildGoogleSignInRequest()
+        )
+    }
+
+    override suspend fun getAuthRequestIntent() = withContext(dispatcher) {
+        runCatching {
+            googleSignInClient.signInIntent.also {
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationFirebaseRepositoryImpl::getAuthRequestIntent: intent=${it}"
+                )
+            }
         }
     }
 
@@ -45,21 +46,36 @@ class AuthorizationFirebaseRepositoryImpl @Inject constructor(
         runCatching {
             Log.w(
                 "VTTAG",
-                "AuthorizationFirebaseRepositoryImpl::signInWithIntent: in"
+                "AuthorizationFirebaseRepositoryImpl::signInWithIntent: in ${intent}"
             )
-            val credential = oneTapClient.getSignInCredentialFromIntent(intent)
-            val googleIdToken = credential.googleIdToken
-            val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
-            firebase.auth.signInWithCredential(googleCredentials).await().user?.let { user ->
+            GoogleSignIn.getSignedInAccountFromIntent(intent).result.let { account ->
                 Log.w(
                     "VTTAG",
-                    "AuthorizationFirebaseRepositoryImpl::signInWithIntent: user=${user.email}"
+                    "AuthorizationFirebaseRepositoryImpl::signInWithIntent: account=${account.idToken}"
                 )
-                AuthorizationFirebaseDomainModel(
-                    userId = user.uid,
-                    userName = user.displayName ?: "",
-                    profilePictureUrl = user.photoUrl?.toString() ?: "",
-                    userEmail = user.email ?: "",
+                account?.let {
+                    Log.w(
+                        "VTTAG",
+                        "AuthorizationFirebaseRepositoryImpl::signInWithIntent: account=${account.idToken}"
+                    )
+                    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                    firebase.auth.signInWithCredential(credential).result.user?.let { user ->
+                        Log.w(
+                            "VTTAG",
+                            "AuthorizationFirebaseRepositoryImpl::signInWithIntent: user=${user.email}"
+                        )
+                        AuthorizationFirebaseDomainModel(
+                            userId = user.uid,
+                            userName = user.displayName ?: "",
+                            profilePictureUrl = user.photoUrl?.toString() ?: "",
+                            userEmail = user.email ?: "",
+                        )
+                    }
+                }
+            }.also {
+                Log.w(
+                    "VTTAG",
+                    "AuthorizationFirebaseRepositoryImpl::signInWithIntent: out"
                 )
             }
         }
@@ -67,7 +83,7 @@ class AuthorizationFirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() = withContext(dispatcher) {
         runCatching {
-            val isSignOut = oneTapClient.signOut().isSuccessful
+            val isSignOut = googleSignInClient.signOut().isSuccessful
             if (isSignOut) firebase.auth.signOut()
             // выйти из нашего сервера
 
@@ -75,19 +91,10 @@ class AuthorizationFirebaseRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun buildSignInRequest(): BeginSignInRequest {
-        return BeginSignInRequest.Builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Show all accounts on the device.
-                    .setFilterByAuthorizedAccounts(false)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(AuthToken.GOOGLE_CLIENT_ID)
-                    .build()
-            )
-            .setAutoSelectEnabled(true)
-            .build()
-    }
+    private fun buildGoogleSignInRequest() = GoogleSignInOptions
+        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(AuthToken.GOOGLE_CLIENT_ID)
+        .requestEmail()
+        .build()
 
 }

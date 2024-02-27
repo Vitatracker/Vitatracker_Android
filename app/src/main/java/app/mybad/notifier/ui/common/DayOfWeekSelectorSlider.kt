@@ -72,9 +72,9 @@ fun DayOfWeekSelectorSlider(
         daysMonth.first + daysMonth.second + daysMonth.third
     }
     val scope = rememberCoroutineScope()
-    Log.w(
+    Log.e(
         "VTTAG",
-        "NotificationMonthPager::DayOfWeekSelectorSlider: init datePage=${datePage.displayDateTime()} date=${date.displayDateTime()}"
+        "NotificationMonthPager::DayOfWeekSelectorSlider::MainViewModel: init datePage=${datePage.displayDateTime()} date=${date.displayDateTime()}"
     )
 
     if (dateReinitialize) {
@@ -82,9 +82,10 @@ fun DayOfWeekSelectorSlider(
             scope.launch {
                 Log.e(
                     "VTTAG",
-                    "NotificationMonthPager::DayOfWeekSelectorSlider: change dayInit=$dayInit"
+                    "NotificationMonthPager::DayOfWeekSelectorSlider::MainViewModel: change dayInit=$dayInit"
                 )
                 pagerState.scrollToPage(dayInit)
+                onChangeData(date)
             }
         }
     }

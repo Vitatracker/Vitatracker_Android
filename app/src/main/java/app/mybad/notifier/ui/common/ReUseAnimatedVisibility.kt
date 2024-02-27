@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 @Composable
 fun ReUseAnimatedVisibility(
     visible: Boolean,
-    enter: EnterTransition = fadeIn(animationSpec = tween(500)),
-    exit: ExitTransition = fadeOut(animationSpec = tween(500)),
+    enter: EnterTransition = fadeIn(animationSpec = tween(300)),
+    exit: ExitTransition = fadeOut(animationSpec = tween(100)),
     content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
     AnimatedVisibility(visible = visible, enter = enter, exit = exit, content = content)

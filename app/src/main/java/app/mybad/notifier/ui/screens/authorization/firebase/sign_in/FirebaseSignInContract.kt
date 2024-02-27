@@ -1,12 +1,9 @@
 package app.mybad.notifier.ui.screens.authorization.firebase.sign_in
 
-import android.app.PendingIntent
 import android.content.Intent
 import app.mybad.notifier.ui.base.ViewEvent
 import app.mybad.notifier.ui.base.ViewSideEffect
 import app.mybad.notifier.ui.base.ViewState
-import app.mybad.notifier.ui.screens.authorization.login.LoginContract
-import net.openid.appauth.TokenRequest
 
 class FirebaseSignInContract {
 
@@ -31,7 +28,7 @@ class FirebaseSignInContract {
     ) : ViewState
 
     sealed interface Effect : ViewSideEffect {
-        data class OpenAuthPage(val intent: PendingIntent) : Effect
+        data class OpenAuthPage(val intent: Intent) : Effect
         sealed interface Navigation : Effect {
             data object ToMain : Navigation
             data object Back : Navigation

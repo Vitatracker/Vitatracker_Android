@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.mybad.domain.models.AuthToken
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseFilledButton
 import app.mybad.notifier.ui.common.ReUseImage
@@ -109,10 +110,12 @@ fun AuthorizationView(
                 textId = R.string.authorization_screen_registration,
                 onClick = { sendEvent(AuthorizationContract.Event.Registration) }
             )
-            Spacer(modifier = Modifier.height(32.dp))
-            SignInWithGoogle(
-                onClick = { sendEvent(AuthorizationContract.Event.OpenGoogleLoginPage) }
-            )
+            if (AuthToken.isGoogleSignIn) {
+                Spacer(modifier = Modifier.height(32.dp))
+                SignInWithGoogle(
+                    onClick = { sendEvent(AuthorizationContract.Event.OpenGoogleLoginPage) }
+                )
+            }
         }
     }
 }

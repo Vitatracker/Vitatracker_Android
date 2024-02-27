@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(
     override fun setInitialState() = MainContract.State()
 
     override fun handleEvents(event: MainContract.Event) {
-        Log.d("VTTAG", "MainViewModel::handleEvents: event=$event")
+        log("handleEvents: event=$event")
         when (event) {
             is MainContract.Event.ChangeDate -> changeDate(event.date)
             is MainContract.Event.SetUsageFactTime -> setUsagesFactTime(event.usageKey)
@@ -57,15 +57,14 @@ class MainViewModel @Inject constructor(
     private val updateTime = _updateTime.onEach(::setTimer)
 
     private val selectDateToday: LocalDateTime? = null
-    private val selectDate = MutableStateFlow(viewState.value.selectDate)
+    private val selectDateTime = MutableStateFlow(viewState.value.selectDate)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val usages = selectDate.flatMapLatest { date ->
+    private val usages = selectDateTime.flatMapLatest { date ->
         val startDate = date.atStartOfDay().systemToEpochSecond()
         val endDate = date.atEndOfDay().systemToEpochSecond()
-        Log.w(
-            "VTTAG",
-            "MainViewModel::patternsAndUsages: pattern + usages date=${date.displayDateTime()} startDate=${
+        log(
+            "patternsAndUsages: pattern + usages date=${date.displayDateTime()} startDate=${
                 startDate.toDateTimeSystem().displayDateTime()
             } endDate=${endDate.toDateTimeSystem().displayDateTime()}"
         )
@@ -94,10 +93,7 @@ class MainViewModel @Inject constructor(
     )
 
     init {
-        Log.w(
-            "VTTAG",
-            "MainViewModel::NotificationMonthPager: init ----------------------------------------"
-        )
+        log("NotificationMonthPager: init ----------------------------------------")
         observeAuthorization()
     }
 
@@ -116,7 +112,7 @@ class MainViewModel @Inject constructor(
     private fun transformPatternUsages(
         patterns: List<UsageDisplayDomainModel>
     ): Map<String, UsageDisplayDomainModel> =
-        patterns.filter { it.checkDate(selectDate.value) }
+        patterns.filter { it.checkDate(selectDateTime.value) }
             .associateBy { it.toUsageKey() }
 
     private suspend fun changeState(
@@ -124,7 +120,7 @@ class MainViewModel @Inject constructor(
     ) = pu.first.plus(pu.second).map {
         val pattern = it.value
         val useTime = if (pattern.isPattern) {
-            selectDate.value.correctTimeInMinutes(pattern.timeInMinutes)
+            selectDateTime.value.correctTimeInMinutes(pattern.timeInMinutes)
         } else pattern.useTime // с учетом часового пояса
         pattern.copy(
             // для тестов, потом удалить name
@@ -133,12 +129,12 @@ class MainViewModel @Inject constructor(
             timeInMinutes = useTime.timeInMinutes(), // с учетом часового пояса
         )
     }.sortedBy { it.useTime.systemToInstant() }.associateBy { it.toUsageKey() }.also {
-        log("changeState: date=${selectDate.value.displayDateTime()} changeState=${it.size}")
+        log("changeState: date=${selectDateTime.value.displayDateTime()} changeState=${it.size}")
         val isEmpty = countActiveCourseUseCase(AuthToken.userId).getOrDefault(0L) == 0L
         setState {
             copy(
                 patternsAndUsages = it,
-                selectDate = this@MainViewModel.selectDate.value,
+                selectDate = selectDateTime.value,
                 isEmpty = isEmpty,
             )
         }
@@ -173,8 +169,8 @@ class MainViewModel @Inject constructor(
     }
 
     private fun changeDate(date: LocalDateTime) {
-        selectDate.value = date.atNoonOfDay()
-        log("changeData: date=${selectDate.value.displayDateTime()}")
+        selectDateTime.value = date.atNoonOfDay()
+        log("changeData: date=${selectDateTime.value.displayDateTime()}")
     }
 
     private fun setUsagesFactTime(usageKey: String) {

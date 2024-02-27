@@ -127,7 +127,13 @@ fun MainNotificationScreen(
             ) {
                 NotificationMonthPager(
                     date = state.selectDate,
-                    changeData = { sendEvent(MainContract.Event.ChangeDate(it)) },
+                    changeData = {
+                        Log.w(
+                            "VTTAG",
+                            "NotificationMonthPager::MainViewModel:: ChangeDate(${it.displayDateTime()})"
+                        )
+                        sendEvent(MainContract.Event.ChangeDate(it))
+                    },
                 )
                 if (state.patternsAndUsages.isNotEmpty()) {
                     NotificationLazyMedicines(
@@ -159,10 +165,10 @@ private fun NotificationMonthPager(
 ) {
     Log.w(
         "VTTAG",
-        "NotificationMonthPager::init: date=${date.displayDateTime()}"
+        "NotificationMonthPager::MainViewModel::init: date=${date.displayDateTime()}"
     )
-
-    var datePage by remember(date.year, date.monthNumber) { mutableStateOf(date) }
+    var datePage by remember(date.year, date.monthNumber, date.dayOfMonth) { mutableStateOf(date) }
+    var dayOfWeek by remember(datePage) { mutableStateOf(datePage) }
     val monthInit by remember(datePage) {
         mutableIntStateOf(months + date.month.ordinal)
     }
@@ -186,10 +192,14 @@ private fun NotificationMonthPager(
                 datePage = datePage.changeDateCorrectDay(year = newYear)
                 Log.w(
                     "VTTAG",
-                    "NotificationMonthPager::change: index=${pagerState.currentPage} nevIndex=$nevIndex datePage=${datePage.displayDateTime()}"
+                    "NotificationMonthPager::MainViewModel::change: index=${pagerState.currentPage} nevIndex=$nevIndex datePage=${datePage.displayDateTime()}"
                 )
             }
         }
+        dayOfWeek = datePage.changeDateCorrectDay(
+            month = pagerState.currentPage.toMonth(),
+            year = pagerState.currentPage.toYear(datePage.year)
+        )
     }
 
     HorizontalPager(
@@ -207,7 +217,10 @@ private fun NotificationMonthPager(
             month = index.toMonth(),
             dayOfMonth = 1,
         )
-        Log.d("VTTAG", "NotificationMonthPager::month: dateView=${dateView.displayDateTime()}")
+        Log.d(
+            "VTTAG",
+            "NotificationMonthPager::MainViewModel::month: dateView=${dateView.displayDateTime()}"
+        )
 
         Text(
             text = dateView.monthShortDisplay(),
@@ -227,10 +240,7 @@ private fun NotificationMonthPager(
     }
     VerticalSpacerSmall()
     DayOfWeekSelectorSlider(
-        date = datePage.changeDateCorrectDay(
-            month = pagerState.currentPage.toMonth(),
-            year = pagerState.currentPage.toYear(datePage.year),
-        ),
+        date = dayOfWeek,
         dateReinitialize = true,
         onChangeData = changeData::invoke,
     ) {
@@ -277,7 +287,7 @@ private fun NotificationLazyMedicines(
     NotificationTextCategory(date)
     Log.w(
         "VTTAG",
-        "MainNotificationScreen::NotificationLazyMedicines: usages=${usagesDisplay.size}"
+        "MainNotificationScreen::MainViewModel::NotificationLazyMedicines: usages=${usagesDisplay.size}"
     )
     LazyColumn(
         modifier = Modifier

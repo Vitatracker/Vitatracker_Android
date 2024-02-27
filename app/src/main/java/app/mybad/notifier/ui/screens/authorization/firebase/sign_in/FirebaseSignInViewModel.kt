@@ -53,7 +53,7 @@ class FirebaseSignInViewModel @Inject constructor(
 
     private fun openGoogleLoginPage() {
         viewModelScope.launch {
-            getFirebaseGoogleAuthIntentUseCase()?.let { intent ->
+            getFirebaseGoogleAuthIntentUseCase().onSuccess { intent ->
                 setEffect { FirebaseSignInContract.Effect.OpenAuthPage(intent) }
             }
         }

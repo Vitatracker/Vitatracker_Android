@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.gms)
     alias(libs.plugins.detekt)
 }
 
@@ -66,11 +65,11 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     // Import the Firebase BoM
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
+//    implementation(platform(libs.firebase.bom))
+//    implementation(libs.firebase.auth)
     implementation(libs.firebase.auth.ktx)
-    implementation(libs.facebook.android.sdk)
-    implementation(libs.facebook.login)
+//    implementation(libs.facebook.android.sdk)
+//    implementation(libs.facebook.login)
     implementation(libs.firebase.common.ktx)
     implementation(libs.play.services.auth)
 

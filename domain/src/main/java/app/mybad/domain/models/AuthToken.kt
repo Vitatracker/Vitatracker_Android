@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object AuthToken {
-    const val GOOGLE_CLIENT_ID = "447480675069-vis7jr0p9qpsc18lf5ttgrp54uo5c6l7.apps.googleusercontent.com"
+    const val GOOGLE_CLIENT_ID =
+        "288546405212-bo4f0mvh0k14dqtbfhk2vc6cqcmln0af.apps.googleusercontent.com"
 
+    var isGoogleSignIn = false
     var isFirebaseSignIn = false
 
     private val _isAuthorize = MutableStateFlow(false)

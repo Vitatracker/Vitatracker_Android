@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.mybad.domain.models.AuthToken
 import app.mybad.notifier.ui.base.SIDE_EFFECTS_KEY
 import app.mybad.notifier.ui.common.ReUseAnimatedVisibility
 import app.mybad.notifier.ui.common.ReUseFilledButton
@@ -152,16 +153,18 @@ private fun LoginScreen(
             enabled = state.isLoginButtonEnabled && !state.isLoading
         )
         Spacer(modifier = Modifier.height(32.dp))
-        SignInWithGoogle(
-            enabled = !state.isLoading,
-            onClick = {
-                Log.w(
-                    "VTTAG",
-                    "LoginScreen|AuthFragment|extractTokenCallback sendEvent OpenGoogleLoginPage"
-                )
-                sendEvent(LoginContract.Event.SignInWithGoogle)
-            }
-        )
+        if (AuthToken.isGoogleSignIn) {
+            SignInWithGoogle(
+                enabled = !state.isLoading,
+                onClick = {
+                    Log.w(
+                        "VTTAG",
+                        "LoginScreen|AuthFragment|extractTokenCallback sendEvent OpenGoogleLoginPage"
+                    )
+                    sendEvent(LoginContract.Event.SignInWithGoogle)
+                }
+            )
+        }
     }
 }
 

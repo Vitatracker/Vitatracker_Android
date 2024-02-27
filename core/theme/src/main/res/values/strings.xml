@@ -183,7 +183,7 @@
     <string name="calendar_title">My calendar</string>
 
     <!--MAIN SCREEN-->
-    <string name="main_screen_top_bar_name">Reminder daily</string>
+    <string name="main_screen_top_bar_name">Reminder Diary</string>
     <string name="main_screen_text_category">Medicines on %1$s</string>
 
     <string name="add_notifications_already_exist">Notification for this time already exist!</string>

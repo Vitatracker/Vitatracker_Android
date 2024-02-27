@@ -1,5 +1,7 @@
 package app.mybad.notifier.ui.screens.authorization.firebase.sign_in
 
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,13 +32,16 @@ fun FirebaseSignInScreen(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
         onResult = { result ->
-            if (result.resultCode == ComponentActivity.RESULT_OK) {
-                Log.w("VTTAG", "FirebaseSignInScreen::launcher: in")
-                result.data?.let {
-                    Log.w("VTTAG", "FirebaseSignInScreen::launcher: ok intent")
-                    sendEvent(FirebaseSignInContract.Event.SignInWithGoogle(it))
-                }
+            Log.w(
+                "VTTAG",
+                "FirebaseSignInScreen::launcher: in result=${result.resultCode} = ${ComponentActivity.RESULT_OK}"
+            )
+//            if (result.resultCode == ComponentActivity.RESULT_OK) {
+            result.data?.let { intent ->
+                Log.w("VTTAG", "FirebaseSignInScreen::launcher: ok intent")
+                sendEvent(FirebaseSignInContract.Event.SignInWithGoogle(intent))
             }
+//            }
         }
     )
     LaunchedEffect(key1 = state.signInError) {
@@ -50,7 +55,14 @@ fun FirebaseSignInScreen(
                 is FirebaseSignInContract.Effect.Navigation -> navigation(effect)
                 is FirebaseSignInContract.Effect.OpenAuthPage -> {
                     launcher.launch(
-                        IntentSenderRequest.Builder(effect.intent.intentSender).build()
+                        IntentSenderRequest.Builder(
+                            PendingIntent.getActivity(
+                                context,
+                                0,
+                                effect.intent,
+                                FLAG_MUTABLE
+                            )
+                        ).build()
                     )
                 }
             }

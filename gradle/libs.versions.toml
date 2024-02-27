@@ -12,7 +12,7 @@ namespace-authRedirect = "com.herokuapp.vitatracker-heroku"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com/login/oauth2/code/google"
 code = "1"
-name = "2.13a"
+name = "2.14"
 
 # SDK
 sdk-compile = "34"
@@ -47,22 +47,22 @@ data-store = "1.1.0-beta01"
 
 # Material
 google-material = "1.11.0"
-material = "1.6.0"
-material3 = "1.2.0-rc01"
+material = "1.6.2"
+material3 = "1.2.0"
 
 # Compose
-compose-bom = "2024.01.00"
-compose-compiler = "1.5.8"
-compose-ui = "1.6.0"
+compose-bom = "2024.02.01"
+compose-compiler = "1.5.10"
+compose-ui = "1.6.2"
 compose-activity = "1.8.2"
-compose-navigation = "2.7.6"
+compose-navigation = "2.7.7"
 compose-paging = "3.2.1"
 compose-coil = "2.5.0"
 
 # Dagger Hilt
 hilt = "2.48.1"
-hilt-compose = "1.1.0"
-hilt-common = "1.1.0"
+hilt-compose = "1.2.0"
+hilt-common = "1.2.0"
 
 # Retrofit
 retrofit = "2.9.0"
@@ -76,17 +76,17 @@ firebase-ui-auth = "22.3.1"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
 firebaseCommonKtx = "20.4.2"
-gmsPlugin = "4.4.1"
 secrets = "2.0.1"
 google-flowlayout = "0.28.0"
-play-services-auth = "20.7.0"
-
+gmsPlugin = "4.4.1"
+firebase-auth-ktx = "22.3.1"
+play-services-auth = "21.0.0"
 # RoomDB
 room = "2.6.1"
 
 # WorkManager
 work = "2.9.0"
-work-hilt = "1.1.0"
+work-hilt = "1.2.0"
 
 # Other
 lint = "30.3.1"
@@ -237,7 +237,7 @@ browser = { group = "androidx.browser", name = "browser", version.ref = "browser
 # google
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebase-ui-auth" }
-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth-ktx"  }
 firebase-ui-authe = { group = "com.firebaseui", name = "firebase-ui-authe" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 google-gms = { group = "com.google.gms", name = "google-services", version.ref = "gmsPlugin" }
