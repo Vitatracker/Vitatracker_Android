@@ -27,7 +27,7 @@ import app.mybad.notifier.ui.screens.settings.wishes.SettingsLeaveWishesViewMode
 fun NavGraphBuilder.settingsNavGraph(
     navigationState: NavigationState,
     navigateUp: (String) -> Unit = {},
-    onInScreen: ()->Unit = {},
+    onInScreen: () -> Unit = {},
 ) {
     navigation(
         startDestination = SettingsScreens.Navigation.route,

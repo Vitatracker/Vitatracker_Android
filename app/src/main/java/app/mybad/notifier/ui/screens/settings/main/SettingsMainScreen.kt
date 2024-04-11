@@ -79,19 +79,6 @@ fun SettingsMainScreen(
                 onSelect = { sendEvent(SettingsMainScreenContract.Event.AboutClicked) }
             )
             BaseHorizontalDivider()
-            BaseHorizontalDivider()
-            SettingsItem(
-                label = R.string.settings_db_clear,
-                icon = R.drawable.delete_forever_24,
-                onSelect = { sendEvent(SettingsMainScreenContract.Event.ClearDB) }
-            )
-            BaseHorizontalDivider()
-            SettingsItem(
-                label = R.string.settings_add_alarm,
-                icon = R.drawable.icon_settings_notifications,
-                onSelect = { sendEvent(SettingsMainScreenContract.Event.SetAlarm) }
-            )
-            BaseHorizontalDivider()
         }
     }
 

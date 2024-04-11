@@ -49,13 +49,13 @@
     <string name="start_screen_go">Go</string>
 
     <!--AUTHORIZATION-->
-    <string name="authorization_screen_login">Sing in</string>
+    <string name="authorization_screen_login">SIGN IN</string>
     <string name="authorization_screen_registration">Registration</string>
-    <string name="authorization_screen_text_recomendation">Sign in with</string>
+    <string name="authorization_screen_text_recomendation">SIGN IN with</string>
 
     <!--LOGIN-->
-    <string name="sign_in">Sign in</string>
-    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="sign_in_with_google">SIGN IN with Google</string>
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_password_confirm">Confirm password</string>
@@ -376,8 +376,7 @@
         <item quantity="many">%1$d days</item>
         <item quantity="other">%1$d days</item>
     </plurals>
-    <string name="password_changed_sign_in">Sign in</string>
+    <string name="password_changed_sign_in">SIGN IN</string>
     <string name="password_changed_successfully">Password changed\nsuccessfully</string>
-    <string name="web_client_id" translatable="false">100612405153-6pcefi871t3it46p1kqtfq0fk8mrgufa.apps.googleusercontent.com</string>
 
 </resources>

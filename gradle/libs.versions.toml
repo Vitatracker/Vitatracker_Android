@@ -12,7 +12,7 @@ namespace-authRedirect = "com.herokuapp.vitatracker-heroku"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com"
 #namespace-authRedirect = "https://vitatracker-heroku.herokuapp.com/login/oauth2/code/google"
 code = "1"
-name = "2.14"
+name = "2.15r"
 
 # SDK
 sdk-compile = "34"
@@ -24,8 +24,9 @@ agp = "8.1.4"
 
 # kotlin
 # kotlin & compose-compiler https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-kotlin = "1.9.22"
-ksp = "1.9.22-1.0.16"
+kotlin = "1.9.23"
+# Kotlin Symbol Processing API https://github.com/google/ksp
+ksp = "1.9.23-1.0.20"
 
 kotlinx-coroutines = "1.8.0-RC"
 kotlinx-datetime = "0.4.1"
@@ -43,24 +44,24 @@ core-splashscreen = "1.0.1"
 appcompat = "1.6.1"
 constraint = "2.1.4"
 lifecycle = "2.7.0"
-data-store = "1.1.0-beta01"
+data-store = "1.1.0-rc01"
 
 # Material
 google-material = "1.11.0"
-material = "1.6.2"
-material3 = "1.2.0"
+material = "1.6.5"
+material3 = "1.2.1"
 
 # Compose
-compose-bom = "2024.02.01"
-compose-compiler = "1.5.10"
-compose-ui = "1.6.2"
+compose-bom = "2024.04.00"
+compose-compiler = "1.5.11"
+compose-ui = "1.6.5"
 compose-activity = "1.8.2"
 compose-navigation = "2.7.7"
 compose-paging = "3.2.1"
 compose-coil = "2.5.0"
 
 # Dagger Hilt
-hilt = "2.48.1"
+hilt = "2.49"
 hilt-compose = "1.2.0"
 hilt-common = "1.2.0"
 
@@ -71,11 +72,11 @@ moshi = "1.14.0"
 retrofit-kotlinx-serialization-json = "1.0.0"
 
 # Google
-firebase-bom = "32.7.2"
+firebase-bom = "32.8.0"
 firebase-ui-auth = "22.3.1"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
-firebaseCommonKtx = "20.4.2"
+firebaseCommonKtx = "20.4.3"
 secrets = "2.0.1"
 google-flowlayout = "0.28.0"
 gmsPlugin = "4.4.1"
@@ -109,7 +110,7 @@ systemuicontroller = "0.31.3-beta"
 # OAuth 2.0
 # AppAuth for Android in Java
 appauth = "0.11.1"
-browser = "1.7.0"
+browser = "1.8.0"
 
 # Test
 junit = "4.13.2"

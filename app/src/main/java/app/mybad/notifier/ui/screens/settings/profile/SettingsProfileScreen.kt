@@ -108,14 +108,6 @@ private fun SettingsProfileTop(
 ) {
     Column {
         ReUseOutlinedTextField(
-            value = state.name,
-            placeholder = R.string.settings_user_name,
-            onValueChanged = { sendEvent(SettingsProfileContract.Event.OnUserNameChanged(it)) },
-            trailingIcon = R.drawable.icon_settings_user,
-            tint = MaterialTheme.colorScheme.surfaceDim,
-        )
-        Spacer(Modifier.height(4.dp))
-        ReUseOutlinedTextField(
             value = state.email,
             enabled = false,
             placeholder = R.string.settings_user_email,
